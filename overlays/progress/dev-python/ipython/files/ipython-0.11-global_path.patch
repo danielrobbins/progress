@@ -1,0 +1,11 @@
+--- IPython/quarantine/ipy_gnuglobal.py
++++ IPython/quarantine/ipy_gnuglobal.py
+@@ -13,7 +13,7 @@
+ import os
+ 
+ # alter to your liking
+-global_bin = 'd:/opt/global/bin/global'
++global_bin = '/usr/bin/global'
+ 
+ def global_f(self,cmdline):
+     simple = 0

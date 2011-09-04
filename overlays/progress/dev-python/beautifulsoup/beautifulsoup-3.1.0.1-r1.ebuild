@@ -1,0 +1,48 @@
+# Copyright 1999-2011 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+# $Header: $
+
+EAPI="4-python"
+PYTHON_MULTIPLE_ABIS="1"
+# Avoid collisions with python-2 slot.
+PYTHON_RESTRICTED_ABIS="2.*"
+
+inherit distutils eutils
+
+MY_PN="BeautifulSoup"
+MY_P="${MY_PN}-${PV}"
+
+DESCRIPTION="HTML/XML parser for quick-turnaround applications like screen-scraping."
+HOMEPAGE="http://www.crummy.com/software/BeautifulSoup/ http://pypi.python.org/pypi/BeautifulSoup"
+SRC_URI="http://www.crummy.com/software/${MY_PN}/download/3.1.x/${MY_P}.tar.gz"
+
+LICENSE="BSD"
+SLOT="python-3"
+KEYWORDS="~alpha amd64 ~arm hppa ~ia64 ppc ppc64 ~sparc x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux ~x86-macos ~x86-solaris"
+IUSE=""
+
+DEPEND=""
+RDEPEND="!dev-python/beautifulsoup:0"
+
+S="${WORKDIR}/${MY_P}"
+
+PYTHON_MODULES="BeautifulSoup.py BeautifulSoupTests.py"
+
+src_prepare() {
+	distutils_src_prepare
+	epatch "${FILESDIR}/${P}-python-3.patch"
+}
+
+src_test() {
+	testing() {
+		PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" BeautifulSoupTests.py
+	}
+	python_execute_function testing
+}
+
+src_install() {
+	distutils_src_install
+
+	# Delete useless files.
+	rm -fr "${ED}usr/bin"
+}

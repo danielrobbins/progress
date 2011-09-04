@@ -1,0 +1,14 @@
+--- PIL/GifImagePlugin.py
++++ PIL/GifImagePlugin.py
+@@ -352,6 +352,11 @@
+         for i in range(maxcolor):
+             s.append(chr(i) * 3)
+ 
++    if im.info.has_key('transparency'):
++        transparentIndex = im.info['transparency']
++        s.append('!' + chr(0xf9) + chr(4) + chr(1) + chr(0) + chr(0) +
++                 chr(transparentIndex) + chr(0))
++
+     return s
+ 
+ def getdata(im, offset = (0, 0), **params):

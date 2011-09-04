@@ -1,0 +1,27 @@
+--- configure.py
++++ configure.py
+@@ -478,7 +478,7 @@
+             generate_code("QtXmlPatterns")
+ 
+         if "phonon" in pyqt_modules:
+-            generate_code("phonon")
++            generate_code("phonon", extra_include_dirs=["/usr/include/phonon"])
+ 
+         if "QtAssistant" in pyqt_modules:
+             generate_code("QtAssistant")
+@@ -797,6 +797,7 @@
+                 install_dir=pydbusmoddir,
+                 qt=["QtCore"],
+                 debug=opts.debug,
++                strip=0,
+                 universal=sipcfg.universal,
+                 arch=sipcfg.arch
+             )
+@@ -1611,6 +1612,7 @@
+         warnings=1,
+         static=opts.static,
+         debug=opts.debug,
++        strip=0,
+         universal=sipcfg.universal,
+         arch=sipcfg.arch,
+         prot_is_public=opts.prot_is_public
