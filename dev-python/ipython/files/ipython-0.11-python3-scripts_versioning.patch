@@ -1,0 +1,51 @@
+--- setupbase.py
++++ setupbase.py
+@@ -270,31 +270,31 @@
+     """
+     if entry_points:
+         console_scripts = [
+-            'ipython3 = IPython.frontend.terminal.ipapp:launch_new_instance',
+-            'pycolor3 = IPython.utils.PyColorize:main',
+-            'ipcontroller3 = IPython.parallel.apps.ipcontrollerapp:launch_new_instance',
+-            'ipengine3 = IPython.parallel.apps.ipengineapp:launch_new_instance',
+-            'iplogger3 = IPython.parallel.apps.iploggerapp:launch_new_instance',
+-            'ipcluster3 = IPython.parallel.apps.ipclusterapp:launch_new_instance',
+-            'iptest3 = IPython.testing.iptest:main',
+-            'irunner3 = IPython.lib.irunner:main'
++            'ipython = IPython.frontend.terminal.ipapp:launch_new_instance',
++            'pycolor = IPython.utils.PyColorize:main',
++            'ipcontroller = IPython.parallel.apps.ipcontrollerapp:launch_new_instance',
++            'ipengine = IPython.parallel.apps.ipengineapp:launch_new_instance',
++            'iplogger = IPython.parallel.apps.iploggerapp:launch_new_instance',
++            'ipcluster = IPython.parallel.apps.ipclusterapp:launch_new_instance',
++            'iptest = IPython.testing.iptest:main',
++            'irunner = IPython.lib.irunner:main'
+         ]
+         gui_scripts = [
+-            'ipython3-qtconsole = IPython.frontend.qt.console.qtconsoleapp:main',
++            'ipython-qtconsole = IPython.frontend.qt.console.qtconsoleapp:main',
+         ]
+         scripts = dict(console_scripts=console_scripts, gui_scripts=gui_scripts)
+     else:
+         parallel_scripts = pjoin('IPython','parallel','scripts')
+         main_scripts = pjoin('IPython','scripts')
+         scripts = [
+-                   pjoin(parallel_scripts, 'ipengine3'),
+-                   pjoin(parallel_scripts, 'ipcontroller3'),
+-                   pjoin(parallel_scripts, 'ipcluster3'),
+-                   pjoin(parallel_scripts, 'iplogger3'),
+-                   pjoin(main_scripts, 'ipython3'),
+-                   pjoin(main_scripts, 'pycolor3'),
+-                   pjoin(main_scripts, 'irunner3'),
+-                   pjoin(main_scripts, 'iptest3')
++                   pjoin(parallel_scripts, 'ipengine'),
++                   pjoin(parallel_scripts, 'ipcontroller'),
++                   pjoin(parallel_scripts, 'ipcluster'),
++                   pjoin(parallel_scripts, 'iplogger'),
++                   pjoin(main_scripts, 'ipython'),
++                   pjoin(main_scripts, 'pycolor'),
++                   pjoin(main_scripts, 'irunner'),
++                   pjoin(main_scripts, 'iptest')
+         ]
+     return scripts
+ 
