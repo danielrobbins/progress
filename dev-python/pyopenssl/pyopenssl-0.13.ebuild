@@ -5,8 +5,9 @@
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.1"
 
-inherit distutils eutils
+inherit distutils
 
 MY_PN="pyOpenSSL"
 MY_P="${MY_PN}-${PV}"
@@ -17,7 +18,7 @@ SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="Apache-2.0"
 SLOT="0"
-KEYWORDS="alpha amd64 arm hppa ia64 ~mips ppc ppc64 s390 sh sparc x86 ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~sparc-solaris ~x64-solaris"
+KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~sparc-solaris ~x64-solaris"
 IUSE="doc"
 
 RDEPEND=">=dev-libs/openssl-0.9.6g"
@@ -35,20 +36,6 @@ PYTHON_MODULES="OpenSSL"
 
 src_prepare() {
 	distutils_src_prepare
-	epatch "${FILESDIR}/${PN}-0.11-openssl-1.patch"
-
-	# Disable tests failing with OpenSSL >=1.0.0.
-	sed \
-		-e "s/test_dump_privatekey/_&/" \
-		-e "s/test_export_without_args/_&/" \
-		-e "s/test_export_without_mac/_&/" \
-		-e "s/test_friendly_name/_&/" \
-		-e "s/test_load_pkcs12/_&/" \
-		-e "s/test_various_empty_passphrases/_&/" \
-		-e "s/test_zero_len_list_for_ca/_&/" \
-		-e "s/test_subject_name_hash/_&/" \
-		-i OpenSSL/test/test_crypto.py
-	sed -e "s/test_load_verify_directory/_&/" -i OpenSSL/test/test_ssl.py
 
 	sed -e "s/python/&2/" -i doc/Makefile
 }
@@ -98,7 +85,6 @@ src_install() {
 		dodoc doc/pyOpenSSL.*
 	fi
 
-	# Install examples
 	insinto /usr/share/doc/${PF}/examples
 	doins -r examples/*
 }
