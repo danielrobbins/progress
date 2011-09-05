@@ -38,6 +38,7 @@ src_compile() {
 	distutils_src_compile
 
 	if use doc; then
+		einfo "Generation of documentation"
 		pushd docs > /dev/null
 		mkdir _themes
 		emake html
