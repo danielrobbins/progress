@@ -335,7 +335,7 @@ pkg_postinst() {
 	if [[ "${PV}" != *_pre* ]]; then
 		elog
 		elog "If you want to help in testing of recent changes in Python, then you can use"
-		elog "snapshots of Python from python overlay."
+		elog "snapshots of Python from Progress Overlay."
 		elog
 	fi
 }

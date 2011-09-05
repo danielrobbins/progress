@@ -26,7 +26,7 @@ if [[ "${PV}" == *_pre* ]]; then
 	SRC_URI=""
 else
 	SRC_URI="http://www.python.org/ftp/python/${MY_PV}/${MY_P}.tar.xz
-		http://people.apache.org/~Arfrever/gentoo/python-gentoo-patches-${MY_PV}$([[ "${PATCHSET_REVISION}" != "0" ]] && echo "-r${PATCHSET_REVISION}").tar.bz2"
+		http://people.apache.org/~Arfrever/gentoo/python-gentoo-patches-${MY_PV}$([[ "${PATCHSET_REVISION}" != "0" ]] && echo "-r${PATCHSET_REVISION}").tar.xz"
 fi
 
 LICENSE="PSF-2"
@@ -363,7 +363,7 @@ pkg_postinst() {
 	if [[ "${PV}" != *_pre* ]]; then
 		elog
 		elog "If you want to help in testing of recent changes in Python, then you can use"
-		elog "snapshots of Python from python overlay."
+		elog "snapshots of Python from Progress Overlay."
 		elog
 	fi
 }
