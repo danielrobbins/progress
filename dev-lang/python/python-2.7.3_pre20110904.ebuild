@@ -26,7 +26,7 @@ if [[ "${PV}" == *_pre* ]]; then
 	SRC_URI=""
 else
 	SRC_URI="http://www.python.org/ftp/python/${MY_PV}/${MY_P}.tar.bz2
-		http://people.apache.org/~Arfrever/gentoo/python-gentoo-patches-${MY_PV}$([[ "${PATCHSET_REVISION}" != "0" ]] && echo "-r${PATCHSET_REVISION}").tar.xz"
+		http://people.apache.org/~Arfrever/gentoo/python-gentoo-patches-${MY_PV}$([[ "${PATCHSET_REVISION}" != "0" ]] && echo "-r${PATCHSET_REVISION}").tar.bz2"
 fi
 
 LICENSE="PSF-2"
