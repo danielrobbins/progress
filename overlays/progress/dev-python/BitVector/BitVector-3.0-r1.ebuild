@@ -9,7 +9,7 @@ PYTHON_RESTRICTED_ABIS="2.4 2.5"
 inherit distutils
 
 DESCRIPTION="A pure-Python memory-efficient packed representation for bit arrays"
-HOMEPAGE="http://cobweb.ecn.purdue.edu/~kak/dist/"
+HOMEPAGE="http://cobweb.ecn.purdue.edu/~kak/dist/ http://pypi.python.org/pypi/BitVector"
 SRC_URI="http://cobweb.ecn.purdue.edu/~kak/dist/${P}.tar.gz"
 
 LICENSE="PSF-2"
