@@ -4,7 +4,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_TESTS_RESTRICTED_ABIS="3.*"
+PYTHON_TESTS_RESTRICTED_ABIS="2.4 3.*"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
@@ -23,7 +23,7 @@ KEYWORDS="amd64 ~arm ppc ~sparc x86 ~amd64-linux ~x86-linux ~x64-macos ~x86-maco
 IUSE="test"
 
 DEPEND="$(python_abi_depend dev-python/setuptools)
-	test? ( $(python_abi_depend -e "3.*" dev-python/webtest) )"
+	test? ( $(python_abi_depend -e "2.4 3.*" dev-python/webtest) )"
 RDEPEND=""
 
 S="${WORKDIR}/${MY_P}"
