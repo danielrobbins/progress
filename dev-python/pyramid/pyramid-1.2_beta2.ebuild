@@ -9,7 +9,7 @@ DISTUTILS_SRC_TEST="setup.py"
 
 inherit distutils
 
-MY_P="${PN}-${PV/_alpha/a}"
+MY_P="${PN}-${PV/_beta/b}"
 
 DESCRIPTION="The Pyramid web application development framework, a Pylons project"
 HOMEPAGE="http://pypi.python.org/pypi/pyramid"
