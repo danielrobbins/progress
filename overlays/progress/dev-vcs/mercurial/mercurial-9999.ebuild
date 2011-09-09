@@ -7,7 +7,7 @@ PYTHON_DEPEND="<<[{*-cpython}threads]>>"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.* *-jython"
 
-inherit bash-completion elisp-common eutils distutils mercurial
+inherit bash-completion-r1 elisp-common eutils distutils mercurial
 
 DESCRIPTION="Scalable distributed SCM"
 HOMEPAGE="http://mercurial.selenic.com/"
@@ -54,7 +54,7 @@ src_compile() {
 src_install() {
 	distutils_src_install
 
-	dobashcompletion contrib/bash_completion ${PN}
+	newbashcomp contrib/bash_completion ${PN} || die
 
 	if use zsh-completion ; then
 		insinto /usr/share/zsh/site-functions
@@ -120,7 +120,6 @@ src_test() {
 pkg_postinst() {
 	distutils_pkg_postinst
 	use emacs && elisp-site-regen
-	bash-completion_pkg_postinst
 
 	elog "If you want to convert repositories from other tools using convert"
 	elog "extension please install correct tool:"
