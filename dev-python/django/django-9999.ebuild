@@ -19,6 +19,7 @@ KEYWORDS=""
 IUSE="doc mysql postgres sqlite test"
 
 RDEPEND="$(python_abi_depend -e "*-jython" dev-python/imaging)
+	$(python_abi_depend virtual/python-json[external])
 	mysql? ( $(python_abi_depend -e "*-jython" ">=dev-python/mysql-python-1.2.1_p2") )
 	postgres? ( $(python_abi_depend -e "*-jython" dev-python/psycopg) )
 	sqlite? ( $(python_abi_depend -e "*-jython" virtual/python-sqlite[external]) )"
@@ -42,10 +43,14 @@ src_prepare() {
 	distutils_src_prepare
 
 	# Disable tests requiring network connection.
-	sed -e "s/test_correct_url_value_passes/_&/" -i tests/modeltests/validation/tests.py
+	sed \
+		-e "s/test_correct_url_value_passes/_&/" \
+		-e "s/test_correct_url_with_redirect/_&/" \
+		-i tests/modeltests/validation/tests.py
 	sed \
 		-e "s/test_urlfield_3/_&/" \
 		-e "s/test_urlfield_4/_&/" \
+		-e "s/test_urlfield_10/_&/" \
 		-i tests/regressiontests/forms/tests/fields.py
 }
 
