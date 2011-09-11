@@ -7,7 +7,7 @@ PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.*"
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
 
-inherit bash-completion distutils eutils versionator webapp
+inherit bash-completion distutils versionator webapp
 
 MY_P="Django-${PV}"
 
@@ -17,10 +17,11 @@ SRC_URI="http://media.djangoproject.com/releases/$(get_version_component_range 1
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="amd64 ~ia64 ~ppc ~ppc64 ~sparc x86 ~x86-fbsd ~amd64-linux ~x86-linux ~ppc-macos ~x86-macos"
+KEYWORDS="~amd64 ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~amd64-linux ~x86-linux ~ppc-macos ~x86-macos"
 IUSE="doc mysql postgres sqlite test"
 
 RDEPEND="$(python_abi_depend -e "*-jython" dev-python/imaging)
+	$(python_abi_depend virtual/python-json[external])
 	mysql? ( $(python_abi_depend -e "*-jython" ">=dev-python/mysql-python-1.2.1_p2") )
 	postgres? ( $(python_abi_depend -e "*-jython" dev-python/psycopg) )
 	sqlite? ( $(python_abi_depend -e "*-jython" virtual/python-sqlite[external]) )"
@@ -41,13 +42,15 @@ pkg_setup() {
 src_prepare() {
 	distutils_src_prepare
 
-	epatch "${FILESDIR}/${P}-tests.patch"
-
 	# Disable tests requiring network connection.
-	sed -e "s/test_correct_url_value_passes/_&/" -i tests/modeltests/validation/tests.py
+	sed \
+		-e "s/test_correct_url_value_passes/_&/" \
+		-e "s/test_correct_url_with_redirect/_&/" \
+		-i tests/modeltests/validation/tests.py
 	sed \
 		-e "s/test_urlfield_3/_&/" \
 		-e "s/test_urlfield_4/_&/" \
+		-e "s/test_urlfield_10/_&/" \
 		-i tests/regressiontests/forms/tests/fields.py
 }
 
