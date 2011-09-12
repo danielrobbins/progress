@@ -4,7 +4,7 @@ http://bugs.python.org/issue6103
 
 --- Makefile.pre.in
 +++ Makefile.pre.in
-@@ -856,6 +856,19 @@
+@@ -822,6 +822,19 @@
  		fi; \
  	else	true; \
  	fi
@@ -22,9 +22,9 @@ http://bugs.python.org/issue6103
 +	else	true; \
 +	fi
  
- bininstall: altbininstall
- 	-if test -f $(DESTDIR)$(BINDIR)/$(PYTHON)3$(EXE) -o -h $(DESTDIR)$(BINDIR)/$(PYTHON)3$(EXE); \
-@@ -1107,18 +1120,6 @@
+ # Install the manual page
+ maninstall:
+@@ -999,18 +1012,6 @@
  		else	true; \
  		fi; \
  	done
@@ -45,17 +45,17 @@ http://bugs.python.org/issue6103
  	$(INSTALL_DATA) $(srcdir)/Modules/config.c.in $(DESTDIR)$(LIBPL)/config.c.in
 --- Misc/python-config.in
 +++ Misc/python-config.in
-@@ -47,11 +47,7 @@
+@@ -46,11 +46,7 @@
      elif opt in ('--libs', '--ldflags'):
          libs = getvar('LIBS').split() + getvar('SYSLIBS').split()
-         libs.append('-lpython' + pyver + sys.abiflags)
+         libs.append('-lpython'+pyver)
 -        # add the prefix/lib/pythonX.Y/config dir, but only if there is no
 -        # shared library in prefix/lib/.
          if opt == '--ldflags':
 -            if not getvar('Py_ENABLE_SHARED'):
 -                libs.insert(0, '-L' + getvar('LIBPL'))
              libs.extend(getvar('LINKFORSHARED').split())
-         print(' '.join(libs))
+         print ' '.join(libs)
  
 --- Modules/makesetup
 +++ Modules/makesetup
