@@ -4,6 +4,7 @@
 
 EAPI="3"
 WANT_AUTOMAKE="none"
+WANT_LIBTOOL="none"
 
 inherit autotools eutils flag-o-matic multilib python toolchain-funcs
 
@@ -11,13 +12,13 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="843cd43206b4"
+	EHG_REVISION="1ab62d3b96d2"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
 fi
 
-PATCHSET_REVISION="20110731"
+PATCHSET_REVISION="20110911"
 
 DESCRIPTION="Python is an interpreted, interactive, object-oriented programming language."
 HOMEPAGE="http://www.python.org/"
@@ -70,7 +71,7 @@ fi
 pkg_setup() {
 	python_pkg_setup
 
-	if [[ "${PV}" =~ ^3\.2(\.[12])?(_pre)? ]]; then
+	if [[ "${PV}" =~ ^3\.2(\.[123])?(_pre)? ]]; then
 		rm -f "${EROOT}usr/$(get_libdir)/llibpython3.so"
 	else
 		die "Deprecated code not deleted"
@@ -280,7 +281,7 @@ src_install() {
 	mv "${ED}usr/bin/python${SLOT}-config" "${ED}usr/bin/python-config-${SLOT}"
 
 	# Fix collisions between different slots of Python.
-	rm "${ED}usr/$(get_libdir)/libpython3.so"
+	rm -f "${ED}usr/$(get_libdir)/libpython3.so"
 
 	if use build; then
 		rm -fr "${ED}usr/bin/idle${SLOT}" "${ED}$(python_get_libdir)/"{idlelib,sqlite3,test,tkinter}
@@ -350,7 +351,7 @@ pkg_postinst() {
 	if [[ "${PV}" != *_pre* ]]; then
 		elog
 		elog "If you want to help in testing of recent changes in Python, then you can use"
-		elog "snapshots of Python from python overlay."
+		elog "snapshots of Python from Progress Overlay."
 		elog
 	fi
 }

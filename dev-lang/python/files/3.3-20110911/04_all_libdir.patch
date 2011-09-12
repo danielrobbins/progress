@@ -24,7 +24,7 @@
          else:
 --- Lib/packaging/tests/test_command_install_dist.py
 +++ Lib/packaging/tests/test_command_install_dist.py
-@@ -58,7 +58,7 @@
+@@ -63,7 +63,7 @@
              expected = os.path.normpath(expected)
              self.assertEqual(got, expected)
  
@@ -180,7 +180,7 @@
  #
 --- setup.py
 +++ setup.py
-@@ -458,8 +458,7 @@
+@@ -457,8 +457,7 @@
          # if a file is found in one of those directories, it can
          # be assumed that no additional -I,-L directives are needed.
          lib_dirs = self.compiler.library_dirs + [
@@ -190,7 +190,7 @@
              ]
          inc_dirs = self.compiler.include_dirs + ['/usr/include']
          exts = []
-@@ -652,11 +651,11 @@
+@@ -651,11 +650,11 @@
              elif curses_library:
                  readline_libs.append(curses_library)
              elif self.compiler.find_library_file(lib_dirs +

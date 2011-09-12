@@ -9,7 +9,7 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
 
 --- Modules/main.c
 +++ Modules/main.c
-@@ -323,6 +323,10 @@
+@@ -242,6 +242,10 @@
      int version = 0;
      int saw_unbuffered_flag = 0;
      PyCompilerFlags cf;
@@ -20,28 +20,21 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
  
      cf.cf_flags = 0;
  
-@@ -523,7 +527,17 @@
+@@ -445,7 +449,10 @@
              filename = argv[_PyOS_optind];
  
  #else
 -        filename = argv[_PyOS_optind];
-+        if (target_script_name != NULL && *target_script_name != '\0') {
-+            size_t length = strlen(target_script_name);
-+            wchar_t *wcs_target_script_name = (wchar_t *) calloc(length + 1, sizeof(wchar_t));
-+            char *old_locale = setlocale(LC_CTYPE, NULL);
-+            setlocale(LC_CTYPE, "");
-+            if (mbstowcs(wcs_target_script_name, target_script_name, length) >= 0)
-+                filename = wcs_target_script_name;
-+            setlocale(LC_CTYPE, old_locale);
-+        }
-+        if (filename == NULL)
++        if (target_script_name != NULL && *target_script_name != '\0')
++            filename = target_script_name;
++        else
 +            filename = argv[_PyOS_optind];
  #endif
      }
  
 --- Modules/posixmodule.c
 +++ Modules/posixmodule.c
-@@ -606,6 +606,10 @@
+@@ -476,6 +476,10 @@
          char *p = strchr(*e, '=');
          if (p == NULL)
              continue;
@@ -49,12 +42,12 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
 +            (strlen("GENTOO_PYTHON_TARGET_SCRIPT_PATH") == (int)(p-*e) && strncmp("GENTOO_PYTHON_TARGET_SCRIPT_PATH", *e, (int)(p-*e)) == 0) ||
 +            (strlen("GENTOO_PYTHON_WRAPPER_SCRIPT_PATH") == (int)(p-*e) && strncmp("GENTOO_PYTHON_WRAPPER_SCRIPT_PATH", *e, (int)(p-*e)) == 0))
 +            continue;
-         k = PyBytes_FromStringAndSize(*e, (int)(p-*e));
+         k = PyString_FromStringAndSize(*e, (int)(p-*e));
          if (k == NULL) {
              PyErr_Clear();
 --- Modules/python.c
 +++ Modules/python.c
-@@ -7,6 +7,14 @@
+@@ -6,9 +6,22 @@
  #include <floatingpoint.h>
  #endif
  
@@ -66,42 +59,37 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
 +#endif
 +#endif
 +
- #ifdef MS_WINDOWS
- int
- wmain(int argc, wchar_t **argv)
-@@ -22,6 +30,11 @@
  int
  main(int argc, char **argv)
  {
-+    if (getenv("GENTOO_PYTHON_TARGET_SCRIPT_PATH_VERIFICATION")) {
-+        printf("GENTOO_PYTHON_TARGET_SCRIPT_PATH supported\n");
-+        return 0;
-+    }
++	if (getenv("GENTOO_PYTHON_TARGET_SCRIPT_PATH_VERIFICATION")) {
++		printf("GENTOO_PYTHON_TARGET_SCRIPT_PATH supported\n");
++		return 0;
++	}
 +
-     wchar_t **argv_copy = (wchar_t **)PyMem_Malloc(sizeof(wchar_t*)*argc);
-     /* We need a second copies, as Python might modify the first one. */
-     wchar_t **argv_copy2 = (wchar_t **)PyMem_Malloc(sizeof(wchar_t*)*argc);
-@@ -56,6 +69,16 @@
-     }
-     setlocale(LC_ALL, oldloc);
-     free(oldloc);
+ 	/* 754 requires that FP exceptions run in "no stop" mode by default,
+ 	 * and until C vendors implement C99's ways to control FP exceptions,
+ 	 * Python requires non-stop mode.  Alas, some platforms enable FP
+@@ -20,5 +33,15 @@
+ 	m = fpgetmask();
+ 	fpsetmask(m & ~FP_X_OFL);
+ #endif
 +
 +#ifdef __linux__
-+    char *process_name = getenv("GENTOO_PYTHON_PROCESS_NAME");
++	char *process_name = getenv("GENTOO_PYTHON_PROCESS_NAME");
 +#ifdef HAVE_UNSETENV
-+    unsetenv("GENTOO_PYTHON_PROCESS_NAME");
++	unsetenv("GENTOO_PYTHON_PROCESS_NAME");
 +#endif
-+    if (process_name != NULL && *process_name != '\0')
-+        prctl(PR_SET_NAME, process_name);
++	if (process_name != NULL && *process_name != '\0')
++		prctl(PR_SET_NAME, process_name);
 +#endif
 +
-     res = Py_Main(argc, argv_copy);
-     for (i = 0; i < argc; i++) {
-         PyMem_Free(argv_copy2[i]);
+ 	return Py_Main(argc, argv);
+ }
 --- Python/sysmodule.c
 +++ Python/sysmodule.c
-@@ -1671,6 +1671,10 @@
- makeargvobject(int argc, wchar_t **argv)
+@@ -1558,6 +1558,10 @@
+ makeargvobject(int argc, char **argv)
  {
      PyObject *av;
 +    char *wrapper_script_name = getenv("GENTOO_PYTHON_WRAPPER_SCRIPT_PATH");
@@ -110,22 +98,17 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
 +#endif
      if (argc <= 0 || argv == NULL) {
          /* Ensure at least one (empty) argument is seen */
-         static wchar_t *empty_argv[1] = {L""};
-@@ -1695,7 +1699,16 @@
+         static char *empty_argv[1] = {""};
+@@ -1582,7 +1586,11 @@
              } else
-                 v = PyUnicode_FromString(argv[i]);
+                 v = PyString_FromString(argv[i]);
  #else
--            PyObject *v = PyUnicode_FromWideChar(argv[i], -1);
-+            PyObject *v = NULL;
-+            if (i == 0 && wrapper_script_name != NULL && *wrapper_script_name != '\0') {
-+                size_t length = strlen(wrapper_script_name);
-+                wchar_t *wcs_wrapper_script_name = (wchar_t *) calloc(length + 1, sizeof(wchar_t));
-+                if (mbstowcs(wcs_wrapper_script_name, wrapper_script_name, length) >= 0)
-+                    v = PyUnicode_FromWideChar(wcs_wrapper_script_name, -1);
-+                free(wcs_wrapper_script_name);
-+            }
-+            if (v == NULL)
-+                v = PyUnicode_FromWideChar(argv[i], -1);
+-            PyObject *v = PyString_FromString(argv[i]);
++            PyObject *v;
++            if (i == 0 && wrapper_script_name != NULL && *wrapper_script_name != '\0')
++                v = PyString_FromString(wrapper_script_name);
++            else
++                v = PyString_FromString(argv[i]);
  #endif
              if (v == NULL) {
                  Py_DECREF(av);
