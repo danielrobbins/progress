@@ -1,0 +1,32 @@
+https://dndg.it/cgi-bin/gitweb.cgi?p=public/psycopg2.git;a=commitdiff;h=de6f2ac387231fcd57c05031c82471ea57255e2b
+
+--- psycopg/pqpath.c
++++ psycopg/pqpath.c
+@@ -344,11 +344,13 @@
+     }
+     if (*pgres == NULL) {
+         Dprintf("pq_execute_command_locked: PQexec returned NULL");
++        PyEval_RestoreThread(*tstate);
+         if (!PyErr_Occurred()) {
+             const char *msg;
+             msg = PQerrorMessage(conn->pgconn);
+             if (msg && *msg) { *error = strdup(msg); }
+         }
++        *tstate = PyEval_SaveThread();
+         goto cleanup;
+     }
+ 
+@@ -635,11 +637,13 @@
+ 
+     if (*pgres == NULL) {
+         Dprintf("pq_get_guc_locked: PQexec returned NULL");
++        PyEval_RestoreThread(*tstate);
+         if (!PyErr_Occurred()) {
+             const char *msg;
+             msg = PQerrorMessage(conn->pgconn);
+             if (msg && *msg) { *error = strdup(msg); }
+         }
++        *tstate = PyEval_SaveThread();
+         goto cleanup;
+     }
+     if (PQresultStatus(*pgres) != PGRES_TUPLES_OK) {
