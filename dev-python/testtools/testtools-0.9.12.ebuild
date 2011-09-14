@@ -4,8 +4,9 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
+PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
 
-inherit distutils eutils versionator
+inherit distutils versionator
 
 SERIES="$(get_version_component_range 1-2)"
 
@@ -21,11 +22,6 @@ IUSE=""
 DEPEND=""
 RDEPEND=""
 
-src_prepare() {
-	distutils_src_prepare
-	epatch "${FILESDIR}/${P}-python-3.patch"
-}
-
 src_test() {
 	testing() {
 		PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" -m testtools.run testtools.tests.test_suite
@@ -35,6 +31,15 @@ src_test() {
 
 src_install() {
 	distutils_src_install
+
+	delete_version-specific_modules() {
+		if [[ "$(python_get_version -l --major)" == "3" ]]; then
+			rm -f "${ED}$(python_get_sitedir)/testtools/_compat2x.py"
+		else
+			rm -f "${ED}$(python_get_sitedir)/testtools/_compat3x.py"
+		fi
+	}
+	python_execute_function -q delete_version-specific_modules
 
 	delete_tests() {
 		# dev-python/subunit imports some objects from testtools.tests.helpers.
