@@ -9,11 +9,9 @@ DISTUTILS_SRC_TEST="setup.py"
 
 inherit distutils
 
-MY_P="${PN}-${PV/_beta/b}"
-
 DESCRIPTION="The Pyramid web application development framework, a Pylons project"
 HOMEPAGE="http://pypi.python.org/pypi/pyramid"
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${MY_P}.tar.gz"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD repoze ZPL doc? ( CCPL-Attribution-ShareAlike-NonCommercial-3.0 )"
 SLOT="0"
@@ -44,8 +42,6 @@ DEPEND="${RDEPEND}
 		$(python_abi_depend dev-python/virtualenv)
 		$(python_abi_depend dev-python/webtest)
 	)"
-
-S="${WORKDIR}/${MY_P}"
 
 DOCS="BFG_HISTORY.txt CHANGES.txt HISTORY.txt README.rst TODO.txt"
 
