@@ -36,6 +36,7 @@ PYTHON_MODULES="${PN}2"
 src_prepare() {
 	epatch "${FILESDIR}/${PN}-2.0.9-round-solaris.patch"
 	epatch "${FILESDIR}/${P}-setup.py.patch"
+	epatch "${FILESDIR}/${P}-begin-segfault.patch"
 
 	python_convert_shebangs 2 doc/src/tools/stitch_text.py
 
