@@ -5,9 +5,10 @@
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.*"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
-inherit distutils
+inherit distutils eutils
 
 MY_PN="Werkzeug"
 MY_P="${MY_PN}-${PV}"
@@ -28,6 +29,11 @@ DEPEND="$(python_abi_depend dev-python/setuptools)
 S="${WORKDIR}/${MY_P}"
 
 DOCS="CHANGES"
+
+src_prepare() {
+	distutils_src_prepare
+	epatch "${FILESDIR}/${P}-py24.patch"
+}
 
 src_test() {
 	distutils_src_test -e '^test_app$' tests tests/contrib

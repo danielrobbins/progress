@@ -1,0 +1,20 @@
+commit 5a3888cea7a40c7260e1994530a46977810459e7
+Author: Mike Gilbert <floppymaster@gmail.com>
+Date:   Tue Sep 13 19:24:09 2011 -0400
+
+    werkzeug/contrib/cache.py: Fix for python2.4
+
+--- werkzeug/contrib/cache.py
++++ werkzeug/contrib/cache.py
+@@ -79,8 +79,9 @@
+         ...    assert k*k == v
+ 
+     """
+-    return mappingorseq.iteritems() if hasattr(mappingorseq, 'iteritems') \
+-        else mappingorseq
++    if hasattr(mappingorseq, 'iteritems'):
++        return mappingorseq.iteritems()
++    return mappingorseq
+ 
+ class BaseCache(object):
+     """Baseclass for the cache systems.  All the cache systems implement this
