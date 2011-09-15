@@ -13,12 +13,20 @@ SRC_URI="http://oligarchy.co.uk/xapian/${PV}/${MY_P}.tar.gz"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64 ~ppc ~x86"
-IUSE=""
+IUSE="static-libs"
 
 DEPEND=""
 RDEPEND=""
 
 S="${WORKDIR}/${MY_P}"
+
+src_configure() {
+	econf $(use_enable static-libs static)
+}
+
+src_test() {
+	emake VALGRIND="" check
+}
 
 src_install () {
 	emake DESTDIR="${D}" install
