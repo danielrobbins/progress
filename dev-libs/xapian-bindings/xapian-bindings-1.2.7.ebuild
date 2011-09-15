@@ -9,7 +9,11 @@ PYTHON_MULTIPLE_ABIS="1"
 # http://trac.xapian.org/ticket/346
 PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 
-inherit java-pkg-opt-2 mono python
+PHP_EXT_NAME="xapian"
+PHP_EXT_INI="yes"
+PHP_EXT_OPTIONAL_USE="php"
+
+inherit java-pkg-opt-2 mono php-ext-source-r2 python
 
 DESCRIPTION="SWIG and JNI bindings for Xapian"
 HOMEPAGE="http://www.xapian.org/"
@@ -39,7 +43,6 @@ pkg_setup() {
 }
 
 src_prepare() {
-	sed -e 's:\(blib/arch/auto/SymbolTest\)/.libs:\1:' -i perl/t/symbol-test.t || die "sed failed"
 	sed \
 		-e 's:\(^pkgpylib_DATA = xapian/__init__.py\).*:\1:' \
 		-e 's|\(^xapian/__init__.py: modern/xapian.py\)|\1 xapian/_xapian$(PYTHON_SO)|' \
@@ -115,6 +118,10 @@ src_install () {
 		rm "${ED}/${S}/java/built/libxapian_jni.so"
 		rmdir -p "${ED}/${S}/java/built"
 		rmdir -p "${ED}/${S}/java/native"
+	fi
+
+	if use php; then
+		php-ext-source-r2_createinifiles
 	fi
 
 	if use python; then
