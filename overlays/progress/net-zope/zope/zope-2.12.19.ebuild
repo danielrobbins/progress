@@ -89,6 +89,11 @@ pkg_setup() {
 	ZOPE_INSTALLATION_DIR="usr/$(get_libdir)/${PN}-${SLOT}"
 }
 
+src_prepare() {
+	distutils_src_prepare
+	sed -e "s/zope.location.interfaces.ITraverser/zope.traversing.interfaces.ITraverser/" -i src/Products/Five/traversing.zcml || die "sed failed"
+}
+
 src_compile() {
 	distutils_src_compile
 
