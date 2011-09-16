@@ -65,8 +65,8 @@ src_test() {
 
 	# Define tests which are known to fail below.
 	local skip_tests="("
-	# https://bugs.launchpad.net/bzr/+bug/392127
-#	skip_tests+="test_http.*|"
+	# https://bugs.launchpad.net/bzr/+bug/850676
+	skip_tests+="per_transport.TransportTests.test_unicode_paths.*|"
 	# libcurl cannot verify SSL certs
 	# https://bugs.launchpad.net/bzr/+bug/82086
 	skip_tests+="per_transport.TransportTests.test_clone|per_transport.TransportTests.test_connection_sharing|per_transport.TransportTests.test_copy_to|per_transport.TransportTests.test_get|per_transport.TransportTests.test_get_bytes|per_transport.TransportTests.test_get_bytes_unknown_file|per_transport.TransportTests.test_get_directory_read_gives_ReadError|per_transport.TransportTests.test_get_unknown_file|per_transport.TransportTests.test_has|per_transport.TransportTests.test_has_root_works|per_transport.TransportTests.test_readv|per_transport.TransportTests.test_readv_out_of_order|per_transport.TransportTests.test_readv_short_read|per_transport.TransportTests.test_readv_with_adjust_for_latency|per_transport.TransportTests.test_readv_with_adjust_for_latency_with_big_file|per_transport.TransportTests.test_reuse_connection_for_various_paths|test_read_bundle.TestReadMergeableBundleFromURL.test_read_mergeable_respects_possible_transports|test_read_bundle.TestReadMergeableBundleFromURL.test_read_mergeable_from_url|test_read_bundle.TestReadMergeableBundleFromURL.test_read_fail|test_http.TestActivity.test_readv|test_http.TestActivity.test_post|test_http.TestActivity.test_has|test_http.TestActivity.test_get"
