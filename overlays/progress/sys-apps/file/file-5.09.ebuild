@@ -30,7 +30,6 @@ pkg_setup() {
 
 src_prepare() {
 	elibtoolize
-	epunt_cxx
 
 	# dont let python README kill main README #60043
 	mv python/README{,.python}
