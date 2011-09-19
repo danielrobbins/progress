@@ -61,7 +61,7 @@ RDEPEND="$(python_abi_depend net-zope/namespaces-zope[Products,Shared,Shared.DC]
 	$(python_abi_depend net-zope/zope-interface)
 	$(python_abi_depend net-zope/zope-lifecycleevent)
 	$(python_abi_depend net-zope/zope-location)
-	$(python_abi_depend "<net-zope/zope-pagetemplate-3.6.0")
+	$(python_abi_depend net-zope/zope-pagetemplate)
 	$(python_abi_depend net-zope/zope-processlifetime)
 	$(python_abi_depend net-zope/zope-proxy)
 	$(python_abi_depend net-zope/zope-ptresource)
