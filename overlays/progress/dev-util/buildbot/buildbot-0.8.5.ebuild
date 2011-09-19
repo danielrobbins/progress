@@ -20,13 +20,18 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${MY_P}.tar.gz"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86"
-IUSE="doc examples irc mail manhole test"
+IUSE="examples irc mail manhole test"
+# https://github.com/buildbot/buildbot/commit/f77c47aa5fb9ba56dbe7d16c450990d186e2ff6d
+# https://github.com/buildbot/buildbot/commit/c65e84b007d334de5690738fdab7dd8cae479cce
+# IUSE="doc examples irc mail manhole test"
 
 RDEPEND="$(python_abi_depend ">=dev-python/jinja-2.1")
 	$(python_abi_depend dev-python/sqlalchemy)
 	|| (
-		$(python_abi_depend "=dev-python/sqlalchemy-migrate-0.7*")
-		$(python_abi_depend "=dev-python/sqlalchemy-migrate-0.6*")
+		$(python_abi_depend "=dev-python/sqlalchemy-migrate-0.7.1*")
+		$(python_abi_depend "=dev-python/sqlalchemy-migrate-0.7.0*")
+		$(python_abi_depend "=dev-python/sqlalchemy-migrate-0.6.1*")
+		$(python_abi_depend "=dev-python/sqlalchemy-migrate-0.6.0*")
 	)
 	$(python_abi_depend ">=dev-python/twisted-8.0.0")
 	$(python_abi_depend dev-python/twisted-web)
@@ -37,13 +42,13 @@ RDEPEND="$(python_abi_depend ">=dev-python/jinja-2.1")
 	manhole? ( $(python_abi_depend -e "*-pypy-*" dev-python/twisted-conch) )"
 DEPEND="${DEPEND}
 	$(python_abi_depend dev-python/setuptools)
-	doc? ( sys-apps/texinfo )
 	test? (
 		$(python_abi_depend dev-python/mock)
 		$(python_abi_depend dev-python/twisted-mail)
 		$(python_abi_depend dev-python/twisted-web)
 		$(python_abi_depend dev-python/twisted-words)
 	)"
+#	doc? ( dev-python/sphinx )
 
 S="${WORKDIR}/${MY_P}"
 
@@ -52,22 +57,15 @@ pkg_setup() {
 	enewuser buildbot
 }
 
-src_prepare() {
-	distutils_src_prepare
-
-	# https://github.com/buildbot/buildbot/commit/a3abed70546b3742964994517bb27556e06f6e20
-	sed -e "s/sqlalchemy-migrate == 0.6/sqlalchemy-migrate ==0.6, ==0.7/" -i setup.py || die "sed failed"
-}
-
 src_compile() {
 	distutils_src_compile
 
-	if use doc; then
-		einfo "Generation of documentation"
-		pushd docs > /dev/null
-		emake buildbot.html buildbot.info
-		popd > /dev/null
-	fi
+#	if use doc; then
+#		einfo "Generation of documentation"
+#		pushd docs > /dev/null
+#		emake html
+#		popd > /dev/null
+#	fi
 }
 
 src_install() {
@@ -80,10 +78,12 @@ src_install() {
 
 	doman docs/buildbot.1
 
-	if use doc; then
-		dohtml -r docs/buildbot.html docs/images
-		doinfo docs/buildbot.info
-	fi
+#	if use doc; then
+#		pushd docs/_build/html > /dev/null
+#		insinto /usr/share/doc/${PF}/html
+#		doins -r [a-z]* _images _static
+#		popd > /dev/null
+#	fi
 
 	if use examples; then
 		insinto /usr/share/doc/${PF}
