@@ -6,7 +6,7 @@ EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.4 3.* *-jython"
 
-inherit distutils
+inherit distutils eutils
 
 MY_PN="${PN/-/.}"
 MY_P="${MY_PN}-${PV}"
@@ -37,3 +37,8 @@ S="${WORKDIR}/${MY_P}"
 
 DOCS="CHANGES.txt README.txt"
 PYTHON_MODULES="${PN/-//}"
+
+src_prepare() {
+	distutils_src_prepare
+	epatch "${FILESDIR}/${P}-_v_macros.patch"
+}
