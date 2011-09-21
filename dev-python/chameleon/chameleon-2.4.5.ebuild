@@ -14,7 +14,7 @@ MY_PN="Chameleon"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Fast HTML/XML Template Compiler."
-HOMEPAGE="http://chameleon.repoze.org/ http://pypi.python.org/pypi/Chameleon"
+HOMEPAGE="http://chameleon.repoze.org/ http://pypi.python.org/pypi/Chameleon https://github.com/malthe/chameleon"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="repoze"
@@ -29,6 +29,13 @@ DEPEND="${RDEPEND}
 	test? ( $(python_abi_depend -i "2.5 2.6" dev-python/unittest2) )"
 
 S="${WORKDIR}/${MY_P}"
+
+src_prepare() {
+	distutils_src_prepare
+
+	# https://github.com/malthe/chameleon/issues/63
+	sed -e "s/test_unicode_decode_error/_&/" -i src/chameleon/tests/test_templates.py
+}
 
 src_compile() {
 	distutils_src_compile
