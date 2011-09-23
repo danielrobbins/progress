@@ -27,8 +27,3 @@ RDEPEND=""
 S="${WORKDIR}/${MY_P}"
 
 DOCS="ChangeLog README"
-
-src_prepare() {
-	distutils_src_prepare
-	sed -e 's/author = "Tomaž Šolc"/author = "Tomaz Solc"/' -i setup.py
-}
