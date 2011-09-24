@@ -14,7 +14,7 @@ MY_PN="WebTest"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Helper to test WSGI applications"
-HOMEPAGE="http://pythonpaste.org/webtest/ http://pypi.python.org/pypi/WebTest"
+HOMEPAGE="http://webtest.pythonpaste.org/ http://pypi.python.org/pypi/WebTest"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="MIT"
@@ -32,7 +32,7 @@ S="${WORKDIR}/${MY_P}"
 
 src_prepare() {
 	distutils_src_prepare
-	epatch "${FILESDIR}/${P}-doctest-ellipsis.patch"
+	epatch "${FILESDIR}/${PN}-1.3-doctest-ellipsis.patch"
 }
 
 src_compile() {
