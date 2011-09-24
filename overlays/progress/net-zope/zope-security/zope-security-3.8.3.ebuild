@@ -13,7 +13,7 @@ MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Zope Security Framework"
 HOMEPAGE="http://pypi.python.org/pypi/zope.security"
-SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.zip"
+SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="ZPL"
 SLOT="0"
@@ -32,7 +32,6 @@ RDEPEND="$(python_abi_depend net-zope/namespaces-zope[zope])
 	$(python_abi_depend net-zope/zope-proxy)
 	$(python_abi_depend net-zope/zope-schema)"
 DEPEND="${RDEPEND}
-	app-arch/unzip
 	$(python_abi_depend dev-python/setuptools)"
 
 S="${WORKDIR}/${MY_P}"
