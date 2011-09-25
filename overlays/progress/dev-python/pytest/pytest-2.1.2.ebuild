@@ -4,7 +4,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-# https://bitbucket.org/hpk42/pytest/issue/65
+# https://bitbucket.org/hpk42/pytest/issue/75
 PYTHON_TESTS_RESTRICTED_ABIS="2.5-jython"
 
 inherit distutils
@@ -28,6 +28,9 @@ PYTHON_MODULES="pytest.py _pytest"
 
 src_prepare() {
 	distutils_src_prepare
+
+	# https://bitbucket.org/hpk42/pytest/issue/74
+	sed -e "s/test_cmdline_python_package/_&/" -i testing/acceptance_test.py
 
 	# Disable versioning of py.test script to avoid collision with versioning performed by python_merge_intermediate_installation_images().
 	sed -e "s/return points/return {'py.test': target}/" -i setup.py || die "sed failed"
