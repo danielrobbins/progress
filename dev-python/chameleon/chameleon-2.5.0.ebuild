@@ -5,7 +5,6 @@
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.4 *-jython"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.*"
 DISTUTILS_SRC_TEST="setup.py"
 
 inherit distutils
@@ -29,13 +28,6 @@ DEPEND="${RDEPEND}
 	test? ( $(python_abi_depend -i "2.5 2.6" dev-python/unittest2) )"
 
 S="${WORKDIR}/${MY_P}"
-
-src_prepare() {
-	distutils_src_prepare
-
-	# https://github.com/malthe/chameleon/issues/63
-	sed -e "s/test_unicode_decode_error/_&/" -i src/chameleon/tests/test_templates.py
-}
 
 src_compile() {
 	distutils_src_compile
