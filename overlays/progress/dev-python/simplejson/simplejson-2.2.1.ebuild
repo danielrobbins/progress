@@ -26,7 +26,7 @@ PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 src_test() {
 	testing() {
 		if [[ "$(python_get_implementation)" != "Jython" ]]; then
-			ln -fs ../$(ls -d build-${PYTHON_ABI}/lib*)/simplejson/_speedups.so simplejson/_speedups.so || return 1
+			ln -fs ../$(ls -d build-${PYTHON_ABI}/lib*)/simplejson/_speedups$(python_get_extension_module_suffix) simplejson/_speedups$(python_get_extension_module_suffix) || return 1
 		fi
 		PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" simplejson/tests/__init__.py
 	}

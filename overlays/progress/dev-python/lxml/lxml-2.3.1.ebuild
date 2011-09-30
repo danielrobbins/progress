@@ -39,7 +39,7 @@ src_test() {
 	testing() {
 		local module
 		for module in lxml/etree lxml/objectify; do
-			ln -fs "../../$(ls -d build-${PYTHON_ABI}/lib.*)/${module}.so" "src/${module}.so" || die "Symlinking ${module}.so failed with $(python_get_implementation_and_version)"
+			ln -fs "../../$(ls -d build-${PYTHON_ABI}/lib.*)/${module}$(python_get_extension_module_suffix)" "src/${module}$(python_get_extension_module_suffix)" || die "Symlinking ${module}$(python_get_extension_module_suffix) failed with $(python_get_implementation_and_version)"
 		done
 
 		local exit_status="0" test
