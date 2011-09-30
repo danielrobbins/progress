@@ -35,7 +35,7 @@ PYTHON_MODULES="ComputedAttribute ExtensionClass MethodObject"
 distutils_src_test_pre_hook() {
 	local module
 	for module in ComputedAttribute ExtensionClass MethodObject; do
-		ln -fs "../../$(ls -d build-${PYTHON_ABI}/lib.*)/${module}/_${module}.so" "src/${module}/_${module}.so" || die "Symlinking ${module}/_${module}.so failed with $(python_get_implementation_and_version)"
+		ln -fs "../../$(ls -d build-${PYTHON_ABI}/lib.*)/${module}/_${module}$(python_get_extension_module_suffix)" "src/${module}/_${module}$(python_get_extension_module_suffix)" || die "Symlinking ${module}/_${module}$(python_get_extension_module_suffix) failed with $(python_get_implementation_and_version)"
 	done
 }
 

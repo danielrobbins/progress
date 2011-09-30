@@ -60,7 +60,7 @@ src_prepare() {
 distutils_src_test_pre_hook() {
 	local module
 	for module in AccessControl; do
-		ln -fs "../../$(ls -d build-${PYTHON_ABI}/lib.*)/${module}/c${module}.so" "src/${module}/c${module}.so" || die "Symlinking ${module}/c${module}.so failed with $(python_get_implementation_and_version)"
+		ln -fs "../../$(ls -d build-${PYTHON_ABI}/lib.*)/${module}/c${module}$(python_get_extension_module_suffix)" "src/${module}/c${module}$(python_get_extension_module_suffix)" || die "Symlinking ${module}/c${module}$(python_get_extension_module_suffix) failed with $(python_get_implementation_and_version)"
 	done
 }
 

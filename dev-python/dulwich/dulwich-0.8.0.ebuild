@@ -36,7 +36,7 @@ src_prepare() {
 distutils_src_test_pre_hook() {
 	local module
 	for module in _diff_tree _objects _pack; do
-		ln -fs "../$(ls -d build-${PYTHON_ABI}/lib.*)/dulwich/${module}.so" "dulwich/${module}.so" || die "Symlinking dulwich/${module}.so failed with $(python_get_implementation_and_version)"
+		ln -fs "../$(ls -d build-${PYTHON_ABI}/lib.*)/dulwich/${module}$(python_get_extension_module_suffix)" "dulwich/${module}$(python_get_extension_module_suffix)" || die "Symlinking dulwich/${module}$(python_get_extension_module_suffix) failed with $(python_get_implementation_and_version)"
 	done
 }
 

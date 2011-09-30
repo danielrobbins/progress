@@ -28,7 +28,7 @@ DOCS="NEWS AUTHORS"
 distutils_src_test_pre_hook() {
 	local module
 	for module in _ra client repos wc; do
-		ln -fs "../$(ls -d build-${PYTHON_ABI}/lib.*)/subvertpy/${module}.so" "subvertpy/${module}.so" || die "Symlinking subvertpy/${module}.so failed with $(python_get_implementation_and_version)"
+		ln -fs "../$(ls -d build-${PYTHON_ABI}/lib.*)/subvertpy/${module}$(python_get_extension_module_suffix)" "subvertpy/${module}$(python_get_extension_module_suffix)" || die "Symlinking subvertpy/${module}$(python_get_extension_module_suffix) failed with $(python_get_implementation_and_version)"
 	done
 }
 
