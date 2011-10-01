@@ -3,10 +3,10 @@
 # $Header: $
 
 EAPI="4-python"
-PYTHON_BDEPEND="test? ( <<[{*-cpython}sqlite]>> )"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.4 3.*"
-PYTHON_TESTS_RESTRICTED_ABIS="*-jython *-pypy-*"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
+# Usage of flaskext namespace is deprecated since Flask 0.8.
 PYTHON_NAMESPACES="flaskext"
 
 inherit distutils python-namespaces
@@ -21,7 +21,7 @@ SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="doc examples test"
+IUSE="doc examples"
 
 RDEPEND="$(python_abi_depend dev-python/blinker)
 	$(python_abi_depend ">=dev-python/jinja-2.4")
@@ -31,6 +31,13 @@ DEPEND="${RDEPEND}
 	doc? ( >=dev-python/sphinx-0.6 )"
 
 S="${WORKDIR}/${MY_P}"
+
+src_prepare() {
+	distutils_src_prepare
+
+	# https://github.com/mitsuhiko/flask/commit/0dd9dc37b6618b8091c2a0f849f5f3143dc6eafc
+	sed -e "s/\(from .sessions import\).*/\1 SecureCookieSession, NullSession/" -i flask/session.py
+}
 
 src_compile() {
 	distutils_src_compile
@@ -45,7 +52,7 @@ src_compile() {
 
 src_test() {
 	testing() {
-		PYTHONPATH="." "$(PYTHON)" tests/flask_tests.py
+		PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" run-tests.py
 	}
 	python_execute_function testing
 }
@@ -53,6 +60,11 @@ src_test() {
 src_install() {
 	distutils_src_install
 	python-namespaces_src_install
+
+	delete_tests() {
+		rm -fr "${ED}$(python_get_sitedir)/flask/testsuite"
+	}
+	python_execute_function -q delete_tests
 
 	if use doc; then
 		pushd docs/_build/html > /dev/null
