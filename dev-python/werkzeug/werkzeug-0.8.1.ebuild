@@ -38,3 +38,12 @@ src_prepare() {
 	# https://github.com/mitsuhiko/werkzeug/issues/120
 	sed -e "s/import redis/redis = None/" -i werkzeug/testsuite/contrib/cache.py
 }
+
+src_install() {
+	distutils_src_install
+
+	delete_tests() {
+		rm -fr "${ED}$(python_get_sitedir)/werkzeug/testsuite"
+	}
+	python_execute_function -q delete_tests
+}
