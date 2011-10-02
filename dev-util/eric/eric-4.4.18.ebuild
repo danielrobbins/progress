@@ -4,7 +4,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.4 3.* *-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="2.4 2.5 3.* *-jython *-pypy-*"
 
 inherit eutils python
 
@@ -22,9 +22,9 @@ SLOT="4"
 KEYWORDS="~amd64 ~ppc ~ppc64 ~x86"
 IUSE="kde spell"
 
-DEPEND="$(python_abi_depend ">=dev-python/PyQt4-4.3[assistant,svg,webkit,X]")
+DEPEND="$(python_abi_depend ">=dev-python/PyQt4-4.6[assistant,svg,webkit,X]")
 	$(python_abi_depend ">=dev-python/qscintilla-python-2.2")
-	kde? ( kde-base/pykde4 )"
+	kde? ( $(python_abi_depend kde-base/pykde4) )"
 RDEPEND="${DEPEND}
 	$(python_abi_depend ">=dev-python/chardet-2.0")
 	$(python_abi_depend dev-python/coverage)
