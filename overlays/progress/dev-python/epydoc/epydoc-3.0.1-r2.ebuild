@@ -20,8 +20,8 @@ IUSE="X doc latex"
 
 DEPEND="$(python_abi_depend dev-python/docutils)
 	latex? (
+		dev-texlive/texlive-latexextra
 		virtual/latex-base
-		|| ( dev-texlive/texlive-latexextra app-text/ptex )
 	)"
 RDEPEND="${DEPEND}"
 
