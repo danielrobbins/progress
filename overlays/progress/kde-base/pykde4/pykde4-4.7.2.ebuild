@@ -16,9 +16,7 @@ DESCRIPTION="Python bindings for KDE4"
 KEYWORDS="~amd64 ~arm ~ppc ~ppc64 ~x86 ~amd64-linux ~x86-linux"
 IUSE="debug doc examples semantic-desktop"
 
-# blocker added due to compatibility issues and error during compile time
 RDEPEND="
-	!dev-python/pykde
 	$(python_abi_depend ">=dev-python/sip-4.12")
 	$(add_kdebase_dep kdelibs 'opengl,semantic-desktop=')
 	semantic-desktop? ( $(add_kdebase_dep kdepimlibs 'semantic-desktop') )
