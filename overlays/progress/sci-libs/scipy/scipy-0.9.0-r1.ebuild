@@ -25,7 +25,7 @@ IUSE="doc umfpack"
 KEYWORDS="amd64 ~ppc ~ppc64 x86 ~amd64-linux ~x86-linux ~ppc-macos ~x86-macos"
 
 CDEPEND="
-	$(python_abi_depend ">=dev-python/numpy-1.5")
+	$(python_abi_depend ">=dev-python/numpy-1.5[lapack]")
 	media-libs/qhull
 	sci-libs/arpack
 	sci-libs/superlu
