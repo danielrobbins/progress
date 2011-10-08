@@ -70,6 +70,7 @@ src_unpack() {
 
 src_prepare() {
 	epatch "${FILESDIR}/${P}-import_umath.patch"
+	epatch "${FILESDIR}/${P}-atlas.patch"
 
 	# Gentoo patch for ATLAS library names
 	sed -i \
@@ -85,26 +86,17 @@ src_prepare() {
 		sed -i -e '/NO_ATLAS_INFO/,+1d' numpy/core/setup.py || die
 		local libdir="${EPREFIX}"/usr/$(get_libdir)
 		cat >> site.cfg <<-EOF
-			[atlas]
-			include_dirs = $(pkg-config --cflags-only-I \
-				cblas | sed -e 's/^-I//' -e 's/ -I/:/g')
-			library_dirs = $(pkg-config --libs-only-L \
-				cblas blas lapack | sed -e 's/^-L//' -e 's/ -L/:/g' -e 's/ //g'):${libdir}
-			atlas_libs = $(pkg-config --libs-only-l \
-				cblas blas | sed -e 's/^-l//' -e 's/ -l/, /g' -e 's/,.pthread//g')
-			lapack_libs = $(pkg-config --libs-only-l \
-				lapack | sed -e 's/^-l//' -e 's/ -l/, /g' -e 's/,.pthread//g')
-			[blas_opt]
+			[blas]
 			include_dirs = $(pkg-config --cflags-only-I \
 				cblas | sed -e 's/^-I//' -e 's/ -I/:/g')
 			library_dirs = $(pkg-config --libs-only-L \
 				cblas blas | sed -e 's/^-L//' -e 's/ -L/:/g' -e 's/ //g'):${libdir}
-			libraries = $(pkg-config --libs-only-l \
+			blas_libs = $(pkg-config --libs-only-l \
 				cblas blas | sed -e 's/^-l//' -e 's/ -l/, /g' -e 's/,.pthread//g')
-			[lapack_opt]
+			[lapack]
 			library_dirs = $(pkg-config --libs-only-L \
 				lapack | sed -e 's/^-L//' -e 's/ -L/:/g' -e 's/ //g'):${libdir}
-			libraries = $(pkg-config --libs-only-l \
+			lapack_libs = $(pkg-config --libs-only-l \
 				lapack | sed -e 's/^-l//' -e 's/ -l/, /g' -e 's/,.pthread//g')
 		EOF
 	else
