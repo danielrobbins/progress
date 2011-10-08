@@ -22,10 +22,10 @@ SRC_URI="mirror://sourceforge/${PN}/${P}.tar.gz
 LICENSE="BSD"
 SLOT="0"
 IUSE="doc umfpack"
-KEYWORDS="amd64 ~ppc ~ppc64 x86 ~amd64-linux ~x86-linux ~ppc-macos ~x86-macos"
+KEYWORDS="~amd64 ~ppc ~ppc64 ~x86 ~amd64-linux ~x86-linux ~ppc-macos ~x86-macos"
 
 CDEPEND="
-	$(python_abi_depend ">=dev-python/numpy-1.5[lapack]")
+	$(python_abi_depend ">=dev-python/numpy-1.5")
 	media-libs/qhull
 	sci-libs/arpack
 	sci-libs/superlu
@@ -80,30 +80,18 @@ src_prepare() {
 		"${FILESDIR}"/${P}-qhull.patch
 	rm -rf ./scipy/sparse/linalg/dsolve/SuperLU ./scipy/spatial/qhull
 	local libdir="${EPREFIX}"/usr/$(get_libdir)
-	cat > site.cfg <<-EOF
-		[atlas]
+	cat >> site.cfg <<-EOF
+		[blas]
 		include_dirs = $(pkg-config --cflags-only-I \
 			cblas | sed -e 's/^-I//' -e 's/ -I/:/g')
 		library_dirs = $(pkg-config --libs-only-L \
-			cblas blas lapack| sed -e \
-			's/^-L//' -e 's/ -L/:/g' -e 's/ //g'):${libdir}
-		atlas_libs = $(pkg-config --libs-only-l \
+			cblas blas | sed -e 's/^-L//' -e 's/ -L/:/g' -e 's/ //g'):${libdir}
+		blas_libs = $(pkg-config --libs-only-l \
 			cblas blas | sed -e 's/^-l//' -e 's/ -l/, /g' -e 's/,.pthread//g')
+		[lapack]
+		library_dirs = $(pkg-config --libs-only-L \
+			lapack | sed -e 's/^-L//' -e 's/ -L/:/g' -e 's/ //g'):${libdir}
 		lapack_libs = $(pkg-config --libs-only-l \
-			lapack | sed -e 's/^-l//' -e 's/ -l/, /g' -e 's/,.pthread//g')
-		[blas_opt]
-		include_dirs = $(pkg-config --cflags-only-I \
-			cblas | sed -e 's/^-I//' -e 's/ -I/:/g')
-		library_dirs = $(pkg-config --libs-only-L \
-			cblas blas | sed -e 's/^-L//' -e 's/ -L/:/g' \
-			-e 's/ //g'):${libdir}
-		libraries = $(pkg-config --libs-only-l \
-			cblas blas | sed -e 's/^-l//' -e 's/ -l/, /g' -e 's/,.pthread//g')
-		[lapack_opt]
-		library_dirs = $(pkg-config --libs-only-L \
-			lapack | sed -e 's/^-L//' -e 's/ -L/:/g' \
-			-e 's/ //g'):${libdir}
-		libraries = $(pkg-config --libs-only-l \
 			lapack | sed -e 's/^-l//' -e 's/ -l/, /g' -e 's/,.pthread//g')
 	EOF
 }
