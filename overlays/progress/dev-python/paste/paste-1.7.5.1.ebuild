@@ -4,7 +4,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.*"
+PYTHON_RESTRICTED_ABIS="2.4 3.*"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
@@ -24,7 +24,7 @@ IUSE="doc flup openid"
 RDEPEND="$(python_abi_depend dev-python/namespaces-paste)
 	$(python_abi_depend dev-python/setuptools)
 	flup? ( $(python_abi_depend dev-python/flup) )
-	openid? ( $(python_abi_depend -e "2.4" dev-python/python-openid) )"
+	openid? ( $(python_abi_depend dev-python/python-openid) )"
 DEPEND="${RDEPEND}
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
 
