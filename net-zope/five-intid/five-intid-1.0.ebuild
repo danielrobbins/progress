@@ -25,7 +25,6 @@ RDEPEND="$(python_abi_depend net-zope/namespaces-zope[five])
 	$(python_abi_depend net-zope/five-localsitemanager)
 	$(python_abi_depend net-zope/zexceptions)
 	$(python_abi_depend net-zope/zodb)
-	$(python_abi_depend net-zope/zope-app-intid)
 	$(python_abi_depend net-zope/zope-component)
 	$(python_abi_depend net-zope/zope-event)
 	$(python_abi_depend net-zope/zope-interface)
@@ -40,5 +39,5 @@ DEPEND="${RDEPEND}
 
 S="${WORKDIR}/${MY_P}"
 
-DOCS="docs/HISTORY.txt README.txt"
+DOCS="CHANGES.txt README.txt"
 PYTHON_MODULES="${PN/-//}"
