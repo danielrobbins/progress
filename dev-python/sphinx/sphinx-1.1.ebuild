@@ -4,7 +4,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.*"
+PYTHON_RESTRICTED_ABIS="2.4"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
@@ -22,9 +22,9 @@ SLOT="0"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~x86-fbsd ~amd64-linux ~ia64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos"
 IUSE="doc latex"
 
-DEPEND="$(python_abi_depend ">=dev-python/docutils-0.5")
-	$(python_abi_depend ">=dev-python/jinja-2.2")
-	$(python_abi_depend ">=dev-python/pygments-0.8")
+DEPEND="$(python_abi_depend ">=dev-python/docutils-0.7")
+	$(python_abi_depend ">=dev-python/jinja-2.3")
+	$(python_abi_depend ">=dev-python/pygments-1.2")
 	$(python_abi_depend dev-python/setuptools)
 	latex? ( dev-texlive/texlive-latexextra )"
 RDEPEND="${DEPEND}"
@@ -33,19 +33,42 @@ S="${WORKDIR}/${MY_P}"
 
 DOCS="CHANGES"
 
+src_prepare() {
+	distutils_src_prepare
+
+	prepare_tests() {
+		cp -r tests tests-${PYTHON_ABI}
+
+		if [[ "$(python_get_version -l --major)" != "2" ]]; then
+			2to3-${PYTHON_ABI} -nw --no-diffs tests-${PYTHON_ABI}
+		fi
+	}
+	python_execute_function prepare_tests
+}
+
 src_compile() {
 	distutils_src_compile
 
 	if use doc; then
-		pushd doc > /dev/null
 		einfo "Generation of documentation"
-		PYTHONPATH=".." emake SPHINXBUILD="$(PYTHON -f) ../sphinx-build.py" html
+		sed -e "/import sys/a sys.path.insert(0, '${S}/build-$(PYTHON -f --ABI)/lib')" -i sphinx-build.py || die "sed failed"
+		pushd doc > /dev/null
+		emake SPHINXBUILD="$(PYTHON -f) ../sphinx-build.py" html
 		popd > /dev/null
 	fi
 }
 
+src_test() {
+	python_execute_nosetests -e -P 'build-${PYTHON_ABI}/lib' -- -w 'tests-${PYTHON_ABI}'
+}
+
 src_install() {
 	distutils_src_install
+
+	delete_grammar_pickle() {
+		rm -f "${ED}$(python_get_sitedir)/sphinx/pycode/Grammar$(python_get_version).pickle"
+	}
+	python_execute_function -q delete_grammar_pickle
 
 	if use doc; then
 		dohtml -A txt -r doc/_build/html/*
@@ -56,20 +79,20 @@ pkg_postinst() {
 	distutils_pkg_postinst
 
 	# Generate the Grammar pickle to avoid sandbox violations.
-	generation_of_grammar_pickle() {
+	generate_grammar_pickle() {
 		"$(PYTHON)" -c "import sys; sys.path.insert(0, '${EROOT}$(python_get_sitedir -b)'); from sphinx.pycode.pgen2.driver import load_grammar; load_grammar('${EROOT}$(python_get_sitedir -b)/sphinx/pycode/Grammar.txt')"
 	}
 	python_execute_function \
 		--action-message 'Generation of Grammar pickle with $(python_get_implementation_and_version)...' \
 		--failure-message 'Generation of Grammar pickle with $(python_get_implementation_and_version) failed' \
-		generation_of_grammar_pickle
+		generate_grammar_pickle
 }
 
 pkg_postrm() {
 	distutils_pkg_postrm
 
-	deletion_of_grammar_pickle() {
-		rm -f "${EROOT}$(python_get_sitedir -b)/sphinx/pycode"/Grammar*.pickle || return 1
+	delete_grammar_pickle() {
+		rm -f "${EROOT}$(python_get_sitedir -b)/sphinx/pycode/Grammar$(python_get_version).pickle" || return 1
 
 		# Delete empty parent directories.
 		local dir="${EROOT}$(python_get_sitedir -b)/sphinx/pycode"
@@ -81,5 +104,5 @@ pkg_postrm() {
 	python_execute_function \
 		--action-message 'Deletion of Grammar pickle with $(python_get_implementation_and_version)...' \
 		--failure-message 'Deletion of Grammar pickle with $(python_get_implementation_and_version) failed' \
-		deletion_of_grammar_pickle
+		delete_grammar_pickle
 }
