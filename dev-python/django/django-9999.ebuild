@@ -24,7 +24,7 @@ RDEPEND="$(python_abi_depend -e "*-jython" dev-python/imaging)
 	postgres? ( $(python_abi_depend -e "*-jython" dev-python/psycopg) )
 	sqlite? ( $(python_abi_depend -e "*-jython" virtual/python-sqlite[external]) )"
 DEPEND="${RDEPEND}
-	doc? ( $(python_abi_depend ">=dev-python/sphinx-0.3") )
+	doc? ( >=dev-python/sphinx-0.3 )
 	test? ( $(python_abi_depend -e "*-jython" virtual/python-sqlite[external]) )"
 
 S="${WORKDIR}"
