@@ -16,7 +16,7 @@ SRC_URI="http://${PN}.lothar.com/releases/${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="amd64 ~ia64 ppc ppc64 ~s390 x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos"
+KEYWORDS="~amd64 ~ia64 ~ppc ~ppc64 ~s390 ~x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos"
 IUSE="doc ssl"
 
 RDEPEND="$(python_abi_depend ">=dev-python/twisted-2.4.0")
@@ -25,19 +25,17 @@ RDEPEND="$(python_abi_depend ">=dev-python/twisted-2.4.0")
 DEPEND="${DEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
-src_prepare() {
-	distutils_src_prepare
-
-	# Disable test failing with dev-python/pyopenssl and dev-libs/openssl-1.
-	sed -e "s/test_generate/_&/" -i foolscap/test/test_tub.py
-}
-
 src_test() {
 	LC_ALL="C" distutils_src_test
 }
 
 src_install() {
 	distutils_src_install
+
+	delete_tests() {
+		rm -fr "${ED}$(python_get_sitedir)/foolscap/test"
+	}
+	python_execute_function -q delete_tests
 
 	if use doc; then
 		dodoc doc/*.txt
