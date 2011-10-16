@@ -168,7 +168,7 @@ http://bugs.python.org/issue1674555
  
 --- Makefile.pre.in
 +++ Makefile.pre.in
-@@ -777,7 +777,7 @@
+@@ -782,7 +782,7 @@
  
  TESTOPTS=	-l $(EXTRATESTOPTS)
  TESTPROG=	$(srcdir)/Lib/test/regrtest.py

@@ -247,7 +247,7 @@ http://bugs.python.org/issue1222585
                      linker = _darwin_compiler_fixup(linker, ld_args)
 --- Makefile.pre.in
 +++ Makefile.pre.in
-@@ -435,7 +435,7 @@
+@@ -436,7 +436,7 @@
  # Build the shared modules
  sharedmods: $(BUILDPYTHON)
  	@case $$MAKEFLAGS in \

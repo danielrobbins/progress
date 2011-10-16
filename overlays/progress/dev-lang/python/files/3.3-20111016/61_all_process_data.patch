@@ -41,7 +41,7 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
  
 --- Modules/posixmodule.c
 +++ Modules/posixmodule.c
-@@ -606,6 +606,10 @@
+@@ -617,6 +617,10 @@
          char *p = strchr(*e, '=');
          if (p == NULL)
              continue;
@@ -100,7 +100,7 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
          PyMem_Free(argv_copy2[i]);
 --- Python/sysmodule.c
 +++ Python/sysmodule.c
-@@ -1671,6 +1671,10 @@
+@@ -1675,6 +1675,10 @@
  makeargvobject(int argc, wchar_t **argv)
  {
      PyObject *av;
@@ -111,7 +111,7 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
      if (argc <= 0 || argv == NULL) {
          /* Ensure at least one (empty) argument is seen */
          static wchar_t *empty_argv[1] = {L""};
-@@ -1695,7 +1699,16 @@
+@@ -1699,7 +1703,16 @@
              } else
                  v = PyUnicode_FromString(argv[i]);
  #else
