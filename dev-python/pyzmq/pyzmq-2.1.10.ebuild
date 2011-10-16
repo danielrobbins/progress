@@ -25,7 +25,7 @@ DOCS="README.rst"
 PYTHON_MODULES="zmq"
 
 src_test() {
-	python_execute_nosetests -P '$(ls -d build-${PYTHON_ABI}/lib.*)' -e -- -s '$(ls -d build-${PYTHON_ABI}/lib.*)'
+	python_execute_nosetests -e -P '$(ls -d build-${PYTHON_ABI}/lib.*)' -- -s '$(ls -d build-${PYTHON_ABI}/lib.*)'
 }
 
 src_install() {
