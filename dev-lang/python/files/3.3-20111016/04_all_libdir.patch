@@ -56,7 +56,7 @@
  # be used directly in [resource_locations].
  confdir = /etc
  datadir = /usr/share
--libdir = /usr/lib  ; or /usr/lib64 on a multilib system
+-libdir = /usr/lib
 +libdir = /usr/@@GENTOO_LIBDIR@@
  statedir = /var
  # User resource directory

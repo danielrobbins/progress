@@ -16,7 +16,7 @@
  
  POBJS=		\
  		Parser/acceler.o \
-@@ -435,7 +437,7 @@
+@@ -436,7 +438,7 @@
  # Build the shared modules
  sharedmods: $(BUILDPYTHON)
  	@case $$MAKEFLAGS in \
@@ -25,7 +25,7 @@
  	esac
  
  # Build the platform-specific modules
-@@ -603,9 +605,9 @@
+@@ -607,9 +609,9 @@
  
  # Use a stamp file to prevent make -j invoking pgen twice
  $(GRAMMAR_H) $(GRAMMAR_C): Parser/pgen.stamp
@@ -37,7 +37,7 @@
  		-touch Parser/pgen.stamp
  
  $(PGEN):	$(PGENOBJS)
-@@ -1069,25 +1071,25 @@
+@@ -1078,25 +1080,25 @@
  			$(DESTDIR)$(LIBDEST)/packaging/tests ; \
  	fi
  	-PYTHONPATH=$(DESTDIR)$(LIBDEST)  $(RUNSHARED) \
@@ -68,7 +68,7 @@
  
  python-config: $(srcdir)/Misc/python-config.in
  	# Substitution happens here, as the completely-expanded BINDIR
-@@ -1159,7 +1161,7 @@
+@@ -1168,7 +1170,7 @@
  # Install the dynamically loadable modules
  # This goes into $(exec_prefix)
  sharedinstall: sharedmods

@@ -8,16 +8,8 @@ http://bugs.python.org/issue12619
  set -v
 -h2py.py -i '(u_long)' /usr/include/netinet/in.h
 +python$EXE ../../Tools/scripts/h2py.py -i '(u_long)' /usr/include/netinet/in.h
---- Lib/plat-linux2/regen
-+++ Lib/plat-linux2/regen
-@@ -5,4 +5,4 @@
- 	exit 1;;
- esac
- set -v
--h2py -i '(u_long)' /usr/include/sys/types.h /usr/include/netinet/in.h /usr/include/dlfcn.h
-+python$EXE ../../Tools/scripts/h2py.py -i '(u_long)' /usr/include/sys/types.h /usr/include/netinet/in.h /usr/include/dlfcn.h /usr/include/linux/cdrom.h
---- Lib/plat-linux3/regen
-+++ Lib/plat-linux3/regen
+--- Lib/plat-linux/regen
++++ Lib/plat-linux/regen
 @@ -5,4 +5,4 @@
  	exit 1;;
  esac
@@ -45,16 +37,16 @@ http://bugs.python.org/issue12619
 +python$EXE ../../Tools/scripts/h2py.py /usr/include/sys/stropts.h
 --- Makefile.pre.in
 +++ Makefile.pre.in
-@@ -365,7 +365,7 @@
+@@ -396,7 +396,7 @@
  
  # Default target
  all:		build_all
--build_all:	$(BUILDPYTHON) oldsharedmods sharedmods gdbhooks
-+build_all:	$(BUILDPYTHON) oldsharedmods sharedmods platformspecificmods gdbhooks
+-build_all:	$(BUILDPYTHON) oldsharedmods sharedmods gdbhooks Modules/_testembed
++build_all:	$(BUILDPYTHON) oldsharedmods sharedmods platformspecificmods gdbhooks Modules/_testembed
  
  # Compile a binary with gcc profile guided optimization.
  profile-opt:
-@@ -410,6 +410,26 @@
+@@ -439,6 +439,26 @@
  	*) $(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' ./$(BUILDPYTHON) -E $(srcdir)/setup.py build;; \
  	esac
  
@@ -81,18 +73,18 @@ http://bugs.python.org/issue12619
  # Build static library
  # avoid long command lines, same as LIBRARY_OBJS
  $(LIBRARY): $(LIBRARY_OBJS)
-@@ -881,7 +901,7 @@
+@@ -993,7 +1013,7 @@
+ 		multiprocessing multiprocessing/dummy \
  		unittest unittest/test \
- 		lib-old \
  		curses pydoc_data $(MACHDEPS)
 -libinstall:	build_all $(srcdir)/Lib/$(PLATDIR) $(srcdir)/Modules/xxmodule.c
 +libinstall:	build_all $(srcdir)/Modules/xxmodule.c
  	@for i in $(SCRIPTDIR) $(LIBDEST); \
  	do \
  		if test ! -d $(DESTDIR)$$i; then \
-@@ -962,16 +982,6 @@
+@@ -1078,16 +1098,6 @@
  	-PYTHONPATH=$(DESTDIR)$(LIBDEST) $(RUNSHARED) \
- 		./$(BUILDPYTHON) -Wi -t -c "import lib2to3.pygram, lib2to3.patcomp;lib2to3.patcomp.PatternCompiler()"
+ 		./$(BUILDPYTHON) -Wi -c "import lib2to3.pygram, lib2to3.patcomp;lib2to3.patcomp.PatternCompiler()"
  
 -# Create the PLATDIR source directory, if one wasn't distributed..
 -$(srcdir)/Lib/$(PLATDIR):
@@ -107,12 +99,12 @@ http://bugs.python.org/issue12619
  python-config: $(srcdir)/Misc/python-config.in
  	# Substitution happens here, as the completely-expanded BINDIR
  	# is not available in configure
-@@ -1258,7 +1268,7 @@
+@@ -1379,7 +1389,7 @@
  Python/thread.o: @THREADHEADERS@
  
  # Declare targets that aren't real files
--.PHONY: all build_all sharedmods oldsharedmods test quicktest memtest
-+.PHONY: all build_all sharedmods oldsharedmods platformspecificmods test quicktest memtest
+-.PHONY: all build_all sharedmods oldsharedmods test quicktest
++.PHONY: all build_all sharedmods oldsharedmods platformspecificmods test quicktest
  .PHONY: install altinstall oldsharedinstall bininstall altbininstall
  .PHONY: maninstall libinstall inclinstall libainstall sharedinstall
  .PHONY: frameworkinstall frameworkinstallframework frameworkinstallstructure
