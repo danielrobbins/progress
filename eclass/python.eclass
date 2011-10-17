@@ -491,11 +491,6 @@ _python_parse_dependencies_in_new_EAPIs() {
 DEPEND=">=app-admin/eselect-python-20091230 >=app-shells/bash-4"
 RDEPEND="${DEPEND}"
 
-if ! has "${EAPI:-0}" 0 1 2 3 4; then
-	DEPEND+="${DEPEND:+ }>=sys-apps/portage-2.1.10.4"
-	RDEPEND+="${RDEPEND:+ }>=sys-apps/portage-2.1.10.4"
-fi
-
 if has "${EAPI:-0}" 0 1 2 3; then
 	_PYTHON_ATOMS_FROM_PYTHON_DEPEND=()
 	_PYTHON_ATOMS_FROM_PYTHON_BDEPEND=()
