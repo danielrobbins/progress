@@ -310,7 +310,7 @@ _python_parse_dependencies_in_old_EAPIs() {
 	fi
 }
 
-unset _PYTHON_USE_FLAGS_CHECKS_CODE
+unset _PYTHON_DEPEND_CHECKS_CODE _PYTHON_USE_FLAGS_CHECKS_CODE
 
 _python_parse_dependencies_in_new_EAPIs() {
 	local component cpython_abis=() cpython_atoms=() cpython_reversed_abis=() i input_value input_variable output_value output_variable output_variables PYTHON_ABI replace_whitespace_characters="1" required_USE_flags separate_components USE_dependencies versions_range
@@ -398,6 +398,9 @@ _python_parse_dependencies_in_new_EAPIs() {
 					else
 						output_value+="${output_value:+ }${cpython_atoms[@]}"
 					fi
+					if [[ "${input_variable}" == "PYTHON_DEPEND" ]]; then
+						_PYTHON_DEPEND_CHECKS_CODE+="${_PYTHON_DEPEND_CHECKS_CODE:+ }return 0;"
+					fi
 					if [[ -z "${USE_dependencies}" ]]; then
 						_PYTHON_USE_FLAGS_CHECKS_CODE+="${_PYTHON_USE_FLAGS_CHECKS_CODE:+ }:;"
 					fi
@@ -405,7 +408,7 @@ _python_parse_dependencies_in_new_EAPIs() {
 				for PYTHON_ABI in "${_PYTHON_LOCALLY_SUPPORTED_ABIS[@]}"; do
 					if has "${EAPI:-0}" 4; then
 						if [[ -n "${USE_dependencies}" ]]; then
-							_PYTHON_USE_FLAGS_CHECKS_CODE+="${_PYTHON_USE_FLAGS_CHECKS_CODE:+ }if [[ \"\${PYTHON_ABI}\" == \"${PYTHON_ABI}\" ]] && ! has_version \"\$(python_get_implementational_package)$(_get_matched_USE_dependencies)\"; then die \"\$(python_get_implementational_package)$(_get_matched_USE_dependencies) not installed\"; fi;"
+							_PYTHON_USE_FLAGS_CHECKS_CODE+="${_PYTHON_USE_FLAGS_CHECKS_CODE:+ }if [[ \"\${PYTHON_ABI}\" == \"${PYTHON_ABI}\" ]] && ! has_version \"\$(python_get_implementational_package)$(_get_matched_USE_dependencies)\"; then die \"\$(python_get_implementational_package)$(_get_matched_USE_dependencies) not installed in ROOT=\\\"\${ROOT}\\\"\"; fi;"
 						fi
 					else
 						if [[ "${PYTHON_ABI}" =~ ^[[:digit:]]+\.[[:digit:]]+$ ]]; then
@@ -432,8 +435,11 @@ _python_parse_dependencies_in_new_EAPIs() {
 				else
 					output_value+="${output_value:+ }${cpython_atoms[@]}"
 				fi
+				if [[ "${input_variable}" == "PYTHON_DEPEND" ]]; then
+					_PYTHON_DEPEND_CHECKS_CODE+="${_PYTHON_DEPEND_CHECKS_CODE:+ }return 0;"
+				fi
 				if [[ -n "${USE_dependencies}" ]]; then
-					_PYTHON_USE_FLAGS_CHECKS_CODE+="${_PYTHON_USE_FLAGS_CHECKS_CODE:+ }if ! has_version \"\$(python_get_implementational_package)${USE_dependencies}\"; then die \"\$(python_get_implementational_package)${USE_dependencies} not installed\"; fi;"
+					_PYTHON_USE_FLAGS_CHECKS_CODE+="${_PYTHON_USE_FLAGS_CHECKS_CODE:+ }if ! has_version \"\$(python_get_implementational_package)${USE_dependencies}\"; then die \"\$(python_get_implementational_package)${USE_dependencies} not installed in ROOT=\\\"\${ROOT}\\\"\"; fi;"
 				else
 					_PYTHON_USE_FLAGS_CHECKS_CODE+="${_PYTHON_USE_FLAGS_CHECKS_CODE:+ }:;"
 				fi
@@ -441,6 +447,9 @@ _python_parse_dependencies_in_new_EAPIs() {
 		elif [[ "${component}" == *"?" ]]; then
 			output_value+="${output_value:+ }${component}"
 			required_USE_flags+="${required_USE_flags:+ }${component}"
+			if [[ "${input_variable}" == "PYTHON_DEPEND" ]]; then
+				_PYTHON_DEPEND_CHECKS_CODE+="${_PYTHON_DEPEND_CHECKS_CODE:+ }if use ${component%\?};"
+			fi
 			_PYTHON_USE_FLAGS_CHECKS_CODE+="${_PYTHON_USE_FLAGS_CHECKS_CODE:+ }if use ${component%\?};"
 		elif [[ "${component}" == "||" ]]; then
 			if has "${EAPI:-0}" 4 || ! _python_package_supporting_installation_for_multiple_python_abis; then
@@ -451,10 +460,16 @@ _python_parse_dependencies_in_new_EAPIs() {
 		elif [[ "${component}" == "(" ]]; then
 			output_value+="${output_value:+ }${component}"
 			required_USE_flags+="${required_USE_flags:+ }${component}"
+			if [[ "${input_variable}" == "PYTHON_DEPEND" ]]; then
+				_PYTHON_DEPEND_CHECKS_CODE+="${_PYTHON_DEPEND_CHECKS_CODE:+ }then"
+			fi
 			_PYTHON_USE_FLAGS_CHECKS_CODE+="${_PYTHON_USE_FLAGS_CHECKS_CODE:+ }then"
 		elif [[ "${component}" == ")" ]]; then
 			output_value+="${output_value:+ }${component}"
 			required_USE_flags+="${required_USE_flags:+ }${component}"
+			if [[ "${input_variable}" == "PYTHON_DEPEND" ]]; then
+				_PYTHON_DEPEND_CHECKS_CODE+="${_PYTHON_DEPEND_CHECKS_CODE:+ }fi;"
+			fi
 			_PYTHON_USE_FLAGS_CHECKS_CODE+="${_PYTHON_USE_FLAGS_CHECKS_CODE:+ }fi;"
 		else
 			die "Invalid syntax of ${input_variable}: Unrecognized component '${component}'"
@@ -465,6 +480,7 @@ _python_parse_dependencies_in_new_EAPIs() {
 		eval "${output_variable}+=\"\${!output_variable:+ }\${output_value}\""
 	done
 
+	_PYTHON_DEPEND_CHECKS_CODE="${_PYTHON_DEPEND_CHECKS_CODE%;}"
 	_PYTHON_USE_FLAGS_CHECKS_CODE="${_PYTHON_USE_FLAGS_CHECKS_CODE%;}"
 
 	if ! has "${EAPI:-0}" 4 && _python_package_supporting_installation_for_multiple_python_abis; then
@@ -472,7 +488,7 @@ _python_parse_dependencies_in_new_EAPIs() {
 			REQUIRED_USE="${required_USE_flags}"
 		fi
 
-		unset _PYTHON_USE_FLAGS_CHECKS_CODE
+		unset _PYTHON_DEPEND_CHECKS_CODE _PYTHON_USE_FLAGS_CHECKS_CODE
 	fi
 
 	unset -f _get_matched_USE_dependencies
@@ -756,6 +772,19 @@ _python_implementation() {
 	fi
 }
 
+_python_check_run-time_dependency() {
+	if has "${EAPI:-0}" 0 1 2 3; then
+		return 0
+	else
+		if ! has "${EAPI:-0}" 4 && _python_package_supporting_installation_for_multiple_python_abis; then
+			die "${FUNCNAME} called illegally"
+		fi
+
+		eval "${_PYTHON_DEPEND_CHECKS_CODE}"
+		return 1
+	fi
+}
+
 _python_abi-specific_local_scope() {
 	[[ " ${FUNCNAME[@]:2} " =~ " "(_python_final_sanity_checks|python_execute_function|python_mod_optimize|python_mod_cleanup)" " ]]
 }
@@ -793,9 +822,16 @@ _python_final_sanity_checks() {
 	if ! _python_implementation && [[ "$(declare -p PYTHON_SANITY_CHECKS_EXECUTED 2> /dev/null)" != "declare -- PYTHON_SANITY_CHECKS_EXECUTED="* || " ${FUNCNAME[@]:1} " =~ " "(python_set_active_version|python_pkg_setup)" " && -z "${PYTHON_SKIP_SANITY_CHECKS}" ]]; then
 		local PYTHON_ABI="${PYTHON_ABI}"
 		for PYTHON_ABI in ${PYTHON_ABIS-${PYTHON_ABI}}; do
-			# Ensure that appropriate version of Python is installed.
-			if ! has_version "$(python_get_implementational_package)"; then
-				die "$(python_get_implementational_package) is not installed"
+			if has "${EAPI:-0}" 0 1 2 3 4 || { ! has "${EAPI:-0}" 0 1 2 3 4 && ! _python_package_supporting_installation_for_multiple_python_abis; }; then
+				# Ensure that appropriate version of Python is installed.
+				if ! ROOT="/" has_version "$(python_get_implementational_package)"; then
+					die "$(python_get_implementational_package) not installed in ROOT=\"/\""
+				fi
+				if [[ "${ROOT}" != "/" ]] && _python_check_run-time_dependency; then
+					if ! has_version "$(python_get_implementational_package)"; then
+						die "$(python_get_implementational_package) not installed in ROOT=\"${ROOT}\""
+					fi
+				fi
 			fi
 
 			# Ensure that EPYTHON variable is respected.
@@ -914,7 +950,10 @@ python_pkg_setup() {
 
 	if has "${EAPI:-0}" 4 || { ! has "${EAPI:-0}" 0 1 2 3 4 && ! _python_package_supporting_installation_for_multiple_python_abis; }; then
 		python_pkg_setup_check_USE_flags() {
-			eval "${_PYTHON_USE_FLAGS_CHECKS_CODE}"
+			ROOT="/" eval "${_PYTHON_USE_FLAGS_CHECKS_CODE}"
+			if [[ "${ROOT}" != "/" ]] && _python_check_run-time_dependency; then
+				eval "${_PYTHON_USE_FLAGS_CHECKS_CODE}"
+			fi
 		}
 
 		if _python_package_supporting_installation_for_multiple_python_abis; then
@@ -1245,13 +1284,13 @@ _python_calculate_PYTHON_ABIS() {
 		else
 			local python_version python2_version python3_version support_python_major_version
 
-			if ! has_version "dev-lang/python"; then
+			if ! ROOT="/" has_version "dev-lang/python"; then
 				die "${FUNCNAME}(): 'dev-lang/python' is not installed"
 			fi
 
 			python_version="$("${EPREFIX}/usr/bin/python" -c 'from sys import version_info; print(".".join(str(x) for x in version_info[:2]))')"
 
-			if has_version "=dev-lang/python-2*"; then
+			if ROOT="/" has_version "=dev-lang/python-2*"; then
 				if [[ "$(readlink "${EPREFIX}/usr/bin/python2")" != "python2."* ]]; then
 					die "'${EPREFIX}/usr/bin/python2' is not valid symlink"
 				fi
@@ -1274,7 +1313,7 @@ _python_calculate_PYTHON_ABIS() {
 				fi
 			fi
 
-			if has_version "=dev-lang/python-3*"; then
+			if ROOT="/" has_version "=dev-lang/python-3*"; then
 				if [[ "$(readlink "${EPREFIX}/usr/bin/python3")" != "python3."* ]]; then
 					die "'${EPREFIX}/usr/bin/python3' is not valid symlink"
 				fi
@@ -2178,20 +2217,41 @@ python_set_active_version() {
 			# PYTHON_ABI variable is intended to be used only in ebuilds/eclasses,
 			# so it does not need to be exported to subprocesses.
 			PYTHON_ABI="$1"
-			if ! _python_implementation && ! has_version "$(python_get_implementational_package)"; then
-				die "${FUNCNAME}(): '$(python_get_implementational_package)' is not installed"
+			if ! _python_implementation; then
+				if ! ROOT="/" has_version "$(python_get_implementational_package)"; then
+					die "${FUNCNAME}(): '$(python_get_implementational_package)' not installed in ROOT=\"/\""
+				fi
+				if [[ "${ROOT}" != "/" ]] && _python_check_run-time_dependency; then
+					if ! has_version "$(python_get_implementational_package)"; then
+						die "${FUNCNAME}(): '$(python_get_implementational_package)' not installed in ROOT=\"${ROOT}\""
+					fi
+				fi
 			fi
 			export EPYTHON="$(PYTHON "$1")"
 		elif [[ "$1" == "2" ]]; then
-			if ! _python_implementation && ! has_version "=dev-lang/python-2*"; then
-				die "${FUNCNAME}(): '=dev-lang/python-2*' is not installed"
+			if ! _python_implementation; then
+				if ! ROOT="/" has_version "=dev-lang/python-2*"; then
+					die "${FUNCNAME}(): '=dev-lang/python-2*' not installed in ROOT=\"/\""
+				fi
+				if [[ "${ROOT}" != "/" ]] && _python_check_run-time_dependency; then
+					if ! has_version "=dev-lang/python-2*"; then
+						die "${FUNCNAME}(): '=dev-lang/python-2*' not installed in ROOT=\"${ROOT}\""
+					fi
+				fi
 			fi
 			export EPYTHON="$(PYTHON -2)"
 			PYTHON_ABI="${EPYTHON#python}"
 			PYTHON_ABI="${PYTHON_ABI%%-*}"
 		elif [[ "$1" == "3" ]]; then
-			if ! _python_implementation && ! has_version "=dev-lang/python-3*"; then
-				die "${FUNCNAME}(): '=dev-lang/python-3*' is not installed"
+			if ! _python_implementation; then
+				if ! ROOT="/" has_version "=dev-lang/python-3*"; then
+					die "${FUNCNAME}(): '=dev-lang/python-3*' not installed ROOT=\"/\""
+				fi
+				if [[ "${ROOT}" != "/" ]] && _python_check_run-time_dependency; then
+					if ! has_version "=dev-lang/python-3*"; then
+						die "${FUNCNAME}(): '=dev-lang/python-3*' not installed ROOT=\"${ROOT}\""
+					fi
+				fi
 			fi
 			export EPYTHON="$(PYTHON -3)"
 			PYTHON_ABI="${EPYTHON#python}"
