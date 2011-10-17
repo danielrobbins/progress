@@ -480,15 +480,9 @@ _python_parse_dependencies_in_new_EAPIs() {
 		eval "${output_variable}+=\"\${!output_variable:+ }\${output_value}\""
 	done
 
-	_PYTHON_DEPEND_CHECKS_CODE="${_PYTHON_DEPEND_CHECKS_CODE%;}"
-	_PYTHON_USE_FLAGS_CHECKS_CODE="${_PYTHON_USE_FLAGS_CHECKS_CODE%;}"
 
-	if ! has "${EAPI:-0}" 4 && _python_package_supporting_installation_for_multiple_python_abis; then
-		if [[ "${input_variable}" == "PYTHON_DEPEND" ]]; then
-			REQUIRED_USE="${required_USE_flags}"
-		fi
-
-		unset _PYTHON_DEPEND_CHECKS_CODE _PYTHON_USE_FLAGS_CHECKS_CODE
+	if ! has "${EAPI:-0}" 4 && _python_package_supporting_installation_for_multiple_python_abis && [[ "${input_variable}" == "PYTHON_DEPEND" ]]; then
+		REQUIRED_USE="${required_USE_flags}"
 	fi
 
 	unset -f _get_matched_USE_dependencies
@@ -526,6 +520,12 @@ else
 	fi
 	if [[ -n "${PYTHON_BDEPEND}" ]]; then
 		_python_parse_dependencies_in_new_EAPIs PYTHON_BDEPEND "DEPEND"
+	fi
+	if ! has "${EAPI:-0}" 4 && _python_package_supporting_installation_for_multiple_python_abis; then
+		unset _PYTHON_DEPEND_CHECKS_CODE _PYTHON_USE_FLAGS_CHECKS_CODE
+	else
+		_PYTHON_DEPEND_CHECKS_CODE="${_PYTHON_DEPEND_CHECKS_CODE%;}"
+		_PYTHON_USE_FLAGS_CHECKS_CODE="${_PYTHON_USE_FLAGS_CHECKS_CODE%;}"
 	fi
 fi
 unset -f _python_parse_versions_range _python_parse_dependencies_in_old_EAPIs _python_parse_dependencies_in_new_EAPIs
