@@ -8,7 +8,7 @@ PYTHON_RESTRICTED_ABIS="*-jython"
 
 inherit distutils eutils versionator
 
-MY_PV="$(replace_version_separator 4 -r)"
+MY_PV="$(replace_version_separator 3 -r)"
 
 DESCRIPTION="APSW - Another Python SQLite Wrapper"
 HOMEPAGE="http://code.google.com/p/apsw/"
@@ -17,7 +17,7 @@ SRC_URI="http://apsw.googlecode.com/files/${PN}-${MY_PV}.zip"
 LICENSE="as-is"
 SLOT="0"
 KEYWORDS="~amd64 ~ppc64 ~x86"
-IUSE=""
+IUSE="doc"
 
 RDEPEND=">=dev-db/sqlite-$(get_version_component_range 1-3)[extensions]"
 DEPEND="${RDEPEND}
@@ -26,8 +26,6 @@ DEPEND="${RDEPEND}
 S="${WORKDIR}/${PN}-${MY_PV}"
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
-
-DOCS="doc/_sources/*"
 
 src_prepare() {
 	distutils_src_prepare
@@ -50,5 +48,8 @@ src_test() {
 
 src_install() {
 	distutils_src_install
-	dohtml -r doc/*
+
+	if use doc; then
+		dohtml -r doc/*
+	fi
 }
