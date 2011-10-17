@@ -5,6 +5,7 @@
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_TESTS_RESTRICTED_ABIS="2.4"
+# https://bitbucket.org/bbangert/beaker/issue/94
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.* *-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
@@ -34,6 +35,7 @@ src_prepare() {
 	distutils_src_prepare
 
 	# Workaround for potential future fix for http://bugs.python.org/issue11276.
+	# https://bitbucket.org/bbangert/beaker/issue/85
 	sed -e "/import anydbm/a dbm = anydbm" -i beaker/container.py
 
 	prepare_tests() {
