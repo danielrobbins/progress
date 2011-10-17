@@ -17,7 +17,7 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
 
-RDEPEND="$(python_abi_depend dev-python/ipython)"
+RDEPEND="$(python_abi_depend ">=dev-python/ipython-0.10")"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
