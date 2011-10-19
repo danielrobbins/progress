@@ -19,7 +19,7 @@ KEYWORDS="~amd64 ~ia64 ~ppc ~ppc64 ~s390 ~sparc ~x86 ~amd64-linux ~ia64-linux ~x
 IUSE="test"
 
 RDEPEND="$(python_abi_depend dev-python/setuptools)
-	$(python_abi_depend -i "2.* 3.1" dev-python/unittest2)"
+	$(python_abi_depend -i "2.4 2.5 2.6 3.1" dev-python/unittest2)"
 # Tests using dev-python/psycopg are skipped when dev-python/psycopg is not installed.
 DEPEND="${RDEPEND}
 	test? (
@@ -30,6 +30,13 @@ DEPEND="${RDEPEND}
 S="${WORKDIR}/${P}"
 
 PYTHON_MODULES="logilab"
+
+src_prepare() {
+	distutils_src_prepare
+
+	# http://www.logilab.org/ticket/79268
+	sed -e "s/return types.MethodType(callable, klass)/return types.MethodType(callable, instance or klass())/" -i compat.py || die "sed failed"
+}
 
 src_test() {
 	testing() {
