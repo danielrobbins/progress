@@ -4,8 +4,6 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-# https://bitbucket.org/hpk42/pytest/issue/75
-PYTHON_TESTS_RESTRICTED_ABIS="2.5-jython"
 
 inherit distutils
 
