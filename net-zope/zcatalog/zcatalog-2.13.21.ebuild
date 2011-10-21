@@ -18,7 +18,7 @@ SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.zip"
 LICENSE="ZPL"
 SLOT="0"
 KEYWORDS="~alpha ~amd64 ~ppc ~sparc ~x86"
-IUSE=""
+IUSE="globalrequest"
 
 RDEPEND="$(python_abi_depend net-zope/namespaces-zope[Products])
 	$(python_abi_depend dev-python/restrictedpython)
@@ -36,7 +36,11 @@ RDEPEND="$(python_abi_depend net-zope/namespaces-zope[Products])
 	$(python_abi_depend net-zope/zope-dottedname)
 	$(python_abi_depend net-zope/zope-interface)
 	$(python_abi_depend net-zope/zope-schema)
-	$(python_abi_depend net-zope/zope-testing)"
+	$(python_abi_depend net-zope/zope-testing)
+	globalrequest? (
+		$(python_abi_depend net-zope/five-globalrequest)
+		$(python_abi_depend net-zope/zope-globalrequest)
+	)"
 DEPEND="${RDEPEND}
 	app-arch/unzip
 	$(python_abi_depend dev-python/setuptools)"
