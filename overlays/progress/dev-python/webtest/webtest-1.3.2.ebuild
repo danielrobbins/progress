@@ -4,8 +4,9 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.4 3.*"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="2.4 2.5 3.1"
+# https://bitbucket.org/ianb/webtest/issue/24
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.* *-jython *-pypy-*"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils eutils
@@ -23,7 +24,7 @@ KEYWORDS="~alpha ~amd64 ~arm ~ppc ~ppc64 ~sparc ~x86"
 IUSE="doc"
 
 RDEPEND="$(python_abi_depend -e "*-jython *-pypy-*" dev-python/pyquery)
-	$(python_abi_depend ">=dev-python/webob-0.9.2")"
+	$(python_abi_depend dev-python/webob)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	doc? ( dev-python/sphinx )"
