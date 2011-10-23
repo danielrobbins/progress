@@ -4,7 +4,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.4 3.* *-jython"
+PYTHON_RESTRICTED_ABIS="2.4 2.5 3.* *-jython"
 DISTUTILS_SRC_TEST="setup.py"
 
 inherit distutils
@@ -48,6 +48,9 @@ DOCS="BFG_HISTORY.txt CHANGES.txt HISTORY.txt README.rst TODO.txt"
 src_prepare() {
 	distutils_src_prepare
 
+	# https://github.com/Pylons/pyramid/commit/b719fdd3e99bb98f426a2125a4e1b5056cca2a46
+	sed -e "s/request.charset = 'latin-1'/request = request.decode('latin-1')/" -i pyramid/tests/test_request.py
+
 	# Fix Sphinx theme.
 	sed \
 		-e "s/html_theme = 'pyramid'/html_theme = 'default'/" \
@@ -60,10 +63,7 @@ src_compile() {
 
 	if use doc; then
 		einfo "Generation of documentation"
-		pushd docs > /dev/null
-		mkdir _themes
-		emake html
-		popd > /dev/null
+		"$(PYTHON -f)" setup.py build_sphinx || die "Generation of documentation failed"
 	fi
 }
 
@@ -76,7 +76,7 @@ src_install() {
 	python_execute_function -q delete_tests
 
 	if use doc; then
-		pushd docs/_build/html > /dev/null
+		pushd build/sphinx/html > /dev/null
 		insinto /usr/share/doc/${PF}/html
 		doins -r [a-z]* _images _static
 		popd > /dev/null
