@@ -21,8 +21,8 @@ IUSE="gtk nls urwid"
 RDEPEND="$(python_abi_depend dev-python/pygments)
 	$(python_abi_depend dev-python/setuptools)
 	gtk? (
-		$(python_abi_depend -e "2.5 *-pypy-* 3.*" dev-python/pygobject)
-		$(python_abi_depend -e "2.5 *-pypy-* 3.*" dev-python/pygtk)
+		$(python_abi_depend -e "2.5 *-pypy-* 3.*" dev-python/pygobject:2)
+		$(python_abi_depend -e "2.5 *-pypy-* 3.*" dev-python/pygtk:2)
 	)
 	urwid? ( $(python_abi_depend -e "3.*" dev-python/urwid) )"
 DEPEND="${RDEPEND}
