@@ -19,7 +19,7 @@ KEYWORDS="~amd64 ~x86"
 IUSE="pygobject pyqt4 pyside"
 
 RDEPEND=">=sys-fs/udev-151
-	pygobject? ( $(python_abi_depend -e "*-pypy-*" dev-python/pygobject) )
+	pygobject? ( $(python_abi_depend -e "*-pypy-*" dev-python/pygobject:2) )
 	pyqt4? ( $(python_abi_depend -e "*-pypy-*" dev-python/PyQt4) )
 	pyside? ( dev-python/pyside )"
 DEPEND="${RDEPEND}
