@@ -24,7 +24,7 @@ RDEPEND=">=dev-libs/dbus-glib-0.88
 DEPEND="${RDEPEND}
 	dev-util/pkgconfig
 	doc? ( $(python_abi_depend "=dev-python/epydoc-3*") )
-	test? ( $(python_abi_depend -e "2.4 2.5" dev-python/pygobject) )"
+	test? ( $(python_abi_depend -e "2.4 2.5" dev-python/pygobject:2) )"
 
 src_prepare() {
 	# Disable compiling of .pyc files.
