@@ -4,7 +4,8 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_TESTS_RESTRICTED_ABIS="2.4"
+PYTHON_RESTRICTED_ABIS="2.4"
+PYTHON_TESTS_RESTRICTED_ABIS="2.5"
 # https://bitbucket.org/bbangert/beaker/issue/94
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.* *-jython"
 DISTUTILS_SRC_TEST="nosetests"
@@ -24,7 +25,7 @@ KEYWORDS="~amd64 ~arm ~ppc ~sparc ~x86 ~amd64-linux ~x86-linux ~x64-macos ~x86-m
 IUSE="test"
 
 DEPEND="$(python_abi_depend dev-python/setuptools)
-	test? ( $(python_abi_depend -e "2.4 3.*" dev-python/webtest) )"
+	test? ( $(python_abi_depend -e "2.5 3.1" dev-python/webtest) )"
 RDEPEND=""
 
 S="${WORKDIR}/${MY_P}"
@@ -37,6 +38,9 @@ src_prepare() {
 	# Workaround for potential future fix for http://bugs.python.org/issue11276.
 	# https://bitbucket.org/bbangert/beaker/issue/85
 	sed -e "/import anydbm/a dbm = anydbm" -i beaker/container.py
+
+	# Skip Memcached tests.
+	sed -e "/from nose import SkipTest/a raise SkipTest" -i tests/test_memcached.py
 
 	prepare_tests() {
 		if [[ "$(python_get_version -l --major)" == "3" ]]; then
