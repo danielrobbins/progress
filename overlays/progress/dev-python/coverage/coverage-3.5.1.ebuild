@@ -20,5 +20,3 @@ DEPEND="$(python_abi_depend dev-python/setuptools)"
 RDEPEND="${DEPEND}"
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
-
-PYTHON_MODULES="coverage"
