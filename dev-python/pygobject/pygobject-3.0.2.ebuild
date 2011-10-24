@@ -66,6 +66,9 @@ src_prepare() {
 	# Support installation for multiple Python versions, upstream bug #648292
 	epatch "${FILESDIR}/${PN}-3.0.0-support_multiple_python_versions.patch"
 
+	# FIXME: disable tests that require git master of gobject-introspection
+	epatch "${FILESDIR}/${P}-disable-new-gi-tests.patch"
+
 	# disable pyc compiling
 	ln -sfn $(type -P true) py-compile
 
