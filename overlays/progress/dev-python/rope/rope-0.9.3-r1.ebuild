@@ -25,6 +25,7 @@ DOCS="docs/*.txt"
 src_prepare() {
 	distutils_src_prepare
 	epatch "${FILESDIR}/${P}-fix_tests_results.patch"
+	epatch "${FILESDIR}/${P}-python-2.7.patch"
 }
 
 src_test() {
