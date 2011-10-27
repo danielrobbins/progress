@@ -10,7 +10,7 @@ inherit distutils multilib
 
 DOC_P="${PN}-docs-html-${PV}"
 
-DESCRIPTION="Various LDAP-related Python modules"
+DESCRIPTION="Python modules for implementing LDAP clients"
 HOMEPAGE="http://python-ldap.sourceforge.net/ http://pypi.python.org/pypi/python-ldap"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz
 	doc? ( http://www.python-ldap.org/doc/${DOC_P}.tar.gz )"
