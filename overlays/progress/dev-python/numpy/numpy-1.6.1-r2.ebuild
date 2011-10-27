@@ -72,15 +72,6 @@ src_prepare() {
 	epatch "${FILESDIR}/${P}-import_umath.patch"
 	epatch "${FILESDIR}/${P}-atlas.patch"
 
-	# Gentoo patch for ATLAS library names
-	sed -i \
-		-e "s:'f77blas':'blas':g" \
-		-e "s:'ptf77blas':'blas':g" \
-		-e "s:'ptcblas':'cblas':g" \
-		-e "s:'lapack_atlas':'lapack':g" \
-		numpy/distutils/system_info.py \
-		|| die "sed system_info.py failed"
-
 	if use lapack; then
 		append-ldflags "$(pkg-config --libs-only-other cblas lapack)"
 		sed -i -e '/NO_ATLAS_INFO/,+1d' numpy/core/setup.py || die
