@@ -68,7 +68,7 @@ src_prepare() {
 	python_copy_sources
 
 	preparation() {
-		if [[ "$(python_get_version --major)" == "3" ]]; then
+		if [[ "$(python_get_version -l --major)" == "3" ]]; then
 			rm -fr pyuic/uic/port_v2
 		else
 			rm -fr pyuic/uic/port_v3
