@@ -10,14 +10,14 @@ inherit distutils
 
 DESCRIPTION="Fast, simple object-to-object and broadcast signaling"
 HOMEPAGE="http://discorporate.us/projects/Blinker/ http://pypi.python.org/pypi/blinker"
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.zip"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE="doc"
 
-DEPEND="app-arch/unzip"
+DEPEND=""
 RDEPEND=""
 
 src_install() {
