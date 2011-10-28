@@ -31,13 +31,6 @@ S="${WORKDIR}/${P}"
 
 PYTHON_MODULES="logilab"
 
-src_prepare() {
-	distutils_src_prepare
-
-	# http://www.logilab.org/ticket/79268
-	sed -e "s/return types.MethodType(callable, klass)/return types.MethodType(callable, instance or klass())/" -i compat.py || die "sed failed"
-}
-
 src_test() {
 	testing() {
 		local tpath="${T}/test-${PYTHON_ABI}"
