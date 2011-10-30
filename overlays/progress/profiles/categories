@@ -6,6 +6,7 @@ dev-python
 dev-util
 dev-vcs
 kde-base
+mail-filter
 net-zope
 sci-biology
 sci-libs
