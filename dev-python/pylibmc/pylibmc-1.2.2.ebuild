@@ -18,15 +18,12 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
 
-RDEPEND=">=dev-libs/libmemcached-0.32"
-DEPEND="${RDEPEND}
-	$(python_abi_depend dev-python/setuptools)"
-
-PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
+DEPEND=">=dev-libs/libmemcached-0.32"
+RDEPEND="${DEPEND}"
 
 src_prepare() {
 	distutils_src_prepare
-	sed -e "/with-info = 1/d" -i setup.cfg
+	sed -e "/with-info=1/d" -i setup.cfg
 }
 
 src_test() {
