@@ -1,6 +1,6 @@
 --- Lib/xml/__init__.py
 +++ Lib/xml/__init__.py
-@@ -22,20 +22,22 @@
+@@ -22,20 +22,23 @@
  _MINIMUM_XMLPLUS_VERSION = (0, 8, 4)
  
  
@@ -20,16 +20,17 @@
 +        import sys
 +        _xmlplus.__path__.extend(__path__)
 +        sys.modules[__name__] = _xmlplus
-+        modules = []
++        cleared_modules = []
++        redefined_modules = []
 +        for module in sys.modules:
++            if module.startswith("xml.") and not module.startswith(("xml.marshal", "xml.schema", "xml.utils", "xml.xpath", "xml.xslt")):
++                cleared_modules.append(module)
 +            if module.startswith(("xml.__init__", "xml.dom", "xml.parsers", "xml.sax")) and sys.modules[module] is not None:
-+                modules.append(module)
-+        for module in modules:
++                redefined_modules.append(module)
++        for module in cleared_modules:
 +            del sys.modules[module]
-+        for module in modules:
-+            pyxml_module = module.replace("xml", "_xmlplus", 1)
-+            __import__(pyxml_module)
-+            sys.modules[module] = sys.modules[pyxml_module]
++        for module in sorted(redefined_modules):
++            __import__(module)
      else:
 -        if v >= _MINIMUM_XMLPLUS_VERSION:
 -            import sys
