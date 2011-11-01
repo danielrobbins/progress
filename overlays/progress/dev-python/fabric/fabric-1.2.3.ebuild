@@ -37,7 +37,7 @@ src_prepare() {
 	distutils_src_prepare
 
 	# PyCrypto is a dependency of paramiko, not Fabric.
-	sed -e "/install_requires=/s/'pycrypto >= 1.9', //" -i setup.py || die "sed failed"
+	sed -e "/install_requires=/s/'pycrypto >= 1.9, < 2.4', //" -i setup.py || die "sed failed"
 }
 
 src_test() {

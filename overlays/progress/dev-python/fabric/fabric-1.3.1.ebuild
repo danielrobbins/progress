@@ -21,7 +21,8 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
 
-RDEPEND="$(python_abi_depend ">=dev-python/paramiko-1.7.6")"
+RDEPEND="$(python_abi_depend dev-python/pycrypto)
+	$(python_abi_depend dev-python/ssh)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 #	test? ( $(python_abi_depend dev-python/fudge) )
@@ -32,13 +33,6 @@ RESTRICT="test"
 S="${WORKDIR}/${MY_P}"
 
 PYTHON_MODULES="fabfile fabric"
-
-src_prepare() {
-	distutils_src_prepare
-
-	# PyCrypto is a dependency of paramiko, not Fabric.
-	sed -e "/install_requires=/s/'pycrypto >= 1.9', //" -i setup.py || die "sed failed"
-}
 
 src_test() {
 	distutils_src_test --with-doctest
