@@ -6,7 +6,7 @@ EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 
-inherit distutils eutils
+inherit distutils
 
 DESCRIPTION="SSH2 protocol library"
 HOMEPAGE="http://www.lag.net/paramiko/ http://pypi.python.org/pypi/paramiko"
@@ -23,7 +23,7 @@ DEPEND="${RDEPEND}
 
 src_test() {
 	testing() {
-		"$(PYTHON)" test.py --verbose
+		PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" test.py --verbose
 	}
 	python_execute_function testing
 }
