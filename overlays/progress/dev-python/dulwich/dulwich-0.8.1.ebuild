@@ -7,7 +7,7 @@ PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.* *-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
-inherit distutils eutils
+inherit distutils
 
 DESCRIPTION="Dulwich is a pure-Python implementation of the Git file formats and protocols."
 HOMEPAGE="http://samba.org/~jelmer/dulwich/ http://pypi.python.org/pypi/dulwich"
@@ -19,17 +19,11 @@ KEYWORDS="~amd64 ~ppc ~x86 ~amd64-linux ~ppc-macos ~x64-macos ~x86-macos ~x64-so
 IUSE=""
 
 DEPEND="$(python_abi_depend dev-python/setuptools)
-	test? (
-		|| (
-			$(python_abi_depend -e "2.7" dev-python/unittest2)
-			$(python_abi_depend -e "2.7" dev-python/testtools)
-		)
-	)"
+	test? ( $(python_abi_depend -e "2.7" dev-python/unittest2) )"
 RDEPEND=""
 
 src_prepare() {
 	distutils_src_prepare
-	epatch "${FILESDIR}/${P}-darwin.patch"
 	sed -e "s/test_fetch_from_dulwich(/_&/" -i dulwich/tests/compat/server_utils.py
 }
 
