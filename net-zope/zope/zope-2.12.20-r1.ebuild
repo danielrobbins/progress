@@ -6,7 +6,7 @@ EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.4 2.5 3.* *-jython"
 
-inherit distutils multilib versionator
+inherit distutils eutils multilib versionator
 
 MY_PN="Zope2"
 MY_P="${MY_PN}-${PV}"
@@ -92,6 +92,7 @@ pkg_setup() {
 src_prepare() {
 	distutils_src_prepare
 	sed -e "s/zope.location.interfaces.ITraverser/zope.traversing.interfaces.ITraverser/" -i src/Products/Five/traversing.zcml || die "sed failed"
+	epatch "${FILESDIR}/${P}-authentication.patch"
 }
 
 src_compile() {
