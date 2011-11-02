@@ -11,7 +11,7 @@ inherit distutils eutils
 MY_PN="IMDbPY"
 MY_P="${MY_PN}-${PV}"
 
-DESCRIPTION="Python package to access the IMDb movie database"
+DESCRIPTION="Python package to access the IMDb's database"
 HOMEPAGE="http://imdbpy.sourceforge.net/ http://pypi.python.org/pypi/IMDbPY"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
@@ -32,5 +32,4 @@ PYTHON_MODULES="imdb"
 src_prepare() {
 	distutils_src_prepare
 	epatch "${FILESDIR}/${PN}-4.6-data_location.patch"
-	epatch "${FILESDIR}/${P}-locales_location.patch"
 }
