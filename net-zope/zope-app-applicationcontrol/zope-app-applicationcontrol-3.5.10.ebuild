@@ -11,7 +11,7 @@ inherit distutils
 MY_PN="${PN//-/.}"
 MY_P="${MY_PN}-${PV}"
 
-DESCRIPTION="Zope applicationcontrol"
+DESCRIPTION="Zope application control"
 HOMEPAGE="http://pypi.python.org/pypi/zope.app.applicationcontrol"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
@@ -27,8 +27,6 @@ RDEPEND="$(python_abi_depend net-zope/namespaces-zope[zope,zope.app])
 	$(python_abi_depend net-zope/zope-i18n)
 	$(python_abi_depend net-zope/zope-i18nmessageid)
 	$(python_abi_depend net-zope/zope-interface)
-	$(python_abi_depend net-zope/zope-location)
-	$(python_abi_depend net-zope/zope-security)
 	$(python_abi_depend net-zope/zope-size)
 	$(python_abi_depend net-zope/zope-traversing)"
 DEPEND="${RDEPEND}
