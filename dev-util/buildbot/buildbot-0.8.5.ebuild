@@ -28,10 +28,8 @@ IUSE="examples irc mail manhole test"
 RDEPEND="$(python_abi_depend ">=dev-python/jinja-2.1")
 	$(python_abi_depend dev-python/sqlalchemy)
 	|| (
-		$(python_abi_depend "=dev-python/sqlalchemy-migrate-0.7.1*")
-		$(python_abi_depend "=dev-python/sqlalchemy-migrate-0.7.0*")
-		$(python_abi_depend "=dev-python/sqlalchemy-migrate-0.6.1*")
-		$(python_abi_depend "=dev-python/sqlalchemy-migrate-0.6.0*")
+		$(python_abi_depend "=dev-python/sqlalchemy-migrate-0.7*")
+		$(python_abi_depend "=dev-python/sqlalchemy-migrate-0.6*")
 	)
 	$(python_abi_depend ">=dev-python/twisted-8.0.0")
 	$(python_abi_depend dev-python/twisted-web)
@@ -55,6 +53,11 @@ S="${WORKDIR}/${MY_P}"
 pkg_setup() {
 	python_pkg_setup
 	enewuser buildbot
+}
+
+src_prepare() {
+	distutils_src_prepare
+	sed -e "s/sqlalchemy-migrate ==0.6.0, ==0.6.1, ==0.7.0, ==0.7.1/sqlalchemy-migrate ==0.6, ==0.7/" -i setup.py
 }
 
 src_compile() {
