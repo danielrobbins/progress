@@ -19,7 +19,7 @@ IUSE=""
 
 DEPEND="$(python_abi_depend dev-python/decorator)
 	$(python_abi_depend dev-python/setuptools)
-	$(python_abi_depend ">=dev-python/sqlalchemy-0.5")
+	$(python_abi_depend ">=dev-python/sqlalchemy-0.6")
 	$(python_abi_depend dev-python/tempita)"
 RDEPEND="${DEPEND}"
 
