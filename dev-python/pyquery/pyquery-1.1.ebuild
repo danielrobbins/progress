@@ -5,11 +5,11 @@
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.4 2.5 3.1 *-jython *-pypy-*"
-# https://bitbucket.org/olauzanne/pyquery/issue/32
+# https://bitbucket.org/olauzanne/pyquery/issue/34
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 DISTUTILS_SRC_TEST="nosetests"
 
-inherit distutils eutils
+inherit distutils
 
 DESCRIPTION="A jquery-like library for python"
 HOMEPAGE="http://pypi.python.org/pypi/pyquery"
@@ -26,19 +26,6 @@ DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
 DOCS="CHANGES.txt README.txt"
-
-src_prepare() {
-	distutils_src_prepare
-
-	epatch "${FILESDIR}/${P}-python-3.patch"
-
-	# Disable failing tests.
-	sed -e "/class TestReadme/,/^$/d" -i pyquery/test.py
-
-	# Disable tests requiring absent "docs" directory.
-	# https://bitbucket.org/olauzanne/pyquery/issue/31
-	sed -e "/for filename in os.listdir(docs):/,/^$/d" -i pyquery/test.py
-}
 
 src_install() {
 	distutils_src_install
