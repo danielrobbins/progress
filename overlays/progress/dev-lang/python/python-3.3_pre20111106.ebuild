@@ -12,13 +12,13 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="5e456e1a9e8c"
+	EHG_REVISION="992ba03d60a8"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
 fi
 
-PATCHSET_REVISION="20110911"
+PATCHSET_REVISION="20111023"
 
 DESCRIPTION="Python is an interpreted, interactive, object-oriented programming language."
 HOMEPAGE="http://www.python.org/"
@@ -33,7 +33,7 @@ LICENSE="PSF-2"
 SLOT="3.3"
 PYTHON_ABI="${SLOT}"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~sparc-fbsd ~x86-fbsd"
-IUSE="build doc elibc_uclibc examples gdbm ipv6 +ncurses +readline sqlite +ssl +threads tk +wide-unicode wininst +xml"
+IUSE="build doc elibc_uclibc examples gdbm ipv6 +ncurses +readline sqlite +ssl +threads tk wininst +xml"
 
 RDEPEND=">=app-admin/eselect-python-20091230
 		app-arch/bzip2
@@ -41,7 +41,7 @@ RDEPEND=">=app-admin/eselect-python-20091230
 		virtual/libffi
 		virtual/libintl
 		!build? (
-			gdbm? ( sys-libs/gdbm )
+			gdbm? ( sys-libs/gdbm[berkdb] )
 			ncurses? (
 				>=sys-libs/ncurses-5.2
 				readline? ( >=sys-libs/readline-4.1 )
@@ -207,7 +207,6 @@ src_configure() {
 		--enable-shared \
 		$(use_enable ipv6) \
 		$(use_with threads) \
-		$(use_with wide-unicode) \
 		--infodir='${prefix}/share/info' \
 		--mandir='${prefix}/share/man' \
 		--with-computed-gotos \
