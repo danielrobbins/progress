@@ -4,11 +4,10 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.* *-jython"
 
 inherit distutils
 
-DESCRIPTION="ASN.1 types and codecs"
+DESCRIPTION="ASN.1 library for Python"
 HOMEPAGE="http://pyasn1.sourceforge.net/ http://pypi.python.org/pypi/pyasn1"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
@@ -24,7 +23,7 @@ DOCS="CHANGES README THANKS TODO"
 
 src_test() {
 	testing() {
-		PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" test/suite.py
+		PYTHONPATH="build-${PYTHON_ABI}/lib:." "$(PYTHON)" test/suite.py
 	}
 	python_execute_function testing
 }
@@ -32,12 +31,4 @@ src_test() {
 src_install() {
 	distutils_src_install
 	dohtml doc/*
-}
-
-pkg_postinst() {
-	distutils_pkg_postinst
-
-	elog
-	elog "ASN.1 modules have been split to dev-python/pyasn1-modules package."
-	elog
 }
