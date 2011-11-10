@@ -481,8 +481,8 @@ _python_parse_dependencies_in_new_EAPIs() {
 	done
 
 
-	if ! has "${EAPI:-0}" 4 && _python_package_supporting_installation_for_multiple_python_abis && [[ "${input_variable}" == "PYTHON_DEPEND" ]]; then
-		REQUIRED_USE="${required_USE_flags}"
+	if ! has "${EAPI:-0}" 4 && _python_package_supporting_installation_for_multiple_python_abis; then
+		REQUIRED_USE+="${REQUIRED_USE:+ }${required_USE_flags}"
 	fi
 
 	unset -f _get_matched_USE_dependencies
