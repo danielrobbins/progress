@@ -15,16 +15,11 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 LICENSE="LGPL-2.1"
 SLOT="0"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~x86-fbsd ~x86-interix ~amd64-linux ~x86-linux ~ppc-macos ~x86-macos ~sparc-solaris"
-IUSE="examples"
+IUSE="doc examples"
 
 RDEPEND="$(python_abi_depend ">=dev-python/pycrypto-2.1")"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
-
-src_prepare() {
-	distutils_src_prepare
-	sed -e "s/pycrypto >= 2.1, < 2.4/pycrypto >= 2.1/" -i setup.py
-}
 
 src_test() {
 	testing() {
@@ -35,6 +30,10 @@ src_test() {
 
 src_install() {
 	distutils_src_install
+
+	if use doc; then
+		dohtml docs/*
+	fi
 
 	if use examples; then
 		insinto /usr/share/doc/${PF}
