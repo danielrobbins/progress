@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 GCONF_DEBUG="no"
@@ -37,6 +36,7 @@ DEPEND="${RDEPEND}
 src_prepare() {
 	# Fix declaration of codegen in .pc
 	epatch "${FILESDIR}/${PN}-2.13.0-fix-codegen-location.patch"
+	epatch "${FILESDIR}/${PN}-2.14.1-libdir-pc.patch"
 
 	# Disable pyc compiling
 	mv "${S}"/py-compile "${S}"/py-compile.orig
