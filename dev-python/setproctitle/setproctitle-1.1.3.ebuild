@@ -1,0 +1,49 @@
+# Copyright 1999-2011 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+
+EAPI="4-python"
+PYTHON_MULTIPLE_ABIS="1"
+PYTHON_RESTRICTED_ABIS="*-jython"
+DISTUTILS_SRC_TEST="nosetests"
+
+inherit distutils toolchain-funcs
+
+DESCRIPTION="Allow customization of the process title."
+HOMEPAGE="http://code.google.com/p/py-setproctitle/ http://pypi.python.org/pypi/setproctitle"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
+
+LICENSE="BSD"
+SLOT="0"
+KEYWORDS="~amd64 ~x86"
+IUSE=""
+
+DEPEND=""
+RDEPEND=""
+
+DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES="1"
+DOCS="HISTORY README"
+
+src_prepare() {
+	python_copy_sources
+
+	preparation() {
+		if [[ "$(python_get_version -l --major)" == "3" ]]; then
+			2to3-${PYTHON_ABI} -nw --no-diffs tests
+		fi
+	}
+	python_execute_function -s preparation
+}
+
+distutils_src_test_pre_hook() {
+	ln -fs pyrun-${PYTHON_ABI} tests/pyrun
+}
+
+src_test() {
+	build_pyrun() {
+		echo $(tc-getCC) ${CPPFLAGS} ${CFLAGS} ${LDFLAGS} -I$(python_get_includedir) -o tests/pyrun-${PYTHON_ABI} tests/pyrun.c $(python_get_library -l)
+		$(tc-getCC) ${CPPFLAGS} ${CFLAGS} ${LDFLAGS} -I$(python_get_includedir) -o tests/pyrun-${PYTHON_ABI} tests/pyrun.c $(python_get_library -l)
+	}
+	python_execute_function -q -s build_pyrun
+
+	distutils_src_test
+}
