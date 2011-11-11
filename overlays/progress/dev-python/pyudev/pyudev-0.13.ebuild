@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
@@ -32,7 +31,7 @@ src_prepare() {
 	distutils_src_prepare
 
 	# Fix run_path.
-	sed -i -e "s|/run/udev|/dev/.udev|g" tests/test_core.py
+	sed -i -e "s|== \('/run/udev'\)|in (\1, '/dev/.udev')|g" tests/test_core.py
 
 	if ! use pygobject; then
 		rm -f pyudev/glib.py
