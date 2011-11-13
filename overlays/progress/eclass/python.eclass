@@ -1247,10 +1247,10 @@ if ! has "${EAPI:-0}" 0 1; then
 			python_execute_function -d -s -- "$@"
 		else
 			python_installation() {
-				emake DESTDIR="${T}/images/${PYTHON_ABI}" install "$@"
+				python_execute ${MAKE:-make} ${MAKEOPTS} ${EXTRA_EMAKE} DESTDIR="${T}/images/${PYTHON_ABI}" install "$@"
 			}
 			python_execute_function -s python_installation "$@"
-			unset python_installation
+			unset -f python_installation
 
 			python_merge_intermediate_installation_images "${T}/images"
 		fi
@@ -1553,19 +1553,19 @@ python_execute_function() {
 			fi
 		elif [[ "${EBUILD_PHASE}" == "compile" ]]; then
 			python_default_function() {
-				emake "$@"
+				python_execute ${MAKE:-make} ${MAKEOPTS} ${EXTRA_EMAKE} "$@"
 			}
 		elif [[ "${EBUILD_PHASE}" == "test" ]]; then
 			python_default_function() {
-				if emake -j1 -n check &> /dev/null; then
-					emake -j1 check "$@"
-				elif emake -j1 -n test &> /dev/null; then
-					emake -j1 test "$@"
+				if make -n check &> /dev/null; then
+					python_execute ${MAKE:-make} ${MAKEOPTS} ${EXTRA_EMAKE} -j1 check "$@"
+				elif make -n test &> /dev/null; then
+					python_execute ${MAKE:-make} ${MAKEOPTS} ${EXTRA_EMAKE} -j1 test "$@"
 				fi
 			}
 		elif [[ "${EBUILD_PHASE}" == "install" ]]; then
 			python_default_function() {
-				emake DESTDIR="${D}" install "$@"
+				python_execute ${MAKE:-make} ${MAKEOPTS} ${EXTRA_EMAKE} DESTDIR="${D}" install "$@"
 			}
 		else
 			die "${FUNCNAME}(): '--default-function' option cannot be used in this ebuild phase"
