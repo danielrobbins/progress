@@ -967,6 +967,48 @@ if ! has "${EAPI:-0}" 0 1 2 3 || { has "${EAPI:-0}" 2 3 && [[ -n "${PYTHON_USE_W
 	EXPORT_FUNCTIONS pkg_setup
 fi
 
+# @FUNCTION: python_execute
+# @USAGE: [variables] <command> [arguments]
+# @DESCRIPTION:
+# Print and execute specified command.
+python_execute() {
+	_python_check_python_pkg_setup_execution
+	_python_set_color_variables
+
+	local argument letters printed_command=()
+
+	letters="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+
+	for argument in "$@"; do
+		if [[ "${argument}" =~ ^[${letters}_][${letters}0123456789_]*= ]]; then
+			printed_command+=("${argument%%=*}=\"${argument#*=}\"")
+		else
+			if [[ "${argument}" =~ [${IFS}] ]]; then
+				printed_command+=("\"${argument}\"")
+			else
+				printed_command+=("${argument}")
+			fi
+		fi
+	done
+
+	while (($#)); do
+		if [[ "$1" =~ ^[${letters}_][${letters}0123456789_]*= ]]; then
+			local "$1"
+			export "$1"
+		else
+			break
+		fi
+		shift
+	done
+
+	if [[ "$#" -eq 0 ]]; then
+		die "${FUNCNAME}(): Missing command"
+	fi
+
+	echo "${_BOLD}""${printed_command[@]}""${_NORMAL}"
+	"$@"
+}
+
 _PYTHON_SHEBANG_BASE_PART_REGEX='^#![[:space:]]*([^[:space:]]*/usr/bin/env[[:space:]]+)?([^[:space:]]*/)?(jython|pypy-c|python)'
 
 # @FUNCTION: python_convert_shebangs
