@@ -141,7 +141,7 @@ unset -f _python_set_IUSE
 #   PYTHON_DEPEND:             [[!]USE_flag? ]<versions_range>
 #
 # Syntax of versions range:
-#   versions_range:            [[!]USE_flag? ]<version_components_group>[ version_components_group]
+#   versions_range:            <version_components_group>[ version_components_group]
 #   version_components_group:  <major_version[:[minimal_version][:maximal_version]]>
 #   major_version:             <2|3|*>
 #   minimal_version:           <minimal_major_version.minimal_minor_version>
@@ -160,7 +160,7 @@ unset -f _python_set_IUSE
 #   PYTHON_BDEPEND:            [[!]USE_flag? ]<versions_range>
 #
 # Syntax of versions range:
-#   versions_range:            [[!]USE_flag? ]<version_components_group>[ version_components_group]
+#   versions_range:            <version_components_group>[ version_components_group]
 #   version_components_group:  <major_version[:[minimal_version][:maximal_version]]>
 #   major_version:             <2|3|*>
 #   minimal_version:           <minimal_major_version.minimal_minor_version>
