@@ -12,13 +12,13 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="c63087ac1f6c"
+	EHG_REVISION="c6dafa2e2594"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
 fi
 
-PATCHSET_REVISION="20111016"
+PATCHSET_REVISION="20111023"
 
 DESCRIPTION="Python is an interpreted, interactive, object-oriented programming language."
 HOMEPAGE="http://www.python.org/"
@@ -41,7 +41,7 @@ RDEPEND=">=app-admin/eselect-python-20091230
 		virtual/libffi
 		virtual/libintl
 		!build? (
-			gdbm? ( sys-libs/gdbm )
+			gdbm? ( sys-libs/gdbm[berkdb] )
 			ncurses? (
 				>=sys-libs/ncurses-5.2
 				readline? ( >=sys-libs/readline-4.1 )
@@ -240,7 +240,7 @@ src_test() {
 	python_enable_pyc
 
 	# Skip failing tests.
-	local skipped_tests="distutils gdb"
+	local skipped_tests="gdb"
 
 	for test in ${skipped_tests}; do
 		mv "${S}/Lib/test/test_${test}.py" "${T}"
