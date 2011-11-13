@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_EXPORT_PHASE_FUNCTIONS="1"
@@ -28,7 +27,7 @@ RDEPEND="${DEPEND}"
 S="${WORKDIR}/${MY_P}/Python"
 
 src_prepare() {
-	epatch "${FILESDIR}/${P}-disable_stripping.patch"
+	epatch "${FILESDIR}/${PN}-2.5.1-disable_stripping.patch"
 
 	python_copy_sources
 }
