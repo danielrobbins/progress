@@ -36,11 +36,10 @@ src_compile() {
 }
 
 src_test() {
-	echo "$(PYTHON -f)" setup.py build_test_extension
-	"$(PYTHON -f)" setup.py build_test_extension || die "Building of test loadable extension failed"
+	python_execute "$(PYTHON -f)" setup.py build_test_extension || die "Building of test loadable extension failed"
 
 	testing() {
-		PYTHONPATH="$(ls -d build-${PYTHON_ABI}/lib.*)" "$(PYTHON)" tests.py -v
+		python_execute PYTHONPATH="$(ls -d build-${PYTHON_ABI}/lib.*)" "$(PYTHON)" tests.py -v
 	}
 	python_execute_function testing
 }

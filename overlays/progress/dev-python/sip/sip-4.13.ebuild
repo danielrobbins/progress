@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
@@ -47,8 +46,7 @@ src_configure() {
 			CXXFLAGS="${CXXFLAGS}"
 			LFLAGS="${LDFLAGS}"
 			STRIP=":")
-		echo "${myconf[@]}"
-		"${myconf[@]}"
+		python_execute "${myconf[@]}"
 	}
 	python_execute_function -s configuration
 }

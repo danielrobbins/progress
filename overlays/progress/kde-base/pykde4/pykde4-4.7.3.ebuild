@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 
@@ -84,11 +83,6 @@ src_configure() {
 	python_execute_function configuration
 }
 
-echo_and_run() {
-	echo "$@"
-	"$@"
-}
-
 src_compile() {
 	compilation() {
 		local CMAKE_BUILD_DIR=${S}_build-${PYTHON_ABI}
@@ -98,14 +92,14 @@ src_compile() {
 
 	if ${have_python2}; then
 		cd "${WORKDIR}/wrapper"
-		echo_and_run libtool --tag=CC --mode=compile $(tc-getCC) \
+		python_execute libtool --tag=CC --mode=compile $(tc-getCC) \
 			-shared \
 			${CFLAGS} ${CPPFLAGS} \
 			-DEPREFIX="\"${EPREFIX}\"" \
 			-DPLUGIN_DIR="\"/usr/$(get_libdir)/kde4\"" -c \
 			-o kpythonpluginfactorywrapper.lo \
 			kpythonpluginfactorywrapper.c
-		echo_and_run libtool --tag=CC --mode=link $(tc-getCC) \
+		python_execute libtool --tag=CC --mode=link $(tc-getCC) \
 			-shared -module -avoid-version \
 			${CFLAGS} ${LDFLAGS} \
 			-o kpythonpluginfactory.la \
@@ -131,7 +125,7 @@ src_install() {
 
 	if ${have_python2}; then
 		cd "${WORKDIR}/wrapper"
-		echo_and_run libtool --mode=install install kpythonpluginfactory.la "${ED}/usr/$(get_libdir)/kde4/kpythonpluginfactory.la"
+		python_execute libtool --mode=install install kpythonpluginfactory.la "${ED}/usr/$(get_libdir)/kde4/kpythonpluginfactory.la"
 		rm "${ED}/usr/$(get_libdir)/kde4/kpythonpluginfactory.la"
 	fi
 }

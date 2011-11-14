@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
@@ -47,8 +46,7 @@ src_test() {
 		rm -f build
 		ln -s build-${PYTHON_ABI} build
 
-		echo TMPDIR="${T}/tests-${PYTHON_ABI}" "$(PYTHON)" test.py
-		TMPDIR="${T}/tests-${PYTHON_ABI}" "$(PYTHON)" test.py
+		python_execute TMPDIR="${T}/tests-${PYTHON_ABI}" "$(PYTHON)" test.py
 	}
 	python_execute_function tests
 }

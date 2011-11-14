@@ -40,8 +40,7 @@ distutils_src_test_pre_hook() {
 
 src_test() {
 	build_pyrun() {
-		echo $(tc-getCC) ${CPPFLAGS} ${CFLAGS} ${LDFLAGS} -I$(python_get_includedir) -o tests/pyrun-${PYTHON_ABI} tests/pyrun.c $(python_get_library -l)
-		$(tc-getCC) ${CPPFLAGS} ${CFLAGS} ${LDFLAGS} -I$(python_get_includedir) -o tests/pyrun-${PYTHON_ABI} tests/pyrun.c $(python_get_library -l)
+		python_execute $(tc-getCC) ${CPPFLAGS} ${CFLAGS} ${LDFLAGS} -I$(python_get_includedir) -o tests/pyrun-${PYTHON_ABI} tests/pyrun.c $(python_get_library -l)
 	}
 	python_execute_function -q -s build_pyrun
 

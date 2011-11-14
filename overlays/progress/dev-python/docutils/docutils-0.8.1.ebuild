@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
@@ -50,8 +49,7 @@ src_compile() {
 
 	pushd tools > /dev/null
 
-	echo PYTHONPATH="../build-$(PYTHON -f --ABI)/lib" "$(PYTHON -f)" $([[ -f ../build-$(PYTHON -f --ABI)/lib/tools/buildhtml.py ]] && echo ../build-$(PYTHON -f --ABI)/lib/tools/buildhtml.py || echo ../tools/buildhtml.py) --input-encoding=utf-8 --stylesheet-path=../html4css1.css --traceback ../docs
-	PYTHONPATH="../build-$(PYTHON -f --ABI)/lib" "$(PYTHON -f)" $([[ -f ../build-$(PYTHON -f --ABI)/lib/tools/buildhtml.py ]] && echo ../build-$(PYTHON -f --ABI)/lib/tools/buildhtml.py || echo ../tools/buildhtml.py) --input-encoding=utf-8 --stylesheet-path=../html4css1.css --traceback ../docs || die "buildhtml.py failed"
+	python_execute PYTHONPATH="../build-$(PYTHON -f --ABI)/lib" "$(PYTHON -f)" $([[ -f ../build-$(PYTHON -f --ABI)/lib/tools/buildhtml.py ]] && echo ../build-$(PYTHON -f --ABI)/lib/tools/buildhtml.py || echo ../tools/buildhtml.py) --input-encoding=utf-8 --stylesheet-path=../html4css1.css --traceback ../docs || die "buildhtml.py failed"
 
 	popd > /dev/null
 
@@ -61,8 +59,7 @@ src_compile() {
 
 src_test() {
 	testing() {
-		echo PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" $([[ -f build-${PYTHON_ABI}/lib/test/alltests.py ]] && echo build-${PYTHON_ABI}/lib/test/alltests.py || echo test/alltests.py)
-		PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" $([[ -f build-${PYTHON_ABI}/lib/test/alltests.py ]] && echo build-${PYTHON_ABI}/lib/test/alltests.py || echo test/alltests.py)
+		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" $([[ -f build-${PYTHON_ABI}/lib/test/alltests.py ]] && echo build-${PYTHON_ABI}/lib/test/alltests.py || echo test/alltests.py)
 	}
 	python_execute_function testing
 }
