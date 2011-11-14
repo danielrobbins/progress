@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
@@ -30,8 +29,7 @@ src_test() {
 	testing() {
 		local exit_status="0" test tests="db http net template utils"
 		for test in ${tests}; do
-			echo "Running doctests in ${test}.py..."
-			"$(PYTHON)" web/${test}.py || exit_status="$?"
+			python_execute "$(PYTHON)" web/${test}.py || exit_status="$?"
 		done
 
 		return "${exit_status}"

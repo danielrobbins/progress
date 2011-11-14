@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
@@ -117,8 +116,7 @@ src_configure() {
 			CFLAGS="${CFLAGS}"
 			CXXFLAGS="${CXXFLAGS}"
 			LFLAGS="${LDFLAGS}")
-		echo "${myconf[@]}"
-		"${myconf[@]}" || return 1
+		python_execute "${myconf[@]}" || return 1
 
 		local mod
 		for mod in QtCore $(use X && echo QtDesigner QtGui) $(use declarative && echo QtDeclarative) $(use opengl && echo QtOpenGL); do

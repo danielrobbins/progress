@@ -39,8 +39,7 @@ src_configure() {
 			-p 4
 			--destdir="${EPREFIX}$(python_get_sitedir)/PyQt4"
 			$(use debug && echo --debug))
-		echo "${myconf[@]}"
-		"${myconf[@]}"
+		python_execute "${myconf[@]}"
 	}
 	python_execute_function -s configuration
 }
