@@ -3126,11 +3126,9 @@ python_execute_nosetests() {
 		_PYTHON_TEST_FUNCTION="python_execute_nosetests" _python_test_hook pre
 
 		if [[ -n "${evaluated_PYTHONPATH}" ]]; then
-			echo ${_BOLD}PYTHONPATH="${evaluated_PYTHONPATH}" nosetests --verbosity="${PYTHON_TEST_VERBOSITY}" "${arguments[@]}"${_NORMAL}
-			PYTHONPATH="${evaluated_PYTHONPATH}" nosetests --verbosity="${PYTHON_TEST_VERBOSITY}" "${arguments[@]}" || return "$?"
+			python_execute PYTHONPATH="${evaluated_PYTHONPATH}" nosetests --verbosity="${PYTHON_TEST_VERBOSITY}" "${arguments[@]}" || return "$?"
 		else
-			echo ${_BOLD}nosetests --verbosity="${PYTHON_TEST_VERBOSITY}" "${arguments[@]}"${_NORMAL}
-			nosetests --verbosity="${PYTHON_TEST_VERBOSITY}" "${arguments[@]}" || return "$?"
+			python_execute nosetests --verbosity="${PYTHON_TEST_VERBOSITY}" "${arguments[@]}" || return "$?"
 		fi
 
 		_PYTHON_TEST_FUNCTION="python_execute_nosetests" _python_test_hook post
@@ -3201,11 +3199,9 @@ python_execute_py.test() {
 		_PYTHON_TEST_FUNCTION="python_execute_py.test" _python_test_hook pre
 
 		if [[ -n "${evaluated_PYTHONPATH}" ]]; then
-			echo ${_BOLD}PYTHONPATH="${evaluated_PYTHONPATH}" py.test $([[ "${PYTHON_TEST_VERBOSITY}" -ge 2 ]] && echo -v) "${arguments[@]}"${_NORMAL}
-			PYTHONPATH="${evaluated_PYTHONPATH}" py.test $([[ "${PYTHON_TEST_VERBOSITY}" -ge 2 ]] && echo -v) "${arguments[@]}" || return "$?"
+			python_execute PYTHONPATH="${evaluated_PYTHONPATH}" py.test $([[ "${PYTHON_TEST_VERBOSITY}" -ge 2 ]] && echo -v) "${arguments[@]}" || return "$?"
 		else
-			echo ${_BOLD}py.test $([[ "${PYTHON_TEST_VERBOSITY}" -gt 1 ]] && echo -v) "${arguments[@]}"${_NORMAL}
-			py.test $([[ "${PYTHON_TEST_VERBOSITY}" -gt 1 ]] && echo -v) "${arguments[@]}" || return "$?"
+			python_execute py.test $([[ "${PYTHON_TEST_VERBOSITY}" -gt 1 ]] && echo -v) "${arguments[@]}" || return "$?"
 		fi
 
 		_PYTHON_TEST_FUNCTION="python_execute_py.test" _python_test_hook post
@@ -3276,11 +3272,9 @@ python_execute_trial() {
 		_PYTHON_TEST_FUNCTION="python_execute_trial" _python_test_hook pre
 
 		if [[ -n "${evaluated_PYTHONPATH}" ]]; then
-			echo ${_BOLD}PYTHONPATH="${evaluated_PYTHONPATH}" trial $([[ "${PYTHON_TEST_VERBOSITY}" -ge 4 ]] && echo --spew) "${arguments[@]}"${_NORMAL}
-			PYTHONPATH="${evaluated_PYTHONPATH}" trial $([[ "${PYTHON_TEST_VERBOSITY}" -ge 4 ]] && echo --spew) "${arguments[@]}" || return "$?"
+			python_execute PYTHONPATH="${evaluated_PYTHONPATH}" trial $([[ "${PYTHON_TEST_VERBOSITY}" -ge 4 ]] && echo --spew) "${arguments[@]}" || return "$?"
 		else
-			echo ${_BOLD}trial $([[ "${PYTHON_TEST_VERBOSITY}" -ge 4 ]] && echo --spew) "${arguments[@]}"${_NORMAL}
-			trial $([[ "${PYTHON_TEST_VERBOSITY}" -ge 4 ]] && echo --spew) "${arguments[@]}" || return "$?"
+			python_execute trial $([[ "${PYTHON_TEST_VERBOSITY}" -ge 4 ]] && echo --spew) "${arguments[@]}" || return "$?"
 		fi
 
 		_PYTHON_TEST_FUNCTION="python_execute_trial" _python_test_hook post
