@@ -241,8 +241,7 @@ distutils_src_compile() {
 			for setup_file in "${DISTUTILS_SETUP_FILES[@]-setup.py}"; do
 				_distutils_prepare_current_working_directory "${setup_file}"
 
-				echo ${_BOLD}"$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" build -b "$(_distutils_get_build_dir)" "$@"${_NORMAL}
-				"$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" build -b "$(_distutils_get_build_dir)" "$@" || return "$?"
+				python_execute "$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" build -b "$(_distutils_get_build_dir)" "$@" || return "$?"
 
 				_distutils_restore_current_working_directory "${setup_file}"
 			done
@@ -257,8 +256,7 @@ distutils_src_compile() {
 		for setup_file in "${DISTUTILS_SETUP_FILES[@]-setup.py}"; do
 			_distutils_prepare_current_working_directory "${setup_file}"
 
-			echo ${_BOLD}"$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" build "$@"${_NORMAL}
-			"$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" build "$@" || die "Building failed"
+			python_execute "$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" build "$@" || die "Building failed"
 
 			_distutils_restore_current_working_directory "${setup_file}"
 		done
@@ -312,8 +310,7 @@ distutils_src_test() {
 				for setup_file in "${DISTUTILS_SETUP_FILES[@]-setup.py}"; do
 					_distutils_prepare_current_working_directory "${setup_file}"
 
-					echo ${_BOLD}PYTHONPATH="$(_distutils_get_PYTHONPATH)" "$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" $([[ -z "${DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES}" ]] && echo build -b "$(_distutils_get_build_dir)") test "$@"${_NORMAL}
-					PYTHONPATH="$(_distutils_get_PYTHONPATH)" "$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" $([[ -z "${DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES}" ]] && echo build -b "$(_distutils_get_build_dir)") test "$@" || return "$?"
+					python_execute PYTHONPATH="$(_distutils_get_PYTHONPATH)" "$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" $([[ -z "${DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES}" ]] && echo build -b "$(_distutils_get_build_dir)") test "$@" || return "$?"
 
 					_distutils_restore_current_working_directory "${setup_file}"
 				done
@@ -328,8 +325,7 @@ distutils_src_test() {
 			for setup_file in "${DISTUTILS_SETUP_FILES[@]-setup.py}"; do
 				_distutils_prepare_current_working_directory "${setup_file}"
 
-				echo ${_BOLD}PYTHONPATH="$(_distutils_get_PYTHONPATH)" "$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" test "$@"${_NORMAL}
-				PYTHONPATH="$(_distutils_get_PYTHONPATH)" "$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" test "$@" || die "Testing failed"
+				python_execute PYTHONPATH="$(_distutils_get_PYTHONPATH)" "$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" test "$@" || die "Testing failed"
 
 				_distutils_restore_current_working_directory "${setup_file}"
 			done
@@ -385,8 +381,7 @@ distutils_src_install() {
 			for setup_file in "${DISTUTILS_SETUP_FILES[@]-setup.py}"; do
 				_distutils_prepare_current_working_directory "${setup_file}"
 
-				echo ${_BOLD}"$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" $([[ -z "${DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES}" ]] && echo build -b "$(_distutils_get_build_dir)") install --no-compile --root="${T}/images/${PYTHON_ABI}" "$@"${_NORMAL}
-				"$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" $([[ -z "${DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES}" ]] && echo build -b "$(_distutils_get_build_dir)") install --no-compile --root="${T}/images/${PYTHON_ABI}" "$@" || return "$?"
+				python_execute "$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" $([[ -z "${DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES}" ]] && echo build -b "$(_distutils_get_build_dir)") install --no-compile --root="${T}/images/${PYTHON_ABI}" "$@" || return "$?"
 
 				_distutils_restore_current_working_directory "${setup_file}"
 			done
@@ -406,8 +401,7 @@ distutils_src_install() {
 		for setup_file in "${DISTUTILS_SETUP_FILES[@]-setup.py}"; do
 			_distutils_prepare_current_working_directory "${setup_file}"
 
-			echo ${_BOLD}"$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" install --root="${D}" --no-compile "$@"${_NORMAL}
-			"$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" install --root="${D}" --no-compile "$@" || die "Installation failed"
+			python_execute "$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" install --root="${D}" --no-compile "$@" || die "Installation failed"
 
 			_distutils_restore_current_working_directory "${setup_file}"
 		done
