@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
@@ -32,7 +31,7 @@ src_prepare() {
 src_test() {
 	testing() {
 		pushd "python$(python_get_version --major)" > /dev/null
-		"$(PYTHON)" httplib2test.py
+		python_execute "$(PYTHON)" httplib2test.py
 		popd > /dev/null
 	}
 	python_execute_function testing
