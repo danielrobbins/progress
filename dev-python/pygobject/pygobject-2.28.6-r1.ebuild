@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 GCONF_DEBUG="no"
@@ -50,8 +49,6 @@ pkg_setup() {
 }
 
 src_prepare() {
-	gnome2_src_prepare
-
 	# Fix FHS compliance, see upstream bug #535524
 	epatch "${FILESDIR}/${PN}-2.28.3-fix-codegen-location.patch"
 
@@ -71,6 +68,7 @@ src_prepare() {
 	ln -sfn $(type -P true) py-compile
 
 	eautoreconf
+	gnome2_src_prepare
 
 	python_copy_sources
 }
