@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 GCONF_DEBUG="no"
@@ -58,8 +57,6 @@ pkg_setup() {
 }
 
 src_prepare() {
-	gnome2_src_prepare
-
 	# Do not build tests if unneeded, bug #226345
 	epatch "${FILESDIR}/${PN}-2.90.1-make_check.patch"
 
@@ -73,6 +70,7 @@ src_prepare() {
 	ln -sfn $(type -P true) py-compile
 
 	eautoreconf
+	gnome2_src_prepare
 
 	python_copy_sources
 }
