@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
@@ -12,7 +11,7 @@ inherit distutils
 MY_PN="ZODB3"
 MY_P="${MY_PN}-${PV}"
 
-DESCRIPTION="Zope Object Database"
+DESCRIPTION="Zope Object Database: object database and persistence"
 HOMEPAGE="http://pypi.python.org/pypi/ZODB3 https://launchpad.net/zodb"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
