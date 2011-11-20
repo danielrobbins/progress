@@ -53,10 +53,10 @@ twisted_src_test() {
 		rm -fr "${T}/${sitedir}/${PN/-//}"
 
 		# Install modules of current package to temporary directory.
-		"$(PYTHON)" setup.py build -b "build-${PYTHON_ABI}" install --force --no-compile --root="${T}" || die "Installation into temporary directory failed with $(python_get_implementation_and_version)"
+		python_execute "$(PYTHON)" setup.py build -b "build-${PYTHON_ABI}" install --force --no-compile --root="${T}" || die "Installation into temporary directory failed with $(python_get_implementation_and_version)"
 
 		pushd "${T}/${sitedir}" > /dev/null || return 1
-		PATH="${T}${EPREFIX}/usr/bin:${PATH}" PYTHONPATH="${T}/${sitedir}" trial ${PN/-/.} || return 1
+		python_execute PATH="${T}${EPREFIX}/usr/bin:${PATH}" PYTHONPATH="${T}/${sitedir}" trial ${PN/-/.} || return 1
 		popd > /dev/null || return 1
 
 		rm -fr "${T}/${sitedir}"
