@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
@@ -10,11 +9,10 @@ MY_PACKAGE="Core"
 inherit eutils twisted versionator
 
 DESCRIPTION="An asynchronous networking framework written in Python"
-HOMEPAGE="http://www.twistedmatrix.com/ http://pypi.python.org/pypi/Twisted"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="alpha amd64 arm hppa ia64 ~mips ppc ~ppc64 s390 sh sparc x86 ~x86-fbsd ~ia64-hpux ~x86-interix ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
+KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~x86-fbsd ~ia64-hpux ~x86-interix ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
 IUSE="crypt gtk serial"
 
 DEPEND="$(python_abi_depend net-zope/zope-interface)
@@ -31,9 +29,6 @@ src_prepare(){
 	# Give a load-sensitive test a better chance of succeeding.
 	epatch "${FILESDIR}/${PN}-2.1.0-echo-less.patch"
 
-	# Pass valid arguments to "head" in the zsh completion function.
-	epatch "${FILESDIR}/${PN}-2.1.0-zsh-head.patch"
-
 	# Respect TWISTED_DISABLE_WRITING_OF_PLUGIN_CACHE variable.
 	epatch "${FILESDIR}/${PN}-9.0.0-respect_TWISTED_DISABLE_WRITING_OF_PLUGIN_CACHE.patch"
 
@@ -49,12 +44,15 @@ src_prepare(){
 src_test() {
 	testing() {
 		local exit_status="0"
-		"$(PYTHON)" setup.py build -b "build-${PYTHON_ABI}" install --root="${T}/tests" --no-compile || die "Installation of tests failed with $(python_get_implementation_and_version)"
+		python_execute "$(PYTHON)" setup.py build -b "build-${PYTHON_ABI}" install --root="${T}/tests" --no-compile || die "Installation of tests failed with $(python_get_implementation_and_version)"
 
 		pushd "${T}/tests${EPREFIX}$(python_get_sitedir)" > /dev/null || die
 
 		# Skip broken tests.
 		sed -e "s/test_buildAllTarballs/_&/" -i twisted/python/test/test_release.py || die "sed failed"
+
+		# http://twistedmatrix.com/trac/ticket/5375
+		sed -e "/class ZshIntegrationTestCase/,/^$/d" -i twisted/scripts/test/test_scripts.py || die "sed failed"
 
 		# Prevent it from pulling in plugins from already installed twisted packages.
 		rm -f twisted/plugins/__init__.py
@@ -62,7 +60,7 @@ src_test() {
 		# An empty file doesn't work because the tests check for doc strings in all packages.
 		echo "'''plugins stub'''" > twisted/plugins/__init__.py || die
 
-		if ! PYTHONPATH="." "${T}/tests${EPREFIX}/usr/bin/trial" twisted; then
+		if ! python_execute PYTHONPATH="." "${T}/tests${EPREFIX}/usr/bin/trial" twisted; then
 			if [[ -n "${TWISTED_DEBUG_TESTS}" ]]; then
 				die "Tests failed with $(python_get_implementation_and_version)"
 			else
@@ -99,8 +97,4 @@ src_install() {
 
 	newconfd "${FILESDIR}/twistd.conf" twistd
 	newinitd "${FILESDIR}/twistd.init" twistd
-
-	# zsh completion
-	insinto /usr/share/zsh/site-functions
-	doins twisted/python/_twisted_zsh_stub
 }
