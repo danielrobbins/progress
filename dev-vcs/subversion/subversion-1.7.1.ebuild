@@ -1,40 +1,53 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_DEPEND="ctypes-python? ( <<>> ) python? ( <<>> )"
+if [[ "${PV}" == *_pre* ]]; then
+	# autogen.sh calls gen-make.py.
+	PYTHON_BDEPEND="<<>>"
+else
+	PYTHON_BDEPEND="test? ( <<>> )"
+fi
 PYTHON_MULTIPLE_ABIS="1"
 # ctypes module required by Subversion Ctypes Python bindings.
 PYTHON_RESTRICTED_ABIS="2.4 3.* *-jython *-pypy-*"
-WANT_AUTOMAKE="none"
+if [[ "${PV}" != *_pre* ]]; then
+	WANT_AUTOMAKE="none"
+fi
 
-inherit autotools bash-completion db-use depend.apache elisp-common eutils flag-o-matic java-pkg-opt-2 libtool multilib perl-module python
+inherit $([[ "${PV}" != *_pre* ]] && echo autotools) bash-completion db-use depend.apache eutils flag-o-matic java-pkg-opt-2 libtool multilib perl-module python $([[ "${PV}" == *_pre* ]] && echo subversion)
 
 DESCRIPTION="Advanced version control system"
 HOMEPAGE="http://subversion.apache.org/"
-SRC_URI="http://subversion.tigris.org/downloads/${P/_/-}.tar.bz2"
+if [[ "${PV}" == *_pre* ]]; then
+	SRC_URI=""
+else
+	SRC_URI="mirror://apache/${PN}/${P}.tar.bz2"
+fi
 
-LICENSE="Subversion"
+LICENSE="Apache-2.0"
 SLOT="0"
-KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~x86-fbsd"
-IUSE="apache2 berkdb ctypes-python debug doc +dso emacs extras gnome-keyring java kde nls perl python ruby sasl test vim-syntax +webdav-neon webdav-serf"
-REQUIRED_USE="kde? ( nls ) test? ( webdav-neon? ( apache2 ) webdav-serf? ( apache2 ) )"
+KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~x86-fbsd ~amd64-linux ~x86-linux"
+IUSE="apache2 berkdb ctypes-python debug doc +dso extras gnome-keyring java kde kerberos +magic nls perl python ruby sasl static-libs test +webdav-neon webdav-serf"
+REQUIRED_USE="kde? ( nls ) kerberos? ( webdav-serf ) test? ( webdav-neon? ( apache2 ) webdav-serf? ( apache2 ) )"
 
-CDEPEND=">=dev-db/sqlite-3.4[threadsafe]
+CDEPEND=">=dev-db/sqlite-3.6.18[threadsafe]
 	>=dev-libs/apr-1.3:1
 	>=dev-libs/apr-util-1.3:1
 	dev-libs/expat
 	sys-libs/zlib
-	berkdb? ( =sys-libs/db-4* )
-	emacs? ( virtual/emacs )
+	berkdb? ( >=sys-libs/db-4 )
 	gnome-keyring? ( dev-libs/glib:2 sys-apps/dbus gnome-base/gnome-keyring )
 	kde? ( sys-apps/dbus x11-libs/qt-core x11-libs/qt-dbus x11-libs/qt-gui >=kde-base/kdelibs-4 )
+	magic? ( sys-apps/file )
 	perl? ( dev-lang/perl )
 	ruby? ( >=dev-lang/ruby-1.8.2 )
 	sasl? ( dev-libs/cyrus-sasl )
 	webdav-neon? ( >=net-libs/neon-0.28 )
-	webdav-serf? ( >=net-libs/serf-0.3.0:0 )"
+	webdav-serf? ( net-libs/serf:1
+		kerberos? ( virtual/krb5 )
+	)"
 RDEPEND="${CDEPEND}
 	apache2? ( www-servers/apache[apache2_modules_dav] )
 	java? ( >=virtual/jre-1.5 )
@@ -53,8 +66,12 @@ DEPEND="${CDEPEND}
 	java? ( >=virtual/jdk-1.5 )
 	kde? ( dev-util/pkgconfig )
 	nls? ( sys-devel/gettext )
+$(if [[ "${PV}" == *_pre* ]]; then
+	echo "	perl? ( >=dev-lang/swig-1.3.24 )"
+	echo "	python? ( >=dev-lang/swig-1.3.24 )"
+	echo "	ruby? ( >=dev-lang/swig-1.3.24 )"
+fi)
 	test? (
-		=dev-lang/python-2*
 		webdav-neon? ( ${APACHE_TEST_DEPEND} )
 		webdav-serf? ( ${APACHE_TEST_DEPEND} )
 	)
@@ -62,7 +79,11 @@ DEPEND="${CDEPEND}
 
 want_apache
 
-S="${WORKDIR}/${P/_/-}"
+if [[ "${PV}" == *_pre* ]]; then
+	ESVN_PROJECT="subversion"
+	ESVN_REPO_URI="https://svn.apache.org/repos/asf/subversion/trunk"
+	ESVN_REVISION="${PV#*_pre}"
+fi
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 
@@ -128,7 +149,7 @@ pkg_setup() {
 
 	java-pkg-opt-2_pkg_setup
 
-	if use ctypes-python || use python || use test; then
+	if [[ "${PV}" == *_pre* ]] || use ctypes-python || use python || use test; then
 		python_pkg_setup
 	fi
 
@@ -139,9 +160,6 @@ pkg_setup() {
 		ewarn
 		ewarn "WebDAV support needs one of the following USE flags enabled:"
 		ewarn "  webdav-neon webdav-serf"
-		ewarn
-		ewarn "You can do this by enabling one of these flags in /etc/portage/package.use:"
-		ewarn "    ${CATEGORY}/${PN} webdav-neon webdav-serf"
 		ewarn
 		echo -ne "\a"
 	fi
@@ -218,10 +236,7 @@ pkg_setup() {
 }
 
 src_prepare() {
-	epatch "${FILESDIR}/${PN}-1.6.0-disable_linking_against_unneeded_libraries.patch"
-	epatch "${FILESDIR}/${PN}-1.6.2-local_library_preloading.patch"
-	epatch "${FILESDIR}/${PN}-1.6.3-kwallet_window.patch"
-	chmod +x build/transform_libtool_scripts.sh || die "chmod failed"
+	epatch "${FILESDIR}/${PN}-1.7.1-perl_CFLAGS.patch"
 
 	if ! use test; then
 		sed -i \
@@ -231,26 +246,34 @@ src_prepare() {
 
 	sed -e "/SWIG_PY_INCLUDES=/s/\$ac_cv_python_includes/\\\\\$(PYTHON_INCLUDES)/" -i build/ac-macros/swig.m4 || die "sed failed"
 
-	eautoconf
+	if [[ "${PV}" == *_pre* ]]; then
+		./autogen.sh || die "autogen.sh failed"
+	else
+		eautoconf
+	fi
+
 	elibtoolize
 
 	sed -e "s/libsvn_swig_py-1\.la/libsvn_swig_py-\$(PYTHON_VERSION)-1.la/" -i build-outputs.mk || die "sed failed"
 }
 
 src_configure() {
-	local myconf
+	local myconf=()
 
 	if use python || use perl || use ruby; then
-		myconf+=" --with-swig"
+		myconf+=("--with-swig")
 	else
-		myconf+=" --without-swig"
+		myconf+=("--without-swig")
 	fi
 
 	if use java; then
+		local JAVAC_FLAGS="$(java-pkg_javac-args) -encoding iso8859-1"
+		export JAVAC_FLAGS
+
 		if use test && [[ -n "${SVN_TEST_BINDINGS}" ]]; then
-			myconf+=" --with-junit=${EPREFIX}/usr/share/junit-4/lib/junit.jar"
+			myconf+=("--with-junit=${EPREFIX}/usr/share/junit-4/lib/junit.jar")
 		else
-			myconf+=" --without-junit"
+			myconf+=("--without-junit")
 		fi
 	fi
 
@@ -263,13 +286,17 @@ src_configure() {
 		$(use_enable java javahl) \
 		$(use_with java jdk "${JAVA_HOME}") \
 		$(use_with kde kwallet) \
+		$(use_with kerberos gssapi) \
+		$(use_with magic libmagic) \
 		$(use_enable nls) \
 		$(use_with sasl) \
+		$(use_enable static-libs static) \
 		$(use_with webdav-neon neon) \
 		$(use_with webdav-serf serf "${EPREFIX}/usr") \
-		${myconf} \
+		"${myconf[@]}" \
 		--with-apr="${EPREFIX}/usr/bin/apr-1-config" \
 		--with-apr-util="${EPREFIX}/usr/bin/apu-1-config" \
+		--enable-disallowing-of-undefined-references \
 		--disable-experimental-libtool \
 		--without-jikes \
 		--enable-local-library-preloading \
@@ -341,22 +368,7 @@ src_compile() {
 		print
 		print "Building of Subversion JavaHL library"
 		print
-		emake -j1 JAVAC_FLAGS="$(java-pkg_javac-args) -encoding iso8859-1" javahl || die "Building of Subversion JavaHL library failed"
-	fi
-
-	if use emacs; then
-		print
-		print "Compilation of Emacs modules"
-		print
-		elisp-compile contrib/client-side/emacs/{dsvn,psvn,vc-svn}.el doc/svn-doc.el doc/tools/svnbook.el || die "Compilation of Emacs modules failed"
-	fi
-
-	if use extras; then
-		print
-		print "Building of contrib and tools"
-		print
-		emake contrib || die "Building of contrib failed"
-		emake tools || die "Building of tools failed"
+		emake -j1 javahl || die "Building of Subversion JavaHL library failed"
 	fi
 
 	if use doc; then
@@ -382,6 +394,7 @@ create_apache_tests_configuration() {
 	}
 	get_loadmodule_directives() {
 		if has_version "=www-servers/apache-2.4*"; then
+			get_loadmodule_directive alias
 			get_loadmodule_directive auth_basic
 			get_loadmodule_directive authn_core
 			get_loadmodule_directive authn_file
@@ -391,6 +404,7 @@ create_apache_tests_configuration() {
 			get_loadmodule_directive log_config
 			get_loadmodule_directive unixd
 		else
+			get_loadmodule_directive alias
 			get_loadmodule_directive auth_basic
 			get_loadmodule_directive authn_file
 			get_loadmodule_directive dav
@@ -441,6 +455,9 @@ MaxRequestsPerChild 0
 	AuthUserFile "${T}/apache/users"
 	Require valid-user
 </Location>
+
+RedirectMatch permanent ^/svn-test-work/repositories/REDIRECT-PERM-(.*)\$ /svn-test-work/repositories/\$1
+RedirectMatch           ^/svn-test-work/repositories/REDIRECT-TEMP-(.*)\$ /svn-test-work/repositories/\$1
 EOF
 
 	cat << EOF > "${T}/apache/users"
@@ -641,11 +658,6 @@ src_install() {
 			--action-message 'Installation of Subversion SWIG Python bindings with $(python_get_implementation_and_version)' \
 			--failure-message 'Installation of Subversion SWIG Python bindings with $(python_get_implementation_and_version) failed' \
 			swig_python_bindings_installation
-
-		delete_static_libraries() {
-			find "${ED}$(python_get_sitedir)" -name "*.a" -print0 | xargs -0 rm -f
-		}
-		python_execute_function -q delete_static_libraries
 	fi
 
 	if use ctypes-python || use python; then
@@ -710,12 +722,6 @@ EOF
 	newbin tools/backup/hot-backup.py svn-hot-backup
 	rm -fr tools/backup
 
-	# Install svn_load_dirs.pl.
-	if use perl; then
-		dobin contrib/client-side/svn_load_dirs/svn_load_dirs.pl
-	fi
-	rm -f contrib/client-side/svn_load_dirs/svn_load_dirs.pl
-
 	# Install svnserve init-script and xinet.d snippet, bug 43245.
 	newinitd "${FILESDIR}"/svnserve.initd svnserve
 	newconfd "${FILESDIR}"/svnserve.confd svnserve
@@ -727,26 +733,10 @@ EOF
 	dodoc tools/xslt/svnindex.{css,xsl}
 	rm -fr tools/xslt
 
-	# Install Vim syntax files.
-	if use vim-syntax; then
-		insinto /usr/share/vim/vimfiles/syntax
-		doins contrib/client-side/vim/svn.vim
-	fi
-	rm -f contrib/client-side/vim/svn.vim
-
-	# Install Emacs Lisps.
-	if use emacs; then
-		elisp-install ${PN} contrib/client-side/emacs/{dsvn,psvn}.{el,elc} doc/svn-doc.{el,elc} doc/tools/svnbook.{el,elc} || die "Installation of Emacs modules failed"
-		elisp-install ${PN}/compat contrib/client-side/emacs/vc-svn.{el,elc} || die "Installation of Emacs modules failed"
-		touch "${ED}${SITELISP}/${PN}/compat/.nosearch"
-		elisp-site-file-install "${FILESDIR}/70svn-gentoo.el" || die "Installation of Emacs site-init file failed"
-	fi
-	rm -fr contrib/client-side/emacs
-
 	# Install extra files.
 	if use extras; then
 		print
-		print "Installation of contrib and tools"
+		print "Installation of tools"
 		print
 
 		cat << EOF > 80subversion-extras
@@ -755,18 +745,16 @@ ROOTPATH="${EPREFIX}/usr/$(get_libdir)/subversion/bin"
 EOF
 		doenvd 80subversion-extras
 
-		emake DESTDIR="${D}" contribdir="/usr/$(get_libdir)/subversion/bin" install-contrib || die "Installation of contrib failed"
 		emake DESTDIR="${D}" toolsdir="/usr/$(get_libdir)/subversion/bin" install-tools || die "Installation of tools failed"
 
-		find contrib tools "(" -name "*.bat" -o -name "*.in" -o -name ".libs" ")" -print0 | xargs -0 rm -fr
-		rm -fr contrib/client-side/svn-push
-		rm -fr contrib/server-side/svnstsw
+		find tools "(" -name "*.bat" -o -name "*.in" -o -name "*.lo" -o -name "*.o" -o -name ".libs" ")" -print0 | xargs -0 rm -fr
+		find tools/server-side -name "*.c" -print0 | xargs -0 rm -f
 		rm -fr tools/client-side/svnmucc
 		rm -fr tools/server-side/{svn-populate-node-origins-index,svnauthz-validate}*
 		rm -fr tools/{buildbot,dev,diff,po}
 
 		insinto /usr/share/${PN}
-		doins -r contrib tools
+		doins -r tools
 	fi
 
 	if use doc; then
@@ -775,10 +763,6 @@ EOF
 		print
 		dohtml -r doc/doxygen/html/* || die "Installation of Subversion HTML documentation failed"
 
-		insinto /usr/share/doc/${PF}
-		doins -r notes
-		ecompressdir /usr/share/doc/${PF}/notes
-
 #		if use ruby; then
 #			emake DESTDIR="${D}" install-swig-rb-doc
 #		fi
@@ -786,6 +770,11 @@ EOF
 		if use java; then
 			java-pkg_dojavadoc doc/javadoc
 		fi
+	fi
+
+	rm -f "${ED}usr/$(get_libdir)/"{libsvn_auth_*,libsvn_swig_*,libsvnjavahl}-1.{a,la}
+	if ! use static-libs; then
+		find "${ED}" -name "*.la" -print0 | xargs -0 rm -f
 	fi
 
 	cat << EOF > server_notes
@@ -851,15 +840,12 @@ pkg_preinst() {
 }
 
 pkg_postinst() {
-	use emacs && elisp-site-regen
-	use perl && perl-module_pkg_postinst
-
-	if use ctypes-python; then
-		python_mod_optimize csvn
+	if use perl; then
+		perl-module_pkg_postinst
 	fi
 
-	if use python; then
-		python_mod_optimize libsvn svn
+	if use ctypes-python || use python; then
+		python_mod_optimize $(use ctypes-python && echo csvn) $(use python && echo libsvn svn)
 	fi
 
 	elog "If you intend to use svn-hot-backup, you can specify the number of"
@@ -885,29 +871,26 @@ pkg_postinst() {
 }
 
 pkg_postrm() {
-	use emacs && elisp-site-regen
-	use perl && perl-module_pkg_postrm
-
-	if use ctypes-python; then
-		python_mod_cleanup csvn
+	if use perl; then
+		perl-module_pkg_postrm
 	fi
 
-	if use python; then
-		python_mod_cleanup libsvn svn
+	if use ctypes-python || use python; then
+		python_mod_cleanup $(use ctypes-python && echo csvn) $(use python && echo libsvn svn)
 	fi
 }
 
 pkg_config() {
-	einfo "Initializing the database in ${EROOT}${SVN_REPOS_LOC}..."
-	if [[ -e "${EROOT}${SVN_REPOS_LOC}/repos" ]]; then
+	einfo "Initializing the database in ${ROOT}${SVN_REPOS_LOC}..."
+	if [[ -e "${ROOT}${SVN_REPOS_LOC}/repos" ]]; then
 		echo "A Subversion repository already exists and I will not overwrite it."
-		echo "Delete \"${EROOT}${SVN_REPOS_LOC}/repos\" first if you're sure you want to have a clean version."
+		echo "Delete \"${ROOT}${SVN_REPOS_LOC}/repos\" first if you're sure you want to have a clean version."
 	else
-		mkdir -p "${EROOT}${SVN_REPOS_LOC}/conf"
+		mkdir -p "${ROOT}${SVN_REPOS_LOC}/conf"
 
 		einfo "Populating repository directory..."
 		# Create initial repository.
-		"${EROOT}usr/bin/svnadmin" create "${EROOT}${SVN_REPOS_LOC}/repos"
+		"${EROOT}usr/bin/svnadmin" create "${ROOT}${SVN_REPOS_LOC}/repos"
 
 		einfo "Setting repository permissions..."
 		SVNSERVE_USER="$(. "${EROOT}etc/conf.d/svnserve"; echo "${SVNSERVE_USER}")"
@@ -921,8 +904,8 @@ pkg_config() {
 			enewgroup "${SVNSERVE_GROUP}"
 			enewuser "${SVNSERVE_USER}" -1 -1 "${SVN_REPOS_LOC}" "${SVNSERVE_GROUP}"
 		fi
-		chown -Rf "${SVNSERVE_USER}:${SVNSERVE_GROUP}" "${EROOT}${SVN_REPOS_LOC}/repos"
-		chmod -Rf go-rwx "${EROOT}${SVN_REPOS_LOC}/conf"
-		chmod -Rf o-rwx "${EROOT}${SVN_REPOS_LOC}/repos"
+		chown -Rf "${SVNSERVE_USER}:${SVNSERVE_GROUP}" "${ROOT}${SVN_REPOS_LOC}/repos"
+		chmod -Rf go-rwx "${ROOT}${SVN_REPOS_LOC}/conf"
+		chmod -Rf o-rwx "${ROOT}${SVN_REPOS_LOC}/repos"
 	fi
 }
