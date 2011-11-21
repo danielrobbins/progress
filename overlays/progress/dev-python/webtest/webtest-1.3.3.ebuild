@@ -1,15 +1,13 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.4 2.5 3.1"
-# https://bitbucket.org/ianb/webtest/issue/24
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.* *-jython *-pypy-*"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython *-pypy-*"
 DISTUTILS_SRC_TEST="nosetests"
 
-inherit distutils eutils
+inherit distutils
 
 MY_PN="WebTest"
 MY_P="${MY_PN}-${PV}"
@@ -24,7 +22,8 @@ KEYWORDS="~alpha ~amd64 ~arm ~ppc ~ppc64 ~sparc ~x86"
 IUSE="doc"
 
 RDEPEND="$(python_abi_depend -e "*-jython *-pypy-*" dev-python/pyquery)
-	$(python_abi_depend dev-python/webob)"
+	$(python_abi_depend dev-python/webob)
+	$(python_abi_depend virtual/python-json)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	doc? ( dev-python/sphinx )"
@@ -33,7 +32,19 @@ S="${WORKDIR}/${MY_P}"
 
 src_prepare() {
 	distutils_src_prepare
-	epatch "${FILESDIR}/${PN}-1.3-doctest-ellipsis.patch"
+
+	# https://bitbucket.org/ianb/webtest/issue/24
+	# https://bitbucket.org/ianb/webtest/raw/c0faae620b78/docs/index_fixt.py
+	cat << EOF > docs/index_fixt.py
+# -*- coding: utf-8 -*-
+from doctest import ELLIPSIS
+
+def setup_test(test):
+    for example in test.examples:
+        example.options.setdefault(ELLIPSIS, 1)
+setup_test.__test__ = False
+
+EOF
 }
 
 src_compile() {
@@ -41,7 +52,7 @@ src_compile() {
 
 	if use doc; then
 		einfo "Generation of documentation"
-		sphinx-build docs html || die "Generation of documentation failed"
+		python_execute sphinx-build docs html || die "Generation of documentation failed"
 	fi
 }
 
