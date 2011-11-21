@@ -1,6 +1,5 @@
 # Copyright 2011 Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
@@ -48,9 +47,6 @@ DOCS="BFG_HISTORY.txt CHANGES.txt HISTORY.txt README.rst TODO.txt"
 src_prepare() {
 	distutils_src_prepare
 
-	# https://github.com/Pylons/pyramid/commit/b719fdd3e99bb98f426a2125a4e1b5056cca2a46
-	sed -e "s/request.charset = 'latin-1'/request = request.decode('latin-1')/" -i pyramid/tests/test_request.py
-
 	# Fix Sphinx theme.
 	sed \
 		-e "s/html_theme = 'pyramid'/html_theme = 'default'/" \
@@ -63,7 +59,7 @@ src_compile() {
 
 	if use doc; then
 		einfo "Generation of documentation"
-		"$(PYTHON -f)" setup.py build_sphinx || die "Generation of documentation failed"
+		python_execute "$(PYTHON -f)" setup.py build_sphinx || die "Generation of documentation failed"
 	fi
 }
 
