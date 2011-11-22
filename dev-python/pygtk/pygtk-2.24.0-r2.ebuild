@@ -4,11 +4,12 @@
 EAPI="4-python"
 GCONF_DEBUG="no"
 GNOME_TARBALL_SUFFIX="bz2"
+
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.4 2.5 3.* *-jython *-pypy-*"
 PYTHON_EXPORT_PHASE_FUNCTIONS="1"
 
-inherit alternatives autotools eutils flag-o-matic gnome.org python virtualx
+inherit alternatives autotools eutils flag-o-matic gnome.org python virtualx gnome2-utils
 
 DESCRIPTION="GTK+2 bindings for Python"
 HOMEPAGE="http://www.pygtk.org/"
@@ -34,6 +35,9 @@ DEPEND="${RDEPEND}
 	>=dev-util/pkgconfig-0.9"
 
 src_prepare() {
+	# Let tests pass without permissions problems, bug #245103
+	gnome2_environment_reset
+
 	# Fix declaration of codegen in .pc
 	epatch "${FILESDIR}/${PN}-2.13.0-fix-codegen-location.patch"
 	epatch "${FILESDIR}/${PN}-2.14.1-libdir-pc.patch"
@@ -60,7 +64,6 @@ src_test() {
 
 	testing() {
 		cd tests
-		export XDG_CONFIG_HOME="${T}/$(PYTHON --ABI)"
 		Xemake check-local
 	}
 	python_execute_function -s testing
