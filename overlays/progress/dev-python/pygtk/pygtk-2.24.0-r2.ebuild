@@ -42,6 +42,9 @@ src_prepare() {
 	epatch "${FILESDIR}/${PN}-2.13.0-fix-codegen-location.patch"
 	epatch "${FILESDIR}/${PN}-2.14.1-libdir-pc.patch"
 
+	# Fix exit status of tests.
+	epatch "${FILESDIR}/${P}-tests_result.patch"
+
 	# Disable pyc compiling
 	mv "${S}"/py-compile "${S}"/py-compile.orig
 	ln -s $(type -P true) "${S}"/py-compile
