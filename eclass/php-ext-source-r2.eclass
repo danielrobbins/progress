@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 # @ECLASS: php-ext-source-r2.eclass
 # @MAINTAINER:
@@ -19,13 +18,6 @@
 inherit flag-o-matic autotools
 
 EXPORT_FUNCTIONS src_unpack src_prepare src_configure src_compile src_install
-
-# @ECLASS-VARIABLE: PHP_EXT_NAME
-# @DESCRIPTION:
-# The extension name. This must be set, otherwise the eclass dies.
-# Only automagically set by php-ext-pecl-r1.eclass, so unless your ebuild
-# inherits that eclass, you must set this manually before inherit.
-[[ -z "${PHP_EXT_NAME}" ]] && die "No module name specified for the php-ext-source-r2 eclass"
 
 DEPEND=">=sys-devel/m4-1.4.3
 		>=sys-devel/libtool-1.5.18"
