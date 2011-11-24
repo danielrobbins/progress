@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
@@ -21,8 +20,7 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
 
-RDEPEND="$(python_abi_depend dev-python/pycrypto)
-	$(python_abi_depend dev-python/ssh)"
+RDEPEND="$(python_abi_depend ">=dev-python/paramiko-1.7.6")"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 #	test? ( $(python_abi_depend dev-python/fudge) )
@@ -33,6 +31,13 @@ RESTRICT="test"
 S="${WORKDIR}/${MY_P}"
 
 PYTHON_MODULES="fabfile fabric"
+
+src_prepare() {
+	distutils_src_prepare
+
+	# PyCrypto is a dependency of paramiko, not Fabric.
+	sed -e "/install_requires=/s/'pycrypto >= 1.9, != 2.4', //" -i setup.py || die "sed failed"
+}
 
 src_test() {
 	distutils_src_test --with-doctest
