@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
@@ -22,10 +21,13 @@ IUSE=""
 
 RDEPEND="$(python_abi_depend net-zope/namespaces-silva[infrae])
 	$(python_abi_depend dev-python/martian)
-	$(python_abi_depend dev-python/simplejson)
 	$(python_abi_depend net-zope/five-grok)
+	$(python_abi_depend net-zope/grokcore-view)
+	$(python_abi_depend net-zope/zope-browser)
 	$(python_abi_depend net-zope/zope-component)
+	$(python_abi_depend net-zope/zope-event)
 	$(python_abi_depend net-zope/zope-interface)
+	$(python_abi_depend net-zope/zope-location)
 	$(python_abi_depend net-zope/zope-publisher)
 	$(python_abi_depend net-zope/zope-traversing)"
 DEPEND="${RDEPEND}
