@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_DEPEND="python? ( <<>> )"
@@ -18,14 +17,14 @@ SLOT="0"
 KEYWORDS="~amd64 ~ppc ~x86 ~x86-linux ~ppc-macos"
 IUSE="lua perl python php ruby"
 
-RDEPEND=">=dev-libs/redland-1.0.10-r2
+RDEPEND=">=dev-libs/redland-1.0.14
 	lua? ( >=dev-lang/lua-5.1 )
 	perl? ( dev-lang/perl )
 	php? ( dev-lang/php )
 	ruby? ( dev-lang/ruby dev-ruby/log4r )"
 DEPEND="${RDEPEND}
-	>=dev-lang/swig-1.3.26
 	dev-util/pkgconfig
+	>=dev-lang/swig-2
 	sys-apps/sed"
 
 pkg_setup() {
@@ -34,7 +33,6 @@ pkg_setup() {
 
 src_configure() {
 	econf \
-		--disable-dependency-tracking \
 		$(use_with lua) \
 		$(use_with perl) \
 		$(use_with python) \
