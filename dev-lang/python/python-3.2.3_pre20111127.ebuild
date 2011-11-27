@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="3"
 WANT_AUTOMAKE="none"
@@ -12,7 +11,7 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="fec8fdbccf3b"
+	EHG_REVISION="150e096095e5"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
@@ -239,7 +238,7 @@ src_test() {
 	python_enable_pyc
 
 	# Skip failing tests.
-	local skipped_tests="distutils gdb"
+	local skipped_tests="gdb"
 
 	for test in ${skipped_tests}; do
 		mv "${S}/Lib/test/test_${test}.py" "${T}"
