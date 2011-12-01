@@ -3,7 +3,6 @@
 
 EAPI="4-python"
 GCONF_DEBUG="no"
-GNOME_TARBALL_SUFFIX="xz"
 GNOME2_LA_PUNT="yes"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.4 2.5 *-jython *-pypy-*"
@@ -44,8 +43,6 @@ RDEPEND="${COMMON_DEPEND}
 	!<dev-python/pygobject-2.28.6-r50:2[introspection]"
 
 pkg_setup() {
-	python_pkg_setup
-
 	DOCS="AUTHORS ChangeLog* NEWS README"
 	# Hard-enable libffi support since both gobject-introspection and
 	# glib-2.29.x rdepend on it anyway
@@ -54,6 +51,8 @@ pkg_setup() {
 		--with-ffi
 		$(use_enable cairo)
 		$(use_enable threads thread)"
+
+	python_pkg_setup
 }
 
 src_prepare() {
