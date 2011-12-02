@@ -1834,7 +1834,14 @@ python_shebang_options_re = re.compile(r"^#![ \t]*${EPREFIX}/usr/bin/(?:jython|p
 python_verification_output_re = re.compile("^GENTOO_PYTHON_TARGET_SCRIPT_PATH supported\n$")
 
 pypy_versions_mapping = {
-	"1.5": "2.7"
+$(for ((i = 0; i < "${#_PYPY_GLOBALLY_SUPPORTED_ABIS[@]}"; i++)); do
+	PYTHON_ABI="${_PYPY_GLOBALLY_SUPPORTED_ABIS[${i}]}"
+	echo -en "\t\"${PYTHON_ABI#*-pypy-}\": \"${PYTHON_ABI%-pypy-*}\""
+	if [[ "${i}" -lt "$((${#_PYPY_GLOBALLY_SUPPORTED_ABIS[@]} - 1))" ]]; then
+		echo -n ","
+	fi
+	echo
+done)
 }
 
 def get_PYTHON_ABI(python_interpreter):
