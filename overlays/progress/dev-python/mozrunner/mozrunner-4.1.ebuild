@@ -16,6 +16,9 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
 
-DEPEND="$(python_abi_depend dev-python/setuptools)
+DEPEND="$(python_abi_depend dev-python/mozinfo)
+	$(python_abi_depend dev-python/mozprocess)
+	$(python_abi_depend dev-python/mozprofile)
+	$(python_abi_depend dev-python/setuptools)
 	$(python_abi_depend virtual/python-json[external])"
 RDEPEND="${DEPEND}"
