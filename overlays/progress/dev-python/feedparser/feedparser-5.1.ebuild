@@ -3,8 +3,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-# 877 errors with Python 3.
-PYTHON_TESTS_RESTRICTED_ABIS="3.* *-jython"
+PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 
 inherit distutils eutils
@@ -16,45 +15,45 @@ SRC_URI="http://${PN}.googlecode.com/files/${P}.tar.bz2"
 # sgmllib is licensed under PSF-2.
 LICENSE="BSD-2 PSF-2"
 SLOT="0"
-KEYWORDS="alpha amd64 ~arm ia64 ppc ppc64 sparc x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux ~x86-solaris"
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux ~x86-solaris"
 IUSE=""
 
-DEPEND=""
+DEPEND="$(python_abi_depend dev-python/setuptools)"
 RDEPEND=""
 
 DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES="1"
-DOCS="LICENSE NEWS"
-PYTHON_MODULES="feedparser.py _feedparser_sgmllib.py"
+DOCS="NEWS"
 
 src_prepare() {
 	mv feedparser/sgmllib3.py feedparser/_feedparser_sgmllib.py || die "Renaming sgmllib3.py failed"
 	epatch "${FILESDIR}/${P}-sgmllib.patch"
 
+	sed -e "/import feedparser/isys.path.insert(0, '../build/lib')" -i feedparser/feedparsertest.py
+
 	distutils_src_prepare
 
 	preparation() {
-		if [[ "${PYTHON_ABI}" == 3.* ]]; then
-			2to3-${PYTHON_ABI} -nw --no-diffs feedparser/{feedparser.py,feedparsertest.py} || return 1
-		else
-			# Avoid SyntaxErrors with Python 2.
-			echo "raise ImportError" > feedparser/_feedparser_sgmllib.py || return 1
+		if [[ "$(python_get_version -l --major)" == "3" ]]; then
+			2to3-${PYTHON_ABI} -nw --no-diffs feedparser/feedparsertest.py
 		fi
 	}
 	python_execute_function -s preparation
 }
 
-src_compile() {
-	PYTHONPATH="feedparser" distutils_src_compile
-}
-
 src_test() {
 	testing() {
 		cd feedparser || return 1
-		PYTHONPATH="." "$(PYTHON)" feedparsertest.py
+		python_execute "$(PYTHON)" feedparsertest.py
 	}
 	python_execute_function -s testing
 }
 
-src_install() {
-	PYTHONPATH="feedparser" distutils_src_install
+pkg_postinst() {
+	python_mod_optimize -A "2.*" feedparser.py
+	python_mod_optimize -A "3.*" feedparser.py _feedparser_sgmllib.py
+}
+
+pkg_postrm() {
+	python_mod_cleanup -A "2.*" feedparser.py
+	python_mod_cleanup -A "3.*" feedparser.py _feedparser_sgmllib.py
 }
