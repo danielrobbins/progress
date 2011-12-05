@@ -1,6 +1,5 @@
 # Copyright 2005-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License, v2 or later
-# $Header: $
 
 # @ECLASS: twisted.eclass
 # @MAINTAINER:
