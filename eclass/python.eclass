@@ -3428,7 +3428,7 @@ _python_clean_compiled_modules() {
 }
 
 # @FUNCTION: python_mod_optimize
-# @USAGE: [--allow-evaluated-non-sitedir-paths] [-d directory] [-f] [-l] [-q] [-x regular_expression] [--] <file|directory> [files|directories]
+# @USAGE: [-A|--ABIs-patterns Python_ABIs] [--allow-evaluated-non-sitedir-paths] [-d directory] [-f] [-l] [-q] [-x regular_expression] [--] <file|directory> [files|directories]
 # @DESCRIPTION:
 # Byte-compile specified Python modules.
 # -d, -f, -l, -q and -x options passed to this function are passed to compileall.py.
@@ -3444,18 +3444,18 @@ python_mod_optimize() {
 
 	if ! has "${EAPI:-0}" 0 1 2 || _python_package_supporting_installation_for_multiple_python_abis || _python_implementation || [[ "${CATEGORY}/${PN}" == "sys-apps/portage" ]]; then
 		# PYTHON_ABI variable cannot be local in packages not supporting installation for multiple Python ABIs.
-		local allow_evaluated_non_sitedir_paths="0" dir dirs=() evaluated_dirs=() evaluated_files=() exit_status file files=() iterated_PYTHON_ABIS options=() other_dirs=() other_files=() previous_PYTHON_ABI="${PYTHON_ABI}" root site_packages_dirs=() site_packages_files=() stderr stderr_line
+		local ABIs_patterns="*" allow_evaluated_non_sitedir_paths="0" dir dirs=() enabled_PYTHON_ABI enabled_PYTHON_ABIS evaluated_dirs=() evaluated_files=() exit_status file files=() iterated_PYTHON_ABIS options=() other_dirs=() other_files=() previous_PYTHON_ABI="${PYTHON_ABI}" root site_packages_dirs=() site_packages_files=() stderr stderr_line
 
 		if _python_package_supporting_installation_for_multiple_python_abis; then
 			if has "${EAPI:-0}" 0 1 2 3 && [[ -z "${PYTHON_ABIS}" ]]; then
 				die "${FUNCNAME}(): python_pkg_setup() or python_execute_function() not called"
 			fi
-			iterated_PYTHON_ABIS="${PYTHON_ABIS}"
+			enabled_PYTHON_ABIS="${PYTHON_ABIS}"
 		else
 			if has "${EAPI:-0}" 0 1 2 3; then
-				iterated_PYTHON_ABIS="${PYTHON_ABI:=$(PYTHON --ABI)}"
+				enabled_PYTHON_ABIS="${PYTHON_ABI:=$(PYTHON --ABI)}"
 			else
-				iterated_PYTHON_ABIS="${PYTHON_ABI}"
+				enabled_PYTHON_ABIS="${PYTHON_ABI}"
 			fi
 		fi
 
@@ -3464,6 +3464,10 @@ python_mod_optimize() {
 
 		while (($#)); do
 			case "$1" in
+				-A|--ABIs-patterns)
+					ABIs_patterns="$2"
+					shift
+					;;
 				--allow-evaluated-non-sitedir-paths)
 					allow_evaluated_non_sitedir_paths="1"
 					;;
@@ -3496,6 +3500,12 @@ python_mod_optimize() {
 			die "${FUNCNAME}(): Missing files or directories"
 		fi
 
+		for enabled_PYTHON_ABI in ${enabled_PYTHON_ABIS}; do
+			if _python_check_python_abi_matching --patterns-list "${enabled_PYTHON_ABI}" "${ABIs_patterns}"; then
+				iterated_PYTHON_ABIS+="${iterated_PYTHON_ABIS:+ }${enabled_PYTHON_ABI}"
+			fi
+		done
+
 		while (($#)); do
 			if [[ "$1" =~ ^($|(\.|\.\.|/)($|/)) ]]; then
 				die "${FUNCNAME}(): Invalid argument '$1'"
@@ -3509,20 +3519,24 @@ python_mod_optimize() {
 					if [[ "$1" != *\$* ]]; then
 						die "${FUNCNAME}(): '$1' has invalid syntax"
 					fi
-					if [[ "$1" == *.py ]]; then
-						evaluated_files+=("$1")
-					else
-						evaluated_dirs+=("$1")
+					if [[ -n "${iterated_PYTHON_ABIS}" ]]; then
+						if [[ "$1" == *.py ]]; then
+							evaluated_files+=("$1")
+						else
+							evaluated_dirs+=("$1")
+						fi
 					fi
 				else
-					if [[ -d "${root}$1" ]]; then
-						other_dirs+=("${root}$1")
-					elif [[ -f "${root}$1" ]]; then
-						other_files+=("${root}$1")
-					elif [[ -e "${root}$1" ]]; then
-						eerror "${FUNCNAME}(): '${root}$1' is not a regular file or a directory"
-					else
-						eerror "${FUNCNAME}(): '${root}$1' does not exist"
+					if [[ -n "${iterated_PYTHON_ABIS}" ]]; then
+						if [[ -d "${root}$1" ]]; then
+							other_dirs+=("${root}$1")
+						elif [[ -f "${root}$1" ]]; then
+							other_files+=("${root}$1")
+						elif [[ -e "${root}$1" ]]; then
+							eerror "${FUNCNAME}(): '${root}$1' is not a regular file or a directory"
+						else
+							eerror "${FUNCNAME}(): '${root}$1' does not exist"
+						fi
 					fi
 				fi
 			else
@@ -3703,7 +3717,7 @@ python_mod_optimize() {
 }
 
 # @FUNCTION: python_mod_cleanup
-# @USAGE: [--allow-evaluated-non-sitedir-paths] [--] <file|directory> [files|directories]
+# @USAGE: [-A|--ABIs-patterns Python_ABIs] [--allow-evaluated-non-sitedir-paths] [--] <file|directory> [files|directories]
 # @DESCRIPTION:
 # Delete orphaned byte-compiled Python modules corresponding to specified Python modules.
 #
@@ -3716,18 +3730,18 @@ python_mod_cleanup() {
 	_python_check_python_pkg_setup_execution
 	_python_initialize_prefix_variables
 
-	local allow_evaluated_non_sitedir_paths="0" dir iterated_PYTHON_ABIS PYTHON_ABI="${PYTHON_ABI}" root search_paths=() sitedir
+	local ABIs_patterns="*" allow_evaluated_non_sitedir_paths="0" dir enabled_PYTHON_ABI enabled_PYTHON_ABIS iterated_PYTHON_ABIS PYTHON_ABI="${PYTHON_ABI}" root search_paths=() sitedir
 
 	if _python_package_supporting_installation_for_multiple_python_abis; then
 		if has "${EAPI:-0}" 0 1 2 3 && [[ -z "${PYTHON_ABIS}" ]]; then
 			die "${FUNCNAME}(): python_pkg_setup() or python_execute_function() not called"
 		fi
-		iterated_PYTHON_ABIS="${PYTHON_ABIS}"
+		enabled_PYTHON_ABIS="${PYTHON_ABIS}"
 	else
 		if has "${EAPI:-0}" 0 1 2 3; then
-			iterated_PYTHON_ABIS="${PYTHON_ABI:-$(PYTHON --ABI)}"
+			enabled_PYTHON_ABIS="${PYTHON_ABI:-$(PYTHON --ABI)}"
 		else
-			iterated_PYTHON_ABIS="${PYTHON_ABI}"
+			enabled_PYTHON_ABIS="${PYTHON_ABI}"
 		fi
 	fi
 
@@ -3736,6 +3750,10 @@ python_mod_cleanup() {
 
 	while (($#)); do
 		case "$1" in
+			-A|--ABIs-patterns)
+				ABIs_patterns="$2"
+				shift
+				;;
 			--allow-evaluated-non-sitedir-paths)
 				allow_evaluated_non_sitedir_paths="1"
 				;;
@@ -3761,6 +3779,12 @@ python_mod_cleanup() {
 		die "${FUNCNAME}(): Missing files or directories"
 	fi
 
+	for enabled_PYTHON_ABI in ${enabled_PYTHON_ABIS}; do
+		if _python_check_python_abi_matching --patterns-list "${enabled_PYTHON_ABI}" "${ABIs_patterns}"; then
+			iterated_PYTHON_ABIS+="${iterated_PYTHON_ABIS:+ }${enabled_PYTHON_ABI}"
+		fi
+	done
+
 	if ! has "${EAPI:-0}" 0 1 2 || _python_package_supporting_installation_for_multiple_python_abis || _python_implementation || [[ "${CATEGORY}/${PN}" == "sys-apps/portage" ]]; then
 		while (($#)); do
 			if [[ "$1" =~ ^($|(\.|\.\.|/)($|/)) ]]; then
@@ -3779,7 +3803,9 @@ python_mod_cleanup() {
 						eval "search_paths+=(\"\${root}$1\")"
 					done
 				else
-					search_paths+=("${root}$1")
+					if [[ -n "${iterated_PYTHON_ABIS}" ]]; then
+						search_paths+=("${root}$1")
+					fi
 				fi
 			else
 				for PYTHON_ABI in ${iterated_PYTHON_ABIS}; do
