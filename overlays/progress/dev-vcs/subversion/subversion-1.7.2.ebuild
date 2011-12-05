@@ -135,7 +135,7 @@ pkg_setup() {
 		einfo "Using: Berkeley DB ${SVN_BDB_VERSION}"
 		einfo
 
-		local apu_bdb_version="$(scanelf -nq "${EROOT}usr/$(get_libdir)/libaprutil-1.so.0" | grep -Eo "libdb-[[:digit:]]+\.[[:digit:]]+" | sed -e "s/libdb-\(.*\)/\1/")"
+		local apu_bdb_version="$(scanelf -nq "${EROOT}usr/$(get_libdir)/libaprutil-1$(get_libname 0)" | grep -Eo "libdb-[[:digit:]]+\.[[:digit:]]+" | sed -e "s/libdb-\(.*\)/\1/")"
 		if [[ -n "${apu_bdb_version}" && "${SVN_BDB_VERSION}" != "${apu_bdb_version}" ]]; then
 			eerror "APR-Util is linked against Berkeley DB ${apu_bdb_version}, but you are trying"
 			eerror "to build Subversion with support for Berkeley DB ${SVN_BDB_VERSION}."
@@ -389,7 +389,7 @@ src_compile() {
 create_apache_tests_configuration() {
 	get_loadmodule_directive() {
 		if [[ "$("${APACHE_BIN}" -l)" != *"mod_$1.c"* ]]; then
-			echo "LoadModule $1_module \"${APACHE_MODULESDIR}/mod_$1.so\""
+			echo "LoadModule $1_module \"${APACHE_MODULESDIR}/mod_$1$(get_libname)\""
 		fi
 	}
 	get_loadmodule_directives() {
@@ -415,8 +415,8 @@ create_apache_tests_configuration() {
 	mkdir -p "${T}/apache"
 	cat << EOF > "${T}/apache/apache.conf"
 $(get_loadmodule_directives)
-LoadModule dav_svn_module "${S}/subversion/mod_dav_svn/.libs/mod_dav_svn.so"
-LoadModule authz_svn_module "${S}/subversion/mod_authz_svn/.libs/mod_authz_svn.so"
+LoadModule dav_svn_module "${S}/subversion/mod_dav_svn/.libs/mod_dav_svn$(get_libname)"
+LoadModule authz_svn_module "${S}/subversion/mod_authz_svn/.libs/mod_authz_svn$(get_libname)"
 
 User                $(id -un)
 Group               $(id -gn)
@@ -686,7 +686,7 @@ src_install() {
 		print "Installation of Subversion JavaHL library"
 		print
 		emake -j1 DESTDIR="${D}" install-javahl || die "Installation of Subversion JavaHL library failed"
-		java-pkg_regso "${ED}"usr/$(get_libdir)/libsvnjavahl*.so
+		java-pkg_regso "${ED}"usr/$(get_libdir)/libsvnjavahl*$(get_libname)
 		java-pkg_dojar "${ED}"usr/$(get_libdir)/svn-javahl/svn-javahl.jar
 		rm -fr "${ED}"usr/$(get_libdir)/svn-javahl/*.jar
 	fi
@@ -696,9 +696,9 @@ src_install() {
 		mkdir -p "${D}${APACHE_MODULES_CONFDIR}"
 		cat << EOF > "${D}${APACHE_MODULES_CONFDIR}"/47_mod_dav_svn.conf
 <IfDefine SVN>
-LoadModule dav_svn_module modules/mod_dav_svn.so
+LoadModule dav_svn_module modules/mod_dav_svn$(get_libname)
 <IfDefine SVN_AUTHZ>
-LoadModule authz_svn_module modules/mod_authz_svn.so
+LoadModule authz_svn_module modules/mod_authz_svn$(get_libname)
 </IfDefine>
 
 # Example configuration:
@@ -831,8 +831,8 @@ EOF
 pkg_preinst() {
 	# Compare versions of Berkeley DB, bug 122877.
 	if use berkdb && [[ -f "${EROOT}usr/bin/svn" ]]; then
-		OLD_BDB_VERSION="$(scanelf -nq "${EROOT}usr/$(get_libdir)/libsvn_subr-1.so.0" | grep -Eo "libdb-[[:digit:]]+\.[[:digit:]]+" | sed -e "s/libdb-\(.*\)/\1/")"
-		NEW_BDB_VERSION="$(scanelf -nq "${ED}usr/$(get_libdir)/libsvn_subr-1.so.0" | grep -Eo "libdb-[[:digit:]]+\.[[:digit:]]+" | sed -e "s/libdb-\(.*\)/\1/")"
+		OLD_BDB_VERSION="$(scanelf -nq "${EROOT}usr/$(get_libdir)/libsvn_subr-1$(get_libname 0)" | grep -Eo "libdb-[[:digit:]]+\.[[:digit:]]+" | sed -e "s/libdb-\(.*\)/\1/")"
+		NEW_BDB_VERSION="$(scanelf -nq "${ED}usr/$(get_libdir)/libsvn_subr-1$(get_libname 0)" | grep -Eo "libdb-[[:digit:]]+\.[[:digit:]]+" | sed -e "s/libdb-\(.*\)/\1/")"
 		if [[ "${OLD_BDB_VERSION}" != "${NEW_BDB_VERSION}" ]]; then
 			CHANGED_BDB_VERSION="1"
 		fi
