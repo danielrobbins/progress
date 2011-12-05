@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
@@ -28,7 +27,7 @@ src_test() {
 		if [[ "$(python_get_implementation)" != "Jython" ]]; then
 			ln -fs ../$(ls -d build-${PYTHON_ABI}/lib*)/simplejson/_speedups$(python_get_extension_module_suffix) simplejson/_speedups$(python_get_extension_module_suffix) || return 1
 		fi
-		PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" simplejson/tests/__init__.py
+		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" simplejson/tests/__init__.py
 	}
 	python_execute_function testing
 }
