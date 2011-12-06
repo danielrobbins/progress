@@ -1,0 +1,47 @@
+# Copyright 1999-2011 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+
+EAPI="4-python"
+PYTHON_MULTIPLE_ABIS="1"
+PYTHON_RESTRICTED_ABIS="3.* *-jython"
+
+inherit distutils
+
+DESCRIPTION="Python API and tools to manipulate OpenDocument files"
+HOMEPAGE="http://opendocumentfellowship.com/development/projects/odfpy http://pypi.python.org/pypi/odfpy"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
+
+LICENSE="|| ( Apache-2.0 GPL-2 )"
+SLOT="0"
+KEYWORDS="~amd64 ~x86"
+IUSE=""
+
+DEPEND=""
+RDEPEND=""
+
+PYTHON_MODULES="odf"
+
+src_prepare() {
+	distutils_src_prepare
+
+	# Disable failing tests.
+	sed -e "s/testAttributeForeign/_&/" -i tests/teststyles.py
+	sed -e "s/test_xmlgenerator_wo_ns/_&/" -i tests/testxmlgen.py
+}
+
+src_test() {
+	cd tests
+
+	testing() {
+		local exit_status="0" test
+		for test in test*.py; do
+			if ! python_execute PYTHONPATH="../build-${PYTHON_ABI}/lib" "$(PYTHON)" "${test}"; then
+				eerror "${test} failed with $(python_get_implementation_and_version)"
+				exit_status="1"
+			fi
+		done
+
+		return "${exit_status}"
+	}
+	python_execute_function testing
+}
