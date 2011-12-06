@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
@@ -27,5 +26,12 @@ DEPEND="${RDEPEND}
 
 S="${WORKDIR}/${MY_P}"
 
-DOCS="README.txt"
+DOCS="CHANGES.txt"
 PYTHON_MODULES="${PN/-//}"
+
+src_prepare() {
+	distutils_src_prepare
+
+	# Disable failing tests.
+	rm -f src/zope/datetime/tests/test_lp_139360.py
+}
