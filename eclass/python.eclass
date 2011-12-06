@@ -816,8 +816,8 @@ _python_final_sanity_checks() {
 	if ! _python_implementation && [[ "$(declare -p PYTHON_SANITY_CHECKS_EXECUTED 2> /dev/null)" != "declare -- PYTHON_SANITY_CHECKS_EXECUTED="* || " ${FUNCNAME[@]:1} " =~ " "(python_set_active_version|python_pkg_setup)" " && -z "${PYTHON_SKIP_SANITY_CHECKS}" ]]; then
 		local PYTHON_ABI="${PYTHON_ABI}"
 		for PYTHON_ABI in ${PYTHON_ABIS-${PYTHON_ABI}}; do
+			# Ensure that appropriate version of Python is installed.
 			if has "${EAPI:-0}" 0 1 2 3 4 || { ! has "${EAPI:-0}" 0 1 2 3 4 && ! _python_package_supporting_installation_for_multiple_python_abis; }; then
-				# Ensure that appropriate version of Python is installed.
 				if ! ROOT="/" has_version "$(python_get_implementational_package)"; then
 					die "$(python_get_implementational_package) not installed in ROOT=\"/\""
 				fi
@@ -825,6 +825,10 @@ _python_final_sanity_checks() {
 					if ! has_version "$(python_get_implementational_package)"; then
 						die "$(python_get_implementational_package) not installed in ROOT=\"${ROOT}\""
 					fi
+				fi
+			else
+				if ! type -p "${EPREFIX}$(PYTHON -a)" > /dev/null && ! ROOT="/" has_version "$(python_get_implementational_package)"; then
+					die "$(python_get_implementational_package) not installed in ROOT=\"/\""
 				fi
 			fi
 
