@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
@@ -22,7 +21,7 @@ IUSE="doc mod_wsgi"
 RDEPEND="dev-db/mongodb"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
-	doc? ( dev-python/sphinx )"
+	doc? ( $(python_abi_depend -e "2.4" dev-python/sphinx) )"
 
 PYTHON_MODULES="bson gridfs pymongo"
 
@@ -31,8 +30,8 @@ src_compile() {
 
 	if use doc; then
 		einfo "Generation of documentation"
-		mkdir html
-		sphinx-build doc html || die "Generation of documentation failed"
+		[[ "$(python_get_version -f -l)" == "2.4" ]] && die "Generation of documentation using Python 2.4 not supported"
+		python_execute "$(PYTHON -f)" setup.py build_sphinx || die "Generation of documentation failed"
 	fi
 }
 
@@ -54,6 +53,9 @@ src_install() {
 	distutils_src_install $(use mod_wsgi && echo --no_ext)
 
 	if use doc; then
-		dohtml -r html/*
+		pushd build/sphinx/html > /dev/null
+		insinto /usr/share/doc/${PF}/html
+		doins -r [a-z]* _static
+		popd > /dev/null
 	fi
 }
