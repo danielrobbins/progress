@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
@@ -23,7 +22,7 @@ DOCS="CHANGES README THANKS TODO"
 
 src_test() {
 	testing() {
-		PYTHONPATH="build-${PYTHON_ABI}/lib:." "$(PYTHON)" test/suite.py
+		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib:." "$(PYTHON)" test/suite.py
 	}
 	python_execute_function testing
 }
