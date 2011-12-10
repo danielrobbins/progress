@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 WX_GTK_VER="2.8"
@@ -24,16 +23,16 @@ KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd"
 IUSE="cairo doc examples opengl"
 
 RDEPEND="
-	$(python_abi_depend dev-python/setuptools)
 	>=x11-libs/wxGTK-${PV}:2.8[opengl?,tiff,X]
-	>=x11-libs/gtk+-2.4:2
-	>=x11-libs/pango-1.2
 	dev-libs/glib:2
-	media-libs/libpng
+	$(python_abi_depend dev-python/setuptools)
+	media-libs/libpng:0
+	media-libs/tiff:0
 	virtual/jpeg
-	media-libs/tiff
+	x11-libs/gtk+:2
+	x11-libs/pango[X]
 	cairo?	( $(python_abi_depend -e "2.5" ">=dev-python/pycairo-1.8.4") )
-	opengl?	( $(python_abi_depend ">=dev-python/pyopengl-2.0.0.44") )"
+	opengl? ( $(python_abi_depend dev-python/pyopengl) )"
 
 DEPEND="${RDEPEND}
 	dev-util/pkgconfig"
