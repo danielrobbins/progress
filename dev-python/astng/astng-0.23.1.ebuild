@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
@@ -36,11 +35,11 @@ src_test() {
 		mkdir -p "${spath}/logilab" || return 1
 		cp -r "$(python_get_sitedir)/logilab/common" "${spath}/logilab" || return 1
 
-		"$(PYTHON)" setup.py build -b "build-${PYTHON_ABI}" install --root="${tpath}" || die "Installation for tests failed with $(python_get_implementation_and_version)"
+		python_execute "$(PYTHON)" setup.py build -b "build-${PYTHON_ABI}" install --root="${tpath}" || die "Installation for tests failed with $(python_get_implementation_and_version)"
 
 		# pytest uses tests placed relatively to the current directory.
 		pushd "${spath}/logilab/astng" > /dev/null || return 1
-		PYTHONPATH="${spath}" pytest -v || return 1
+		python_execute PYTHONPATH="${spath}" pytest -v || return 1
 		popd > /dev/null || return 1
 	}
 	python_execute_function testing
@@ -49,12 +48,12 @@ src_test() {
 src_install() {
 	distutils_src_install
 
-	deletion_of_unneeded_files() {
-		# Avoid collision with dev-python/logilab-common.
+	delete_unneeded_files() {
+		# Avoid collisions with dev-python/logilab-common.
 		rm -f "${ED}$(python_get_sitedir)/logilab/__init__.py" || return 1
 
 		# Don't install tests.
 		rm -fr "${ED}$(python_get_sitedir)/logilab/astng/test" || return 1
 	}
-	python_execute_function -q deletion_of_unneeded_files
+	python_execute_function -q delete_unneeded_files
 }
