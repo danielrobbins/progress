@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
@@ -34,6 +33,11 @@ src_prepare() {
 	# Workaround testsuite issues
 	epatch "${FILESDIR}/${PN}-0.83.1-workaround-broken-test.patch"
 
+	# Simple sed to avoid an eautoreconf
+	# bug #363679, https://bugs.freedesktop.org/show_bug.cgi?id=43735
+	sed -e 's/\(RST2HTMLFLAGS=\)$/\1--input-encoding=UTF-8/' \
+		-i configure || die "sed failed"
+
 	python_src_prepare
 }
 
@@ -56,7 +60,7 @@ src_install() {
 
 	if use doc; then
 		install_documentation() {
-			dohtml api/* || return 1
+			dohtml api/*
 		}
 		python_execute_function -f -q -s install_documentation
 	fi
