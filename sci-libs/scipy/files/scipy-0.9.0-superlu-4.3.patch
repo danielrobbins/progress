@@ -1,0 +1,15 @@
+--- scipy/sparse/linalg/dsolve/_superluobject.c
++++ scipy/sparse/linalg/dsolve/_superluobject.c
+@@ -589,9 +589,9 @@
+ {
+     ENUM_CHECK_INIT;
+     ENUM_CHECK(NOREFINE);
+-    ENUM_CHECK(SINGLE);
+-    ENUM_CHECK(DOUBLE);
+-    ENUM_CHECK(EXTRA);
++    ENUM_CHECK(SLU_SINGLE);
++    ENUM_CHECK(SLU_DOUBLE);
++    ENUM_CHECK(SLU_EXTRA);
+     ENUM_CHECK_FINISH("invalid value for 'IterRefine' parameter");
+ }
+ 
