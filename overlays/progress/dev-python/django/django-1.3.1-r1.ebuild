@@ -6,7 +6,7 @@ PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.*"
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
 
-inherit bash-completion-r1 distutils versionator webapp
+inherit bash-completion-r1 distutils eutils versionator webapp
 
 MY_P="Django-${PV}"
 
@@ -40,6 +40,7 @@ pkg_setup() {
 
 src_prepare() {
 	distutils_src_prepare
+	epatch "${FILESDIR}/${P}-djangodocs_extension.patch"
 
 	# Disable tests requiring network connection.
 	sed \
