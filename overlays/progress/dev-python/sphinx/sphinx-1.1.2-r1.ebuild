@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
@@ -64,6 +63,7 @@ src_test() {
 
 src_install() {
 	distutils_src_install
+	python_generate_wrapper_scripts -E -f -q "${ED}usr/bin/sphinx-build"
 
 	delete_grammar_pickle() {
 		rm -f "${ED}$(python_get_sitedir)/sphinx/pycode/Grammar$(python_get_version).pickle"
