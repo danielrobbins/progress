@@ -15,7 +15,9 @@ DESCRIPTION="Python package to access the IMDb's database"
 HOMEPAGE="http://imdbpy.sourceforge.net/ http://pypi.python.org/pypi/IMDbPY"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
-LICENSE="GPL-2"
+# Main license: GPL-2
+# imdb/parser/http/bsouplxml/_bsoup.py: BSD
+LICENSE="BSD GPL-2"
 SLOT="0"
 KEYWORDS="~alpha ~amd64 ~ppc ~sparc ~x86"
 IUSE=""
@@ -26,7 +28,7 @@ RDEPEND=""
 S="${WORKDIR}/${MY_PN}-${PV}"
 
 DISTUTILS_GLOBAL_OPTIONS=("*-jython --without-cutils")
-DOCS="docs/*"
+DOCS="docs/AUTHOR.txt docs/Changelog.txt docs/CONTRIBUTORS.txt docs/CREDITS.txt docs/FAQS.txt docs/README.* docs/TODO.txt"
 PYTHON_MODULES="imdb"
 
 src_prepare() {
