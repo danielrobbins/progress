@@ -1,13 +1,12 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.*"
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
 
-inherit bash-completion distutils versionator webapp
+inherit bash-completion-r1 distutils versionator webapp
 
 MY_P="Django-${PV}"
 
@@ -17,7 +16,7 @@ SRC_URI="http://media.djangoproject.com/releases/$(get_version_component_range 1
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="amd64 ~ia64 ~ppc ~ppc64 ~sparc x86 ~x86-fbsd ~amd64-linux ~x86-linux ~ppc-macos ~x86-macos"
+KEYWORDS="~amd64 ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~amd64-linux ~x86-linux ~ppc-macos ~x86-macos"
 IUSE="doc mysql postgres sqlite test"
 
 RDEPEND="$(python_abi_depend -e "*-jython" dev-python/imaging)
@@ -69,7 +68,7 @@ src_test() {
 	testing() {
 		# Tests have non-standard assumptions about PYTHONPATH and
 		# don't work with usual "build-${PYTHON_ABI}/lib".
-		PYTHONPATH="." "$(PYTHON)" tests/runtests.py --settings=test_sqlite -v1
+		python_execute PYTHONPATH="." "$(PYTHON)" tests/runtests.py --settings=test_sqlite -v1
 	}
 	python_execute_function testing
 }
@@ -77,7 +76,7 @@ src_test() {
 src_install() {
 	distutils_src_install
 
-	dobashcompletion extras/django_bash_completion
+	newbashcomp extras/django_bash_completion ${PN}
 
 	if use doc; then
 		rm -fr docs/_build/html/_sources

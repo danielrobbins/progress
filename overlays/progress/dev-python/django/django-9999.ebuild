@@ -1,13 +1,12 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.*"
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
 
-inherit bash-completion distutils subversion webapp
+inherit bash-completion-r1 distutils subversion webapp
 
 DESCRIPTION="High-level Python web framework"
 HOMEPAGE="http://www.djangoproject.com/ http://pypi.python.org/pypi/Django"
@@ -69,7 +68,7 @@ src_test() {
 	testing() {
 		# Tests have non-standard assumptions about PYTHONPATH and
 		# don't work with usual "build-${PYTHON_ABI}/lib".
-		PYTHONPATH="." "$(PYTHON)" tests/runtests.py --settings=test_sqlite -v1
+		python_execute PYTHONPATH="." "$(PYTHON)" tests/runtests.py --settings=test_sqlite -v1
 	}
 	python_execute_function testing
 }
@@ -77,7 +76,7 @@ src_test() {
 src_install() {
 	distutils_src_install
 
-	dobashcompletion extras/django_bash_completion
+	newbashcomp extras/django_bash_completion ${PN}
 
 	if use doc; then
 		rm -fr docs/_build/html/_sources
