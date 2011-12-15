@@ -11,6 +11,9 @@
 # The base eclass defines some default functions and variables. Nearly
 # everything else inherits from here.
 
+if [[ ${___ECLASS_ONCE_BASE} != "recur -_+^+_- spank" ]] ; then
+___ECLASS_ONCE_BASE="recur -_+^+_- spank"
+
 inherit eutils
 
 BASE_EXPF="src_unpack src_compile src_install"
@@ -188,3 +191,5 @@ base_src_install_docs() {
 
 	popd > /dev/null
 }
+
+fi
