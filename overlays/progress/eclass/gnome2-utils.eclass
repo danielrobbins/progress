@@ -325,10 +325,10 @@ gnome2_schemas_savelist() {
 }
 
 # @FUNCTION: gnome2_schemas_update
-# @USAGE: gnome2_schemas_update [--uninstall]
+# @USAGE: gnome2_schemas_update
 # @DESCRIPTION:
 # Updates GSettings schemas if GNOME2_ECLASS_GLIB_SCHEMAS has some.
-# This function should be called from pkg_postinst and pkg_postrm with --uninstall.
+# This function should be called from pkg_postinst and pkg_postrm.
 gnome2_schemas_update() {
 	has ${EAPI:-0} 0 1 2 && ! use prefix && EROOT="${ROOT}"
 	local updater="${EROOT}${GLIB_COMPILE_SCHEMAS}"
