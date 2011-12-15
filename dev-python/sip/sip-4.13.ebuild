@@ -26,6 +26,7 @@ RDEPEND=""
 
 src_prepare() {
 	epatch "${FILESDIR}/${PN}-4.9.3-darwin.patch"
+	sed -e "s/ -O2//g" -i specs/* || die "sed failed"
 	python_copy_sources
 }
 
