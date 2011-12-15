@@ -6,7 +6,7 @@ PYTHON_DEPEND="python? ( <<>> )"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.4 3.* *-jython *-pypy-*"
 
-inherit autotools eutils flag-o-matic linux-info pam python
+inherit autotools flag-o-matic linux-info pam python
 
 DESCRIPTION="eCryptfs userspace utilities"
 HOMEPAGE="https://launchpad.net/ecryptfs"
@@ -49,8 +49,6 @@ src_prepare() {
 
 	# Python bindings are built/installed manually.
 	sed -e "/SUBDIRS =/s/ libecryptfs-swig//" -i src/Makefile.am || die "sed failed"
-
-	epatch "${FILESDIR}/${P}-python.patch"
 
 	eautoreconf
 }
