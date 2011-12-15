@@ -31,7 +31,7 @@ src_compile() {
 	if use doc; then
 		einfo "Generation of documentation"
 		[[ "$(python_get_version -f -l)" == "2.4" ]] && die "Generation of documentation using Python 2.4 not supported"
-		python_execute "$(PYTHON -f)" setup.py build_sphinx || die "Generation of documentation failed"
+		python_execute sphinx-build doc html || die "Generation of documentation failed"
 	fi
 }
 
@@ -53,7 +53,7 @@ src_install() {
 	distutils_src_install $(use mod_wsgi && echo --no_ext)
 
 	if use doc; then
-		pushd build/sphinx/html > /dev/null
+		pushd html > /dev/null
 		insinto /usr/share/doc/${PF}/html
 		doins -r [a-z]* _static
 		popd > /dev/null
