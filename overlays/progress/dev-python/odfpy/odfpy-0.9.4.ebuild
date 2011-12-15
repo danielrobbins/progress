@@ -5,13 +5,13 @@ EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.* *-jython"
 
-inherit distutils
+inherit distutils eutils
 
 DESCRIPTION="Python API and tools to manipulate OpenDocument files"
-HOMEPAGE="http://opendocumentfellowship.com/development/projects/odfpy http://pypi.python.org/pypi/odfpy"
+HOMEPAGE="https://joinup.ec.europa.eu/software/odfpy/home http://pypi.python.org/pypi/odfpy"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
-LICENSE="|| ( Apache-2.0 GPL-2 )"
+LICENSE="Apache-2.0 GPL-2 LGPL-2.1"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
@@ -23,10 +23,7 @@ PYTHON_MODULES="odf"
 
 src_prepare() {
 	distutils_src_prepare
-
-	# Disable failing tests.
-	sed -e "s/testAttributeForeign/_&/" -i tests/teststyles.py
-	sed -e "s/test_xmlgenerator_wo_ns/_&/" -i tests/testxmlgen.py
+	epatch "${FILESDIR}/${P}-tests.patch"
 }
 
 src_test() {
