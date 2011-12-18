@@ -12,7 +12,7 @@ PHP_EXT_NAME="xapian"
 PHP_EXT_INI="yes"
 PHP_EXT_OPTIONAL_USE="php"
 
-inherit java-pkg-opt-2 mono php-ext-source-r2 python
+inherit autotools java-pkg-opt-2 mono php-ext-source-r2 python
 
 DESCRIPTION="SWIG and JNI bindings for Xapian"
 HOMEPAGE="http://www.xapian.org/"
@@ -43,6 +43,9 @@ pkg_setup() {
 }
 
 src_prepare() {
+	epatch "${FILESDIR}/fix-LUA_LIB-envvar.patch"
+	eautoreconf
+
 	java-pkg-opt-2_src_prepare
 	if use java; then
 		sed \
@@ -63,7 +66,13 @@ src_configure() {
 		CXXFLAGS+="${CXXFLAGS:+ }$(java-pkg_get-jni-cflags)"
 	fi
 
+	if use lua; then
+		local LUA_LIB
+		export LUA_LIB="$(pkg-config --variable=INSTALL_CMOD lua)"
+	fi
+
 	if use perl; then
+		local PERL_ARCH PERL_LIB
 		export PERL_ARCH="$(perl -MConfig -e 'print $Config{installvendorarch}')"
 		export PERL_LIB="$(perl -MConfig -e 'print $Config{installvendorlib}')"
 	fi
