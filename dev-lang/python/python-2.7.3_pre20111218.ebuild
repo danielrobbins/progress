@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="2"
 WANT_AUTOMAKE="none"
@@ -12,7 +11,7 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="de1ecda2afa2"
+	EHG_REVISION="766a21ebf82e"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
