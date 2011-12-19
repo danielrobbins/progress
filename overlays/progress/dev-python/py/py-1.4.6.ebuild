@@ -1,10 +1,11 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
+# https://bitbucket.org/hpk42/py/issue/10
+# https://bitbucket.org/hpk42/py/issue/11
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.3 *-jython"
 DISTUTILS_SRC_TEST="py.test"
 
 inherit distutils
@@ -20,16 +21,7 @@ IUSE=""
 
 DEPEND="app-arch/unzip
 	$(python_abi_depend dev-python/setuptools)
-	test? ( $(python_abi_depend ">=dev-python/pytest-2.1.1") )"
+	test? ( $(python_abi_depend ">=dev-python/pytest-2") )"
 RDEPEND=""
 
 DOCS="CHANGELOG README.txt"
-
-src_prepare() {
-	distutils_src_prepare
-
-	# Disable failing tests.
-	rm -f testing/path/test_svnauth.py
-	rm -f testing/path/test_svnurl.py
-	rm -f testing/path/test_svnwc.py
-}
