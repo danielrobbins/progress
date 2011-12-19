@@ -2194,8 +2194,10 @@ for file in sorted(files_set):
 
 		popd > /dev/null || die "popd failed"
 
-		if ROOT="/" has_version sys-apps/coreutils; then
+		if ROOT="/" has_version ">=sys-apps/coreutils-6.9.90"; then
 			cp -fr --preserve=all --no-preserve=context "${intermediate_installation_images_directory}/${PYTHON_ABI}/"* "${D}" || die "Merging of intermediate installation image for Python ABI '${PYTHON_ABI} into installation image failed"
+		elif ROOT="/" has_version sys-apps/coreutils; then
+			cp -fr --preserve=all "${intermediate_installation_images_directory}/${PYTHON_ABI}/"* "${D}" || die "Merging of intermediate installation image for Python ABI '${PYTHON_ABI} into installation image failed"
 		else
 			cp -fpr "${intermediate_installation_images_directory}/${PYTHON_ABI}/"* "${D}" || die "Merging of intermediate installation image for Python ABI '${PYTHON_ABI} into installation image failed"
 		fi
