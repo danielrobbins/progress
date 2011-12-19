@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
@@ -24,10 +23,7 @@ RDEPEND="!dev-python/pyro:0"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	doc? ( dev-python/sphinx )
-	test? (
-		$(python_abi_depend dev-python/coverage)
-		$(python_abi_depend dev-python/nose)
-	)"
+	test? ( $(python_abi_depend dev-python/nose[coverage]) )"
 
 S="${WORKDIR}/${MY_P}"
 
@@ -76,7 +72,7 @@ src_test() {
 	cd tests
 
 	testing() {
-		"$(PYTHON)" run_suite.py
+		python_execute "$(PYTHON)" run_suite.py
 	}
 	python_execute_function testing
 }
