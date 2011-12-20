@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
@@ -17,13 +16,13 @@ SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="2"
-KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~x86-solaris"
+KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~x86-solaris"
 IUSE="debug doc examples mxdatetime"
 
 RDEPEND=">=dev-db/postgresql-base-8.1
 	mxdatetime? ( $(python_abi_depend -i "2.*" dev-python/egenix-mx-base) )"
 DEPEND="${RDEPEND}
-	doc? ( dev-python/sphinx )"
+	doc? ( $(python_abi_depend -e "2.4" dev-python/sphinx) )"
 RESTRICT="test"
 
 S="${WORKDIR}/${MY_P}"
@@ -35,8 +34,7 @@ PYTHON_MODULES="${PN}2"
 
 src_prepare() {
 	epatch "${FILESDIR}/${PN}-2.0.9-round-solaris.patch"
-	epatch "${FILESDIR}/${P}-setup.py.patch"
-	epatch "${FILESDIR}/${P}-begin-segfault.patch"
+	epatch "${FILESDIR}/${PN}-2.4.2-setup.py.patch"
 
 	python_convert_shebangs 2 doc/src/tools/stitch_text.py
 
@@ -54,6 +52,7 @@ src_compile() {
 
 	if use doc; then
 		einfo "Generation of documentation"
+		[[ "$(python_get_version -f -l)" == "2.4" ]] && die "Generation of documentation using Python 2.4 not supported"
 		pushd doc > /dev/null
 		emake -j1 html text
 		popd > /dev/null
