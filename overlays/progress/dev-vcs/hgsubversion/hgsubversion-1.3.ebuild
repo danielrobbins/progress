@@ -17,7 +17,10 @@ KEYWORDS="~amd64 ~x86 ~ppc-macos ~x86-solaris"
 IUSE="test"
 
 RDEPEND="$(python_abi_depend ">=dev-vcs/mercurial-1.4")
-	$(python_abi_depend ">=dev-vcs/subversion-1.5[python]")"
+	|| (
+		$(python_abi_depend dev-python/subvertpy)
+		$(python_abi_depend ">=dev-vcs/subversion-1.5[python]")
+	)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	test? ( $(python_abi_depend dev-python/nose) )"
