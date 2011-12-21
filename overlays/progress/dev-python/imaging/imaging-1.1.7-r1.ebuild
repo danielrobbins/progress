@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_DEPEND="<<[{*-cpython}tk?]>>"
@@ -18,10 +17,11 @@ SRC_URI="http://www.effbot.org/downloads/${MY_P}.tar.gz"
 LICENSE="as-is"
 SLOT="0"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~x86-solaris"
-IUSE="doc examples scanner tk X"
+IUSE="doc examples lcms scanner tk X"
 
 DEPEND="media-libs/freetype:2
 	virtual/jpeg
+	lcms? ( media-libs/lcms:0 )
 	scanner? ( media-gfx/sane-backends )
 	X? ( x11-misc/xdg-utils )"
 RDEPEND="${DEPEND}"
@@ -42,6 +42,9 @@ src_prepare() {
 	epatch "${FILESDIR}/${P}-sane.patch"
 	epatch "${FILESDIR}/${P}-giftrans.patch"
 	epatch "${FILESDIR}/${P}-missing-math.patch"
+	if ! use lcms; then
+		epatch "${FILESDIR}/${P}-nolcms.patch"
+	fi
 
 	# Add shebang.
 	sed -e "1i#!/usr/bin/python" -i Scripts/pilfont.py || die "sed failed"
@@ -71,7 +74,7 @@ src_compile() {
 
 src_test() {
 	tests() {
-		PYTHONPATH="$(ls -d build-${PYTHON_ABI}/lib.*)" "$(PYTHON)" selftest.py
+		python_execute PYTHONPATH="$(ls -d build-${PYTHON_ABI}/lib.*)" "$(PYTHON)" selftest.py
 	}
 	python_execute_function tests
 }
