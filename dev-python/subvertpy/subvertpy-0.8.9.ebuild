@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
@@ -16,10 +15,14 @@ SRC_URI="http://samba.org/~jelmer/${PN}/${P}.tar.gz"
 LICENSE="|| ( LGPL-2.1 LGPL-3 )"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE=""
+IUSE="test"
 
-DEPEND=">=dev-vcs/subversion-1.4"
-RDEPEND="${DEPEND}"
+RDEPEND=">=dev-vcs/subversion-1.4"
+DEPEND="${RDEPEND}
+	test? ( || (
+		$(python_abi_depend -i "2.4 2.5 2.6" dev-python/unittest2)
+		$(python_abi_depend -i "2.4 2.5 2.6" dev-python/testtools)
+	) )"
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 
