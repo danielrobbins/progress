@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
@@ -17,8 +16,8 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
 
-DEPEND="$(python_abi_depend -i "2.*" dev-python/pydns:python-2)
-	$(python_abi_depend -i "3.*" dev-python/pydns:python-3)"
+DEPEND="$(python_abi_depend -i "2.*" dev-python/pydns:2)
+	$(python_abi_depend -i "3.*" dev-python/pydns:3)"
 RDEPEND="${DEPEND}"
 
 DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES="1"
@@ -38,7 +37,7 @@ src_prepare() {
 src_test() {
 	testing() {
 		pushd test > /dev/null
-		PYTHONPATH="../build/lib" "$(PYTHON)" testspf.py || return
+		python_execute PYTHONPATH="../build/lib" "$(PYTHON)" testspf.py || return
 		popd > /dev/null
 	}
 	python_execute_function -s testing
