@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
@@ -13,15 +12,16 @@ HOMEPAGE="http://pydns.sourceforge.net/ http://pypi.python.org/pypi/pydns"
 SRC_URI="mirror://sourceforge/pydns/${P}.tar.gz"
 
 LICENSE="CNRI"
-SLOT="python-2"
+SLOT="2"
 KEYWORDS="~amd64 ~x86"
 IUSE="examples"
 
-RDEPEND="!dev-python/pydns:0"
+RDEPEND="!dev-python/pydns:0
+	!dev-python/pydns:python-2"
 DEPEND="${RDEPEND}
 	virtual/libiconv"
 
-DOCS="CREDITS.txt"
+DOCS="CREDITS"
 PYTHON_MODULES="DNS"
 
 src_prepare() {
@@ -33,6 +33,11 @@ src_prepare() {
 
 	# Fix Python shebangs in examples.
 	sed -i -e 's:#!/.*\(python\).*/*$:#!/usr/bin/\12:g' {tests,tools}/*.py
+
+	# Clean documentation.
+	mv CREDITS.txt CREDITS
+	mv README.txt README
+	rm -f README-guido.txt
 }
 
 src_install(){
@@ -40,6 +45,7 @@ src_install(){
 
 	if use examples; then
 		insinto /usr/share/doc/${PF}/examples
+		docompress -x /usr/share/doc/${PF}/examples
 		doins {tests,tools}/*.py
 	fi
 }
