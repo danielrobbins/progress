@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
@@ -17,6 +16,10 @@ SLOT="0"
 KEYWORDS="~amd64 ~ppc64 ~x86"
 IUSE="doc examples"
 
+# pygtkhelpers.forms requires flatland.
+# http://discorporate.us/projects/flatland/
+# https://bitbucket.org/jek/flatland
+# http://pypi.python.org/pypi/flatland
 RDEPEND="$(python_abi_depend dev-python/pygtk)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
