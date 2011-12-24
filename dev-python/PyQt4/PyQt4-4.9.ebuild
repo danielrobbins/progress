@@ -22,7 +22,7 @@ SLOT="0"
 KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~amd64-linux ~x86-linux"
 IUSE="X assistant +dbus debug declarative doc examples kde multimedia opengl phonon sql svg webkit xmlpatterns"
 
-DEPEND="$(python_abi_depend ">=dev-python/sip-4.12.2")
+DEPEND="$(python_abi_depend ">=dev-python/sip-4.13.1")
 	>=x11-libs/qt-core-${QT_VER}:4
 	>=x11-libs/qt-script-${QT_VER}:4
 	>=x11-libs/qt-test-${QT_VER}:4
@@ -47,9 +47,9 @@ RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/${MY_P}"
 
-PATCHES=(
-	"${FILESDIR}/${PN}-4.7.2-configure.py.patch"
-)
+PATCHES=("${FILESDIR}/${PN}-4.7.2-configure.py.patch")
+
+PYTHON_VERSIONED_EXECUTABLES=("/usr/bin/pyuic4")
 
 src_prepare() {
 	if ! use dbus; then
@@ -101,6 +101,7 @@ src_configure() {
 			# QtAssistant module is not available with Qt >=4.7.0.
 			$(pyqt4_use_enable assistant QtAssistant)
 			$(pyqt4_use_enable assistant QtHelp)
+			$(pyqt4_use_enable dbus QtDBus)
 			$(pyqt4_use_enable declarative QtDeclarative)
 			$(pyqt4_use_enable multimedia QtMultimedia)
 			$(pyqt4_use_enable opengl QtOpenGL)
@@ -119,7 +120,7 @@ src_configure() {
 		python_execute "${myconf[@]}" || return 1
 
 		local mod
-		for mod in QtCore $(use X && echo QtDesigner QtGui) $(use declarative && echo QtDeclarative) $(use opengl && echo QtOpenGL); do
+		for mod in QtCore $(use X && echo QtDesigner QtGui) $(use dbus && echo QtDBus) $(use declarative && echo QtDeclarative) $(use opengl && echo QtOpenGL); do
 			# Run eqmake4 inside the qpy subdirectories to respect CC, CXX, CFLAGS, CXXFLAGS and LDFLAGS and avoid stripping.
 			pushd qpy/${mod} > /dev/null || return 1
 			eqmake4 $(ls w_qpy*.pro)
@@ -145,10 +146,11 @@ src_compile() {
 
 src_install() {
 	installation() {
-		# INSTALL_ROOT is needed for the QtDesigner module, other Makefiles use DESTDIR.
-		emake DESTDIR="${D}" INSTALL_ROOT="${D}" install
+		# INSTALL_ROOT is used by designer/Makefile, other Makefiles use DESTDIR.
+		emake DESTDIR="${T}/images/${PYTHON_ABI}" INSTALL_ROOT="${T}/images/${PYTHON_ABI}" install
 	}
 	python_execute_function -s installation
+	python_merge_intermediate_installation_images "${T}/images"
 
 	dodoc NEWS THANKS
 
