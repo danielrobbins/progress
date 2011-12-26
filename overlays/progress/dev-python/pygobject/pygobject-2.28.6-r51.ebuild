@@ -87,7 +87,6 @@ src_compile() {
 	python_execute_function -d -s
 }
 
-# FIXME: With python multiple ABI support, tests return 1 even when they pass
 src_test() {
 	unset DBUS_SESSION_BUS_ADDRESS
 
