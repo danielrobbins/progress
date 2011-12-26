@@ -118,7 +118,7 @@ src_install() {
 	fi
 
 	if use examples; then
-		insinto /usr/share/doc/${P}
+		insinto /usr/share/doc/${PF}
 		doins -r examples
 	fi
 }
