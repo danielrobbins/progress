@@ -850,7 +850,7 @@ _python_final_sanity_checks() {
 # @ECLASS-VARIABLE: PYTHON_COLORS
 # @DESCRIPTION:
 # User-configurable colored output.
-PYTHON_COLORS="${PYTHON_COLORS:-0}"
+PYTHON_COLORS="${PYTHON_COLORS:-1}"
 
 _python_set_color_variables() {
 	if [[ "${PYTHON_COLORS}" != "0" && "${NOCOLOR:-false}" =~ ^(false|no)$ ]]; then
