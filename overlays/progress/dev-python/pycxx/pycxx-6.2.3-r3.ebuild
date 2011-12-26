@@ -3,7 +3,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="*-jython"
+PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 
 inherit distutils eutils
 
