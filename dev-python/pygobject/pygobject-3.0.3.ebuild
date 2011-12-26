@@ -15,7 +15,7 @@ HOMEPAGE="http://www.pygtk.org/"
 
 LICENSE="LGPL-2.1"
 SLOT="3"
-KEYWORDS="~alpha ~amd64 ~arm hppa ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-interix ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~sparc-solaris ~x64-solaris ~x86-solaris"
+KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~x86-interix ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~sparc-solaris ~x64-solaris ~x86-solaris"
 IUSE="+cairo examples test +threads" # doc
 
 COMMON_DEPEND=">=dev-libs/glib-2.24.0:2
@@ -62,8 +62,14 @@ src_prepare() {
 	# Support installation for multiple Python versions, upstream bug #648292
 	epatch "${FILESDIR}/${PN}-3.0.0-support_multiple_python_versions.patch"
 
-	# FIXME: disable tests that require git master of gobject-introspection
+	# FIXME: disable tests that require >=gobject-introspection-1.31
 	epatch "${FILESDIR}/${P}-disable-new-gi-tests.patch"
+
+	# Upstream patch to fix GObject.property min/max values; in next release
+	epatch "${FILESDIR}/${P}-gobject-property-min-max.patch"
+
+	# https://bugzilla.gnome.org/show_bug.cgi?id=666852
+	epatch "${FILESDIR}/${PN}-3.0.3-tests-python3.patch"
 
 	# disable pyc compiling
 	ln -sfn $(type -P true) py-compile
@@ -79,18 +85,20 @@ src_configure() {
 }
 
 src_compile() {
-	python_execute_function -d -s
+	python_src_compile
 }
 
-# FIXME: With python multiple ABI support, tests return 1 even when they pass
 src_test() {
 	unset DBUS_SESSION_BUS_ADDRESS
+	export GIO_USE_VFS="local" # prevents odd issues with deleting ${T}/.gvfs
 
 	testing() {
-		XDG_CACHE_HOME="${T}/${PYTHON_ABI}"
+		export XDG_CACHE_HOME="${T}/${PYTHON_ABI}"
 		Xemake check PYTHON=$(PYTHON -a)
+		unset XDG_CACHE_HOME
 	}
 	python_execute_function -s testing
+	unset GIO_USE_VFS
 }
 
 src_install() {

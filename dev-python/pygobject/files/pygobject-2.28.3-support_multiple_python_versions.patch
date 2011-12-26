@@ -98,6 +98,3 @@ index 7208329..3f9ad8e 100644
  _gobject_la_SOURCES =           \
          gobjectmodule.c         \
          pygboxed.c              \
--- 
-1.7.4.1
-
