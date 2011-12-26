@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
@@ -27,6 +26,11 @@ src_prepare() {
 
 	# Don't install documentation in site-packages directories.
 	sed -e "/\/Doc\//d" -i egenix_mx_base.py || die "sed failed"
+}
+
+src_compile() {
+	# mxSetup.py uses BASECFLAGS variable.
+	BASECFLAGS="${CFLAGS}" distutils_src_compile
 }
 
 src_install() {
