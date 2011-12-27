@@ -1,6 +1,5 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
@@ -33,6 +32,10 @@ src_prepare() {
 		-e "/('cherrypy\/tutorial',/,/),/d" \
 		-e "/LICENSE.txt/d" \
 		setup.py || die "sed failed"
+}
+
+src_test() {
+	distutils_src_test < /dev/tty
 }
 
 src_install() {
