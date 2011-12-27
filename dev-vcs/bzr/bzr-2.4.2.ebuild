@@ -1,13 +1,12 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_DEPEND="<<[xml]>>"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.4 2.5 3.* *-jython"
 
-inherit bash-completion distutils elisp-common eutils versionator
+inherit bash-completion-r1 distutils elisp-common eutils versionator
 
 MY_P=${PN}-${PV}
 SERIES=$(get_version_component_range 1-2)
@@ -19,7 +18,7 @@ SRC_URI="http://launchpad.net/bzr/${SERIES}/${PV}/+download/${MY_P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~x86-fbsd ~x86-interix ~amd64-linux ~x86-linux ~ppc-macos ~x86-macos ~sparc-solaris"
+KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~x86-fbsd ~x86-interix ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~sparc-solaris"
 IUSE="curl doc emacs +sftp test"
 
 RDEPEND="curl? ( $(python_abi_depend dev-python/pycurl) )
@@ -47,8 +46,8 @@ SITEFILE="71bzr-gentoo.el"
 src_prepare() {
 	distutils_src_prepare
 
-	# Don't regenerate .c files from .pyx when pyrex is found.
-	epatch "${FILESDIR}/${PN}-2.4.0-no-pyrex-cython.patch"
+	# Don't regenerate .c files from .pyx when Cython or Pyrex is found.
+	epatch "${FILESDIR}/${PN}-2.4.2-no-pyrex-cython.patch"
 }
 
 src_compile() {
@@ -105,12 +104,11 @@ src_install() {
 		touch "${ED}${SITELISP}/${PN}/.nosearch"
 	fi
 
-	dobashcompletion contrib/bash/bzr
+	dobashcomp contrib/bash/bzr
 }
 
 pkg_postinst() {
 	distutils_pkg_postinst
-	bash-completion_pkg_postinst
 
 	if use emacs; then
 		elisp-site-regen
