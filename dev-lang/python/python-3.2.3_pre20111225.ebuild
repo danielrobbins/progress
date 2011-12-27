@@ -346,13 +346,6 @@ pkg_postinst() {
 			sleep 1
 		done
 	fi
-
-	if [[ "${PV}" != *_pre* ]]; then
-		elog
-		elog "If you want to help in testing of recent changes in Python, then you can use"
-		elog "snapshots of Python from Progress Overlay."
-		elog
-	fi
 }
 
 pkg_postrm() {
