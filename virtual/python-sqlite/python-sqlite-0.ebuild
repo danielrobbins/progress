@@ -1,8 +1,8 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
+PYTHON_DEPEND="<<[{3.*-cpython}sqlite]>>"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython"
 
@@ -31,8 +31,4 @@ RDEPEND="python_abis_2.4? ( dev-python/pysqlite:2[python_abis_2.4] )
 		external? ( dev-python/pysqlite:2[python_abis_2.7] )
 		!external? ( || ( dev-lang/python:2.7[sqlite] dev-python/pysqlite:2[python_abis_2.7] ) )
 	)
-	python_abis_3.1? ( dev-lang/python:3.1[sqlite] )
-	python_abis_3.2? ( dev-lang/python:3.2[sqlite] )
-	python_abis_3.3? ( dev-lang/python:3.3[sqlite] )
-	python_abis_2.7-pypy-1.5? ( dev-python/pysqlite:2[python_abis_2.7-pypy-1.5] )
-	python_abis_2.7-pypy-1.6? ( dev-python/pysqlite:2[python_abis_2.7-pypy-1.6] )"
+	$(python_abi_depend -i "*-pypy-*" dev-python/pysqlite:2)"
