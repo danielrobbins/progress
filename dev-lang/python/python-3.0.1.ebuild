@@ -43,7 +43,7 @@ RDEPEND=">=app-admin/eselect-python-20091230
 		virtual/libffi
 		virtual/libintl
 		!build? (
-			gdbm? ( sys-libs/gdbm )
+			gdbm? ( sys-libs/gdbm[berkdb] )
 			ncurses? (
 				>=sys-libs/ncurses-5.2
 				readline? ( >=sys-libs/readline-4.1 )
@@ -125,7 +125,8 @@ src_prepare() {
 		Modules/getpath.c \
 		setup.py || die "sed failed to replace @@GENTOO_LIBDIR@@"
 
-	eautoreconf
+	eautoconf
+	eautoheader
 }
 
 src_configure() {
