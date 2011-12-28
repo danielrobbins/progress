@@ -6,7 +6,7 @@ PYTHON_DEPEND="<<[xml]>>"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.4 2.5 3.* *-jython"
 
-inherit bash-completion-r1 distutils elisp-common eutils versionator
+inherit bash-completion-r1 distutils eutils versionator
 
 MY_P=${PN}-${PV}
 SERIES=$(get_version_component_range 1-2)
@@ -19,13 +19,12 @@ SRC_URI="http://launchpad.net/bzr/${SERIES}/${PV}/+download/${MY_P}.tar.gz"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~x86-fbsd ~x86-interix ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~sparc-solaris"
-IUSE="curl doc emacs +sftp test"
+IUSE="curl doc +sftp test"
 
 RDEPEND="curl? ( $(python_abi_depend dev-python/pycurl) )
 	sftp? ( $(python_abi_depend -e "*-pypy-*" dev-python/paramiko) )"
 
-DEPEND="emacs? ( virtual/emacs )
-	test? (
+DEPEND="test? (
 		${RDEPEND}
 		|| (
 			$(python_abi_depend dev-python/pyftpdlib)
@@ -41,21 +40,12 @@ PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 
 DOCS="doc/*.txt"
 PYTHON_MODULES="bzrlib"
-SITEFILE="71bzr-gentoo.el"
 
 src_prepare() {
 	distutils_src_prepare
 
 	# Don't regenerate .c files from .pyx when Cython or Pyrex is found.
 	epatch "${FILESDIR}/${PN}-2.4.2-no-pyrex-cython.patch"
-}
-
-src_compile() {
-	distutils_src_compile
-
-	if use emacs; then
-		elisp-compile contrib/emacs/bzr-mode.el || die
-	fi
 }
 
 src_test() {
@@ -95,32 +85,5 @@ src_install() {
 		done
 	fi
 
-	if use emacs; then
-		elisp-install ${PN} contrib/emacs/*.el* || die
-		elisp-site-file-install "${FILESDIR}/${SITEFILE}" || die
-
-		# don't add automatically to the load-path, so the sitefile
-		# can do a conditional loading
-		touch "${ED}${SITELISP}/${PN}/.nosearch"
-	fi
-
 	dobashcomp contrib/bash/bzr
-}
-
-pkg_postinst() {
-	distutils_pkg_postinst
-
-	if use emacs; then
-		elisp-site-regen
-		elog "If you are using a GNU Emacs version greater than 22.1, bzr support"
-		elog "is already included.  This ebuild does not automatically activate bzr support"
-		elog "in versions below, but prepares it in a way you can load it from your ~/.emacs"
-		elog "file by adding"
-		elog "       (load \"bzr-mode\")"
-	fi
-}
-
-pkg_postrm() {
-	distutils_pkg_postrm
-	use emacs && elisp-site-regen
 }
