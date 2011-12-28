@@ -127,7 +127,6 @@ qt4-r2_src_compile() {
 # @ECLASS-VARIABLE: DOCSDIR
 # @DESCRIPTION:
 # Directory containing documentation, defaults to ${S}.
-DOCSDIR="${DOCSDIR:-${S}}"
 
 # @FUNCTION: qt4-r2_src_install
 # @DESCRIPTION:
@@ -139,9 +138,9 @@ qt4-r2_src_install() {
 	emake INSTALL_ROOT="${D}" DESTDIR="${D}" install || die "emake install failed"
 
 	# install documentation
-	local doc
+	local doc dir="${DOCSDIR:-${S}}"
 	for doc in ${DOCS}; do
-		dodoc "${DOCSDIR}/${doc}" || die "dodoc failed"
+		dodoc "${dir}/${doc}" || die "dodoc failed"
 	done
 }
 
