@@ -71,8 +71,7 @@ src_prepare() {
 	# https://bugzilla.gnome.org/show_bug.cgi?id=666852
 	epatch "${FILESDIR}/${PN}-3.0.3-tests-python3.patch"
 
-	# disable pyc compiling
-	ln -sfn $(type -P true) py-compile
+	python_clean_py-compile_files
 
 	eautoreconf
 	gnome2_src_prepare
