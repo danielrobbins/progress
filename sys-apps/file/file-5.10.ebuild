@@ -1,13 +1,12 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_DEPEND="python? ( <<>> )"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython"
 
-inherit eutils distutils libtool flag-o-matic
+inherit distutils eutils flag-o-matic libtool
 
 DESCRIPTION="identify a file's format by scanning binary data for patterns"
 HOMEPAGE="ftp://ftp.astron.com/pub/file/"
@@ -34,8 +33,6 @@ src_prepare() {
 	# dont let python README kill main README #60043
 	mv python/README{,.python}
 }
-
-usex() { use $1 && echo ${2:-yes} || echo ${3:-no} ; }
 
 wd() { echo ${WORKDIR}/build-${CHOST}; }
 do_configure() {
@@ -88,7 +85,7 @@ src_install() {
 	dodoc ChangeLog MAINT README
 
 	use python && cd python && distutils_src_install
-	use static-libs || rm -f "${D}"/usr/lib*/libmagic.la
+	use static-libs || rm -f "${ED}"/usr/lib*/libmagic.la
 }
 
 pkg_postinst() {
