@@ -1101,6 +1101,42 @@ python_convert_shebangs() {
 	fi
 }
 
+# @FUNCTION: python_clean_py-compile_files
+# @USAGE: [-q|--quiet]
+# @DESCRIPTION:
+# Clean py-compile files to disable byte-compilation.
+python_clean_py-compile_files() {
+	_python_check_python_pkg_setup_execution
+
+	local file files=() quiet="0"
+
+	while (($#)); do
+		case "$1" in
+			-q|--quiet)
+				quiet="1"
+				;;
+			-*)
+				die "${FUNCNAME}(): Unrecognized option '$1'"
+				;;
+			*)
+				die "${FUNCNAME}(): Invalid usage"
+				;;
+		esac
+		shift
+	done
+
+	while read -d $'\0' -r file; do
+		files+=("${file#./}")
+	done < <(find -name py-compile -type f -print0)
+
+	for file in "${files[@]}"; do
+		if [[ "${quiet}" == "0" ]]; then
+			einfo "Cleaning '${file}' file"
+		fi
+		echo "#!/bin/sh" > "${file}"
+	done
+}
+
 # @FUNCTION: python_clean_installation_image
 # @USAGE: [-q|--quiet]
 # @DESCRIPTION:
