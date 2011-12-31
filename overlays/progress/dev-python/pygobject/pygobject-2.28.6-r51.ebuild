@@ -70,8 +70,7 @@ src_prepare() {
 	epatch "${FILESDIR}/${P}-python-3.patch"
 	epatch "${FILESDIR}/${P}-python-3-codegen.patch"
 
-	# disable pyc compiling
-	ln -sfn $(type -P true) py-compile
+	python_clean_py-compile_files
 
 	eautoreconf
 	gnome2_src_prepare
