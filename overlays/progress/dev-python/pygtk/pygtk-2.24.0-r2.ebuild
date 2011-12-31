@@ -45,9 +45,7 @@ src_prepare() {
 	# Fix exit status of tests.
 	epatch "${FILESDIR}/${P}-tests_result.patch"
 
-	# Disable pyc compiling
-	mv "${S}"/py-compile "${S}"/py-compile.orig
-	ln -s $(type -P true) "${S}"/py-compile
+	python_clean_py-compile_files
 
 	AT_M4DIR="m4" eautoreconf
 
