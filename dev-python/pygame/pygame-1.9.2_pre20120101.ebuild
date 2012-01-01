@@ -1,11 +1,10 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
-PYTHON_TESTS_RESTRICTED_ABIS="3.*"
+PYTHON_TESTS_RESTRICTED_ABIS="3.1"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 
 inherit distutils virtualx
@@ -45,11 +44,14 @@ src_configure() {
 	if ! use X; then
 		sed -e "s:^scrap :#&:" -i Setup || die "sed failed"
 	fi
+
+	# Disable automagic dependency on PortMidi.
+	sed -e "s:^pypm :#&:" -i Setup || die "sed failed"
 }
 
 src_test() {
 	testing() {
-		PYTHONPATH="$(ls -d build-${PYTHON_ABI}/lib.*)" "$(PYTHON)" run_tests.py
+		python_execute PYTHONPATH="$(ls -d build-${PYTHON_ABI}/lib.*)" "$(PYTHON)" run_tests.py
 	}
 	VIRTUALX_COMMAND="python_execute_function" virtualmake testing
 }
