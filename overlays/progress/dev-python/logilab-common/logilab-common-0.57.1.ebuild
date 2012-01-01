@@ -1,13 +1,12 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.* *-jython"
 PYTHON_NAMESPACES="logilab"
 
-inherit distutils python-namespaces
+inherit distutils eutils python-namespaces
 
 DESCRIPTION="Useful miscellaneous modules used by Logilab projects"
 HOMEPAGE="http://www.logilab.org/projects/common/ http://pypi.python.org/pypi/logilab-common"
@@ -31,16 +30,21 @@ S="${WORKDIR}/${P}"
 
 PYTHON_MODULES="logilab"
 
+src_prepare() {
+	distutils_src_prepare
+	epatch "${FILESDIR}/${PN}-date.patch"
+}
+
 src_test() {
 	testing() {
 		local tpath="${T}/test-${PYTHON_ABI}"
 		local spath="${tpath}${EPREFIX}$(python_get_sitedir)"
 
-		"$(PYTHON)" setup.py build -b "build-${PYTHON_ABI}" install --root="${tpath}" || die "Installation for tests failed with $(python_get_implementation_and_version)"
+		python_execute "$(PYTHON)" setup.py build -b "build-${PYTHON_ABI}" install --root="${tpath}" || die "Installation for tests failed with $(python_get_implementation_and_version)"
 
 		# pytest uses tests placed relatively to the current directory.
 		pushd "${spath}" > /dev/null || return 1
-		PYTHONPATH="${spath}" "$(PYTHON)" "${tpath}${EPREFIX}/usr/bin/pytest" -v || return 1
+		python_execute PYTHONPATH="${spath}" "$(PYTHON)" "${tpath}${EPREFIX}/usr/bin/pytest" -v || return 1
 		popd > /dev/null || return 1
 	}
 	python_execute_function testing
