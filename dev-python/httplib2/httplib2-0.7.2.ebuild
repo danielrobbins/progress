@@ -1,4 +1,4 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="4-python"
@@ -30,8 +30,8 @@ src_prepare() {
 
 src_test() {
 	testing() {
-		pushd "python$(python_get_version --major)" > /dev/null
-		python_execute "$(PYTHON)" httplib2test.py
+		pushd "python$(python_get_version -l --major)" > /dev/null
+		python_execute "$(PYTHON)" httplib2test.py || return
 		popd > /dev/null
 	}
 	python_execute_function testing
