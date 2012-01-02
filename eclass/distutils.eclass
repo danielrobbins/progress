@@ -1,4 +1,4 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 # @ECLASS: distutils.eclass
@@ -12,7 +12,7 @@ if [[ -z "${_PYTHON_ECLASS_INHERITED}" ]]; then
 	inherit python
 fi
 
-inherit multilib
+inherit multilib toolchain-funcs
 
 if has "${EAPI:-0}" 0 1 && _python_package_supporting_installation_for_multiple_python_abis; then
 	die "EAPI=\"${EAPI}\" not supported by distutils.eclass in packages supporting installation for multiple Python ABIs"
@@ -108,6 +108,14 @@ fi
 # @ECLASS-VARIABLE: DOCS
 # @DESCRIPTION:
 # Additional documentation files installed by distutils_src_install().
+
+_distutils_execute() {
+	if [[ "$(python_get_implementation)" == "PyPy" ]]; then
+		python_execute CPP="$(tc-getCPP)" CC="$(tc-getCC)" CXX="$(tc-getCXX)" LDSHARED="$(tc-getCC) -shared" LDCXXSHARED="$(tc-getCXX) -shared" "$@"
+	else
+		python_execute "$@"
+	fi
+}
 
 _distutils_get_build_dir() {
 	if _python_package_supporting_installation_for_multiple_python_abis && [[ -z "${DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES}" ]]; then
@@ -240,7 +248,7 @@ distutils_src_compile() {
 			for setup_file in "${DISTUTILS_SETUP_FILES[@]-setup.py}"; do
 				_distutils_prepare_current_working_directory "${setup_file}"
 
-				python_execute "$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" build -b "$(_distutils_get_build_dir)" "$@" || return "$?"
+				_distutils_execute "$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" build -b "$(_distutils_get_build_dir)" "$@" || return "$?"
 
 				_distutils_restore_current_working_directory "${setup_file}"
 			done
@@ -255,7 +263,7 @@ distutils_src_compile() {
 		for setup_file in "${DISTUTILS_SETUP_FILES[@]-setup.py}"; do
 			_distutils_prepare_current_working_directory "${setup_file}"
 
-			python_execute "$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" build "$@" || die "Building failed"
+			_distutils_execute "$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" build "$@" || die "Building failed"
 
 			_distutils_restore_current_working_directory "${setup_file}"
 		done
@@ -309,7 +317,7 @@ distutils_src_test() {
 				for setup_file in "${DISTUTILS_SETUP_FILES[@]-setup.py}"; do
 					_distutils_prepare_current_working_directory "${setup_file}"
 
-					python_execute PYTHONPATH="$(_distutils_get_PYTHONPATH)" "$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" $([[ -z "${DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES}" ]] && echo build -b "$(_distutils_get_build_dir)") test "$@" || return "$?"
+					_distutils_execute PYTHONPATH="$(_distutils_get_PYTHONPATH)" "$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" $([[ -z "${DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES}" ]] && echo build -b "$(_distutils_get_build_dir)") test "$@" || return "$?"
 
 					_distutils_restore_current_working_directory "${setup_file}"
 				done
@@ -324,7 +332,7 @@ distutils_src_test() {
 			for setup_file in "${DISTUTILS_SETUP_FILES[@]-setup.py}"; do
 				_distutils_prepare_current_working_directory "${setup_file}"
 
-				python_execute PYTHONPATH="$(_distutils_get_PYTHONPATH)" "$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" test "$@" || die "Testing failed"
+				_distutils_execute PYTHONPATH="$(_distutils_get_PYTHONPATH)" "$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" test "$@" || die "Testing failed"
 
 				_distutils_restore_current_working_directory "${setup_file}"
 			done
@@ -380,7 +388,7 @@ distutils_src_install() {
 			for setup_file in "${DISTUTILS_SETUP_FILES[@]-setup.py}"; do
 				_distutils_prepare_current_working_directory "${setup_file}"
 
-				python_execute "$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" $([[ -z "${DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES}" ]] && echo build -b "$(_distutils_get_build_dir)") install --no-compile --root="${T}/images/${PYTHON_ABI}" "$@" || return "$?"
+				_distutils_execute "$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" $([[ -z "${DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES}" ]] && echo build -b "$(_distutils_get_build_dir)") install --no-compile --root="${T}/images/${PYTHON_ABI}" "$@" || return "$?"
 
 				_distutils_restore_current_working_directory "${setup_file}"
 			done
@@ -400,7 +408,7 @@ distutils_src_install() {
 		for setup_file in "${DISTUTILS_SETUP_FILES[@]-setup.py}"; do
 			_distutils_prepare_current_working_directory "${setup_file}"
 
-			python_execute "$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" install --root="${D}" --no-compile "$@" || die "Installation failed"
+			_distutils_execute "$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" install --root="${D}" --no-compile "$@" || die "Installation failed"
 
 			_distutils_restore_current_working_directory "${setup_file}"
 		done
