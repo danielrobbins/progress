@@ -1,4 +1,4 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="4-python"
@@ -38,7 +38,7 @@ src_prepare() {
 	prepare_tests() {
 		cp -r tests tests-${PYTHON_ABI}
 
-		if [[ "$(python_get_version -l --major)" != "2" ]]; then
+		if [[ "$(python_get_version -l --major)" == "3" ]]; then
 			2to3-${PYTHON_ABI} -nw --no-diffs tests-${PYTHON_ABI}
 		fi
 	}
@@ -66,7 +66,7 @@ src_install() {
 	python_generate_wrapper_scripts -E -f -q "${ED}usr/bin/sphinx-build"
 
 	delete_grammar_pickle() {
-		rm -f "${ED}$(python_get_sitedir)/sphinx/pycode/Grammar$(python_get_version).pickle"
+		rm -f "${ED}$(python_get_sitedir)/sphinx/pycode/Grammar$(python_get_version -l).pickle"
 	}
 	python_execute_function -q delete_grammar_pickle
 
@@ -92,7 +92,7 @@ pkg_postrm() {
 	distutils_pkg_postrm
 
 	delete_grammar_pickle() {
-		rm -f "${EROOT}$(python_get_sitedir -b)/sphinx/pycode/Grammar$(python_get_version).pickle" || return 1
+		rm -f "${EROOT}$(python_get_sitedir -b)/sphinx/pycode/Grammar$(python_get_version -l).pickle" || return 1
 
 		# Delete empty parent directories.
 		local dir="${EROOT}$(python_get_sitedir -b)/sphinx/pycode"
