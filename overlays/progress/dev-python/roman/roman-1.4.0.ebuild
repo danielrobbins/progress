@@ -27,7 +27,7 @@ src_prepare() {
 
 	preparation() {
 		if [[ "$(python_get_version -l --major)" == "3" ]]; then
-			2to3-${PYTHON_ABI} -nw --no-diff src/roman.py
+			2to3-${PYTHON_ABI} -nw --no-diffs src/roman.py
 		fi
 	}
 	python_execute_function -s preparation
