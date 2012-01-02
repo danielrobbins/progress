@@ -1,38 +1,36 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 
-inherit distutils eutils
+inherit distutils
 
 DESCRIPTION="Docutils - Python Documentation Utilities"
 HOMEPAGE="http://docutils.sourceforge.net/ http://pypi.python.org/pypi/docutils"
 if [[ "${PV}" == *_pre* ]]; then
-	SRC_URI="mirror://gentoo/${P}.tar.xz"
+	SRC_URI="http://people.apache.org/~Arfrever/gentoo/${P}.tar.xz"
 else
 	SRC_URI="mirror://sourceforge/${PN}/${P}.tar.gz"
 fi
 SRC_URI+=" glep? ( mirror://gentoo/glep-0.4-r1.tbz2 )"
 
-LICENSE="BSD-2 GPL-3 PSF-2 public-domain"
+LICENSE="BSD-2 GPL-3 public-domain"
 SLOT="0"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~ppc-aix ~sparc-fbsd ~x86-fbsd ~x86-freebsd ~hppa-hpux ~ia64-hpux ~x86-interix ~amd64-linux ~ia64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~m68k-mint ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
 IUSE="glep"
 
-DEPEND="$(python_abi_depend dev-python/setuptools)"
-RDEPEND=""
+RDEPEND="$(python_abi_depend dev-python/roman)"
+DEPEND="${RDEPEND}
+	$(python_abi_depend dev-python/setuptools)"
 
 DOCS="*.txt"
-PYTHON_MODULES="docutils roman.py"
 
 GLEP_SRC="${WORKDIR}/glep-0.4-r1"
 
 src_prepare() {
-	# Fix installation of extra modules.
-	epatch "${FILESDIR}/${PN}-0.6-extra_modules.patch"
-
+	distutils_src_prepare
 	sed -e "s/from distutils.core/from setuptools/" -i setup.py || die "sed setup.py failed"
 }
 
@@ -40,9 +38,6 @@ src_compile() {
 	distutils_src_compile
 
 	# Generate html docs from reStructured text sources.
-
-	# Make roman.py available for process of building of documentation.
-	ln -s extras/roman.py
 
 	# Place html4css1.css in base directory to ensure that the generated reference to it is correct.
 	cp docutils/writers/html4css1/html4css1.css .
@@ -54,7 +49,7 @@ src_compile() {
 	popd > /dev/null
 
 	# Clean up after building of documentation.
-	rm roman.py html4css1.css
+	rm html4css1.css
 }
 
 src_test() {
@@ -110,6 +105,6 @@ src_install() {
 			insinto $(python_get_sitedir)/docutils/writers
 			doins -r "${GLEP_SRC}/glep_html"
 		}
-		python_execute_function --action-message 'Installation of GLEP tools with $(python_get_implementation_and_version)...' installation_of_glep_tools
+		python_execute_function --action-message 'Installation of GLEP tools with $(python_get_implementation_and_version)' installation_of_glep_tools
 	fi
 }
