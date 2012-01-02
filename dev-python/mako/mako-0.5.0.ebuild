@@ -1,6 +1,5 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
@@ -34,8 +33,9 @@ src_prepare() {
 	distutils_src_prepare
 
 	2to3_conversion() {
-		[[ "$(python_get_version --major)" == "2" ]] && return
-		2to3-${PYTHON_ABI} -nw --no-diffs test
+		if [[ "$(python_get_version -l --major)" == "3" ]]; then
+			2to3-${PYTHON_ABI} -nw --no-diffs test
+		fi
 	}
 	python_execute_function -s 2to3_conversion
 }
