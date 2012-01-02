@@ -1,4 +1,4 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="4-python"
@@ -82,7 +82,7 @@ src_install() {
 	python_generate_wrapper_scripts -E -f -q "${ED}usr/bin/trial"
 
 	postinstallational_preparation() {
-		touch "${ED}$(python_get_sitedir)/Twisted-${PV}-py$(python_get_version).egg-info"
+		touch "${ED}$(python_get_sitedir)/Twisted-${PV}-py$(python_get_version -l).egg-info"
 
 		# Delete dropin.cache to avoid collisions.
 		# dropin.cache is regenerated in pkg_postinst().
