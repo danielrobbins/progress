@@ -1,4 +1,4 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 # @ECLASS: python.eclass
@@ -14,6 +14,30 @@ inherit multilib
 
 if ! has "${EAPI:-0}" 0 1 2 3 4 4-python; then
 	die "API of python.eclass in EAPI=\"${EAPI}\" not established"
+fi
+
+# @ECLASS-VARIABLE: PYTHON_ECLASS_API
+# @DESCRIPTION:
+# Specification of API of python.eclass in given EAPI.
+
+if [[ -z "$(declare -p PYTHON_ECLASS_API 2> /dev/null)" ]]; then
+	PYTHON_ECLASS_API="0"
+fi
+
+case "${EAPI:-0}" in
+	0|1|2|3)
+		_PYTHON_ECLASS_SUPPORTED_APIS=(0)
+		;;
+	4)
+		_PYTHON_ECLASS_SUPPORTED_APIS=(0 1)
+		;;
+	4-python)
+		_PYTHON_ECLASS_SUPPORTED_APIS=(0)
+		;;
+esac
+
+if ! has "${PYTHON_ECLASS_API}" ${_PYTHON_ECLASS_SUPPORTED_APIS[@]}; then
+	die "PYTHON_ECLASS_API=\"${PYTHON_ECLASS_API}\" not supported in EAPI=\"${EAPI}\""
 fi
 
 _CPYTHON2_GLOBALLY_SUPPORTED_ABIS=(2.4 2.5 2.6 2.7)
@@ -90,7 +114,7 @@ _python_check_python_abi_matching() {
 }
 
 _python_package_supporting_installation_for_multiple_python_abis() {
-	if has "${EAPI:-0}" 0 1 2 3; then
+	if has "${EAPI:-0}" 0 1 2 3 || { has "${EAPI:-0}" 4 && has "${PYTHON_ECLASS_API}" 0; }; then
 		if [[ -n "${PYTHON_MULTIPLE_ABIS}" || -n "${SUPPORT_PYTHON_ABIS}" ]]; then
 			return 0
 		else
@@ -490,7 +514,7 @@ _python_parse_dependencies_in_new_EAPIs() {
 DEPEND=">=app-admin/eselect-python-20091230 >=app-shells/bash-4"
 RDEPEND="${DEPEND}"
 
-if has "${EAPI:-0}" 0 1 2 3; then
+if has "${EAPI:-0}" 0 1 2 3 || { has "${EAPI:-0}" 4 && has "${PYTHON_ECLASS_API}" 0; }; then
 	_PYTHON_ATOMS_FROM_PYTHON_DEPEND=()
 	_PYTHON_ATOMS_FROM_PYTHON_BDEPEND=()
 	if [[ -z "${PYTHON_DEPEND}" && -z "${PYTHON_BDEPEND}" ]]; then
@@ -527,21 +551,30 @@ unset -f _python_parse_versions_range _python_parse_dependencies_in_old_EAPIs _p
 # @ECLASS-VARIABLE: PYTHON_USE_WITH
 # @DESCRIPTION:
 # Set this to a space separated list of USE flags the Python slot in use must be built with.
-# This variable can be used only in EAPI 2 and 3.
+# This variable can be used only in:
+#   EAPI="2"
+#   EAPI="3"
+#   EAPI="4" + PYTHON_ECLASS_API="0"
 
 # @ECLASS-VARIABLE: PYTHON_USE_WITH_OR
 # @DESCRIPTION:
 # Set this to a space separated list of USE flags of which one must be turned on for the slot in use.
 # This variable is ignored when PYTHON_USE_WITH is set.
-# This variable can be used only in EAPI 2 and 3.
+# This variable can be used only in:
+#   EAPI="2"
+#   EAPI="3"
+#   EAPI="4" + PYTHON_ECLASS_API="0"
 
 # @ECLASS-VARIABLE: PYTHON_USE_WITH_OPT
 # @DESCRIPTION:
 # Set this to a name of a USE flag if you need to make either PYTHON_USE_WITH or
 # PYTHON_USE_WITH_OR atoms conditional under a USE flag.
-# This variable can be used only in EAPI 2 and 3.
+# This variable can be used only in:
+#   EAPI="2"
+#   EAPI="3"
+#   EAPI="4" + PYTHON_ECLASS_API="0"
 
-if has "${EAPI:-0}" 2 3; then
+if has "${EAPI:-0}" 2 3 || { has "${EAPI:-0}" 4 && has "${PYTHON_ECLASS_API}" 0; }; then
 	if [[ -n "${PYTHON_USE_WITH}" || -n "${PYTHON_USE_WITH_OR}" ]]; then
 		_PYTHON_USE_WITH_ATOMS_ARRAY_FROM_PYTHON_DEPEND=()
 		_PYTHON_USE_WITH_ATOMS_ARRAY_FROM_PYTHON_BDEPEND=()
@@ -603,7 +636,7 @@ else
 	fi
 fi
 
-if has "${EAPI:-0}" 0 1 2 3; then
+if has "${EAPI:-0}" 0 1 2 3 || { has "${EAPI:-0}" 4 && has "${PYTHON_ECLASS_API}" 0; }; then
 	unset _PYTHON_ATOMS_FROM_PYTHON_DEPEND _PYTHON_ATOMS_FROM_PYTHON_BDEPEND
 fi
 
@@ -767,7 +800,7 @@ _python_implementation() {
 }
 
 _python_check_run-time_dependency() {
-	if has "${EAPI:-0}" 0 1 2 3; then
+	if has "${EAPI:-0}" 0 1 2 3 || { has "${EAPI:-0}" 4 && has "${PYTHON_ECLASS_API}" 0; }; then
 		return 0
 	else
 		if ! has "${EAPI:-0}" 4 && _python_package_supporting_installation_for_multiple_python_abis; then
@@ -905,7 +938,7 @@ python_pkg_setup() {
 		PYTHON_ABI="${PYTHON_ABI:-$(PYTHON --ABI)}"
 	fi
 
-	if has "${EAPI:-0}" 2 3 && [[ -n "${PYTHON_USE_WITH}" || -n "${PYTHON_USE_WITH_OR}" ]]; then
+	if { has "${EAPI:-0}" 2 3 || { has "${EAPI:-0}" 4 && has "${PYTHON_ECLASS_API}" 0; }; } && [[ -n "${PYTHON_USE_WITH}" || -n "${PYTHON_USE_WITH_OR}" ]]; then
 		if [[ "${PYTHON_USE_WITH_OPT}" ]]; then
 			if [[ "${PYTHON_USE_WITH_OPT}" == !* ]]; then
 				use ${PYTHON_USE_WITH_OPT#!} && return
@@ -946,7 +979,7 @@ python_pkg_setup() {
 		unset -f python_pkg_setup_check_USE_flags
 	fi
 
-	if has "${EAPI:-0}" 4 || { ! has "${EAPI:-0}" 0 1 2 3 4 && ! _python_package_supporting_installation_for_multiple_python_abis; }; then
+	if { has "${EAPI:-0}" 4 && ! has "${PYTHON_ECLASS_API}" 0; } || { ! has "${EAPI:-0}" 0 1 2 3 4 && ! _python_package_supporting_installation_for_multiple_python_abis; }; then
 		python_pkg_setup_check_USE_flags() {
 			ROOT="/" eval "${_PYTHON_USE_FLAGS_CHECKS_CODE}"
 			if [[ "${ROOT}" != "/" ]] && _python_check_run-time_dependency; then
@@ -1207,7 +1240,7 @@ python_clean_installation_image() {
 # =========== FUNCTIONS FOR PACKAGES SUPPORTING INSTALLATION FOR MULTIPLE PYTHON ABIS ============
 # ================================================================================================
 
-if ! has "${EAPI:-0}" 0 1 2 3; then
+if ! { has "${EAPI:-0}" 0 1 2 3 || { has "${EAPI:-0}" 4 && has "${PYTHON_ECLASS_API}" 0; }; }; then
 	if [[ -n "${SUPPORT_PYTHON_ABIS}" ]]; then
 		eerror "Use PYTHON_MULTIPLE_ABIS variable instead of SUPPORT_PYTHON_ABIS variable."
 		die "SUPPORT_PYTHON_ABIS variable is banned"
@@ -1317,7 +1350,7 @@ _python_calculate_PYTHON_ABIS() {
 
 	_python_initial_sanity_checks
 
-	if has "${EAPI:-0}" 0 1 2 3; then
+	if has "${EAPI:-0}" 0 1 2 3 || { has "${EAPI:-0}" 4 && has "${PYTHON_ECLASS_API}" 0; }; then
 		if [[ -z "${PYTHON_RESTRICTED_ABIS}" && -n "${RESTRICT_PYTHON_ABIS}" ]]; then
 			PYTHON_RESTRICTED_ABIS="${RESTRICT_PYTHON_ABIS}"
 		fi
