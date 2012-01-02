@@ -1,4 +1,4 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="4-python"
@@ -28,7 +28,7 @@ src_prepare() {
 
 	preparation() {
 		if [[ "$(python_get_version -l --major)" == "3" ]]; then
-			2to3-${PYTHON_ABI} -nw --no-diff tests
+			2to3-${PYTHON_ABI} -nw --no-diffs tests
 		fi
 	}
 	python_execute_function -s preparation
