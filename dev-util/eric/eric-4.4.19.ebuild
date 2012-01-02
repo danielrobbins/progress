@@ -1,4 +1,4 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="4-python"
@@ -21,21 +21,21 @@ SLOT="4"
 KEYWORDS="~amd64 ~ppc ~ppc64 ~x86"
 IUSE="kde spell"
 
-DEPEND="$(python_abi_depend ">=dev-python/PyQt4-4.6[assistant,svg,webkit,X]")
+DEPEND="$(python_abi_depend ">=dev-python/sip-4.12.4")
+	$(python_abi_depend ">=dev-python/PyQt4-4.6[assistant,svg,webkit,X]")
 	$(python_abi_depend ">=dev-python/qscintilla-python-2.2")
 	kde? ( $(python_abi_depend kde-base/pykde4) )"
 RDEPEND="${DEPEND}
-	$(python_abi_depend ">=dev-python/chardet-2.0")
+	$(python_abi_depend ">=dev-python/chardet-2.0.1")
 	$(python_abi_depend dev-python/coverage)
 	$(python_abi_depend ">=dev-python/pygments-1.1")
 	$(python_abi_depend virtual/python-json)"
 PDEPEND="spell? ( $(python_abi_depend dev-python/pyenchant) )"
 
-LANGS="cs de es fr it ru tr zh_CN"
+LANGS="cs de en es fr it ru tr zh_CN"
 for L in ${LANGS}; do
-	SRC_URI="${SRC_URI}
-		linguas_${L}? ( ${BASE_URI}/${MY_PN}-i18n-${L/zh_CN/zh_CN.GB2312}-${MY_PV}.tar.gz )"
-	IUSE="${IUSE} linguas_${L}"
+	SRC_URI+=" linguas_${L}? ( ${BASE_URI}/${MY_PN}-i18n-${L/zh_CN/zh_CN.GB2312}-${MY_PV}.tar.gz )"
+	IUSE+=" linguas_${L}"
 done
 unset L
 
