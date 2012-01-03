@@ -1,4 +1,4 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="4-python"
@@ -6,7 +6,7 @@ WX_GTK_VER="2.8"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.4 3.* *-jython"
 
-inherit alternatives eutils fdo-mime python wxwidgets
+inherit alternatives distutils eutils fdo-mime wxwidgets
 
 MY_P="${P/wxpython-/wxPython-src-}"
 
@@ -31,7 +31,7 @@ RDEPEND="
 	virtual/jpeg
 	x11-libs/gtk+:2
 	x11-libs/pango[X]
-	cairo?	( $(python_abi_depend -e "2.5" ">=dev-python/pycairo-1.8.4") )
+	cairo?	( $(python_abi_depend -e "2.5 *-pypy-*" ">=dev-python/pycairo-1.8.4") )
 	opengl? ( $(python_abi_depend dev-python/pyopengl) )"
 
 DEPEND="${RDEPEND}
@@ -42,6 +42,8 @@ DOC_S="${WORKDIR}/wxPython-${PV}"
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 PYTHON_CXXFLAGS=("2.* + -fno-strict-aliasing")
+
+PYTHON_MODULES="wx-${SLOT}-gtk2-unicode wxversion.py"
 
 src_prepare() {
 	sed -i "s:cflags.append('-O3'):pass:" config.py || die "sed failed"
@@ -66,35 +68,18 @@ src_prepare() {
 src_configure() {
 	need-wxwidgets unicode
 
-	use opengl \
-		&& mypyconf="${mypyconf} BUILD_GLCANVAS=1" \
-		|| mypyconf="${mypyconf} BUILD_GLCANVAS=0"
-
-	mypyconf="${mypyconf} WX_CONFIG=${WX_CONFIG}"
-	mypyconf="${mypyconf} WXPORT=gtk2 UNICODE=1"
-}
-
-src_compile() {
-	building() {
-		"$(PYTHON)" setup.py ${mypyconf} build
-	}
-	python_execute_function -s building
+	DISTUTILS_GLOBAL_OPTIONS=(
+		"* WX_CONFIG=${WX_CONFIG}"
+		"* WXPORT=gtk2"
+		"* UNICODE=1"
+		"* BUILD_GLCANVAS=$(use opengl && echo 1 || echo 0)"
+	)
 }
 
 src_install() {
-	local docdir file mypyconf
+	local docdir file
 
-	mypyconf="${mypyconf} WX_CONFIG=${WX_CONFIG}"
-	use opengl \
-		&& mypyconf="${mypyconf} BUILD_GLCANVAS=1" \
-		|| mypyconf="${mypyconf} BUILD_GLCANVAS=0"
-
-	mypyconf="${mypyconf} WXPORT=gtk2 UNICODE=1"
-
-	installation() {
-		"$(PYTHON)" setup.py ${mypyconf} install --root="${D}" --install-purelib $(python_get_sitedir)
-	}
-	python_execute_function -s installation
+	distutils_src_install
 
 	# Collision protection.
 	for file in "${D}"/usr/bin/*; do
@@ -143,7 +128,7 @@ pkg_postinst() {
 	}
 	python_execute_function -q create_symlinks
 
-	python_mod_optimize wx-${SLOT}-gtk2-unicode wxversion.py
+	distutils_pkg_postinst
 
 	echo
 	elog "Gentoo uses the Multi-version method for SLOT'ing."
@@ -174,7 +159,7 @@ pkg_postinst() {
 }
 
 pkg_postrm() {
-	python_mod_cleanup wx-${SLOT}-gtk2-unicode wxversion.py
+	distutils_pkg_postrm
 	fdo-mime_desktop_database_update
 
 	create_symlinks() {
