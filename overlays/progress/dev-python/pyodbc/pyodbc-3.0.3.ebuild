@@ -1,15 +1,14 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.* *-jython"
+PYTHON_RESTRICTED_ABIS="*-jython"
 
 inherit distutils
 
-DESCRIPTION="DB API Module for ODBC"
-HOMEPAGE="http://code.google.com/p/pyodbc http://pypi.python.org/pypi/pyodbc"
+DESCRIPTION="Python ODBC library"
+HOMEPAGE="http://code.google.com/p/pyodbc"
 SRC_URI="http://pyodbc.googlecode.com/files/${P}.zip"
 
 LICENSE="MIT"
