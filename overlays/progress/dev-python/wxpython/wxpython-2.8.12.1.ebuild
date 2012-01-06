@@ -23,7 +23,7 @@ KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd"
 IUSE="cairo doc examples opengl"
 
 RDEPEND="
-	>=x11-libs/wxGTK-${PV}:2.8[opengl?,tiff,X]
+	>=x11-libs/wxGTK-${PV}:${WX_GTK_VER}[opengl?,tiff,X]
 	dev-libs/glib:2
 	$(python_abi_depend dev-python/setuptools)
 	media-libs/libpng:0
