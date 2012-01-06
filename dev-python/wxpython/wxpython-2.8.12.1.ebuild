@@ -76,15 +76,20 @@ src_configure() {
 	)
 }
 
+distutils_src_install_post_hook() {
+	# Collision protection.
+	local file
+	for file in "$(distutils_get_intermediate_installation_image)${EPREFIX}/usr/bin/"*; do
+		mv "${file}" "${file}-${SLOT}"
+	done
+}
+
 src_install() {
 	local docdir file
 
 	distutils_src_install
 
 	# Collision protection.
-	for file in "${D}"/usr/bin/*; do
-		mv "${file}" "${file}-${SLOT}"
-	done
 	rename_files() {
 		for file in "${D}$(python_get_sitedir)/"wx{version.*,.pth}; do
 			mv "${file}" "${file}-${SLOT}" || return 1
