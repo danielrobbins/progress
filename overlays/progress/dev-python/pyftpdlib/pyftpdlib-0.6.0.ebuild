@@ -16,7 +16,7 @@ SRC_URI="http://pyftpdlib.googlecode.com/files/${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="amd64 ~arm x86"
+KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~s390 ~sh ~sparc ~x86 ~x86-fbsd ~x86-interix ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~sparc-solaris"
 IUSE="examples ssl"
 
 DEPEND="ssl? ( $(python_abi_depend -e "*-jython" dev-python/pyopenssl) )"
