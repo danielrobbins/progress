@@ -1,4 +1,4 @@
-# Copyright 2011 Arfrever Frehtes Taifersar Arahesis
+# Copyright owners: Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="4-python"
