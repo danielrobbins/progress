@@ -19,8 +19,8 @@ SLOT="0"
 KEYWORDS="~amd64 ~ia64 ~ppc ~ppc64 ~s390 ~x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos"
 IUSE="doc ssl"
 
-RDEPEND="$(python_abi_depend ">=dev-python/twisted-2.4.0")
-	$(python_abi_depend dev-python/twisted-web)
+RDEPEND="$(python_abi_depend ">=dev-python/twisted-2.5.0")
+	$(python_abi_depend ">=dev-python/twisted-web-2.5.0")
 	ssl? ( $(python_abi_depend dev-python/pyopenssl) )"
 DEPEND="${DEPEND}
 	$(python_abi_depend dev-python/setuptools)"
