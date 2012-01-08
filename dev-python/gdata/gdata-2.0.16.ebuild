@@ -25,6 +25,7 @@ RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/${MY_P}"
 
+DOCS="RELEASE_NOTES.txt"
 PYTHON_MODULES="atom gdata"
 
 src_test() {
