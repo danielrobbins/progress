@@ -1,4 +1,4 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright owners: Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="3"
@@ -11,13 +11,13 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="6040c248a199"
+	EHG_REVISION="c68426b241ca"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
 fi
 
-PATCHSET_REVISION="20111016"
+PATCHSET_REVISION="20111225"
 
 DESCRIPTION="Python is an interpreted, interactive, object-oriented programming language."
 HOMEPAGE="http://www.python.org/"
@@ -29,13 +29,14 @@ else
 fi
 
 LICENSE="PSF-2"
-SLOT="3.2"
+SLOT="3.3"
 PYTHON_ABI="${SLOT}"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~sparc-fbsd ~x86-fbsd"
-IUSE="build doc elibc_uclibc examples gdbm ipv6 +ncurses +readline sqlite +ssl +threads tk +wide-unicode wininst +xml"
+IUSE="build doc elibc_uclibc examples gdbm ipv6 +ncurses +readline sqlite +ssl +threads tk wininst +xml"
 
 RDEPEND=">=app-admin/eselect-python-20091230
 		app-arch/bzip2
+		app-arch/xz-utils
 		>=sys-libs/zlib-1.1.3
 		virtual/libffi
 		virtual/libintl
@@ -69,12 +70,6 @@ fi
 
 pkg_setup() {
 	python_pkg_setup
-
-	if [[ "${PV}" =~ ^3\.2(\.[123])?(_pre)? ]]; then
-		rm -f "${EROOT}usr/$(get_libdir)/llibpython3.so"
-	else
-		die "Deprecated code not deleted"
-	fi
 }
 
 src_prepare() {
@@ -124,8 +119,9 @@ src_prepare() {
 	sed -i -e "s:@@GENTOO_LIBDIR@@:$(get_libdir):g" \
 		Lib/distutils/command/install.py \
 		Lib/distutils/sysconfig.py \
+		Lib/packaging/tests/test_command_install_dist.py \
 		Lib/site.py \
-		Lib/sysconfig.py \
+		Lib/sysconfig.cfg \
 		Lib/test/test_site.py \
 		Makefile.pre.in \
 		Modules/Setup.dist \
@@ -196,8 +192,8 @@ src_configure() {
 	# Export CXX so it ends up in /usr/lib/python3.X/config/Makefile.
 	tc-export CXX
 
-	# Set LDFLAGS so we link modules with -lpython3.2 correctly.
-	# Needed on FreeBSD unless Python 3.2 is already installed.
+	# Set LDFLAGS so we link modules with -lpython3.3 correctly.
+	# Needed on FreeBSD unless Python 3.3 is already installed.
 	# Please query BSD team before removing this!
 	append-ldflags "-L."
 
@@ -211,7 +207,6 @@ src_configure() {
 		--enable-shared \
 		$(use_enable ipv6) \
 		$(use_with threads) \
-		$(use_with wide-unicode) \
 		--infodir='${prefix}/share/info' \
 		--mandir='${prefix}/share/man' \
 		--with-computed-gotos \
@@ -224,6 +219,13 @@ src_configure() {
 
 src_compile() {
 	emake EPYTHON="python${PV%%.*}" CPPFLAGS="" CFLAGS="" LDFLAGS="" || die "emake failed"
+
+	if use doc; then
+		einfo "Generation of documentation"
+		cd Doc
+		mkdir -p build/{doctrees,html}
+		sphinx-build -b html -d build/doctrees . build/html || die "Generation of documentation failed"
+	fi
 }
 
 src_test() {
@@ -245,7 +247,8 @@ src_test() {
 	done
 
 	# Rerun failed tests in verbose mode (regrtest -w).
-	emake test EXTRATESTOPTS="-w" CPPFLAGS="" CFLAGS="" LDFLAGS="" < /dev/tty
+	# emake test EXTRATESTOPTS="-w" CPPFLAGS="" CFLAGS="" LDFLAGS="" < /dev/tty
+	CPPFLAGS="" CFLAGS="" LDFLAGS="" LD_LIBRARY_PATH="$(pwd)" _PYTHONNOSITEPACKAGES="1" ./python -Wd -E -bb Lib/test/regrtest.py -w < /dev/tty
 	local result="$?"
 
 	for test in ${skipped_tests}; do
@@ -294,6 +297,15 @@ src_install() {
 	use wininst || rm -f "${ED}$(python_get_libdir)/distutils/command/"wininst-*.exe
 
 	dodoc Misc/{ACKS,HISTORY,NEWS} || die "dodoc failed"
+
+	if use doc; then
+		pushd Doc/build/html > /dev/null
+		docinto html
+		cp -R [a-z]* _images _static "${ED}usr/share/doc/${PF}/html" || die "Installation of documentation failed"
+		echo "PYTHONDOCS_${SLOT//./_}=\"${EPREFIX}/usr/share/doc/${PF}/html/library\"" > "60python-docs-${SLOT}"
+		doenvd "60python-docs-${SLOT}"
+		popd > /dev/null
+	fi
 
 	if use examples; then
 		insinto /usr/share/doc/${PF}/examples
@@ -345,13 +357,6 @@ pkg_postinst() {
 			echo -ne "\a"
 			sleep 1
 		done
-	fi
-
-	if [[ "${PV}" != *_pre* ]]; then
-		elog
-		elog "If you want to help in testing of recent changes in Python, then you can use"
-		elog "snapshots of Python from Progress Overlay."
-		elog
 	fi
 }
 
