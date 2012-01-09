@@ -18,7 +18,7 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="~amd64 ~ia64 ~ppc ~ppc64 ~s390 ~x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos"
-IUSE="doc emacs examples matplotlib notebook pymongo qt4 readline smp sqlite test wxwidgets"
+IUSE="doc emacs examples matplotlib notebook pymongo qt4 readline +smp +sqlite test wxwidgets"
 
 RDEPEND="$(python_abi_depend dev-python/decorator)
 	$(python_abi_depend -e "*-pypy-*" dev-python/numpy)
