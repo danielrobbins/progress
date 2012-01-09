@@ -1,6 +1,6 @@
 --- IPython/quarantine/ipy_gnuglobal.py
 +++ IPython/quarantine/ipy_gnuglobal.py
-@@ -13,7 +13,7 @@
+@@ -10,7 +10,7 @@
  import os
  
  # alter to your liking
