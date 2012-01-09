@@ -135,7 +135,7 @@ src_install() {
 	if use notebook; then
 		# Handling of MathJax library based on IPython.external.mathjax.install_mathjax().
 		create_mathjax_symlink() {
-			dosym /usr/share/mathjax "$(python_get_sitedir)/IPython/frontend/html/notebook/static/mathjax"
+			dosym "${EPREFIX}/usr/share/mathjax" "$(python_get_sitedir)/IPython/frontend/html/notebook/static/mathjax"
 		}
 		python_execute_function -q create_mathjax_symlink
 	fi
