@@ -3,7 +3,6 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.*"
 # zope.testing.server module requires webbrowser module.
 # http://bugs.jython.org/issue1762054
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
