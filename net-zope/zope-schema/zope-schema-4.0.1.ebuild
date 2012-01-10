@@ -3,7 +3,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.*"
+PYTHON_RESTRICTED_ABIS="2.4 2.5"
 DISTUTILS_SRC_TEST="setup.py"
 
 inherit distutils
@@ -21,8 +21,9 @@ KEYWORDS="~alpha ~amd64 ~ppc ~sparc ~x86"
 IUSE="test"
 
 RDEPEND="$(python_abi_depend net-zope/namespaces-zope[zope])
+	$(python_abi_depend dev-python/six)
 	$(python_abi_depend net-zope/zope-event)
-	$(python_abi_depend net-zope/zope-interface)
+	$(python_abi_depend ">=net-zope/zope-interface-3.6.0")
 	$(python_abi_depend net-zope/zope-i18nmessageid)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
