@@ -32,7 +32,7 @@ src_install() {
 	distutils_src_install
 
 	delete_tests() {
-		rm -fr "${ED}$(python_get_sitedir)/zmq/tests"
+		rm -fr "${ED}$(python_get_sitedir)/zmq/tests/"test_*.py
 	}
 	python_execute_function -q delete_tests
 
