@@ -3,7 +3,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.4 3.* *-jython"
+PYTHON_RESTRICTED_ABIS="2.4 2.5 3.* *-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
@@ -21,7 +21,7 @@ KEYWORDS="~amd64 ~x86"
 IUSE=""
 
 RDEPEND="$(python_abi_depend net-zope/namespaces-z3c[z3c])
-	$(python_abi_depend ">=dev-python/chameleon-2.4.0")
+	$(python_abi_depend ">=dev-python/chameleon-2.7.2")
 	$(python_abi_depend net-zope/zope-component)
 	$(python_abi_depend net-zope/zope-contentprovider)
 	$(python_abi_depend net-zope/zope-i18n)
