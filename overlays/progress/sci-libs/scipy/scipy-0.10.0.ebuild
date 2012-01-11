@@ -25,7 +25,7 @@ KEYWORDS="~amd64 ~ppc ~ppc64 ~x86 ~amd64-linux ~x86-linux ~ppc-macos ~x86-macos"
 CDEPEND="$(python_abi_depend dev-python/numpy)
 	media-libs/qhull
 	sci-libs/arpack
-	sci-libs/superlu
+	>=sci-libs/superlu-4.3
 	virtual/cblas
 	virtual/lapack
 	umfpack? ( sci-libs/umfpack )"
