@@ -84,6 +84,8 @@ RDEPEND="${RDEPEND}
 	${PHPDEPEND}
 	${PHP_EXT_OPTIONAL_USE:+ )}"
 
+DEPEND="${DEPEND}
+${PHPDEPEND}"
 
 # @FUNCTION: php-ext-source-r2_src_unpack
 # @DESCRIPTION:
