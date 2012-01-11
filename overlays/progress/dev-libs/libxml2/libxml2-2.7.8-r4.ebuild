@@ -85,6 +85,9 @@ src_prepare() {
 	# Fix missing error status in XPath evaluation
 	epatch "${FILESDIR}/${P}-error-xpath.patch"
 
+	# Heap-based overflow in parsing long entity references
+	epatch "${FILESDIR}/${P}-allocation-error-copying-entities.patch"
+
 	# Please do not remove, as else we get references to PORTAGE_TMPDIR
 	# in /usr/lib/python?.?/site-packages/libxml2mod.la among things.
 	# We now need to run eautoreconf at the end to prevent maintainer mode.
