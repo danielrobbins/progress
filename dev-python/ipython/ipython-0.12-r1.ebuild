@@ -18,25 +18,26 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="~amd64 ~ia64 ~ppc ~ppc64 ~s390 ~x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos"
-IUSE="doc emacs examples matplotlib notebook pymongo qt4 readline +smp +sqlite test wxwidgets"
+IUSE="doc emacs examples matplotlib mongodb notebook qt4 readline +smp sqlite test wxwidgets"
 
 RDEPEND="$(python_abi_depend dev-python/decorator)
 	$(python_abi_depend -e "*-pypy-*" dev-python/numpy)
 	$(python_abi_depend -i "2.*" dev-python/pexpect)
 	$(python_abi_depend dev-python/pyparsing)
 	$(python_abi_depend dev-python/setuptools)
+	$(python_abi_depend dev-python/simplegeneric)
 	$(python_abi_depend virtual/python-argparse)
 	emacs? (
 		app-emacs/python-mode
 		virtual/emacs
 	)
 	matplotlib? ( dev-python/matplotlib )
+	mongodb? ( $(python_abi_depend -i "2.*" dev-python/pymongo) )
 	notebook? (
 		dev-libs/mathjax
 		$(python_abi_depend ">=dev-python/pyzmq-2.1.4")
 		$(python_abi_depend -i "2.*" ">=www-servers/tornado-2.1")
 	)
-	pymongo? ( $(python_abi_depend -i "2.*" dev-python/pymongo) )
 	qt4? (
 		$(python_abi_depend dev-python/pygments)
 		|| (
@@ -51,8 +52,6 @@ DEPEND="${RDEPEND}
 	test? ( $(python_abi_depend dev-python/nose) )"
 
 PYTHON_MODULES="IPython"
-
-SITEFILE="62ipython-gentoo.el"
 
 src_prepare() {
 	distutils_src_prepare
@@ -103,7 +102,7 @@ src_compile() {
 }
 
 src_test() {
-	if use pymongo; then
+	if use mongodb; then
 		mkdir -p "${T}/mongo.db"
 		mongod --dbpath "${T}/mongo.db" --fork --logpath "${T}/mongo.log"
 	fi
@@ -117,7 +116,7 @@ src_test() {
 	}
 	VIRTUALX_COMMAND="python_execute_function" virtualmake testing
 
-	if use pymongo; then
+	if use mongodb; then
 		killall -u "$(id -nu)" mongod
 	fi
 }
@@ -128,7 +127,7 @@ src_install() {
 	if use emacs; then
 		pushd docs/emacs > /dev/null
 		elisp-install ${PN} ${PN}.el*
-		elisp-site-file-install "${FILESDIR}/${SITEFILE}"
+		elisp-site-file-install "${FILESDIR}/62ipython-gentoo.el"
 		popd > /dev/null
 	fi
 
