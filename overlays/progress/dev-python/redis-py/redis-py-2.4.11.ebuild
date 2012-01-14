@@ -11,7 +11,7 @@ PYTHON_RESTRICTED_ABIS="2.4 3.*"
 inherit distutils
 
 DESCRIPTION="Python client for Redis key-value store"
-HOMEPAGE="http://github.com/andymccurdy/redis-py http://pypi.python.org/pypi/redis"
+HOMEPAGE="https://github.com/andymccurdy/redis-py http://pypi.python.org/pypi/redis"
 SRC_URI="mirror://github/andymccurdy/${PN}/redis-${PV}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="MIT"
