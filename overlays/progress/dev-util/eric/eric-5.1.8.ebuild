@@ -3,6 +3,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="4-python"
+PYTHON_DEPEND="<<[xml]>>"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.* *-jython *-pypy-*"
 
@@ -70,7 +71,7 @@ src_install() {
 	python_execute_function installation
 	python_merge_intermediate_installation_images "${T}/images"
 
-	doicon eric/icons/default/${MY_PN}.png || die "doicon failed"
+	doicon eric/icons/default/${MY_PN}.png
 }
 
 pkg_postinst() {
