@@ -3,6 +3,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="4-python"
+PYTHON_DEPEND="<<[xml]>>"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.4 2.5 3.* *-jython *-pypy-*"
 
@@ -66,7 +67,7 @@ src_install() {
 	python_execute_function installation
 	python_merge_intermediate_installation_images "${T}/images"
 
-	doicon eric/icons/default/eric.png || die "doicon failed"
+	doicon eric/icons/default/eric.png
 	make_desktop_entry "${MY_PN} --nosplash" ${MY_PN} eric "Development;IDE;Qt"
 }
 
