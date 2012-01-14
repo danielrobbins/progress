@@ -17,7 +17,7 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86 ~x86-interix ~amd64-linux ~x86-linux"
 IUSE="gnome"
 
-RDEPEND=">=app-editors/gvim-6.3
+RDEPEND=">=app-editors/gvim-6.3[gtk]
 	$(python_abi_depend ">=dev-python/anyvc-0.3.2")
 	$(python_abi_depend ">=dev-python/bpython-0.9.7")
 	$(python_abi_depend ">=dev-python/pygtk-2.8:2")
