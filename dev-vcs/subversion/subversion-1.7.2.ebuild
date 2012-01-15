@@ -17,7 +17,7 @@ if [[ "${PV}" != *_pre* ]]; then
 	WANT_AUTOMAKE="none"
 fi
 
-inherit $([[ "${PV}" != *_pre* ]] && echo autotools) bash-completion db-use depend.apache eutils flag-o-matic java-pkg-opt-2 libtool multilib perl-module python $([[ "${PV}" == *_pre* ]] && echo subversion)
+inherit $([[ "${PV}" != *_pre* ]] && echo autotools) bash-completion-r1 db-use depend.apache eutils flag-o-matic java-pkg-opt-2 libtool multilib perl-module python $([[ "${PV}" == *_pre* ]] && echo subversion)
 
 DESCRIPTION="Advanced version control system"
 HOMEPAGE="http://subversion.apache.org/"
@@ -716,18 +716,25 @@ EOF
 	fi
 
 	# Install Bash Completion, bug 43179.
-	dobashcompletion tools/client-side/bash_completion subversion
+	newbashcomp tools/client-side/bash_completion subversion
 	rm -f tools/client-side/bash_completion
 
 	# Install hot backup script, bug 54304.
 	newbin tools/backup/hot-backup.py svn-hot-backup
 	rm -fr tools/backup
 
-	# Install svnserve init-script and xinet.d snippet, bug 43245.
-	newinitd "${FILESDIR}"/svnserve.initd svnserve
-	newconfd "${FILESDIR}"/svnserve.confd svnserve
+	# Install svnserve init script and xinet.d configuration.
+	newconfd "${FILESDIR}/svnserve.confd" svnserve
+	newinitd "${FILESDIR}/svnserve.initd" svnserve
 	insinto /etc/xinetd.d
-	newins "${FILESDIR}"/svnserve.xinetd svnserve
+	newins "${FILESDIR}/svnserve.xinetd" svnserve
+
+	if ! use apache2; then
+		sed \
+			-e "s/USER:-apache/USER:-svn/" \
+			-e "s/GROUP:-apache/GROUP:-svnusers/g" \
+			-i "${ED}etc/init.d/svnserve"
+	fi
 
 	# Install documentation.
 	dodoc CHANGES COMMITTERS README
