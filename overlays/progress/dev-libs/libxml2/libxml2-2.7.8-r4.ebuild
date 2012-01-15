@@ -96,6 +96,9 @@ src_prepare() {
 	# Python bindings are built/tested/installed manually.
 	sed -e "s/@PYTHON_SUBDIR@//" -i Makefile.am || die "sed failed"
 
+	# Fix linking of Python extension modules against Python libraries.
+	sed -e 's/python$PYTHON_VERSION-config/python-config-$PYTHON_VERSION/' -i configure.in || die "sed failed"
+
 	eautoreconf
 }
 
