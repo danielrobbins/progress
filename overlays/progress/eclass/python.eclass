@@ -848,8 +848,15 @@ _python_initial_sanity_checks() {
 
 _python_final_sanity_checks() {
 	if ! _python_implementation && [[ "$(declare -p PYTHON_SANITY_CHECKS_EXECUTED 2> /dev/null)" != "declare -- PYTHON_SANITY_CHECKS_EXECUTED="* || " ${FUNCNAME[@]:1} " =~ " "(python_set_active_version|python_pkg_setup)" " && -z "${PYTHON_SKIP_SANITY_CHECKS}" ]]; then
-		local PYTHON_ABI="${PYTHON_ABI}"
-		for PYTHON_ABI in ${PYTHON_ABIS-${PYTHON_ABI}}; do
+		local iterated_PYTHON_ABIS PYTHON_ABI="${PYTHON_ABI}"
+
+		if _python_package_supporting_installation_for_multiple_python_abis; then
+			iterated_PYTHON_ABIS="${PYTHON_ABIS}"
+		else
+			iterated_PYTHON_ABIS="${PYTHON_ABI}"
+		fi
+
+		for PYTHON_ABI in ${iterated_PYTHON_ABIS}; do
 			# Ensure that appropriate version of Python is installed.
 			if has "${EAPI:-0}" 0 1 2 3 4 || { ! has "${EAPI:-0}" 0 1 2 3 4 && ! _python_package_supporting_installation_for_multiple_python_abis; }; then
 				if ! ROOT="/" has_version "$(python_get_implementational_package)"; then
