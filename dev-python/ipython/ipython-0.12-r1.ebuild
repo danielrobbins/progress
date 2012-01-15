@@ -31,7 +31,7 @@ RDEPEND="$(python_abi_depend dev-python/decorator)
 		app-emacs/python-mode
 		virtual/emacs
 	)
-	matplotlib? ( dev-python/matplotlib )
+	matplotlib? ( $(python_abi_depend -i "2.*-cpython" dev-python/matplotlib) )
 	mongodb? ( $(python_abi_depend -i "2.*" dev-python/pymongo) )
 	notebook? (
 		dev-libs/mathjax
