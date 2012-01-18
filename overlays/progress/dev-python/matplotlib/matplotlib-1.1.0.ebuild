@@ -13,8 +13,8 @@ inherit distutils
 DESCRIPTION="Python plotting package"
 HOMEPAGE="http://matplotlib.sourceforge.net/ http://pypi.python.org/pypi/matplotlib"
 SRC_URI="mirror://sourceforge/${PN}/${P}.tar.gz
-	doc? ( mirror://gentoo/${PN}-sampledata.tar.bz2 )
-	examples? ( mirror://gentoo/${PN}-sampledata.tar.bz2 )"
+	doc? ( mirror://sourceforge/${PN}/mpl_sampledata-${PV}.tar.gz )
+	examples? ( mirror://sourceforge/${PN}/mpl_sampledata-${PV}.tar.gz )"
 
 # Main license: matplotlib
 # Some modules: BSD
@@ -63,7 +63,10 @@ RDEPEND="${CDEPEND}
 		dev-texlive/texlive-fontsrecommended
 		virtual/latex-base
 	)
-	qt4? ( $(python_abi_depend dev-python/PyQt4[X]) )"
+	qt4? ( || (
+		$(python_abi_depend dev-python/PyQt4[X])
+		dev-python/pyside
+	) )"
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 PYTHON_CXXFLAGS=("2.* + -fno-strict-aliasing")
@@ -116,17 +119,19 @@ src_prepare() {
 	rm -fr CXX lib/matplotlib/pyparsing.py || die "Deletion of internal copies failed"
 
 	# Use stix fonts.
-	sed -e "/fontset/s/cm/stix/" -i lib/matplotlib/mpl-data/matplotlib.conf || die "sed failed"
+	sed -e "/fontset/s/cm/stix/" -i lib/matplotlib/mpl-data/matplotlib.conf* || die "sed failed"
 
 	sed -e "s/matplotlib.pyparsing/pyparsing/g" -i lib/matplotlib/{mathtext,fontconfig_pattern}.py || die "sed failed"
 
 	if use doc || use examples; then
-		# Avoid fetching data while compiling examples in tests.
-		mv "${WORKDIR}/sample_data" examples
-		echo "examples.download : False" >> doc/matplotlibrc
-		echo "examples.directory : ${S}/examples/sample_data" >> doc/matplotlibrc
-		echo "examples.download : False" >> matplotlibrc.template
-		echo "examples.directory : ${EPREFIX}/usr/share/${PF}/examples/sample_data" >> matplotlibrc.template
+		cat <<- EOF >> doc/matplotlibrc
+			examples.download : False
+			examples.directory : "${WORKDIR}/mpl_sampledata-${PV}"
+			EOF
+		cat <<- EOF >> matplotlibrc.template
+			examples.download : False
+			examples.directory : "${EPREFIX}/usr/share/${PF}/examples"
+			EOF
 	fi
 }
 
@@ -152,14 +157,13 @@ src_test() {
 	cd examples/tests
 
 	testing() {
-		python_execute PYTHONPATH=$(ls -d ../../build-${PYTHON_ABI}/lib*) "$(PYTHON)" backend_driver.py agg || return
-		python_execute PYTHONPATH=$(ls -d ../../build-${PYTHON_ABI}/lib*) "$(PYTHON)" backend_driver.py --clean
+		python_execute PYTHONPATH="$(ls -d ../../build-${PYTHON_ABI}/lib*)" "$(PYTHON)" backend_driver.py agg || return
+		python_execute PYTHONPATH="$(ls -d ../../build-${PYTHON_ABI}/lib*)" "$(PYTHON)" backend_driver.py --clean
 	}
 	python_execute_function testing
 }
 
 src_install() {
-
 	# Apply changes only after generation of documentation, to allow using default configs.
 	sed \
 		-e "s:path =  get_data_path():path = '${EPREFIX}/etc/matplotlib':" \
@@ -188,12 +192,12 @@ src_install() {
 	doins matplotlibrc matplotlib.conf
 
 	# Install documentation and examples.
-	insinto /usr/share/doc/${PF}
 	if use doc; then
-		doins doc/build/latex/Matplotlib.pdf
-		doins -r doc/build/html
+		insinto /usr/share/doc/${PF}
+		doins -r doc/build/latex/Matplotlib.pdf doc/build/html
 	fi
 	if use examples; then
-		doins -r examples
+		insinto /usr/share/doc/${PF}/examples
+		doins -r "${WORKDIR}/mpl_sampledata-${PV}/"*
 	fi
 }
