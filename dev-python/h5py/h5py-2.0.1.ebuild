@@ -11,11 +11,11 @@ inherit distutils
 
 DESCRIPTION="A simple Python interface to HDF5 files."
 HOMEPAGE="http://h5py.alfven.org/ http://code.google.com/p/h5py/ http://pypi.python.org/pypi/h5py"
-SRC_URI="http://h5py.googlecode.com/files/${P}.tar.gz"
+SRC_URI="http://${PN}.googlecode.com/files/${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="~amd64 ~x86"
+KEYWORDS="~amd64 ~x86 ~amd64-linux ~x86-linux"
 IUSE="test"
 
 RDEPEND="sci-libs/hdf5
