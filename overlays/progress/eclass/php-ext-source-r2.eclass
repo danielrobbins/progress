@@ -139,6 +139,9 @@ php-ext-source-r2_phpize() {
 # @DESCRIPTION:
 # Set this in the ebuild to pass configure options to econf.
 php-ext-source-r2_src_configure() {
+	# net-snmp creates this file #385403
+	addpredict /usr/share/snmp/mibs/.index
+
 	local slot
 	for slot in $(php_get_slots); do
 		php_init_slot_env ${slot}
