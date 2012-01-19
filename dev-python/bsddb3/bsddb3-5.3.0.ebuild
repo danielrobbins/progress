@@ -17,7 +17,7 @@ SLOT="0"
 KEYWORDS="~amd64 ~ia64 ~ppc ~sparc ~x86"
 IUSE="doc"
 
-RDEPEND=">=sys-libs/db-4.6"
+RDEPEND=">=sys-libs/db-4.8"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
@@ -26,7 +26,7 @@ PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 DOCS="ChangeLog TODO.txt"
 
 src_configure() {
-	for DB_VER in 5.2 5.1 5.0 4.8 4.7 4.6; do
+	for DB_VER in 5.3 5.2 5.1 5.0 4.8; do
 		if has_version sys-libs/db:${DB_VER}; then
 			break
 		fi
