@@ -1,0 +1,25 @@
+--- libs/python/build/Jamfile.v2
++++ libs/python/build/Jamfile.v2
+@@ -82,10 +82,10 @@
+ rule cond ( test ? : yes * : no * ) { if $(test) { return $(yes) ; } else { return $(no) ; } }
+ rule unless ( test ? : yes * : no * ) { if ! $(test) { return $(yes) ; } else { return $(no) ; } }
+ 
+-rule lib_boost_python ( is-py3 ? )
++rule lib_boost_python
+ {
+ 
+-    lib [ cond $(is-py3) : boost_python3 : boost_python ]
++    lib boost_python
+         : # sources
+         numeric.cpp
+         list.cpp
+@@ -153,9 +153,3 @@
+ 
+ lib_boost_python ;
+ boost-install boost_python ;
+-
+-if $(py3-version)
+-{
+-    lib_boost_python yes ;
+-    boost-install boost_python3 ;
+-}
