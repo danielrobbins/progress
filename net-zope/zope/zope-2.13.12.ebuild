@@ -12,7 +12,7 @@ MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Zope 2 application server / web framework"
 HOMEPAGE="http://www.zope.org http://zope2.zope.org http://pypi.python.org/pypi/Zope2 https://launchpad.net/zope2"
-SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.zip"
+SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="ZPL"
 SLOT="$(get_version_component_range 1-2)"
@@ -79,7 +79,6 @@ RDEPEND="$(python_abi_depend net-zope/namespaces-zope[Products,Shared,Shared.DC]
 	$(python_abi_depend net-zope/zope-viewlet)
 	$(python_abi_depend net-zope/zopeundo)"
 DEPEND="${RDEPEND}
-	app-arch/unzip
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
 PDEPEND="$(python_abi_depend net-zope/btreefolder2)
 	$(python_abi_depend net-zope/externalmethod)
