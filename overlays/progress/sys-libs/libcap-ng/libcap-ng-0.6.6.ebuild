@@ -30,8 +30,7 @@ pkg_setup() {
 }
 
 src_prepare() {
-	# Disable byte-compilation of Python modules.
-	echo "#!/bin/sh" > py-compile
+	python_clean_py-compile_files
 
 	# Python bindings are built/tested/installed manually.
 	sed -e "/^SUBDIRS/s/ python//" -i bindings/Makefile.am
