@@ -46,7 +46,7 @@ pkg_setup() {
 }
 
 src_prepare() {
-	echo "#!/bin/sh" > py-compile
+	python_clean_py-compile_files
 
 	# Python bindings are built/installed manually.
 	sed -e "/SUBDIRS =/s/ libecryptfs-swig//" -i src/Makefile.am || die "sed failed"

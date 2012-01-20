@@ -38,8 +38,7 @@ src_prepare() {
 
 	eautoreconf
 
-	# Disable byte-compilation.
-	echo "#!/bin/sh" > config/py-compile
+	python_clean_py-compile_files
 
 	python_src_prepare
 }

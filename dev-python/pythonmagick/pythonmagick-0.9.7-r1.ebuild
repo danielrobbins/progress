@@ -38,8 +38,7 @@ src_prepare() {
 
 	eautoreconf
 
-	# Disable byte-compilation.
-	echo "#!/bin/sh" > config/py-compile
+	python_clean_py-compile_files
 
 	# Support Python 3.
 	sed -e "s/import _PythonMagick/from . import _PythonMagick/" -i PythonMagick/__init__.py || die "sed failed"

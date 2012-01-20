@@ -27,11 +27,9 @@ DEPEND="${RDEPEND}
 	test? ( $(python_abi_depend -e "2.4 2.5" dev-python/pygobject:2) )"
 
 src_prepare() {
-	# Disable compiling of .pyc files.
-	mv py-compile py-compile.orig
-	ln -s $(type -P true) py-compile
+	python_clean_py-compile_files
 
-	# Workaround testsuite issues
+	# Work around test suite issues.
 	epatch "${FILESDIR}/${PN}-0.83.1-workaround-broken-test.patch"
 
 	# Simple sed to avoid an eautoreconf
