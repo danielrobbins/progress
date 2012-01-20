@@ -4,7 +4,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.4 2.5 3.* *-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="2.4 2.5 *-jython *-pypy-*"
 PYTHON_EXPORT_PHASE_FUNCTIONS="1"
 
 inherit autotools eutils python
@@ -21,7 +21,7 @@ SLOT="0"
 KEYWORDS="~amd64 ~ppc ~x86"
 IUSE=""
 
-RDEPEND="<dev-libs/boost-1.48[python]
+RDEPEND="$(python_abi_depend ">=dev-libs/boost-1.48[python]")
 	>=media-gfx/imagemagick-6.4"
 DEPEND="${RDEPEND}
 	dev-util/pkgconfig"
@@ -41,11 +41,20 @@ src_prepare() {
 	# Disable byte-compilation.
 	echo "#!/bin/sh" > config/py-compile
 
+	# Support Python 3.
+	sed -e "s/import _PythonMagick/from . import _PythonMagick/" -i PythonMagick/__init__.py || die "sed failed"
+
 	python_src_prepare
 }
 
 src_configure() {
-	python_src_configure --disable-static BOOST_PYTHON_LIB="boost_python"
+	configuration() {
+		sed -e "s/-lboost_python/-lboost_python-${PYTHON_ABI}/" -i Makefile.in
+		econf \
+			--disable-static \
+			--with-boost-python="boost_python-${PYTHON_ABI}"
+	}
+	python_execute_function -s configuration
 }
 
 src_install() {
