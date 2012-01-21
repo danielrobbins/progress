@@ -24,7 +24,7 @@ IUSE="bzip2 doc gmp python ssl threads zlib"
 
 RDEPEND="bzip2? ( >=app-arch/bzip2-1.0.5 )
 	gmp? ( >=dev-libs/gmp-4.2.2 )
-	python? ( >=dev-libs/boost-1.48[python] )
+	python? ( $(python_abi_depend ">=dev-libs/boost-1.48[python]") )
 	ssl? ( >=dev-libs/openssl-0.9.8g )
 	zlib? ( >=sys-libs/zlib-1.2.3 )"
 DEPEND="${RDEPEND}
