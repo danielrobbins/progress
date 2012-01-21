@@ -24,7 +24,7 @@ IUSE="bzip2 doc gmp python ssl threads zlib"
 
 RDEPEND="bzip2? ( >=app-arch/bzip2-1.0.5 )
 	gmp? ( >=dev-libs/gmp-4.2.2 )
-	python? ( <dev-libs/boost-1.48[python] )
+	python? ( >=dev-libs/boost-1.48[python] )
 	ssl? ( >=dev-libs/openssl-0.9.8g )
 	zlib? ( >=sys-libs/zlib-1.2.3 )"
 DEPEND="${RDEPEND}
@@ -102,9 +102,11 @@ src_compile() {
 		rm -fr build/python
 
 		building() {
-			rm -f build/python || return 1
-			ln -s python-${PYTHON_ABI} build/python || return 1
-			emake -f Makefile.python \
+			rm -f build/python || return
+			ln -s python-${PYTHON_ABI} build/python || return
+			cp Makefile.python Makefile.python-${PYTHON_ABI} || return
+			sed -e "s/-lboost_python/-lboost_python-${PYTHON_ABI}/" -i Makefile.python-${PYTHON_ABI} || return
+			emake -f Makefile.python-${PYTHON_ABI} \
 				CXX="$(tc-getCXX)" \
 				CFLAGS="${CXXFLAGS}" \
 				LDFLAGS="${LDFLAGS}" \
@@ -133,8 +135,8 @@ src_install() {
 
 	if use python; then
 		installation() {
-			rm -f build/python || return 1
-			ln -s python-${PYTHON_ABI} build/python || return 1
+			rm -f build/python || return
+			ln -s python-${PYTHON_ABI} build/python || return
 			emake -f Makefile.python \
 				PYTHON_SITE_PACKAGE_DIR="${ED}$(python_get_sitedir)" \
 				install
