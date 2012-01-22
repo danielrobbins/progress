@@ -1,9 +1,10 @@
 --- libs/python/build/Jamfile.v2
 +++ libs/python/build/Jamfile.v2
-@@ -120,19 +120,7 @@
+@@ -109,20 +109,7 @@
              <link>static:<define>BOOST_PYTHON_STATIC_LIB 
              <define>BOOST_PYTHON_SOURCE
-           
+             [ cond $(python2) : <cxxflags>-fno-strict-aliasing ]
+-          
 -            # On Windows, all code using Python has to link to the Python
 -            # import library.
 -            #
