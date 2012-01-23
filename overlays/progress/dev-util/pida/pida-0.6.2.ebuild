@@ -15,7 +15,7 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64 ~x86 ~x86-interix ~amd64-linux ~x86-linux"
-IUSE="gnome"
+IUSE=""
 
 RDEPEND=">=app-editors/gvim-6.3[gtk]
 	$(python_abi_depend ">=dev-python/anyvc-0.3.2")
@@ -23,7 +23,7 @@ RDEPEND=">=app-editors/gvim-6.3[gtk]
 	$(python_abi_depend ">=dev-python/pygtk-2.8:2")
 	$(python_abi_depend ">dev-python/pygtkhelpers-0.4.1")
 	$(python_abi_depend virtual/python-argparse)
-	gnome? ( >=x11-libs/vte-0.11.11-r2:0[python] )"
+	$(python_abi_depend x11-libs/vte:0[python])"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	dev-util/pkgconfig"
@@ -40,5 +40,6 @@ src_prepare() {
 
 src_install() {
 	distutils_src_install
-	make_desktop_entry pida Pida pida/resources/pixmaps/pida-icon.png Development
+	doicon pida/resources/pixmaps/pida-icon.png
+	make_desktop_entry pida Pida pida-icon Development
 }
