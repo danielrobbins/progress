@@ -12,7 +12,7 @@ MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Zope Container"
 HOMEPAGE="http://pypi.python.org/pypi/zope.app.container"
-SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.zip"
+SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="ZPL"
 SLOT="0"
@@ -21,9 +21,9 @@ IUSE=""
 
 RDEPEND="$(python_abi_depend net-zope/namespaces-zope[zope,zope.app])
 	$(python_abi_depend net-zope/zope-annotation)
-	$(python_abi_depend net-zope/zope-app-pagetemplate)
-	$(python_abi_depend net-zope/zope-app-publisher)
 	$(python_abi_depend net-zope/zope-browser)
+	$(python_abi_depend net-zope/zope-browsermenu)
+	$(python_abi_depend net-zope/zope-browserpage)
 	$(python_abi_depend net-zope/zope-component)
 	$(python_abi_depend net-zope/zope-configuration)
 	$(python_abi_depend net-zope/zope-container)
@@ -37,12 +37,10 @@ RDEPEND="$(python_abi_depend net-zope/namespaces-zope[zope,zope.app])
 	$(python_abi_depend net-zope/zope-lifecycleevent)
 	$(python_abi_depend net-zope/zope-location)
 	$(python_abi_depend net-zope/zope-publisher)
-	$(python_abi_depend net-zope/zope-schema)
 	$(python_abi_depend net-zope/zope-security)
 	$(python_abi_depend net-zope/zope-size)
 	$(python_abi_depend net-zope/zope-traversing)"
 DEPEND="${RDEPEND}
-	app-arch/unzip
 	$(python_abi_depend dev-python/setuptools)"
 
 S="${WORKDIR}/${MY_P}"
