@@ -10,8 +10,8 @@ DISTUTILS_SRC_TEST="nosetests"
 inherit distutils
 
 DESCRIPTION="Alternative Python bindings for Subversion"
-HOMEPAGE="http://samba.org/~jelmer/subvertpy/ http://pypi.python.org/pypi/subvertpy"
-SRC_URI="http://samba.org/~jelmer/${PN}/${P}.tar.gz"
+HOMEPAGE="http://www.samba.org/~jelmer/subvertpy/ http://pypi.python.org/pypi/subvertpy"
+SRC_URI="http://www.samba.org/~jelmer/${PN}/${P}.tar.gz"
 
 LICENSE="|| ( LGPL-2.1 LGPL-3 )"
 SLOT="0"
@@ -27,7 +27,7 @@ DEPEND="${RDEPEND}
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 
-DOCS="NEWS AUTHORS"
+DOCS="AUTHORS NEWS README"
 
 distutils_src_test_pre_hook() {
 	local module
