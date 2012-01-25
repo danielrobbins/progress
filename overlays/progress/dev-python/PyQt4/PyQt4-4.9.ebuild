@@ -35,7 +35,7 @@ DEPEND="$(python_abi_depend ">=dev-python/sip-4.13.1")
 	)
 	declarative? ( >=x11-libs/qt-declarative-${QT_VER}:4 )
 	multimedia? ( >=x11-libs/qt-multimedia-${QT_VER}:4 )
-	opengl? ( >=x11-libs/qt-opengl-${QT_VER}:4 || ( >=x11-libs/qt-opengl-4.7.0:4[-egl] <x11-libs/qt-opengl-4.7.0:4 ) )
+	opengl? ( >=x11-libs/qt-opengl-${QT_VER}:4 || ( >=x11-libs/qt-opengl-4.8.0:4 >=x11-libs/qt-opengl-4.7.0:4[-egl] <x11-libs/qt-opengl-4.7.0:4 ) )
 	phonon? (
 		!kde? ( || ( >=x11-libs/qt-phonon-${QT_VER}:4 media-libs/phonon ) )
 		kde? ( media-libs/phonon )
