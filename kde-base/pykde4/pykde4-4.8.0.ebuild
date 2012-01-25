@@ -13,7 +13,7 @@ KDE_SCM="git"
 inherit python portability kde4-base
 
 DESCRIPTION="Python bindings for KDE4"
-KEYWORDS="~amd64 ~arm ~ppc ~ppc64 ~x86 ~amd64-linux ~x86-linux"
+KEYWORDS="~amd64 ~x86 ~amd64-linux ~x86-linux"
 IUSE="debug doc examples semantic-desktop"
 
 RDEPEND="
@@ -26,10 +26,6 @@ RDEPEND="
 DEPEND="${RDEPEND}
 	sys-devel/libtool
 "
-
-PATCHES=(
-	"${FILESDIR}"/${PN}-4.6.3-python-3.2.patch
-)
 
 pkg_setup() {
 	python_pkg_setup
