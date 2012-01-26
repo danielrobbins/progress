@@ -28,6 +28,7 @@ PYTHON_MODULES="gflags.py gflags_validators.py"
 src_prepare() {
 	distutils_src_prepare
 	sed -e 's/data_files=\[("bin", \["gflags2man.py"\])\]/scripts=\["gflags2man.py"\]/' -i setup.py
+	sed -e "s:tmp_path = '/tmp/flags_unittest':tmp_path = os.path.join(os.environ.get('TMPDIR', '/tmp'), 'flags_unittest'):" -i tests/gflags_unittest.py
 }
 
 src_test() {
