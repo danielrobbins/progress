@@ -40,6 +40,12 @@ src_prepare() {
 	# Verbose build.
 	sed -e 's/2\?>>[[:space:]]*\$(LOGFILE).*//' -i src/Makefile.in || die "sed failed"
 
+	# Avoid version suffix in cvisualmodule.so.
+	sed -e "s/-module/-avoid-version -module/" -i src/Makefile.in || die "sed failed"
+
+	# Fix compatibility with Python 3.
+	sed -e '/initcvisual;/a\\t\tPyInit_cvisual;' -i src/linux-symbols.map || die "sed failed"
+
 	python_clean_py-compile_files
 	python_src_prepare
 
