@@ -1,0 +1,2 @@
+# Segmentation fault triggered by test suite.
+dev-python/polygon numpy
