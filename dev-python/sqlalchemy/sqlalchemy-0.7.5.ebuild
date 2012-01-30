@@ -7,7 +7,7 @@ PYTHON_MULTIPLE_ABIS="1"
 PYTHON_TESTS_RESTRICTED_ABIS="3.* *-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
-inherit distutils eutils
+inherit distutils
 
 MY_PN="SQLAlchemy"
 MY_P="${MY_PN}-${PV/_}"
@@ -38,7 +38,6 @@ DISTUTILS_GLOBAL_OPTIONS=("2.*-cpython --with-cextensions")
 
 src_prepare() {
 	distutils_src_prepare
-	epatch "${FILESDIR}/lru_cache_timestamping.patch"
 
 	# Disable tests hardcoding function call counts specific to Python versions.
 	rm -fr test/aaa_profiling
