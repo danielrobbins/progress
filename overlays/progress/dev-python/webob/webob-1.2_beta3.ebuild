@@ -33,7 +33,7 @@ src_compile() {
 
 	if use doc; then
 		einfo "Generation of documentation"
-		"$(PYTHON -f)" setup.py build_sphinx
+		"$(PYTHON -f)" setup.py build_sphinx || die "Generation of documentation failed"
 	fi
 }
 
