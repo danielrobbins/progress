@@ -38,8 +38,8 @@ DEPEND="${RDEPEND}
 	doc? ( >=dev-util/gtk-doc-1.13 )"
 
 pkg_setup() {
+	# Do not disable gnome-pty-helper, bug #401389
 	G2CONF="${G2CONF}
-		--disable-gnome-pty-helper
 		--disable-deprecation
 		--disable-maintainer-mode
 		--disable-static
@@ -84,6 +84,7 @@ src_compile() {
 
 src_install() {
 	gnome2_src_install
+	rm -f "${ED}usr/libexec/gnome-pty-helper" || die
 
 	if use python; then
 		installation() {
