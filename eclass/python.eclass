@@ -114,6 +114,18 @@ _python_check_python_abi_matching() {
 	fi
 }
 
+_python_implementation() {
+	if [[ "${CATEGORY}/${PN}" == "dev-lang/python" ]]; then
+		return 0
+	elif [[ "${CATEGORY}/${PN}" == "dev-java/jython" ]]; then
+		return 0
+	elif [[ "${CATEGORY}/${PN}" == "dev-python/pypy" ]]; then
+		return 0
+	else
+		return 1
+	fi
+}
+
 _python_package_supporting_installation_for_multiple_python_abis() {
 	if has "${EAPI:-0}" 0 1 2 3 || { has "${EAPI:-0}" 4 && has "${PYTHON_ECLASS_API}" 0; }; then
 		if [[ -n "${PYTHON_MULTIPLE_ABIS}" || -n "${SUPPORT_PYTHON_ABIS}" ]]; then
@@ -512,8 +524,11 @@ _python_parse_dependencies_in_new_EAPIs() {
 	unset -f _get_matched_USE_dependencies
 }
 
-DEPEND=">=app-admin/eselect-python-20091230 >=app-shells/bash-4"
-RDEPEND="${DEPEND}"
+if _python_implementation; then
+	DEPEND=">=app-admin/eselect-python-20091230 >=app-shells/bash-4"
+	RDEPEND="${DEPEND}"
+	PDEPEND="app-admin/python-updater"
+fi
 
 if has "${EAPI:-0}" 0 1 2 3 || { has "${EAPI:-0}" 4 && has "${PYTHON_ECLASS_API}" 0; }; then
 	_PYTHON_ATOMS_FROM_PYTHON_DEPEND=()
@@ -606,8 +621,8 @@ if has "${EAPI:-0}" 2 3 || { has "${EAPI:-0}" 4 && has "${PYTHON_ECLASS_API}" 0;
 			if [[ -n "${PYTHON_USE_WITH_OPT}" ]]; then
 				_PYTHON_USE_WITH_ATOMS_FROM_PYTHON_DEPEND="${PYTHON_USE_WITH_OPT}? ( ${_PYTHON_USE_WITH_ATOMS_FROM_PYTHON_DEPEND} )"
 			fi
-			DEPEND+=" ${_PYTHON_USE_WITH_ATOMS_FROM_PYTHON_DEPEND}"
-			RDEPEND+=" ${_PYTHON_USE_WITH_ATOMS_FROM_PYTHON_DEPEND}"
+			DEPEND+="${DEPEND:+ }${_PYTHON_USE_WITH_ATOMS_FROM_PYTHON_DEPEND}"
+			RDEPEND+="${RDEPEND:+ }${_PYTHON_USE_WITH_ATOMS_FROM_PYTHON_DEPEND}"
 		fi
 		if [[ "${#_PYTHON_ATOMS_FROM_PYTHON_BDEPEND[@]}" -gt 0 ]]; then
 			if [[ "${#_PYTHON_USE_WITH_ATOMS_ARRAY_FROM_PYTHON_BDEPEND[@]}" -gt 1 ]]; then
@@ -618,7 +633,7 @@ if has "${EAPI:-0}" 2 3 || { has "${EAPI:-0}" 4 && has "${PYTHON_ECLASS_API}" 0;
 			if [[ -n "${PYTHON_USE_WITH_OPT}" ]]; then
 				_PYTHON_USE_WITH_ATOMS_FROM_PYTHON_BDEPEND="${PYTHON_USE_WITH_OPT}? ( ${_PYTHON_USE_WITH_ATOMS_FROM_PYTHON_BDEPEND} )"
 			fi
-			DEPEND+=" ${_PYTHON_USE_WITH_ATOMS_FROM_PYTHON_BDEPEND}"
+			DEPEND+="${DEPEND:+ }${_PYTHON_USE_WITH_ATOMS_FROM_PYTHON_BDEPEND}"
 		fi
 		unset _PYTHON_ATOM _PYTHON_USE_WITH_ATOMS_FROM_PYTHON_DEPEND _PYTHON_USE_WITH_ATOMS_ARRAY_FROM_PYTHON_DEPEND _PYTHON_USE_WITH_ATOMS_FROM_PYTHON_BDEPEND _PYTHON_USE_WITH_ATOMS_ARRAY_FROM_PYTHON_BDEPEND
 	fi
@@ -787,18 +802,6 @@ python_abi_depend() {
 # ================================================================================================
 # =================================== MISCELLANEOUS FUNCTIONS ====================================
 # ================================================================================================
-
-_python_implementation() {
-	if [[ "${CATEGORY}/${PN}" == "dev-lang/python" ]]; then
-		return 0
-	elif [[ "${CATEGORY}/${PN}" == "dev-java/jython" ]]; then
-		return 0
-	elif [[ "${CATEGORY}/${PN}" == "dev-python/pypy" ]]; then
-		return 0
-	else
-		return 1
-	fi
-}
 
 _python_check_run-time_dependency() {
 	if has "${EAPI:-0}" 0 1 2 3 || { has "${EAPI:-0}" 4 && has "${PYTHON_ECLASS_API}" 0; }; then
