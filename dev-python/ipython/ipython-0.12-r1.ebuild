@@ -35,7 +35,7 @@ RDEPEND="$(python_abi_depend dev-python/decorator)
 	mongodb? ( $(python_abi_depend -i "2.*" dev-python/pymongo) )
 	notebook? (
 		dev-libs/mathjax
-		$(python_abi_depend ">=dev-python/pyzmq-2.1.4")
+		$(python_abi_depend -e "*-pypy-*" ">=dev-python/pyzmq-2.1.4")
 		$(python_abi_depend -i "2.*" ">=www-servers/tornado-2.1")
 	)
 	qt4? (
@@ -44,9 +44,9 @@ RDEPEND="$(python_abi_depend dev-python/decorator)
 			$(python_abi_depend -e "*-pypy-*" dev-python/PyQt4)
 			dev-python/pyside
 		)
-		$(python_abi_depend ">=dev-python/pyzmq-2.1.4")
+		$(python_abi_depend -e "*-pypy-*" ">=dev-python/pyzmq-2.1.4")
 	)
-	smp? ( $(python_abi_depend ">=dev-python/pyzmq-2.1.4") )
+	smp? ( $(python_abi_depend -e "*-pypy-*" ">=dev-python/pyzmq-2.1.4") )
 	wxwidgets? ( $(python_abi_depend -i "2.*" dev-python/wxpython) )"
 DEPEND="${RDEPEND}
 	test? ( $(python_abi_depend dev-python/nose) )"
