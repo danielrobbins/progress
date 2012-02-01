@@ -22,7 +22,7 @@ KEYWORDS="~amd64 ~arm ~hppa ~ppc ~x86 ~x86-fbsd ~amd64-linux ~x86-linux ~ppc-mac
 IUSE="doc examples firebird mssql mysql postgres +sqlite test"
 
 RDEPEND="$(python_abi_depend dev-python/setuptools)
-	firebird? ( $(python_abi_depend -e "3.* *-jython" dev-python/kinterbasdb) )
+	firebird? ( $(python_abi_depend -e "3.* *-jython *-pypy-*" dev-python/kinterbasdb) )
 	mssql? ( $(python_abi_depend -e "3.* *-jython" dev-python/pymssql) )
 	mysql? ( $(python_abi_depend -e "3.* *-jython" dev-python/mysql-python) )
 	postgres? ( $(python_abi_depend -e "*-jython" ">=dev-python/psycopg-2") )

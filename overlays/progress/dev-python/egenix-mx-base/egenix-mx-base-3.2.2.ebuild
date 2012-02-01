@@ -4,7 +4,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.* *-jython"
+PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 
 inherit distutils
 
@@ -27,6 +27,9 @@ src_prepare() {
 
 	# Don't install documentation in site-packages directories.
 	sed -e "/\/Doc\//d" -i egenix_mx_base.py || die "sed failed"
+
+	# Avoid unnecessary overriding of settings. Distutils in Gentoo is patched in better way.
+	sed -e 's/if compiler.compiler_type == "unix":/if False:/' -i mxSetup.py || die "sed failed"
 }
 
 src_compile() {

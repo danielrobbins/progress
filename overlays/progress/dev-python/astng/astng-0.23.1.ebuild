@@ -22,7 +22,7 @@ IUSE="test"
 RDEPEND="$(python_abi_depend ">=dev-python/logilab-common-0.53.0")"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
-	test? ( $(python_abi_depend -e "3.* *-jython" ">=dev-python/egenix-mx-base-3.0.0") )"
+	test? ( $(python_abi_depend -e "3.* *-jython *-pypy-*" ">=dev-python/egenix-mx-base-3.0.0") )"
 
 S="${WORKDIR}/logilab-${P}"
 

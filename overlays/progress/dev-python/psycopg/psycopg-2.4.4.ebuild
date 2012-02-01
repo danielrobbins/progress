@@ -21,7 +21,7 @@ KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~amd6
 IUSE="debug doc examples mxdatetime"
 
 RDEPEND=">=dev-db/postgresql-base-8.1
-	mxdatetime? ( $(python_abi_depend -i "2.*" dev-python/egenix-mx-base) )"
+	mxdatetime? ( $(python_abi_depend -e "3.* *-pypy-*" dev-python/egenix-mx-base) )"
 DEPEND="${RDEPEND}
 	doc? ( $(python_abi_depend -e "2.4" dev-python/sphinx) )"
 RESTRICT="test"

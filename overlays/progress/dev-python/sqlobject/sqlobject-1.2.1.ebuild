@@ -21,7 +21,7 @@ KEYWORDS="~amd64 ~ia64 ~ppc ~sparc ~x86 ~amd64-linux ~x86-linux ~ppc-macos ~x86-
 IUSE="doc firebird mysql postgres sqlite"
 
 RDEPEND="$(python_abi_depend ">=dev-python/formencode-0.2.2")
-		firebird? ( $(python_abi_depend ">=dev-python/kinterbasdb-3.0.2") )
+		firebird? ( $(python_abi_depend -e "*-pypy-*" ">=dev-python/kinterbasdb-3.0.2") )
 		mysql? ( $(python_abi_depend ">=dev-python/mysql-python-0.9.2-r1") )
 		postgres? ( $(python_abi_depend dev-python/psycopg) )
 		sqlite? ( $(python_abi_depend virtual/python-sqlite[external]) )"
