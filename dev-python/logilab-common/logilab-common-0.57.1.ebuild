@@ -23,7 +23,7 @@ RDEPEND="$(python_abi_depend dev-python/setuptools)
 # Tests using dev-python/psycopg are skipped when dev-python/psycopg is not installed.
 DEPEND="${RDEPEND}
 	test? (
-		$(python_abi_depend -e "3.* *-jython" dev-python/egenix-mx-base)
+		$(python_abi_depend -e "3.* *-jython *-pypy-*" dev-python/egenix-mx-base)
 		!dev-python/psycopg[-mxdatetime]
 	)"
 
