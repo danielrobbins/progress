@@ -4,7 +4,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.4 3.* *-jython"
+PYTHON_RESTRICTED_ABIS="2.4 3.* *-jython *-pypy-*"
 
 inherit distutils
 
@@ -34,7 +34,7 @@ src_prepare() {
 
 src_test() {
 	testing() {
-		PYTHONPATH="$(ls -d build-${PYTHON_ABI}/lib.*):." "$(PYTHON)" tests/test.py
+		python_execute PYTHONPATH="$(ls -d build-${PYTHON_ABI}/lib.*):." "$(PYTHON)" tests/test.py
 	}
 	python_execute_function testing
 }
