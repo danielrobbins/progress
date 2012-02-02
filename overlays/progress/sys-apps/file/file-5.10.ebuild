@@ -35,7 +35,7 @@ src_prepare() {
 	mv python/README{,.python}
 }
 
-wd() { echo ${WORKDIR}/build-${CHOST}; }
+wd() { echo "${WORKDIR}"/build-${CHOST}; }
 do_configure() {
 	ECONF_SOURCE=${S}
 
