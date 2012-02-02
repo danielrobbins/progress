@@ -7,7 +7,7 @@ PYTHON_DEPEND="<<[xml]>>"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.4 3.*"
 
-inherit distutils eutils
+inherit distutils eutils multilib
 
 DESCRIPTION="Collection of Gentoo-specific tools for Java"
 HOMEPAGE="http://www.gentoo.org/proj/en/java/"

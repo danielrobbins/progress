@@ -7,7 +7,7 @@ PYTHON_DEPEND="python? ( <<>> )"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython"
 
-inherit distutils eutils flag-o-matic libtool
+inherit distutils eutils flag-o-matic libtool toolchain-funcs
 
 DESCRIPTION="identify a file's format by scanning binary data for patterns"
 HOMEPAGE="ftp://ftp.astron.com/pub/file/"

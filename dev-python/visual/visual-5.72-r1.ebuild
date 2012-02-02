@@ -7,7 +7,7 @@ PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 PYTHON_EXPORT_PHASE_FUNCTIONS="1"
 
-inherit flag-o-matic python versionator
+inherit flag-o-matic multilib python versionator
 
 MY_P="${PN}-$(delete_version_separator 2)_release"
 

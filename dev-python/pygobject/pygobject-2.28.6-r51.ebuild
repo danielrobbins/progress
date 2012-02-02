@@ -11,7 +11,7 @@ PYTHON_RESTRICTED_ABIS="2.4 2.5 *-jython *-pypy-*"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 
 # XXX: Is the alternatives stuff needed anymore?
-inherit alternatives autotools gnome2 python virtualx
+inherit alternatives autotools gnome2 multilib python virtualx
 
 DESCRIPTION="GLib's GObject library bindings for Python"
 HOMEPAGE="http://www.pygtk.org/"

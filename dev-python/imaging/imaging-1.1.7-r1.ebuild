@@ -7,7 +7,7 @@ PYTHON_DEPEND="<<[{*-cpython}tk?]>>"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.* *-jython"
 
-inherit distutils eutils
+inherit distutils eutils multilib
 
 MY_P="Imaging-${PV}"
 
