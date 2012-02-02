@@ -10,7 +10,7 @@ PYTHON_RESTRICTED_ABIS="2.4 *-jython *-pypy-*"
 
 OPENGL_REQUIRED="always"
 KDE_SCM="git"
-inherit python portability kde4-base
+inherit kde4-base multilib portability python toolchain-funcs
 
 DESCRIPTION="Python bindings for KDE4"
 KEYWORDS="~amd64 ~x86 ~amd64-linux ~x86-linux"
