@@ -3,7 +3,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_NAMESPACES="Products Shared Shared.DC five +zope zope.app"
+PYTHON_NAMESPACES="+Products +Shared +Shared.DC +five +zope +zope.app"
 
 inherit python-namespaces
 
