@@ -5,7 +5,7 @@
 EAPI="4-python"
 WX_GTK_VER="2.8"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.4 3.* *-jython"
+PYTHON_RESTRICTED_ABIS="2.4 3.* *-jython *-pypy-*"
 
 inherit alternatives distutils eutils fdo-mime wxwidgets
 
@@ -32,7 +32,7 @@ RDEPEND="
 	virtual/jpeg
 	x11-libs/gtk+:2
 	x11-libs/pango[X]
-	cairo?	( $(python_abi_depend -e "2.5 *-pypy-*" ">=dev-python/pycairo-1.8.4") )
+	cairo?	( $(python_abi_depend -e "2.5" ">=dev-python/pycairo-1.8.4") )
 	opengl? ( $(python_abi_depend dev-python/pyopengl) )"
 
 DEPEND="${RDEPEND}
