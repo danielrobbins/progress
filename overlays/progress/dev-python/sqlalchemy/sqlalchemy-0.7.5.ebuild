@@ -23,7 +23,7 @@ IUSE="doc examples firebird mssql mysql postgres +sqlite test"
 
 RDEPEND="$(python_abi_depend dev-python/setuptools)
 	firebird? ( $(python_abi_depend -e "3.* *-jython *-pypy-*" dev-python/kinterbasdb) )
-	mssql? ( $(python_abi_depend -e "3.* *-jython" dev-python/pymssql) )
+	mssql? ( $(python_abi_depend -e "3.* *-jython *-pypy-*" dev-python/pymssql) )
 	mysql? ( $(python_abi_depend -e "3.* *-jython" dev-python/mysql-python) )
 	postgres? ( $(python_abi_depend -e "*-jython" ">=dev-python/psycopg-2") )
 	sqlite? ( $(python_abi_depend -e "*-jython" virtual/python-sqlite[external]) )"
