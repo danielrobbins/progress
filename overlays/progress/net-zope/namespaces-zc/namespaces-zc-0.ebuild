@@ -3,7 +3,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_NAMESPACES="+zc zc.recipe"
+PYTHON_NAMESPACES="+zc +zc.recipe"
 
 inherit python-namespaces
 

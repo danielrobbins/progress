@@ -3,7 +3,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_NAMESPACES="+repoze repoze.sphinx"
+PYTHON_NAMESPACES="+repoze +repoze.sphinx"
 
 inherit python-namespaces
 
