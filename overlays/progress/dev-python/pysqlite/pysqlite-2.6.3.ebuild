@@ -4,7 +4,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.* *-jython"
+PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 
 inherit distutils
 
@@ -41,7 +41,7 @@ src_test() {
 	cd lib
 
 	testing() {
-		PYTHONPATH="$(ls -d ../build-${PYTHON_ABI}/lib.*)" "$(PYTHON)" -c "from test import test; import sys; sys.exit(test())"
+		python_execute PYTHONPATH="$(ls -d ../build-${PYTHON_ABI}/lib.*)" "$(PYTHON)" -c "from test import test; import sys; sys.exit(test())"
 	}
 	python_execute_function testing
 }
