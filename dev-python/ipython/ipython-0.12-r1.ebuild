@@ -47,7 +47,7 @@ RDEPEND="$(python_abi_depend dev-python/decorator)
 		$(python_abi_depend -e "*-pypy-*" ">=dev-python/pyzmq-2.1.4")
 	)
 	smp? ( $(python_abi_depend -e "*-pypy-*" ">=dev-python/pyzmq-2.1.4") )
-	wxwidgets? ( $(python_abi_depend -i "2.*" dev-python/wxpython) )"
+	wxwidgets? ( $(python_abi_depend -i "2.*-cpython" dev-python/wxpython) )"
 DEPEND="${RDEPEND}
 	test? ( $(python_abi_depend dev-python/nose) )"
 
