@@ -10,7 +10,7 @@ inherit distutils
 
 DESCRIPTION="Python module for DNS (Domain Name Service)"
 HOMEPAGE="http://pydns.sourceforge.net/ http://pypi.python.org/pypi/pydns"
-SRC_URI="mirror://sourceforge/pydns/${P}.tar.gz"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="CNRI"
 SLOT="2"
@@ -26,6 +26,8 @@ DOCS="CREDITS"
 PYTHON_MODULES="DNS"
 
 src_prepare() {
+	distutils_src_prepare
+
 	# Fix encoding of comments.
 	local file
 	for file in DNS/{Lib,Type}.py; do
@@ -33,7 +35,7 @@ src_prepare() {
 	done
 
 	# Fix Python shebangs in examples.
-	sed -i -e 's:#!/.*\(python\).*/*$:#!/usr/bin/\12:g' {tests,tools}/*.py
+	python_convert_shebangs -r 2 {tests,tools}
 
 	# Clean documentation.
 	mv CREDITS.txt CREDITS
