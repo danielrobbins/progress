@@ -3,7 +3,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.* *-jython"
+PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 DISTUTILS_SRC_TEST="setup.py"
 
 inherit distutils
