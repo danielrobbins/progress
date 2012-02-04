@@ -4,7 +4,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.* *-jython"
+PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 DISTUTILS_SRC_TEST="setup.py"
 
 inherit distutils
@@ -37,7 +37,7 @@ src_compile() {
 	if use doc; then
 		einfo "Generation of documentation"
 		pushd doc > /dev/null
-		PYTHONPATH="$(ls -d ../build-$(PYTHON -f --ABI)/lib.*)" epydoc --html --output=api --name=M2Crypto M2Crypto || die "Generation of documentation failed"
+		python_execute PYTHONPATH="$(ls -d ../build-$(PYTHON -f --ABI)/lib.*)" epydoc --html --output=api --name=M2Crypto M2Crypto || die "Generation of documentation failed"
 		popd > /dev/null
 	fi
 }

@@ -23,7 +23,7 @@ IUSE="examples ssl"
 
 RDEPEND="$(python_abi_depend dev-python/fpconst)
 	$(python_abi_depend dev-python/wstools)
-	ssl? ( $(python_abi_depend -e "*-jython" dev-python/m2crypto) )"
+	ssl? ( $(python_abi_depend -e "*-jython *-pypy-*" dev-python/m2crypto) )"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
