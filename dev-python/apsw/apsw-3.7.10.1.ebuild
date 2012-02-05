@@ -5,6 +5,8 @@
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython"
+# http://code.google.com/p/apsw/issues/detail?id=129
+PYTHON_TESTS_RESTRICTED_ABIS="*-pypy-*"
 
 inherit distutils eutils versionator
 
@@ -30,6 +32,12 @@ PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 src_prepare() {
 	distutils_src_prepare
 	epatch "${FILESDIR}/${PN}-3.6.20.1-fix_tests.patch"
+
+	# http://code.google.com/p/apsw/source/browse/src/pypycompat.c
+	cat << EOF > src/pypycompat.c
+/* Recycle depends on CPython GC */
+#define AB_NRECYCLE 0
+EOF
 }
 
 src_compile() {
