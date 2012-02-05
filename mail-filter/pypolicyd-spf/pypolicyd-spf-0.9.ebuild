@@ -12,12 +12,13 @@ DESCRIPTION="Python based policy daemon for Postfix SPF checking"
 HOMEPAGE="https://launchpad.net/pypolicyd-spf"
 SRC_URI="http://launchpad.net/pypolicyd-spf/$(get_version_component_range 1-2)/${PV}/+download/${P}.tar.gz"
 
-LICENSE="GPL-2"
+LICENSE="Apache-2.0"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
 
-DEPEND="$(python_abi_depend ">=dev-python/pyspf-2.0")"
+DEPEND="$(python_abi_depend dev-python/authres)
+	$(python_abi_depend ">=dev-python/pyspf-2.0")"
 RDEPEND="${DEPEND}"
 
 PYTHON_MODULES="policydspfsupp.py policydspfuser.py"
