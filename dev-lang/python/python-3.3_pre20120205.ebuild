@@ -11,7 +11,7 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="c68426b241ca"
+	EHG_REVISION="fd424ccc8cee"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
@@ -34,8 +34,7 @@ PYTHON_ABI="${SLOT}"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~sparc-fbsd ~x86-fbsd"
 IUSE="build doc elibc_uclibc examples gdbm ipv6 +ncurses +readline sqlite +ssl +threads tk wininst +xml"
 
-RDEPEND=">=app-admin/eselect-python-20091230
-		app-arch/bzip2
+RDEPEND="app-arch/bzip2
 		app-arch/xz-utils
 		>=sys-libs/zlib-1.1.3
 		virtual/libffi
@@ -62,7 +61,6 @@ DEPEND="${RDEPEND}
 		!sys-devel/gcc[libffi]"
 RDEPEND+=" !build? ( app-misc/mime-types )
 		$([[ "${PV}" =~ ^[[:digit:]]+\.[[:digit:]]+_pre ]] || echo "doc? ( dev-python/python-docs:${SLOT} )")"
-PDEPEND="app-admin/python-updater"
 
 if [[ "${PV}" != *_pre* ]]; then
 	S="${WORKDIR}/${MY_P}"
