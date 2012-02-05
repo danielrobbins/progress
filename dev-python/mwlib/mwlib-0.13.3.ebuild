@@ -6,8 +6,9 @@ EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.4 3.* *-jython *-pypy-*"
 DISTUTILS_SRC_TEST="py.test"
+PYTHON_NAMESPACES="mwlib"
 
-inherit distutils
+inherit distutils python-namespaces
 
 DESCRIPTION="mediawiki parser and utility library"
 HOMEPAGE="http://pediapress.com/code/ https://github.com/pediapress/mwlib http://pypi.python.org/pypi/mwlib"
@@ -39,6 +40,8 @@ RDEPEND="dev-lang/perl
 DEPEND="${RDEPEND}
 	app-arch/unzip
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
+
+S="${WORKDIR}/${P}"
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 
@@ -84,6 +87,7 @@ src_test() {
 src_install() {
 	distutils_src_install
 	python_clean_installation_image
+	python-namespaces_src_install
 
 	if use doc; then
 		pushd docs/_build/html > /dev/null
@@ -91,4 +95,14 @@ src_install() {
 		doins -r [a-z]* _static
 		popd > /dev/null
 	fi
+}
+
+pkg_postinst() {
+	distutils_pkg_postinst
+	python-namespaces_pkg_postinst
+}
+
+pkg_postrm() {
+	distutils_pkg_postrm
+	python-namespaces_pkg_postrm
 }
