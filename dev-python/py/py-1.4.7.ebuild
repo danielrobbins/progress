@@ -5,8 +5,7 @@
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 # https://bitbucket.org/hpk42/py/issue/10
-# https://bitbucket.org/hpk42/py/issue/11
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.3 *-jython"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 DISTUTILS_SRC_TEST="py.test"
 
 inherit distutils
