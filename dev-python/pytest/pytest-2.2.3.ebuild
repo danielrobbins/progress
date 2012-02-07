@@ -5,8 +5,7 @@
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 # http://bugs.jython.org/issue1609
-# https://bitbucket.org/hpk42/py/issue/11
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.3 *-jython"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 
 inherit distutils
 
@@ -19,7 +18,7 @@ SLOT="0"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~x86-fbsd ~amd64-linux ~ia64-linux ~x86-linux ~ppc-macos ~x86-macos"
 IUSE=""
 
-RDEPEND="$(python_abi_depend ">=dev-python/py-1.4.6")"
+RDEPEND="$(python_abi_depend ">=dev-python/py-1.4.7")"
 DEPEND="${RDEPEND}
 	app-arch/unzip
 	$(python_abi_depend dev-python/setuptools)"
