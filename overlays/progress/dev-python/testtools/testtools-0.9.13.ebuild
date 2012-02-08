@@ -6,11 +6,11 @@ EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
 
-inherit distutils versionator
+inherit distutils eutils versionator
 
 SERIES="$(get_version_component_range 1-2)"
 
-DESCRIPTION="Extensions to the Python unittest library"
+DESCRIPTION="Extensions to the Python standard library unit testing framework"
 HOMEPAGE="https://launchpad.net/testtools http://pypi.python.org/pypi/testtools"
 SRC_URI="http://launchpad.net/${PN}/${SERIES}/${PV}/+download/${P}.tar.gz"
 
@@ -22,9 +22,14 @@ IUSE=""
 DEPEND=""
 RDEPEND=""
 
+src_prepare() {
+	distutils_src_prepare
+	epatch "${FILESDIR}/${P}-python-3.patch"
+}
+
 src_test() {
 	testing() {
-		PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" -m testtools.run testtools.tests.test_suite
+		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" -m testtools.run testtools.tests.test_suite
 	}
 	python_execute_function testing
 }
