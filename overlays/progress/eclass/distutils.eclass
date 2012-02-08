@@ -110,7 +110,7 @@ fi
 
 _distutils_execute() {
 	if [[ "$(python_get_implementation)" == "PyPy" ]]; then
-		python_execute CPP="${_PYTHON_TOOLCHAIN_FUNCS_CPP}" CC="${_PYTHON_TOOLCHAIN_FUNCS_CC}" CXX="${_PYTHON_TOOLCHAIN_FUNCS_CXX}" LDSHARED="${_PYTHON_TOOLCHAIN_FUNCS_CC} -shared" LDCXXSHARED="${_PYTHON_TOOLCHAIN_FUNCS_CXX} -shared" "$@"
+		CFLAGS="${CFLAGS}${CFLAGS:+ }-Werror=implicit-function-declaration" python_execute CPP="${_PYTHON_TOOLCHAIN_FUNCS_CPP}" CC="${_PYTHON_TOOLCHAIN_FUNCS_CC}" CXX="${_PYTHON_TOOLCHAIN_FUNCS_CXX}" LDSHARED="${_PYTHON_TOOLCHAIN_FUNCS_CC} -shared" LDCXXSHARED="${_PYTHON_TOOLCHAIN_FUNCS_CXX} -shared" "$@"
 	else
 		python_execute "$@"
 	fi
