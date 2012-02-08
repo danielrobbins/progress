@@ -13,8 +13,6 @@ if [[ -z "${_PYTHON_ECLASS_INHERITED}" ]]; then
 	inherit python
 fi
 
-inherit multilib toolchain-funcs
-
 if has "${EAPI:-0}" 0 1 && _python_package_supporting_installation_for_multiple_python_abis; then
 	die "EAPI=\"${EAPI}\" not supported by distutils.eclass in packages supporting installation for multiple Python ABIs"
 elif has "${EAPI:-0}" 0 1 2 && ! _python_package_supporting_installation_for_multiple_python_abis; then
@@ -112,7 +110,7 @@ fi
 
 _distutils_execute() {
 	if [[ "$(python_get_implementation)" == "PyPy" ]]; then
-		python_execute CPP="$(tc-getCPP)" CC="$(tc-getCC)" CXX="$(tc-getCXX)" LDSHARED="$(tc-getCC) -shared" LDCXXSHARED="$(tc-getCXX) -shared" "$@"
+		python_execute CPP="${_PYTHON_TOOLCHAIN_FUNCS_CPP}" CC="${_PYTHON_TOOLCHAIN_FUNCS_CC}" CXX="${_PYTHON_TOOLCHAIN_FUNCS_CXX}" LDSHARED="${_PYTHON_TOOLCHAIN_FUNCS_CC} -shared" LDCXXSHARED="${_PYTHON_TOOLCHAIN_FUNCS_CXX} -shared" "$@"
 	else
 		python_execute "$@"
 	fi
@@ -486,7 +484,7 @@ distutils_pkg_postinst() {
 	fi
 
 	if [[ -z "$(declare -p PYTHON_MODULES 2> /dev/null)" ]]; then
-		for pylibdir in "${EROOT}"usr/$(get_libdir)/python* "${EROOT}"usr/share/jython-*/Lib "${EROOT}"usr/$(get_libdir)/pypy*; do
+		for pylibdir in "${EROOT}"usr/${_PYTHON_MULTILIB_LIBDIR}/python* "${EROOT}"usr/share/jython-*/Lib "${EROOT}"usr/${_PYTHON_MULTILIB_LIBDIR}/pypy*; do
 			if [[ -d "${pylibdir}/site-packages/${PN}" ]]; then
 				PYTHON_MODULES="${PN}"
 			fi
@@ -527,7 +525,7 @@ distutils_pkg_postrm() {
 	fi
 
 	if [[ -z "$(declare -p PYTHON_MODULES 2> /dev/null)" ]]; then
-		for pylibdir in "${EROOT}"usr/$(get_libdir)/python* "${EROOT}"usr/share/jython-*/Lib "${EROOT}"usr/$(get_libdir)/pypy*; do
+		for pylibdir in "${EROOT}"usr/${_PYTHON_MULTILIB_LIBDIR}/python* "${EROOT}"usr/share/jython-*/Lib "${EROOT}"usr/${_PYTHON_MULTILIB_LIBDIR}/pypy*; do
 			if [[ -d "${pylibdir}/site-packages/${PN}" ]]; then
 				PYTHON_MODULES="${PN}"
 			fi
