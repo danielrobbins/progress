@@ -20,8 +20,9 @@ SLOT="0"
 KEYWORDS="~amd64 ~ia64 ~ppc ~x86"
 IUSE=""
 
-DEPEND="$(python_abi_depend dev-python/fonttools)
+RDEPEND="$(python_abi_depend dev-python/fonttools)
 	$(python_abi_depend dev-python/numpy)"
-RDEPEND="${DEPEND}"
+DEPEND="${RDEPEND}
+	$(python_abi_depend dev-python/setuptools)"
 
 S="${WORKDIR}/${MY_P}"
