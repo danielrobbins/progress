@@ -63,7 +63,11 @@ base_src_unpack() {
 
 	pushd "${WORKDIR}" > /dev/null
 
-	[[ -n "${A}" ]] && unpack ${A}
+	if [[ $(type -t unpacker_src_unpack) == "function" ]] ; then
+		unpacker_src_unpack
+	elif [[ -n ${A} ]] ; then
+		unpack ${A}
+	fi
 	has src_prepare ${BASE_EXPF} || base_src_prepare
 
 	popd > /dev/null
