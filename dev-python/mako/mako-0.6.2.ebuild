@@ -35,11 +35,7 @@ src_prepare() {
 
 	preparation() {
 		if [[ "$(python_get_version -l --major)" == "3" ]]; then
-			2to3-${PYTHON_ABI} -nw --no-diffs test || return
-
-			# Disable failing tests.
-			sed -e "s/test_utf8_html_error_template/_&/" -i test/test_exceptions.py
-			sed -e "s/test_escapes_html_tags/_&/" -i test/test_template.py
+			2to3-${PYTHON_ABI} -nw --no-diffs test
 		fi
 	}
 	python_execute_function -s preparation
