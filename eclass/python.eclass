@@ -11,7 +11,20 @@
 
 _PYTHON_ECLASS_INHERITED="1"
 
-inherit multilib
+readarray -t _PYTHON_INHERITED_ECLASSES_FUNCTIONS_OUTPUTS <<< "$(
+	INHERITED="${INHERITED}${INHERITED:+ }multilib toolchain-funcs" inherit multilib toolchain-funcs &> /dev/null
+	get_libdir
+	get_libname
+	tc-getCPP
+	tc-getCC
+	tc-getCXX
+)" 2> /dev/null
+_PYTHON_MULTILIB_LIBDIR="${_PYTHON_INHERITED_ECLASSES_FUNCTIONS_OUTPUTS[0]}"
+_PYTHON_MULTILIB_LIBNAME="${_PYTHON_INHERITED_ECLASSES_FUNCTIONS_OUTPUTS[1]}"
+_PYTHON_TOOLCHAIN_FUNCS_CPP="${_PYTHON_INHERITED_ECLASSES_FUNCTIONS_OUTPUTS[2]}"
+_PYTHON_TOOLCHAIN_FUNCS_CC="${_PYTHON_INHERITED_ECLASSES_FUNCTIONS_OUTPUTS[3]}"
+_PYTHON_TOOLCHAIN_FUNCS_CXX="${_PYTHON_INHERITED_ECLASSES_FUNCTIONS_OUTPUTS[4]}"
+unset _PYTHON_INHERITED_ECLASSES_FUNCTIONS_OUTPUTS
 
 if ! has "${EAPI:-0}" 0 1 2 3 4 4-python; then
 	die "API of python.eclass in EAPI=\"${EAPI}\" not established"
@@ -2753,7 +2766,7 @@ python_get_includedir() {
 	elif [[ "$(_python_get_implementation "${PYTHON_ABI}")" == "Jython" ]]; then
 		echo "${prefix}usr/share/jython-${PYTHON_ABI%-jython}/Include"
 	elif [[ "$(_python_get_implementation "${PYTHON_ABI}")" == "PyPy" ]]; then
-		echo "${prefix}usr/$(get_libdir)/pypy${PYTHON_ABI#*-pypy-}/include"
+		echo "${prefix}usr/${_PYTHON_MULTILIB_LIBDIR}/pypy${PYTHON_ABI#*-pypy-}/include"
 	fi
 }
 
@@ -2806,7 +2819,7 @@ python_get_libdir() {
 	fi
 
 	if [[ "$(_python_get_implementation "${PYTHON_ABI}")" == "CPython" ]]; then
-		echo "${prefix}usr/$(get_libdir)/python${PYTHON_ABI}"
+		echo "${prefix}usr/${_PYTHON_MULTILIB_LIBDIR}/python${PYTHON_ABI}"
 	elif [[ "$(_python_get_implementation "${PYTHON_ABI}")" == "Jython" ]]; then
 		echo "${prefix}usr/share/jython-${PYTHON_ABI%-jython}/Lib"
 	elif [[ "$(_python_get_implementation "${PYTHON_ABI}")" == "PyPy" ]]; then
@@ -2863,11 +2876,11 @@ python_get_sitedir() {
 	fi
 
 	if [[ "$(_python_get_implementation "${PYTHON_ABI}")" == "CPython" ]]; then
-		echo "${prefix}usr/$(get_libdir)/python${PYTHON_ABI}/site-packages"
+		echo "${prefix}usr/${_PYTHON_MULTILIB_LIBDIR}/python${PYTHON_ABI}/site-packages"
 	elif [[ "$(_python_get_implementation "${PYTHON_ABI}")" == "Jython" ]]; then
 		echo "${prefix}usr/share/jython-${PYTHON_ABI%-jython}/Lib/site-packages"
 	elif [[ "$(_python_get_implementation "${PYTHON_ABI}")" == "PyPy" ]]; then
-		echo "${prefix}usr/$(get_libdir)/pypy${PYTHON_ABI#*-pypy-}/site-packages"
+		echo "${prefix}usr/${_PYTHON_MULTILIB_LIBDIR}/pypy${PYTHON_ABI#*-pypy-}/site-packages"
 	fi
 }
 
@@ -2931,7 +2944,7 @@ python_get_library() {
 		if [[ "${linker_option}" == "1" ]]; then
 			echo "-lpython${PYTHON_ABI}"
 		else
-			echo "${prefix}usr/$(get_libdir)/libpython${PYTHON_ABI}$(get_libname)"
+			echo "${prefix}usr/${_PYTHON_MULTILIB_LIBDIR}/libpython${PYTHON_ABI}${_PYTHON_MULTILIB_LIBNAME}"
 		fi
 	elif [[ "$(_python_get_implementation "${PYTHON_ABI}")" == "Jython" ]]; then
 		die "${FUNCNAME}(): Jython does not have shared library"
