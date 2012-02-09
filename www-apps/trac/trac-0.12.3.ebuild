@@ -21,7 +21,7 @@ KEYWORDS="~amd64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd"
 IUSE="cgi fastcgi i18n mysql postgres +sqlite subversion"
 
 DEPEND="$(python_abi_depend dev-python/docutils)
-	$(python_abi_depend dev-python/genshi)
+	$(python_abi_depend "=dev-python/genshi-0.6*")
 	$(python_abi_depend dev-python/pygments)
 	$(python_abi_depend dev-python/pytz)
 	$(python_abi_depend dev-python/setuptools)
