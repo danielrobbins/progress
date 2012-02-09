@@ -1,6 +1,17 @@
+--- eric/DataViews/PyCoverageDialog.py
++++ eric/DataViews/PyCoverageDialog.py
+@@ -19,7 +19,7 @@
+ from Ui_PyCoverageDialog import Ui_PyCoverageDialog
+ 
+ import Utilities
+-from DebugClients.Python.coverage import coverage
++from coverage import coverage
+ 
+ class PyCoverageDialog(QDialog, Ui_PyCoverageDialog):
+     """
 --- eric/eric4.e4p
 +++ eric/eric4.e4p
-@@ -614,12 +614,6 @@
+@@ -599,12 +599,6 @@
      <Source>Helpviewer/HelpTopicDialog.py</Source>
      <Source>Helpviewer/HelpSearchWidget.py</Source>
      <Source>Helpviewer/HelpDocsInstaller.py</Source>
@@ -13,7 +24,7 @@
      <Source>Debugger/DebuggerInterfacePython3.py</Source>
      <Source>Preferences/ConfigurationPages/DebuggerPython3Page.py</Source>
      <Source>DebugClients/Python3/AsyncFile.py</Source>
-@@ -652,15 +646,6 @@
+@@ -637,15 +631,6 @@
      <Source>E4Network/E4NetworkMonitor.py</Source>
      <Source>E4Network/E4NetworkHeaderDetailsDialog.py</Source>
      <Source>Helpviewer/HelpLanguagesDialog.py</Source>
@@ -29,8 +40,8 @@
      <Source>Helpviewer/CookieJar/__init__.py</Source>
      <Source>Helpviewer/CookieJar/CookiesExceptionsDialog.py</Source>
      <Source>Helpviewer/CookieJar/CookieModel.py</Source>
-@@ -720,23 +705,6 @@
-     <Source>eric4-iconeditor.py</Source>
+@@ -703,23 +688,6 @@
+     <Source>IconEditor/IconEditorWindow.py</Source>
      <Source>IconEditor/IconZoomDialog.py</Source>
      <Source>IconEditor/IconEditorPalette.py</Source>
 -    <Source>DebugClients/Python/coverage/backward.py</Source>
@@ -53,8 +64,8 @@
      <Source>E4Gui/E4ModelToolBar.py</Source>
      <Source>E4Gui/E4TreeSortFilterProxyModel.py</Source>
      <Source>ThirdParty/Pygments/pygments/lexers/parsers.py</Source>
-@@ -1045,15 +1013,11 @@
-     <Other>Documentation/Help</Other>
+@@ -1071,15 +1039,11 @@
+     <Other>ThirdParty/Pygments/pygments/PKG-INFO</Other>
      <Other>ThirdParty/SimpleJSON/simplejson/LICENSE.txt</Other>
      <Other>ThirdParty/SimpleJSON/simplejson/PKG-INFO</Other>
 -    <Other>DebugClients/Python/coverage/htmlfiles</Other>
@@ -66,30 +77,12 @@
 -    <Other>DebugClients/Python/coverage/doc</Other>
 -    <Other>DebugClients/Python3/coverage/doc</Other>
 -    <Other>DebugClients/Python3/coverage/htmlfiles</Other>
-   </Others>
-   <MainScript>eric4.py</MainScript>
-   <Vcs>
-@@ -1511,4 +1475,4 @@
-       </dict>
-     </CheckersParams>
-   </Checkers>
--</Project>
-\ No newline at end of file
-+</Project>
---- eric/DataViews/PyCoverageDialog.py
-+++ eric/DataViews/PyCoverageDialog.py
-@@ -19,7 +19,7 @@ from KdeQt.KQProgressDialog import KQPro
- from Ui_PyCoverageDialog import Ui_PyCoverageDialog
- 
- import Utilities
--from DebugClients.Python.coverage import coverage
-+from coverage import coverage
- 
- class PyCoverageDialog(QDialog, Ui_PyCoverageDialog):
-     """
+     <Other>Documentation/Help</Other>
+     <Other>README-MacOSX.txt</Other>
+     <Other>default_Mac.e4k</Other>
 --- eric/PyUnit/UnittestDialog.py
 +++ eric/PyUnit/UnittestDialog.py
-@@ -26,7 +26,7 @@ from E4Gui.E4Completers import E4FileCom
+@@ -26,7 +26,7 @@
  from Ui_UnittestDialog import Ui_UnittestDialog
  from Ui_UnittestStacktraceDialog import Ui_UnittestStacktraceDialog
  
@@ -100,7 +93,7 @@
  
 --- eric/QScintilla/Editor.py
 +++ eric/QScintilla/Editor.py
-@@ -28,7 +28,7 @@ from SpellCheckingDialog import SpellChe
+@@ -28,7 +28,7 @@
  
  from Debugger.EditBreakpointDialog import EditBreakpointDialog
  
