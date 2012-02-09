@@ -24,7 +24,7 @@ RDEPEND="$(python_abi_depend ">=dev-python/flask-0.3")
 	$(python_abi_depend ">=dev-python/python-openid-2.0")"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
-	doc? ( dev-python/sphinx )"
+	doc? ( $(python_abi_depend dev-python/sphinx) )"
 
 S="${WORKDIR}/${MY_P}"
 

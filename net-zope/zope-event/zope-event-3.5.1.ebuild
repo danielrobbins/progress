@@ -22,7 +22,7 @@ IUSE="doc"
 RDEPEND="$(python_abi_depend net-zope/namespaces-zope[zope])"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
-	doc? ( dev-python/sphinx )"
+	doc? ( $(python_abi_depend -e "2.4" dev-python/sphinx) )"
 
 S="${WORKDIR}/${MY_P}"
 
@@ -34,6 +34,7 @@ src_compile() {
 
 	if use doc; then
 		einfo "Generation of documentation"
+		[[ "$(python_get_version -f -l)" == "2.4" ]] && die "Generation of documentation using Python 2.4 not supported"
 		pushd docs > /dev/null
 		emake html
 		popd > /dev/null

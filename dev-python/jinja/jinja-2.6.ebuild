@@ -24,7 +24,7 @@ RDEPEND="$(python_abi_depend dev-python/markupsafe)
 	$(python_abi_depend dev-python/setuptools)
 	i18n? ( $(python_abi_depend -i "2.*" ">=dev-python/Babel-0.9.3") )"
 DEPEND="${RDEPEND}
-	doc? ( >=dev-python/sphinx-0.6 )"
+	doc? ( $(python_abi_depend -e "2.4" dev-python/sphinx) )"
 
 S="${WORKDIR}/${MY_P}"
 
@@ -38,8 +38,10 @@ src_compile(){
 
 	if use doc; then
 		einfo "Generation of documentation"
-		cd docs
+		[[ "$(python_get_version -f -l)" == "2.4" ]] && die "Generation of documentation using Python 2.4 not supported"
+		pushd docs > /dev/null
 		PYTHONPATH=".." emake html
+		popd > /dev/null
 	fi
 }
 

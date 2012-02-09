@@ -28,7 +28,7 @@ RDEPEND="bzip2? ( >=app-arch/bzip2-1.0.5 )
 	ssl? ( >=dev-libs/openssl-0.9.8g )
 	zlib? ( >=sys-libs/zlib-1.2.3 )"
 DEPEND="${RDEPEND}
-	doc? ( dev-python/sphinx )"
+	doc? ( $(python_abi_depend dev-python/sphinx) )"
 
 S="${WORKDIR}/${MY_P}"
 
