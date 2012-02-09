@@ -64,10 +64,7 @@ src_prepare() {
 	epatch "${FILESDIR}/${PN}-3.0.0-support_multiple_python_versions.patch"
 
 	# FIXME: disable tests that require >=gobject-introspection-1.31
-	epatch "${FILESDIR}/${P}-disable-new-gi-tests.patch"
-
-	# Upstream patch to fix GObject.property min/max values; in next release
-	epatch "${FILESDIR}/${P}-gobject-property-min-max.patch"
+	epatch "${FILESDIR}/${PN}-3.0.3-disable-new-gi-tests.patch"
 
 	# https://bugzilla.gnome.org/show_bug.cgi?id=666852
 	epatch "${FILESDIR}/${PN}-3.0.3-tests-python3.patch"
@@ -78,6 +75,13 @@ src_prepare() {
 	gnome2_src_prepare
 
 	python_copy_sources
+
+	preparation() {
+		if [[ "$(python_get_version -l)" == "2.6" ]]; then
+			sed -e "/# https:\/\/bugzilla.gnome.org\/show_bug.cgi?id=656554/,+13d" -i tests/test_everything.py
+		fi
+	}
+	python_execute_function -q -s preparation
 }
 
 src_configure() {
