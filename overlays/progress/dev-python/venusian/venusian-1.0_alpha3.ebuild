@@ -19,7 +19,7 @@ KEYWORDS="~amd64 ~x86"
 IUSE="doc"
 
 DEPEND="$(python_abi_depend dev-python/setuptools)
-	doc? ( dev-python/sphinx )"
+	doc? ( $(python_abi_depend -e "2.4" dev-python/sphinx) )"
 RDEPEND=""
 
 S="${WORKDIR}/${MY_P}"
@@ -30,7 +30,10 @@ src_prepare() {
 	distutils_src_prepare
 
 	# Fix Sphinx theme.
-	sed -e "s/html_theme = 'pylons'/html_theme = 'default'/" -i docs/conf.py || die "sed failed"
+	sed \
+		-e "/# Add and use Pylons theme/,+32d" \
+		-e "/html_theme_options =/,+2d" \
+		-i docs/conf.py || die "sed failed"
 }
 
 src_compile() {
@@ -38,6 +41,7 @@ src_compile() {
 
 	if use doc; then
 		einfo "Generation of documentation"
+		[[ "$(python_get_version -f -l)" == "2.4" ]] && die "Generation of documentation using Python 2.4 not supported"
 		pushd docs > /dev/null
 		mkdir _themes
 		emake html
