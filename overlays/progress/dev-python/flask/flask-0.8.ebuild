@@ -28,7 +28,7 @@ RDEPEND="$(python_abi_depend dev-python/blinker)
 	$(python_abi_depend ">=dev-python/werkzeug-0.6.1")"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
-	doc? ( >=dev-python/sphinx-0.6 )"
+	doc? ( $(python_abi_depend dev-python/sphinx) )"
 
 S="${WORKDIR}/${MY_P}"
 

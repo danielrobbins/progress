@@ -3,7 +3,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="4-python"
-PYTHON_MULTIPLE_ABIS=1
+PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.4 3.* *-jython"
 DISTUTILS_SRC_TEST="setup.py"
 
@@ -25,7 +25,7 @@ RDEPEND="$(python_abi_depend ">=dev-python/chameleon-1.2.3")
 	$(python_abi_depend virtual/python-json)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
-	doc? ( dev-python/sphinx )
+	doc? ( $(python_abi_depend dev-python/sphinx) )
 	test? ( $(python_abi_depend dev-python/beautifulsoup:python-2) )"
 
 DOCS="CHANGES.txt README.txt TODO.txt"

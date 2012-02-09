@@ -23,7 +23,7 @@ IUSE="doc examples test"
 RDEPEND="!dev-python/pyro:0"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
-	doc? ( dev-python/sphinx )
+	doc? ( $(python_abi_depend dev-python/sphinx) )
 	test? ( $(python_abi_depend dev-python/nose[coverage]) )"
 
 S="${WORKDIR}/${MY_P}"

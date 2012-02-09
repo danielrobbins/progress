@@ -24,7 +24,7 @@ IUSE="doc test"
 RDEPEND="$(python_abi_depend -i "2.5 2.6" dev-python/ordereddict)
 	$(python_abi_depend dev-python/setuptools)"
 DEPEND="${RDEPEND}
-	doc? ( dev-python/sphinx )
+	doc? ( $(python_abi_depend dev-python/sphinx) )
 	test? ( $(python_abi_depend -i "2.5 2.6" dev-python/unittest2) )"
 
 S="${WORKDIR}/${MY_P}"

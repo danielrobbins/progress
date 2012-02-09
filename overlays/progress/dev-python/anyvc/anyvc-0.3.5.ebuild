@@ -26,7 +26,7 @@ RDEPEND="$(python_abi_depend dev-python/apipkg)
 	subversion? ( $(python_abi_depend dev-python/subvertpy) )"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
-	doc? ( dev-python/sphinx )"
+	doc? ( $(python_abi_depend dev-python/sphinx) )"
 
 src_compile() {
 	distutils_src_compile

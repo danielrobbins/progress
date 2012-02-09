@@ -27,7 +27,7 @@ RDEPEND="$(python_abi_depend -e "*-jython *-pypy-*" dev-python/pyquery)
 	$(python_abi_depend virtual/python-json)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
-	doc? ( dev-python/sphinx )"
+	doc? ( $(python_abi_depend dev-python/sphinx) )"
 
 S="${WORKDIR}/${MY_P}"
 
