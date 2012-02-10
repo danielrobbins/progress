@@ -26,6 +26,7 @@ pkg_setup() {
 	if use python; then
 		python_pkg_setup
 	fi
+	DOCS="AUTHORS ChangeLog FEATURES NEWS README TODO"
 }
 
 src_prepare() {
@@ -39,6 +40,9 @@ src_prepare() {
 
 	# Fix generate-id() to not expose object addresses, bug #358615
 	epatch "${FILESDIR}/${P}-id-generation.patch"
+
+	# Fix off-by-one in xsltCompilePatternInternal, bug #402861
+	epatch "${FILESDIR}/${P}-pattern-out-of-bounds-read.patch"
 
 	eautoreconf
 	epunt_cxx
@@ -88,7 +92,7 @@ src_test() {
 }
 
 src_install() {
-	emake DESTDIR="${D}" install
+	default
 
 	if use python; then
 		installation() {
@@ -103,7 +107,6 @@ src_install() {
 
 	mv -vf "${ED}"/usr/share/doc/${PN}-python-${PV} \
 		"${ED}"/usr/share/doc/${PF}/python
-	dodoc AUTHORS ChangeLog FEATURES NEWS README TODO
 
 	if ! use static-libs; then
 		# Remove useless .la files
