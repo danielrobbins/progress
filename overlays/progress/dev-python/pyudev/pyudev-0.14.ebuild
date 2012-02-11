@@ -6,25 +6,30 @@ EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.4 2.5 *-jython"
 DISTUTILS_SRC_TEST="py.test"
+VIRTUALX_REQUIRED="manual"
 
-inherit distutils
+inherit distutils virtualx
 
 DESCRIPTION="Python binding to libudev"
-HOMEPAGE="http://packages.python.org/pyudev/ http://pypi.python.org/pypi/pyudev"
+HOMEPAGE="http://pyudev.readthedocs.org/ http://pypi.python.org/pypi/pyudev"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
-LICENSE="MIT"
+LICENSE="LGPL-2.1"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="pygobject pyqt4 pyside"
+IUSE="pygobject pyqt4 pyside test wxwidgets"
 
 RDEPEND=">=sys-fs/udev-151
 	pygobject? ( $(python_abi_depend -e "*-pypy-*" dev-python/pygobject:2) )
 	pyqt4? ( $(python_abi_depend -e "*-pypy-*" dev-python/PyQt4) )
-	pyside? ( dev-python/pyside )"
+	pyside? ( dev-python/pyside )
+	wxwidgets? ( $(python_abi_depend -e "3.* *-pypy-*" dev-python/wxpython) )"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
-	test? ( $(python_abi_depend dev-python/mock) )"
+	test? (
+		$(python_abi_depend dev-python/mock)
+		wxwidgets? ( ${VIRTUALX_DEPEND} )
+	)"
 
 DOCS="CHANGES.rst README.rst"
 
@@ -49,7 +54,19 @@ src_prepare() {
 	if ! use pyqt4 && ! use pyside; then
 		rm -f pyudev/_qt_base.py
 	fi
-	if ! use pyqt4 && ! use pyside && ! use pygobject; then
+	if ! use wxwidgets; then
+		rm -f pyudev/wx.py
+		sed -i -e "s|[, ]*WXBinding()||g" tests/test_observer.py
+	fi
+	if ! use pygobject && ! use pyqt4 && ! use pyside && ! use wxwidgets; then
 		rm -f tests/test_observer.py
+	fi
+}
+
+src_test() {
+	if use wxwidgets; then
+		VIRTUALX_COMMAND="distutils_src_test" virtualmake
+	else
+		distutils_src_test
 	fi
 }
