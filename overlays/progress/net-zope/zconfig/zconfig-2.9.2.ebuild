@@ -6,7 +6,7 @@ PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.*"
 DISTUTILS_SRC_TEST="nosetests"
 
-inherit distutils eutils
+inherit distutils
 
 MY_PN="ZConfig"
 MY_P="${MY_PN}-${PV}"
@@ -28,11 +28,6 @@ S="${WORKDIR}/${MY_P}"
 
 DOCS="NEWS.txt README.txt"
 PYTHON_MODULES="${MY_PN}"
-
-src_prepare() {
-	distutils_src_prepare
-	epatch "${FILESDIR}/${PN}-2.7.1-fix_tests.patch"
-}
 
 src_install() {
 	distutils_src_install
