@@ -13,15 +13,14 @@ MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Structured Configuration Library"
 HOMEPAGE="http://pypi.python.org/pypi/ZConfig"
-SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.zip"
+SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="ZPL"
 SLOT="0"
 KEYWORDS="~alpha ~amd64 ~ppc ~sparc ~x86"
 IUSE="test"
 
-DEPEND="app-arch/unzip
-	$(python_abi_depend dev-python/setuptools)
+DEPEND="$(python_abi_depend dev-python/setuptools)
 	test? ( $(python_abi_depend net-zope/zope-testing) )"
 RDEPEND=""
 
@@ -39,6 +38,8 @@ src_install() {
 	distutils_src_install
 
 	delete_tests() {
+		rm -fr "${ED}$(python_get_sitedir)/ZConfig/components/basic/tests"
+		rm -fr "${ED}$(python_get_sitedir)/ZConfig/components/logger/tests"
 		rm -fr "${ED}$(python_get_sitedir)/ZConfig/tests"
 	}
 	python_execute_function -q delete_tests
