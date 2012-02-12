@@ -31,8 +31,7 @@ DEPEND="$(python_abi_depend dev-python/docutils)
 	mysql? ( $(python_abi_depend dev-python/mysql-python) )
 	postgres? ( $(python_abi_depend ">=dev-python/psycopg-2") )
 	sqlite? ( $(python_abi_depend virtual/python-sqlite[external]) )
-	subversion? ( $(python_abi_depend -e "2.4 *-pypy-*" dev-vcs/subversion[python]) )
-	!www-apps/trac-webadmin"
+	subversion? ( $(python_abi_depend -e "2.4 *-pypy-*" dev-vcs/subversion[python]) )"
 RDEPEND="${DEPEND}"
 REQUIRED_USE="|| ( mysql postgres sqlite )"
 
