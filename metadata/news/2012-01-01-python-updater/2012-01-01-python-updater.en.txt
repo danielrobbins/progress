@@ -9,7 +9,7 @@ Sometimes support for new PYTHON_ABIS USE flags is added or support for old
 PYTHON_ABIS USE flags is deleted. `emerge` with -N / --newuse option would want
 to reinstall affected packages:
 
-[ebuild   R    ] dev-python/setuptools-0.6.24  PYTHON_ABIS="2.7 3.2 -2.4 -2.5 -2.5-jython -2.6 (-2.6-jython) -2.7-pypy-1.7% -3.1 (-3.3) (-2.7-pypy-1.5%) (-2.7-pypy-1.6%)" 0 kB [1]
+[ebuild   R    ] dev-python/setuptools-0.6.24::progress  PYTHON_ABIS="2.7 3.2 -2.5 -2.5-jython -2.6 (-2.6-jython) -2.7-pypy-1.7 -2.7-pypy-1.8% -3.1 (-3.3) (-2.4%)" 0 kB
 
 If such USE flags are disabled, then reinstallation of packages is unnecessary.
 >=app-admin/python-updater-0.10 allows to update USE flags stored in database
