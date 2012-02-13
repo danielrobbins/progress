@@ -22,7 +22,7 @@ IUSE="doc mod_wsgi"
 RDEPEND="dev-db/mongodb"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
-	doc? ( $(python_abi_depend -e "2.4" dev-python/sphinx) )"
+	doc? ( $(python_abi_depend dev-python/sphinx) )"
 
 PYTHON_MODULES="bson gridfs pymongo"
 
@@ -31,7 +31,6 @@ src_compile() {
 
 	if use doc; then
 		einfo "Generation of documentation"
-		[[ "$(python_get_version -f -l)" == "2.4" ]] && die "Generation of documentation using Python 2.4 not supported"
 		python_execute sphinx-build doc html || die "Generation of documentation failed"
 	fi
 }

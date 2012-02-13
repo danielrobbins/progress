@@ -4,8 +4,6 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-# http://hg.python.org/unittest2/rev/d2be68aedc8e
-PYTHON_TESTS_RESTRICTED_ABIS="2.4"
 
 inherit distutils
 

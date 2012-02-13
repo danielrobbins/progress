@@ -5,7 +5,7 @@
 EAPI="4-python"
 PYTHON_DEPEND="<<[tk?]>>"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.4 2.5 3.* *-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="2.5 3.* *-jython *-pypy-*"
 WX_GTK_VER="2.8"
 
 inherit distutils

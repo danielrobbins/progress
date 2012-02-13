@@ -5,7 +5,7 @@
 EAPI="4-python"
 WX_GTK_VER="2.8"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.4 3.* *-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 
 inherit alternatives distutils eutils fdo-mime wxwidgets
 

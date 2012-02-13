@@ -16,5 +16,5 @@ KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~spar
 IUSE="external"
 
 DEPEND=""
-RDEPEND="$(python_abi_depend -i "2.4 2.5" dev-python/simplejson)
+RDEPEND="$(python_abi_depend -i "2.5" dev-python/simplejson)
 	external? ( $(python_abi_depend -i "2.6 2.7" dev-python/simplejson) )"

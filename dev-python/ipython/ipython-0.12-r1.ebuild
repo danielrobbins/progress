@@ -5,7 +5,7 @@
 EAPI="4-python"
 PYTHON_DEPEND="<<[{*-cpython}readline?,{*-cpython}sqlite?]>>"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.4 2.5 *-jython"
+PYTHON_RESTRICTED_ABIS="2.5 *-jython"
 # IPython.core.tests.test_magic_terminal.test_cpaste() fails with CPython 3.1.
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.1"
 

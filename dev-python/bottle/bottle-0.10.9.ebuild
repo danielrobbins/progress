@@ -3,7 +3,6 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.4"
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
 
 inherit distutils

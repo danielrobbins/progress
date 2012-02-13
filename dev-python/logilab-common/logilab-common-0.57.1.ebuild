@@ -19,7 +19,7 @@ KEYWORDS="~amd64 ~ia64 ~ppc ~ppc64 ~s390 ~sparc ~x86 ~amd64-linux ~ia64-linux ~x
 IUSE="test"
 
 RDEPEND="$(python_abi_depend dev-python/setuptools)
-	$(python_abi_depend -i "2.4 2.5 2.6 3.1" dev-python/unittest2)"
+	$(python_abi_depend -i "2.5 2.6 3.1" dev-python/unittest2)"
 # Tests using dev-python/psycopg are skipped when dev-python/psycopg is not installed.
 DEPEND="${RDEPEND}
 	test? (

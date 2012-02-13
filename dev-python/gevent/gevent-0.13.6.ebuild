@@ -21,7 +21,7 @@ RDEPEND="dev-libs/libevent
 	$(python_abi_depend dev-python/greenlet)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
-	doc? ( $(python_abi_depend -e "2.4" dev-python/sphinx) )
+	doc? ( $(python_abi_depend dev-python/sphinx) )
 	test? ( $(python_abi_depend virtual/python-sqlite) )"
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
@@ -33,7 +33,6 @@ src_compile() {
 
 	if use doc; then
 		einfo "Generation of documentation"
-		[[ "$(python_get_version -f -l)" == "2.4" ]] && die "Generation of documentation using Python 2.4 not supported"
 		pushd doc > /dev/null
 		PYTHONPATH="$(ls -d ../build-$(PYTHON -f --ABI)/lib.*)" emake html
 		popd > /dev/null

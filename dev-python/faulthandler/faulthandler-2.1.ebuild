@@ -3,7 +3,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.4 3.[3-9] *-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="3.[3-9] *-jython *-pypy-*"
 
 inherit distutils
 

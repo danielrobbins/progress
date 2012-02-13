@@ -19,7 +19,7 @@ KEYWORDS="~amd64 ~x86"
 IUSE="doc"
 
 DEPEND="$(python_abi_depend dev-python/setuptools)
-	doc? ( $(python_abi_depend -e "2.4" dev-python/sphinx) )"
+	doc? ( $(python_abi_depend dev-python/sphinx) )"
 RDEPEND=""
 
 S="${WORKDIR}/${MY_P}"
@@ -41,7 +41,6 @@ src_compile() {
 
 	if use doc; then
 		einfo "Generation of documentation"
-		[[ "$(python_get_version -f -l)" == "2.4" ]] && die "Generation of documentation using Python 2.4 not supported"
 		pushd docs > /dev/null
 		mkdir _themes
 		emake html

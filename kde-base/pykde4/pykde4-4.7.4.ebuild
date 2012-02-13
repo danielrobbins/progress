@@ -6,7 +6,7 @@ EAPI="4-python"
 
 PYTHON_DEPEND="<<[threads]>>"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.4 *-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 
 OPENGL_REQUIRED="always"
 KDE_SCM="git"
