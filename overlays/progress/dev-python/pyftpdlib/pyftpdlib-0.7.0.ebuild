@@ -19,7 +19,7 @@ SLOT="0"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~s390 ~sh ~sparc ~x86 ~x86-fbsd ~x86-interix ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~sparc-solaris"
 IUSE="examples pysendfile ssl"
 
-RDEPEND="pysendfile? ( $(python_abi_depend -e "2.4 *-jython" dev-python/pysendfile) )
+RDEPEND="pysendfile? ( $(python_abi_depend -e "*-jython" dev-python/pysendfile) )
 	ssl? ( $(python_abi_depend -e "*-jython" dev-python/pyopenssl) )"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"

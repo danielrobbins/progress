@@ -6,7 +6,7 @@ EAPI="4-python"
 GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.4 2.5 *-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="2.5 *-jython *-pypy-*"
 
 # XXX: Is the alternatives stuff needed anymore?
 inherit alternatives autotools gnome2 python virtualx

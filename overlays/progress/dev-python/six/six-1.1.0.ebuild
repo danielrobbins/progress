@@ -15,7 +15,7 @@ SLOT="0"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~sparc-fbsd ~x86-fbsd"
 IUSE="doc"
 
-DEPEND="doc? ( $(python_abi_depend -e "2.4" dev-python/sphinx) )"
+DEPEND="doc? ( $(python_abi_depend dev-python/sphinx) )"
 RDEPEND=""
 
 PYTHON_MODULES="six.py"
@@ -32,7 +32,6 @@ src_compile() {
 
 	if use doc; then
 		einfo "Generation of documentation"
-		[[ "$(python_get_version -f -l)" == "2.4" ]] && die "Generation of documentation using Python 2.4 not supported"
 		pushd documentation > /dev/null
 		emake html
 		popd > /dev/null

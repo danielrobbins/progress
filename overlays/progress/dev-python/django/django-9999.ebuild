@@ -24,7 +24,7 @@ RDEPEND="$(python_abi_depend -e "*-jython" dev-python/imaging)
 	postgres? ( $(python_abi_depend -e "*-jython" dev-python/psycopg) )
 	sqlite? ( $(python_abi_depend -e "*-jython" virtual/python-sqlite[external]) )"
 DEPEND="${RDEPEND}
-	doc? ( $(python_abi_depend -e "2.4" dev-python/sphinx) )
+	doc? ( $(python_abi_depend dev-python/sphinx) )
 	test? ( $(python_abi_depend -e "*-jython" virtual/python-sqlite[external]) )"
 
 S="${WORKDIR}"
@@ -59,7 +59,6 @@ src_compile() {
 
 	if use doc; then
 		einfo "Generation of documentation"
-		[[ "$(python_get_version -f -l)" == "2.4" ]] && die "Generation of documentation using Python 2.4 not supported"
 		pushd docs > /dev/null
 		emake html
 		popd > /dev/null

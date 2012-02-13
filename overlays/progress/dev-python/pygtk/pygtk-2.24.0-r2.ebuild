@@ -7,7 +7,7 @@ GCONF_DEBUG="no"
 GNOME_TARBALL_SUFFIX="bz2"
 
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.4 2.5 3.* *-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="2.5 3.* *-jython *-pypy-*"
 PYTHON_EXPORT_PHASE_FUNCTIONS="1"
 
 inherit alternatives autotools eutils flag-o-matic gnome.org python virtualx gnome2-utils

@@ -23,7 +23,7 @@ IUSE="debug doc examples mxdatetime"
 RDEPEND=">=dev-db/postgresql-base-8.1
 	mxdatetime? ( $(python_abi_depend -e "3.* *-pypy-*" dev-python/egenix-mx-base) )"
 DEPEND="${RDEPEND}
-	doc? ( $(python_abi_depend -e "2.4" dev-python/sphinx) )"
+	doc? ( $(python_abi_depend dev-python/sphinx) )"
 RESTRICT="test"
 
 S="${WORKDIR}/${MY_P}"
@@ -53,7 +53,6 @@ src_compile() {
 
 	if use doc; then
 		einfo "Generation of documentation"
-		[[ "$(python_get_version -f -l)" == "2.4" ]] && die "Generation of documentation using Python 2.4 not supported"
 		pushd doc > /dev/null
 		emake -j1 html text
 		popd > /dev/null

@@ -30,7 +30,7 @@ DEPEND="$(python_abi_depend ">=dev-python/sip-4.13.1")
 	X? ( >=x11-libs/qt-gui-${QT_VER}:4[dbus?] )
 	assistant? ( >=x11-libs/qt-assistant-${QT_VER}:4 )
 	dbus? (
-		$(python_abi_depend -e "2.4 2.5" ">=dev-python/dbus-python-0.80")
+		$(python_abi_depend -e "2.5" ">=dev-python/dbus-python-0.80")
 		>=x11-libs/qt-dbus-${QT_VER}:4
 	)
 	declarative? ( >=x11-libs/qt-declarative-${QT_VER}:4 )

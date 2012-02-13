@@ -11,8 +11,7 @@ else
 	PYTHON_BDEPEND="test? ( <<>> )"
 fi
 PYTHON_MULTIPLE_ABIS="1"
-# ctypes module required by Subversion Ctypes Python bindings.
-PYTHON_RESTRICTED_ABIS="2.4 3.* *-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 if [[ "${PV}" != *_pre* ]]; then
 	WANT_AUTOMAKE="none"
 fi

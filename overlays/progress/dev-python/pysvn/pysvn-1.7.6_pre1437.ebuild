@@ -36,7 +36,7 @@ src_prepare() {
 
 	preparation() {
 		cd Source
-		if has "${PYTHON_ABI}" 2.4 2.5; then
+		if [[ "$(python_get_version -l)" == "2.5" ]]; then
 			python_execute "$(PYTHON)" setup.py backport || die "Backport failed"
 		fi
 	}

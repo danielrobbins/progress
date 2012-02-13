@@ -20,7 +20,7 @@ IUSE="doc"
 
 DEPEND="app-arch/unzip
 	$(python_abi_depend dev-python/setuptools)
-	doc? ( $(python_abi_depend -e "2.4" dev-python/sphinx) )"
+	doc? ( $(python_abi_depend dev-python/sphinx) )"
 RDEPEND=""
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
@@ -32,7 +32,6 @@ src_compile() {
 
 	if use doc; then
 		einfo "Generation of documentation"
-		[[ "$(python_get_version -f -l)" == "2.4" ]] && die "Generation of documentation using Python 2.4 not supported"
 		pushd doc > /dev/null
 		emake html
 		popd > /dev/null

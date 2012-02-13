@@ -18,7 +18,7 @@ IUSE="crypt gtk serial"
 
 DEPEND="$(python_abi_depend net-zope/zope-interface)
 	crypt? ( $(python_abi_depend ">=dev-python/pyopenssl-0.10") )
-	gtk? ( $(python_abi_depend -e "2.4 2.5 *-pypy-*" dev-python/pygtk:2) )
+	gtk? ( $(python_abi_depend -e "2.5 *-pypy-*" dev-python/pygtk:2) )
 	serial? ( $(python_abi_depend dev-python/pyserial) )"
 RDEPEND="${DEPEND}"
 

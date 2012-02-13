@@ -4,7 +4,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.4 3.*"
+PYTHON_RESTRICTED_ABIS="3.*"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 # Usage of flaskext namespace is deprecated since Flask 0.8.
 PYTHON_NAMESPACES="flaskext"

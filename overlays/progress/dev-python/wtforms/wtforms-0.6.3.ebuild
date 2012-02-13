@@ -23,7 +23,7 @@ IUSE="doc"
 S="${WORKDIR}/${MY_P}"
 
 DEPEND="app-arch/unzip
-	doc? ( $(python_abi_depend -e "2.4" dev-python/sphinx) )"
+	doc? ( $(python_abi_depend dev-python/sphinx) )"
 RDEPEND=""
 
 DOCS="AUTHORS.txt CHANGES.txt README.txt"
@@ -33,7 +33,6 @@ src_compile() {
 
 	if use doc; then
 		einfo "Generation of documentation"
-		[[ "$(python_get_version -f -l)" == "2.4" ]] && die "Generation of documentation using Python 2.4 not supported"
 		pushd docs > /dev/null
 		PYTHONPATH=".." emake html
 		popd > /dev/null

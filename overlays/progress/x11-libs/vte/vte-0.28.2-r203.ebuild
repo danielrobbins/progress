@@ -7,7 +7,7 @@ GCONF_DEBUG="yes"
 GNOME2_LA_PUNT="yes"
 PYTHON_DEPEND="python? ( <<>> )"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.4 2.5 3.* *-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="2.5 3.* *-jython *-pypy-*"
 
 inherit autotools eutils gnome2 python
 

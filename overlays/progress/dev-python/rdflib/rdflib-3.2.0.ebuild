@@ -22,7 +22,7 @@ RDEPEND="$(python_abi_depend dev-python/isodate)
 	mysql? ( $(python_abi_depend -e "3.* *-jython" dev-python/mysql-python) )
 	redland? ( $(python_abi_depend -e "3.* *-jython *-pypy-*" dev-libs/redland-bindings[python]) )
 	sqlite? ( $(python_abi_depend -e "*-jython" virtual/python-sqlite) )
-	zodb? ( $(python_abi_depend -e "2.4 2.5 3.* *-jython *-pypy-*" net-zope/zodb) )"
+	zodb? ( $(python_abi_depend -e "2.5 3.* *-jython *-pypy-*" net-zope/zodb) )"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 

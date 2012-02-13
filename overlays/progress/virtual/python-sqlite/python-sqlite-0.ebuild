@@ -18,8 +18,7 @@ KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~spar
 IUSE="external"
 
 DEPEND=""
-RDEPEND="python_abis_2.4? ( dev-python/pysqlite:2[python_abis_2.4] )
-	python_abis_2.5? (
+RDEPEND="python_abis_2.5? (
 		external? ( dev-python/pysqlite:2[python_abis_2.5] )
 		!external? ( || ( dev-lang/python:2.5[sqlite] dev-python/pysqlite:2[python_abis_2.5] ) )
 	)
