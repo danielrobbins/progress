@@ -44,6 +44,7 @@ pkg_setup() {
 }
 
 src_prepare() {
+	epatch "${FILESDIR}"/${P}-python-stat.patch #403777
 	elibtoolize #269003
 	use python && do_python
 }
