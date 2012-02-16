@@ -52,7 +52,7 @@ esac
 # @ECLASS-VARIABLE: USE_PHP
 # @DESCRIPTION:
 # Lists the PHP slots compatibile the extension is compatibile with
-[[ -z "${USE_PHP}" ]] && USE_PHP="php5-3 php5-2"
+[[ -z "${USE_PHP}" ]] && USE_PHP="php5-3"
 
 # @ECLASS-VARIABLE: PHP_EXT_OPTIONAL_USE
 # @DESCRIPTION:
@@ -103,7 +103,7 @@ php-ext-source-r2_src_unpack() {
 	unpack ${A}
 	local slot orig_s="${PHP_EXT_S}"
 	for slot in $(php_get_slots); do
-		cp -r "${orig_s}" "${WORKDIR}/${slot}"
+		cp -r "${orig_s}" "${WORKDIR}/${slot}" || die "Failed to copy source ${orig_s} to PHP target directory"
 	done
 }
 
