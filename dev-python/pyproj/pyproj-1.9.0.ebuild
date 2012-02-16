@@ -15,9 +15,17 @@ SRC_URI="http://pyproj.googlecode.com/files/${P}.tar.gz"
 LICENSE="MIT"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE=""
+IUSE="doc"
 
 DEPEND=""
 RDEPEND=""
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
+
+src_install() {
+	distutils_src_install
+
+	if use doc; then
+		dohtml -r docs/*
+	fi
+}
