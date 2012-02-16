@@ -14,15 +14,15 @@ MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="HTML/XML parser for quick-turnaround applications like screen-scraping."
 HOMEPAGE="http://www.crummy.com/software/BeautifulSoup/ http://pypi.python.org/pypi/BeautifulSoup"
-SRC_URI="http://www.crummy.com/software/${MY_PN}/download/3.1.x/${MY_P}.tar.gz"
+SRC_URI="http://www.crummy.com/software/${MY_PN}/bs3/download/3.1.x/${MY_P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="python-3"
-KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux ~x86-macos ~x86-solaris"
+KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux ~x64-macos ~x86-macos ~sparc-solaris ~x86-solaris"
 IUSE=""
 
 DEPEND=""
-RDEPEND="!dev-python/beautifulsoup:0"
+RDEPEND=""
 
 S="${WORKDIR}/${MY_P}"
 
@@ -35,7 +35,7 @@ src_prepare() {
 
 src_test() {
 	testing() {
-		PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" BeautifulSoupTests.py
+		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" BeautifulSoupTests.py
 	}
 	python_execute_function testing
 }
