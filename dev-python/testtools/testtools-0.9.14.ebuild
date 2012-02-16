@@ -6,7 +6,7 @@ EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
 
-inherit distutils eutils versionator
+inherit distutils versionator
 
 SERIES="$(get_version_component_range 1-2)"
 
@@ -21,11 +21,6 @@ IUSE=""
 
 DEPEND=""
 RDEPEND=""
-
-src_prepare() {
-	distutils_src_prepare
-	epatch "${FILESDIR}/${P}-python-3.patch"
-}
 
 src_test() {
 	testing() {
