@@ -9,12 +9,12 @@ DISTUTILS_SRC_TEST="nosetests"
 inherit distutils
 
 DESCRIPTION="Virtual Python Environment builder"
-HOMEPAGE="http://pypi.python.org/pypi/virtualenv"
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
+HOMEPAGE="http://www.virtualenv.org https://github.com/pypa/virtualenv http://pypi.python.org/pypi/virtualenv"
+SRC_URI="https://github.com/pypa/${PN}/tarball/${PV} -> ${P}.tar.gz"
 
 LICENSE="MIT"
-KEYWORDS="~amd64 ~ppc ~ppc64 ~x86 ~x86-interix ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-solaris"
 SLOT="0"
+KEYWORDS="~amd64 ~ppc ~ppc64 ~x86 ~x86-interix ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-solaris"
 IUSE="doc"
 
 RDEPEND="$(python_abi_depend dev-python/setuptools)"
@@ -24,6 +24,18 @@ DEPEND="${RDEPEND}
 
 DOCS="docs/index.txt docs/news.txt"
 PYTHON_MODULES="virtualenv.py virtualenv_support"
+
+src_unpack() {
+	unpack ${A}
+	mv pypa-virtualenv-* ${P}
+}
+
+src_prepare() {
+	distutils_src_prepare
+
+	# Disable test, which hardcodes old data.
+	sed -e "s/test_version/_&/" -i tests/test_virtualenv.py
+}
 
 src_compile() {
 	distutils_src_compile
