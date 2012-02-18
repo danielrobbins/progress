@@ -3,15 +3,15 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="4-python"
-PYTHON_EXPORT_PHASE_FUNCTIONS="1"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
+PYTHON_EXPORT_PHASE_FUNCTIONS="1"
 
 inherit eutils python toolchain-funcs
 
 MY_P="QScintilla-gpl-${PV/_pre/-snapshot-}"
 
-DESCRIPTION="Python bindings for Qscintilla"
+DESCRIPTION="Python bindings for QScintilla"
 HOMEPAGE="http://www.riverbankcomputing.co.uk/software/qscintilla/intro"
 SRC_URI="http://www.riverbankcomputing.co.uk/static/Downloads/QScintilla2/${MY_P}.tar.gz"
 
@@ -29,8 +29,7 @@ S="${WORKDIR}/${MY_P}/Python"
 
 src_prepare() {
 	epatch "${FILESDIR}/${PN}-2.5.1-disable_stripping.patch"
-
-	python_copy_sources
+	python_src_prepare
 }
 
 src_configure() {
