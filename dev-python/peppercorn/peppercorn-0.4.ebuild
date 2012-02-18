@@ -4,7 +4,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.*"
+PYTHON_RESTRICTED_ABIS="3.1"
 DISTUTILS_SRC_TEST="setup.py"
 
 inherit distutils
@@ -24,13 +24,20 @@ RDEPEND=""
 
 DOCS="CHANGES.txt README.txt"
 
+src_prepare() {
+	distutils_src_prepare
+
+	# Fix Sphinx theme.
+	sed -e "/# Add and use Pylons theme/,+36d" -i docs/conf.py || die "sed failed"
+}
+
 src_compile() {
 	distutils_src_compile
 
 	if use doc; then
 		einfo "Generation of documentation"
 		pushd docs > /dev/null
-		emake html
+		PYTHONPATH=".." emake html
 		popd > /dev/null
 	fi
 }
@@ -44,7 +51,7 @@ src_install() {
 	python_execute_function -q delete_tests
 
 	if use doc; then
-		pushd docs/.build/html > /dev/null
+		pushd docs/_build/html > /dev/null
 		insinto /usr/share/doc/${PF}/html
 		doins -r [a-z]* _static
 		popd > /dev/null
