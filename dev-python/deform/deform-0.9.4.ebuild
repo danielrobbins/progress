@@ -4,7 +4,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.* *-jython"
+PYTHON_RESTRICTED_ABIS="2.5 3.1 *-jython"
 DISTUTILS_SRC_TEST="setup.py"
 
 inherit distutils
@@ -21,12 +21,11 @@ IUSE="doc test"
 RDEPEND="$(python_abi_depend ">=dev-python/chameleon-1.2.3")
 	$(python_abi_depend ">=dev-python/colander-0.8")
 	$(python_abi_depend ">=dev-python/peppercorn-0.3")
-	$(python_abi_depend dev-python/translationstring)
-	$(python_abi_depend virtual/python-json)"
+	$(python_abi_depend dev-python/translationstring)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	doc? ( $(python_abi_depend dev-python/sphinx) )
-	test? ( $(python_abi_depend dev-python/beautifulsoup:python-2) )"
+	test? ( $(python_abi_depend dev-python/beautifulsoup:4) )"
 
 DOCS="CHANGES.txt README.txt TODO.txt"
 
@@ -35,6 +34,7 @@ src_prepare() {
 
 	# Fix Sphinx theme.
 	sed \
+		-e "/# Add and use Pylons theme/,+29d" \
 		-e "s/html_theme = 'pylons'/html_theme = 'default'/" \
 		-e "/html_theme_options =/d" \
 		-i docs/conf.py || die "sed failed"
@@ -46,8 +46,7 @@ src_compile() {
 	if use doc; then
 		einfo "Generation of documentation"
 		pushd docs > /dev/null
-		mkdir _themes
-		emake html
+		PYTHONPATH=".." emake html
 		popd > /dev/null
 	fi
 }
