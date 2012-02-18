@@ -30,6 +30,9 @@ src_prepare() {
 
 	# Avoid unnecessary overriding of settings. Distutils in Gentoo is patched in better way.
 	sed -e 's/if compiler.compiler_type == "unix":/if False:/' -i mxSetup.py || die "sed failed"
+
+	# http://hg.python.org/cpython/rev/6240ff5dfebe
+	sed -e "s/from distutils.ccompiler import customize_compiler/from distutils.sysconfig import customize_compiler/" -i mxSetup.py || die "sed failed"
 }
 
 src_compile() {
