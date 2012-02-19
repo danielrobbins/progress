@@ -116,7 +116,7 @@ src_install(){
 
 	use suid && fperms u+s /sbin/mount.ecryptfs_private
 
-	find "${ED}" -name "*.la" -print0 | xargs -0 rm -f
+	find "${ED}" -name "*.la" -print0 -delete
 }
 
 pkg_postinst() {
