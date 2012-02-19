@@ -24,7 +24,7 @@ RDEPEND="$(python_abi_depend dev-python/pygments)
 		$(python_abi_depend -e "2.5 *-pypy-* 3.*" dev-python/pygobject:2)
 		$(python_abi_depend -e "2.5 *-pypy-* 3.*" dev-python/pygtk:2)
 	)
-	urwid? ( $(python_abi_depend -e "3.*" dev-python/urwid) )"
+	urwid? ( $(python_abi_depend dev-python/urwid) )"
 DEPEND="${RDEPEND}
 	nls? ( $(python_abi_depend -e "3.*" dev-python/Babel) )"
 
