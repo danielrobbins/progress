@@ -19,6 +19,7 @@ LICENSE="BSD"
 SLOT="0"
 KEYWORDS="~amd64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd"
 IUSE="cgi fastcgi i18n mysql postgres +sqlite subversion"
+REQUIRED_USE="|| ( mysql postgres sqlite )"
 
 DEPEND="$(python_abi_depend dev-python/docutils)
 	$(python_abi_depend "=dev-python/genshi-0.6*")
@@ -33,7 +34,6 @@ DEPEND="$(python_abi_depend dev-python/docutils)
 	sqlite? ( $(python_abi_depend virtual/python-sqlite[external]) )
 	subversion? ( $(python_abi_depend -e "*-pypy-*" dev-vcs/subversion[python]) )"
 RDEPEND="${DEPEND}"
-REQUIRED_USE="|| ( mysql postgres sqlite )"
 
 S="${WORKDIR}/${MY_P}"
 
