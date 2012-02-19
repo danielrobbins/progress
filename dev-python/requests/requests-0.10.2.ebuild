@@ -23,14 +23,3 @@ DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
 DOCS="HISTORY.rst README.rst"
-
-src_install() {
-	distutils_src_install
-
-	delete_version-specific_modules() {
-		if [[ "$(python_get_version -l --major)" == "3" ]]; then
-			rm -fr "${ED}$(python_get_sitedir)/requests/packages/oreos"
-		fi
-	}
-	python_execute_function -q delete_version-specific_modules
-}
