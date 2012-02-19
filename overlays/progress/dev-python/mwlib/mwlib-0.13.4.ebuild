@@ -19,8 +19,6 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE="doc latex"
 
-# Some modules firstly try to import simplejson, while others json.
-# https://github.com/pediapress/mwlib/issues/7
 RDEPEND="dev-lang/perl
 	$(python_abi_depend dev-python/bottle)
 	$(python_abi_depend dev-python/gevent)
@@ -31,7 +29,7 @@ RDEPEND="dev-lang/perl
 	$(python_abi_depend ">=dev-python/pyPdf-1.12")
 	$(python_abi_depend ">=dev-python/pyparsing-1.4.11")
 	$(python_abi_depend dev-python/roman)
-	$(python_abi_depend ">=dev-python/qserve-0.2.3")
+	$(python_abi_depend ">=dev-python/qserve-0.2.7")
 	$(python_abi_depend dev-python/setuptools)
 	$(python_abi_depend dev-python/sqlite3dbm)
 	$(python_abi_depend ">=dev-python/timelib-0.2")
@@ -46,7 +44,6 @@ S="${WORKDIR}/${P}"
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 
 DOCS="changelog.rst"
-PYTHON_MODULES="argv.py mwlib"
 
 src_prepare() {
 	distutils_src_prepare
