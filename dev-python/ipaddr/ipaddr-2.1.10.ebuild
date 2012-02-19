@@ -36,7 +36,7 @@ src_prepare() {
 
 src_test() {
 	testing() {
-		PYTHONPATH="build/lib" "$(PYTHON)" ipaddr_test.py
+		python_execute PYTHONPATH="build/lib" "$(PYTHON)" ipaddr_test.py
 	}
 	python_execute_function -s testing
 }
