@@ -12,7 +12,7 @@ MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Zope 2 application server / web framework"
 HOMEPAGE="http://www.zope.org http://zope2.zope.org http://pypi.python.org/pypi/Zope2 https://launchpad.net/zope2"
-SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
+SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.zip"
 
 LICENSE="ZPL"
 SLOT="$(get_version_component_range 1-2)"
@@ -24,26 +24,28 @@ RDEPEND="$(python_abi_depend net-zope/namespaces-zope[Products,Shared,Shared.DC]
 	$(python_abi_depend dev-python/docutils)
 	$(python_abi_depend dev-python/restrictedpython)
 	$(python_abi_depend dev-python/setuptools)
+	$(python_abi_depend net-zope/accesscontrol)
 	$(python_abi_depend net-zope/acquisition)
 	$(python_abi_depend net-zope/datetime)
+	$(python_abi_depend net-zope/documenttemplate)
 	$(python_abi_depend net-zope/extensionclass)
-	$(python_abi_depend net-zope/five-formlib)
 	$(python_abi_depend net-zope/initgroups)
 	$(python_abi_depend net-zope/missing)
 	$(python_abi_depend net-zope/multimapping)
 	$(python_abi_depend net-zope/persistence)
 	$(python_abi_depend net-zope/record)
 	$(python_abi_depend net-zope/tempstorage)
-	$(python_abi_depend net-zope/threadlock)
 	$(python_abi_depend net-zope/transaction)
 	$(python_abi_depend net-zope/zconfig)
 	$(python_abi_depend net-zope/zdaemon)
+	$(python_abi_depend net-zope/zexceptions)
 	$(python_abi_depend net-zope/zlog)
 	$(python_abi_depend net-zope/zodb)
 	$(python_abi_depend net-zope/zope-app-form)
-	$(python_abi_depend net-zope/zope-app-publication)
-	$(python_abi_depend net-zope/zope-app-publisher)
-	$(python_abi_depend net-zope/zope-app-schema)
+	$(python_abi_depend net-zope/zope-browser)
+	$(python_abi_depend net-zope/zope-browsermenu)
+	$(python_abi_depend net-zope/zope-browserpage)
+	$(python_abi_depend net-zope/zope-browserresource)
 	$(python_abi_depend net-zope/zope-component)
 	$(python_abi_depend net-zope/zope-configuration)
 	$(python_abi_depend net-zope/zope-container)
@@ -58,38 +60,42 @@ RDEPEND="$(python_abi_depend net-zope/namespaces-zope[Products,Shared,Shared.DC]
 	$(python_abi_depend net-zope/zope-interface)
 	$(python_abi_depend net-zope/zope-lifecycleevent)
 	$(python_abi_depend net-zope/zope-location)
-	$(python_abi_depend net-zope/zope-mkzeoinstance)
 	$(python_abi_depend net-zope/zope-pagetemplate)
 	$(python_abi_depend net-zope/zope-processlifetime)
 	$(python_abi_depend net-zope/zope-proxy)
+	$(python_abi_depend net-zope/zope-ptresource)
 	$(python_abi_depend net-zope/zope-publisher)
 	$(python_abi_depend net-zope/zope-schema)
 	$(python_abi_depend net-zope/zope-security)
-	$(python_abi_depend "<net-zope/zope-sendmail-3.7.0")
+	$(python_abi_depend net-zope/zope-sendmail)
 	$(python_abi_depend net-zope/zope-sequencesort)
 	$(python_abi_depend net-zope/zope-site)
 	$(python_abi_depend net-zope/zope-size)
 	$(python_abi_depend net-zope/zope-structuredtext)
-	$(python_abi_depend net-zope/zope-tales)
+	$(python_abi_depend ">=net-zope/zope-tales-3.5.0")
 	$(python_abi_depend net-zope/zope-testbrowser)
 	$(python_abi_depend net-zope/zope-testing)
 	$(python_abi_depend net-zope/zope-traversing)
 	$(python_abi_depend net-zope/zope-viewlet)
 	$(python_abi_depend net-zope/zopeundo)"
 DEPEND="${RDEPEND}
+	app-arch/unzip
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
-PDEPEND="$(python_abi_depend net-zope/zsqlmethods)"
+PDEPEND="$(python_abi_depend net-zope/btreefolder2)
+	$(python_abi_depend net-zope/externalmethod)
+	$(python_abi_depend net-zope/mailhost)
+	$(python_abi_depend net-zope/mimetools)
+	$(python_abi_depend net-zope/ofsp)
+	$(python_abi_depend net-zope/pythonscripts)
+	$(python_abi_depend net-zope/standardcachemanagers)
+	$(python_abi_depend net-zope/zcatalog)
+	$(python_abi_depend net-zope/zctextindex)"
 
 S="${WORKDIR}/${MY_P}"
 
 pkg_setup() {
 	python_pkg_setup
 	ZOPE_INSTALLATION_DIR="usr/$(get_libdir)/${PN}-${SLOT}"
-}
-
-src_prepare() {
-	distutils_src_prepare
-	sed -e "s/zope.location.interfaces.ITraverser/zope.traversing.interfaces.ITraverser/" -i src/Products/Five/traversing.zcml || die "sed failed"
 }
 
 src_compile() {
@@ -107,9 +113,6 @@ distutils_src_install_post_hook() {
 
 src_install() {
 	distutils_src_install --home="${ZOPE_INSTALLATION_DIR}"
-
-	# Don't install C sources.
-	find "${D}${ZOPE_INSTALLATION_DIR}" -name "*.c" | xargs rm -f
 
 	local file
 	for file in "${D}${ZOPE_INSTALLATION_DIR}/bin/"*; do
