@@ -4,11 +4,6 @@
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5"
-# https://bugs.launchpad.net/beautifulsoup/+bug/936006
-PYTHON_TESTS_RESTRICTED_ABIS="*-jython *-pypy-*"
-# https://bugs.launchpad.net/beautifulsoup/+bug/933860
-# https://bugs.launchpad.net/beautifulsoup/+bug/935710
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
@@ -23,23 +18,34 @@ SRC_URI="http://www.crummy.com/software/BeautifulSoup/bs4/download/4.0/${MY_P}.t
 LICENSE="MIT"
 SLOT="4"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux ~x64-macos ~x86-macos ~sparc-solaris ~x86-solaris"
-IUSE="html5lib +lxml test"
-# https://bugs.launchpad.net/beautifulsoup/+bug/936006
-REQUIRED_USE="test? ( lxml )"
+IUSE="doc html5lib +lxml"
 
-DEPEND="html5lib? ( $(python_abi_depend -e "3.* *-jython" dev-python/html5lib) )
+RDEPEND="html5lib? ( $(python_abi_depend -e "3.* *-jython" dev-python/html5lib) )
 	lxml? ( $(python_abi_depend -e "*-jython *-pypy-*" dev-python/lxml) )"
-RDEPEND="${DEPEND}"
+DEPEND="${RDEPEND}
+	doc? ( $(python_abi_depend dev-python/sphinx) )"
 
 S="${WORKDIR}/${MY_P}"
 
+DOCS="AUTHORS.txt NEWS.txt README.txt TODO.txt"
 PYTHON_MODULES="bs4"
 
 src_prepare() {
 	distutils_src_prepare
 
-	# https://bugs.launchpad.net/beautifulsoup/+bug/935919
-	sed -e "/data_files=\[/,+1d" -i setup.py || die "sed failed"
+	# https://bugs.launchpad.net/beautifulsoup/+bug/933860
+	sed -e "s/test_last_ditch_entity_replacement/_&/" -i bs4/tests/test_soup.py
+}
+
+src_compile() {
+	distutils_src_compile
+
+	if use doc; then
+		einfo "Generation of documentation"
+		pushd doc > /dev/null
+		emake html
+		popd > /dev/null
+	fi
 }
 
 src_test() {
@@ -49,9 +55,15 @@ src_test() {
 src_install() {
 	distutils_src_install
 
-	# https://bugs.launchpad.net/beautifulsoup/+bug/935720
-	delete_documentation_and_tests() {
-		rm -fr "${ED}$(python_get_sitedir)/bs4/"{doc,testing.py,tests}
+	delete_tests() {
+		rm -fr "${ED}$(python_get_sitedir)/bs4/"{testing.py,tests}
 	}
-	python_execute_function -q delete_documentation_and_tests
+	python_execute_function -q delete_tests
+
+	if use doc; then
+		pushd doc/build/html > /dev/null
+		insinto /usr/share/doc/${PF}/html
+		doins -r [a-z]* _images _static
+		popd > /dev/null
+	fi
 }
