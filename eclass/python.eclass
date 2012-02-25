@@ -1475,6 +1475,16 @@ _python_calculate_PYTHON_ABIS() {
 				fi
 			fi
 
+			if [[ -z "${python2_version}" && -z "${python3_version}" ]]; then
+				eerror "${CATEGORY}/${PF} requires at least one of the following packages:"
+				for PYTHON_ABI in "${_CPYTHON2_GLOBALLY_SUPPORTED_ABIS[@]}" "${_CPYTHON3_GLOBALLY_SUPPORTED_ABIS[@]}"; do
+					if ! _python_check_python_abi_matching --patterns-list "${PYTHON_ABI}" "${PYTHON_RESTRICTED_ABIS}"; then
+						eerror "    dev-lang/python:${PYTHON_ABI}"
+					fi
+				done
+				die "No supported version of CPython installed"
+			fi
+
 			if [[ -n "${python2_version}" && "${python_version}" == "2."* && "${python_version}" != "${python2_version}" ]]; then
 				eerror "Python wrapper is configured incorrectly or '${EPREFIX}/usr/bin/python2' symlink"
 				eerror "is set incorrectly. Use \`eselect python\` to fix configuration."
