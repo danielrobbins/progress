@@ -3,7 +3,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="4-python"
-PYTHON_DEPEND="python? ( <<[-build,xml]>> )"
+PYTHON_DEPEND="python? ( <<[xml]>> )"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 
@@ -88,10 +88,8 @@ src_prepare() {
 	# Heap-based overflow in parsing long entity references
 	epatch "${FILESDIR}/${P}-allocation-error-copying-entities.patch"
 
-	# Please do not remove, as else we get references to PORTAGE_TMPDIR
-	# in /usr/lib/python?.?/site-packages/libxml2mod.la among things.
-	# We now need to run eautoreconf at the end to prevent maintainer mode.
-#	elibtoolize
+	# Make hash functions less predictable to prevent DoS
+	epatch "${FILESDIR}/${P}-hash-randomization.patch"
 
 	# Python bindings are built/tested/installed manually.
 	sed -e "s/@PYTHON_SUBDIR@//" -i Makefile.am || die "sed failed"
