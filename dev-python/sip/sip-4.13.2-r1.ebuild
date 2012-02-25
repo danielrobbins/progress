@@ -9,11 +9,9 @@ PYTHON_EXPORT_PHASE_FUNCTIONS="1"
 
 inherit eutils python toolchain-funcs
 
-MY_P="${P/_pre/-snapshot-}"
-
 DESCRIPTION="Python extension module generator for C and C++ libraries"
 HOMEPAGE="http://www.riverbankcomputing.co.uk/software/sip/intro http://pypi.python.org/pypi/SIP"
-SRC_URI="http://www.riverbankcomputing.com/static/Downloads/${PN}${PV%%.*}/${MY_P}.tar.gz"
+SRC_URI="http://www.riverbankcomputing.com/static/Downloads/${PN}${PV%%.*}/${P}.tar.gz"
 
 LICENSE="|| ( GPL-2 GPL-3 sip )"
 SLOT="0"
@@ -23,12 +21,10 @@ IUSE="debug doc"
 DEPEND=""
 RDEPEND=""
 
-S="${WORKDIR}/${MY_P}"
-
 src_prepare() {
 	epatch "${FILESDIR}/${PN}-4.9.3-darwin.patch"
 	sed -e "s/ -O2//g" -i specs/* || die "sed failed"
-	python_copy_sources
+	python_src_prepare
 }
 
 src_configure() {
