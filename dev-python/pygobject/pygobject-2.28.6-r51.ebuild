@@ -62,7 +62,7 @@ src_prepare() {
 	# Do not build tests if unneeded, bug #226345
 	epatch "${FILESDIR}/${PN}-2.28.3-make_check.patch"
 
-	# Support installation for multiple Python versions, upstream bug #648292
+	# Use Python 2 in pygobject-codegen-2.0.
 	epatch "${FILESDIR}/${PN}-2.28.3-support_multiple_python_versions.patch"
 
 	# Disable tests that fail
@@ -80,7 +80,10 @@ src_prepare() {
 }
 
 src_configure() {
-	python_execute_function -s gnome2_src_configure
+	configuration() {
+		PYTHON="$(PYTHON)" gnome2_src_configure
+	}
+	python_execute_function -s configuration
 }
 
 src_compile() {
@@ -111,10 +114,6 @@ src_install() {
 	python_merge_intermediate_installation_images "${T}/images"
 
 	python_clean_installation_image
-
-	if [[ -f "${ED}usr/bin/pygobject-codegen-2.0" ]]; then
-		sed -e "s:/usr/bin/python:&2:" -i "${ED}usr/bin/pygobject-codegen-2.0" || die "Fixing of calls to Python interpreter failed"
-	fi
 
 	if use examples; then
 		insinto /usr/share/doc/${PF}

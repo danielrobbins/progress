@@ -60,9 +60,6 @@ src_prepare() {
 	# Do not build tests if unneeded, bug #226345
 	epatch "${FILESDIR}/${PN}-2.90.1-make_check.patch"
 
-	# Support installation for multiple Python versions, upstream bug #648292
-	epatch "${FILESDIR}/${PN}-3.0.0-support_multiple_python_versions.patch"
-
 	# FIXME: disable tests that require >=gobject-introspection-1.31
 	epatch "${FILESDIR}/${PN}-3.0.3-disable-new-gi-tests.patch"
 
@@ -85,7 +82,10 @@ src_prepare() {
 }
 
 src_configure() {
-	python_execute_function -s gnome2_src_configure
+	configuration() {
+		PYTHON="$(PYTHON)" gnome2_src_configure
+	}
+	python_execute_function -s configuration
 }
 
 src_compile() {
