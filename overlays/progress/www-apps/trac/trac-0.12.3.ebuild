@@ -30,7 +30,7 @@ DEPEND="$(python_abi_depend dev-python/docutils)
 	fastcgi? ( virtual/httpd-fastcgi )
 	i18n? ( $(python_abi_depend ">=dev-python/Babel-0.9.5") )
 	mysql? ( $(python_abi_depend dev-python/mysql-python) )
-	postgres? ( $(python_abi_depend ">=dev-python/psycopg-2") )
+	postgres? ( $(python_abi_depend -e "*-pypy-*" dev-python/psycopg:2) )
 	sqlite? ( $(python_abi_depend virtual/python-sqlite[external]) )
 	subversion? ( $(python_abi_depend -e "*-pypy-*" dev-vcs/subversion[python]) )"
 RDEPEND="${DEPEND}"

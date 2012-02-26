@@ -25,7 +25,7 @@ RDEPEND="$(python_abi_depend dev-python/setuptools)
 	firebird? ( $(python_abi_depend -e "3.* *-jython *-pypy-*" dev-python/kinterbasdb) )
 	mssql? ( $(python_abi_depend -e "3.* *-jython *-pypy-*" dev-python/pymssql) )
 	mysql? ( $(python_abi_depend -e "3.* *-jython" dev-python/mysql-python) )
-	postgres? ( $(python_abi_depend -e "*-jython" ">=dev-python/psycopg-2") )
+	postgres? ( $(python_abi_depend -e "*-jython *-pypy-*" dev-python/psycopg:2) )
 	sqlite? ( $(python_abi_depend -e "*-jython" virtual/python-sqlite[external]) )"
 DEPEND="${RDEPEND}
 	test? ( $(python_abi_depend -e "3.* *-jython" virtual/python-sqlite[external]) )"

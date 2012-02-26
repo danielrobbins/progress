@@ -21,7 +21,7 @@ IUSE="doc mysql postgres sqlite test"
 RDEPEND="$(python_abi_depend -e "*-jython" dev-python/imaging)
 	$(python_abi_depend virtual/python-json[external])
 	mysql? ( $(python_abi_depend -e "*-jython" ">=dev-python/mysql-python-1.2.1_p2") )
-	postgres? ( $(python_abi_depend -e "*-jython" dev-python/psycopg) )
+	postgres? ( $(python_abi_depend -e "*-jython *-pypy-*" dev-python/psycopg:2) )
 	sqlite? ( $(python_abi_depend -e "*-jython" virtual/python-sqlite[external]) )"
 DEPEND="${RDEPEND}
 	doc? ( $(python_abi_depend dev-python/sphinx) )

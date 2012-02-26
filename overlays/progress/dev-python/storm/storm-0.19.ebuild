@@ -20,7 +20,7 @@ IUSE="mysql postgres sqlite test"
 
 RDEPEND="$(python_abi_depend virtual/python-json)
 	mysql? ( $(python_abi_depend dev-python/mysql-python) )
-	postgres? ( $(python_abi_depend -e "*-jython" "=dev-python/psycopg-2*") )
+	postgres? ( $(python_abi_depend -e "*-jython *-pypy-*" dev-python/psycopg:2) )
 	sqlite? ( $(python_abi_depend -e "*-jython" virtual/python-sqlite[external]) )"
 DEPEND="$(python_abi_depend dev-python/setuptools)
 	test? ( $(python_abi_depend -e "*-jython" virtual/python-sqlite[external]) )"
