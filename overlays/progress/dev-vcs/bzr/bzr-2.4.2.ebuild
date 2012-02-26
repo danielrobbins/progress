@@ -5,7 +5,7 @@
 EAPI="4-python"
 PYTHON_DEPEND="<<[xml]>>"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5 3.* *-jython"
+PYTHON_RESTRICTED_ABIS="2.5 3.* *-jython *-pypy-*"
 
 inherit bash-completion-r1 distutils eutils versionator
 
@@ -23,7 +23,7 @@ KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~x86-
 IUSE="curl doc +sftp test"
 
 RDEPEND="curl? ( $(python_abi_depend dev-python/pycurl) )
-	sftp? ( $(python_abi_depend -e "*-pypy-*" dev-python/paramiko) )"
+	sftp? ( $(python_abi_depend dev-python/paramiko) )"
 
 DEPEND="test? (
 		${RDEPEND}
