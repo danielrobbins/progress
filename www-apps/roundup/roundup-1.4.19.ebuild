@@ -18,7 +18,7 @@ KEYWORDS="~amd64 ~ppc ~sparc ~x86"
 IUSE="mysql postgres sqlite ssl timezone xapian"
 
 DEPEND="mysql? ( $(python_abi_depend dev-python/mysql-python) )
-	postgres? ( $(python_abi_depend dev-python/psycopg) )
+	postgres? ( $(python_abi_depend -e "*-pypy-*" dev-python/psycopg:2) )
 	sqlite? ( $(python_abi_depend virtual/python-sqlite) )
 	ssl? ( $(python_abi_depend dev-python/pyopenssl) )
 	timezone? ( $(python_abi_depend dev-python/pytz) )

@@ -19,7 +19,7 @@ KEYWORDS="~amd64 ~arm ~x86"
 IUSE="examples mysql postgres sqlite"
 
 RDEPEND="mysql? ( $(python_abi_depend -e "*-jython" ">=dev-python/mysql-python-1.2.2") )
-	postgres? ( $(python_abi_depend -e "*-jython" dev-python/psycopg) )
+	postgres? ( $(python_abi_depend -e "*-jython *-pypy-*" dev-python/psycopg:2) )
 	sqlite? ( $(python_abi_depend -e "*-jython" virtual/python-sqlite) )"
 DEPEND="${RDEPEND}"
 

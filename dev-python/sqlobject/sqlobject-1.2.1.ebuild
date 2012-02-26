@@ -23,7 +23,7 @@ IUSE="doc firebird mysql postgres sqlite"
 RDEPEND="$(python_abi_depend ">=dev-python/formencode-0.2.2")
 		firebird? ( $(python_abi_depend -e "*-pypy-*" ">=dev-python/kinterbasdb-3.0.2") )
 		mysql? ( $(python_abi_depend ">=dev-python/mysql-python-0.9.2-r1") )
-		postgres? ( $(python_abi_depend dev-python/psycopg) )
+		postgres? ( $(python_abi_depend -e "*-pypy-*" dev-python/psycopg:2) )
 		sqlite? ( $(python_abi_depend virtual/python-sqlite[external]) )"
 DEPEND="${RDEPEND}
 		$(python_abi_depend dev-python/setuptools)"
