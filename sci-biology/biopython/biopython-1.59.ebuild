@@ -4,7 +4,6 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 
 inherit distutils eutils
 
@@ -17,11 +16,12 @@ SLOT="0"
 KEYWORDS="~amd64 ~ppc ~x86"
 IUSE="mysql postgres reportlab"
 
-RDEPEND="$(python_abi_depend dev-python/numpy)
-	mysql? ( $(python_abi_depend -i "2.*" dev-python/mysql-python) )
-	postgres? ( $(python_abi_depend dev-python/psycopg) )
-	reportlab? ( $(python_abi_depend -i "2.*" dev-python/reportlab) )"
+RDEPEND="$(python_abi_depend -e "*-jython *-pypy-*" dev-python/numpy)
+	mysql? ( $(python_abi_depend -e "3.* *-jython" dev-python/mysql-python) )
+	postgres? ( $(python_abi_depend -e "*-jython *-pypy-*" dev-python/psycopg:2) )
+	reportlab? ( $(python_abi_depend -e "3.* *-jython" dev-python/reportlab) )"
 DEPEND="${RDEPEND}
+	$(python_abi_depend dev-python/setuptools)
 	sys-devel/flex"
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
@@ -43,7 +43,7 @@ src_test() {
 			cd Tests
 		fi
 
-		PYTHONPATH="$(ls -d ../build/lib.*)" "$(PYTHON)" run_tests.py
+		python_execute PYTHONPATH="$(ls -d ../build/lib*)" "$(PYTHON)" run_tests.py
 	}
 	python_execute_function --nonfatal -s testing
 }
