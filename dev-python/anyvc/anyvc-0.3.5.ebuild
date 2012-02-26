@@ -20,7 +20,7 @@ IUSE="bazaar doc git mercurial subversion"
 RDEPEND="$(python_abi_depend dev-python/apipkg)
 	$(python_abi_depend dev-python/execnet)
 	$(python_abi_depend dev-python/py)
-	bazaar? ( $(python_abi_depend -e "2.5" dev-vcs/bzr) )
+	bazaar? ( $(python_abi_depend -e "2.5 *-pypy-*" dev-vcs/bzr) )
 	git? ( $(python_abi_depend dev-python/dulwich) )
 	mercurial? ( $(python_abi_depend dev-vcs/mercurial) )
 	subversion? ( $(python_abi_depend dev-python/subvertpy) )"
