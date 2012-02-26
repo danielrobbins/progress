@@ -20,11 +20,11 @@ IUSE="test"
 
 RDEPEND="$(python_abi_depend dev-python/setuptools)
 	$(python_abi_depend -i "2.5 2.6 3.1" dev-python/unittest2)"
-# Tests using dev-python/psycopg are skipped when dev-python/psycopg is not installed.
+# Tests using dev-python/psycopg:2 are skipped when dev-python/psycopg:2 is not installed.
 DEPEND="${RDEPEND}
 	test? (
 		$(python_abi_depend -e "3.* *-jython *-pypy-*" dev-python/egenix-mx-base)
-		!dev-python/psycopg[-mxdatetime]
+		!dev-python/psycopg:2[-mxdatetime]
 	)"
 
 S="${WORKDIR}/${P}"
