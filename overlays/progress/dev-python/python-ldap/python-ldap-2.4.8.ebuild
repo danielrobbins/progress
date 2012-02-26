@@ -11,7 +11,7 @@ inherit distutils multilib
 DOC_P="${PN}-docs-html-2.4.4"
 
 DESCRIPTION="Python modules for implementing LDAP clients"
-HOMEPAGE="http://python-ldap.sourceforge.net/ http://pypi.python.org/pypi/python-ldap"
+HOMEPAGE="http://python-ldap.org/ http://sourceforge.net/projects/python-ldap/ http://pypi.python.org/pypi/python-ldap"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz
 	doc? ( http://www.python-ldap.org/doc/${DOC_P}.tar.gz )"
 
@@ -32,8 +32,8 @@ src_prepare() {
 	distutils_src_prepare
 
 	local defines extra_link_args include_dirs libs
-
 	libs="ldap"
+
 	if use sasl; then
 		include_dirs+=" ${EPREFIX}/usr/include/sasl"
 		defines+=" HAVE_SASL"
