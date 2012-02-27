@@ -9,25 +9,32 @@ PYTHON_EXPORT_PHASE_FUNCTIONS="1"
 
 inherit python qt4-r2 toolchain-funcs
 
-MY_P="PyQt-x11-gpl-${PV/_pre/-snapshot-}"
-
 # Minimal supported version of Qt.
-QT_VER="4.6.2"
+QT_VER="4.7.2"
 
 DESCRIPTION="Python bindings for the Qt toolkit"
 HOMEPAGE="http://www.riverbankcomputing.co.uk/software/pyqt/intro/ http://pypi.python.org/pypi/PyQt"
-SRC_URI="http://www.riverbankcomputing.com/static/Downloads/${PN}/${MY_P}.tar.gz"
+
+if [[ "${PV}" == *_pre* ]]; then
+	MY_P="PyQt-x11-gpl-snapshot-${PV%_pre*}-${REVISION}"
+	SRC_URI="http://www.gentoo-el.org/~hwoarang/distfiles/${MY_P}.tar.gz"
+else
+	MY_P="PyQt-x11-gpl-${PV}"
+	SRC_URI="http://www.riverbankcomputing.com/static/Downloads/${PN}/${MY_P}.tar.gz"
+fi
 
 LICENSE="|| ( GPL-2 GPL-3 )"
 SLOT="0"
 KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~amd64-linux ~x86-linux"
 IUSE="X assistant +dbus debug declarative doc examples kde multimedia opengl phonon sql svg webkit xmlpatterns"
 
-DEPEND="$(python_abi_depend ">=dev-python/sip-4.13.1")
+RDEPEND="$(python_abi_depend ">=dev-python/sip-4.13.1")
 	>=x11-libs/qt-core-${QT_VER}:4
 	>=x11-libs/qt-script-${QT_VER}:4
-	>=x11-libs/qt-test-${QT_VER}:4
-	X? ( >=x11-libs/qt-gui-${QT_VER}:4[dbus?] )
+	X? (
+		>=x11-libs/qt-gui-${QT_VER}:4[dbus?]
+		>=x11-libs/qt-test-${QT_VER}:4
+	)
 	assistant? ( >=x11-libs/qt-assistant-${QT_VER}:4 )
 	dbus? (
 		$(python_abi_depend -e "2.5" ">=dev-python/dbus-python-0.80")
@@ -35,7 +42,10 @@ DEPEND="$(python_abi_depend ">=dev-python/sip-4.13.1")
 	)
 	declarative? ( >=x11-libs/qt-declarative-${QT_VER}:4 )
 	multimedia? ( >=x11-libs/qt-multimedia-${QT_VER}:4 )
-	opengl? ( >=x11-libs/qt-opengl-${QT_VER}:4 || ( >=x11-libs/qt-opengl-4.8.0:4 >=x11-libs/qt-opengl-4.7.0:4[-egl] <x11-libs/qt-opengl-4.7.0:4 ) )
+	opengl? (
+		>=x11-libs/qt-opengl-${QT_VER}:4
+		|| ( >=x11-libs/qt-opengl-4.8.0:4 <x11-libs/qt-opengl-4.8.0:4[-egl] )
+	)
 	phonon? (
 		!kde? ( || ( >=x11-libs/qt-phonon-${QT_VER}:4 media-libs/phonon ) )
 		kde? ( media-libs/phonon )
@@ -44,7 +54,8 @@ DEPEND="$(python_abi_depend ">=dev-python/sip-4.13.1")
 	svg? ( >=x11-libs/qt-svg-${QT_VER}:4 )
 	webkit? ( >=x11-libs/qt-webkit-${QT_VER}:4 )
 	xmlpatterns? ( >=x11-libs/qt-xmlpatterns-${QT_VER}:4 )"
-RDEPEND="${DEPEND}"
+DEPEND="${RDEPEND}
+	dbus? ( dev-util/pkgconfig )"
 
 S="${WORKDIR}/${MY_P}"
 
@@ -89,18 +100,18 @@ src_configure() {
 			--bindir="${EPREFIX}/usr/bin"
 			--destdir="${EPREFIX}$(python_get_sitedir)"
 			--sipdir="${EPREFIX}/usr/share/sip"
+			--assume-shared
+			--no-timestamp
 			--qsci-api
 			$(use debug && echo --debug)
 			--enable=QtCore
 			--enable=QtNetwork
 			--enable=QtScript
-			--enable=QtTest
 			--enable=QtXml
-			$(pyqt4_use_enable X QtDesigner)
+			$(pyqt4_use_enable X QtDesigner) $(use X || echo --no-designer-plugin)
 			$(pyqt4_use_enable X QtGui)
 			$(pyqt4_use_enable X QtScriptTools)
-			# QtAssistant module is not available with Qt >=4.7.0.
-			$(pyqt4_use_enable assistant QtAssistant)
+			$(pyqt4_use_enable X QtTest)
 			$(pyqt4_use_enable assistant QtHelp)
 			$(pyqt4_use_enable dbus QtDBus)
 			$(pyqt4_use_enable declarative QtDeclarative)
