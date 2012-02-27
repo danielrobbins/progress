@@ -27,20 +27,11 @@ src_prepare() {
 	sed -e "/package_data/,+6d" -i setup.py || die "sed failed"
 }
 
-src_test() {
-	cd tests
-
-	testing() {
-		PYTHONPATH="../build-${PYTHON_ABI}/lib" "$(PYTHON)" RKbug.py 1
-	}
-	python_execute_function testing
-}
-
 src_install() {
 	distutils_src_install
 
 	insinto /usr/share/doc/${PF}
-	doins -r HISTORY.html xlwt/doc/xlwt.html tests
+	doins -r xlwt/doc/xlwt.html
 	if use examples; then
 		doins -r xlwt/examples
 	fi
