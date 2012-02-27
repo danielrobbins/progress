@@ -130,7 +130,7 @@ src_prepare() {
 			EOF
 		cat <<- EOF >> matplotlibrc.template
 			examples.download : False
-			examples.directory : "${EPREFIX}/usr/share/${PF}/examples"
+			examples.directory : "${EPREFIX}/usr/share/doc/${PF}/examples"
 			EOF
 	fi
 }
