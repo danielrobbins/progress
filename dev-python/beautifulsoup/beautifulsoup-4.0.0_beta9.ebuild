@@ -30,13 +30,6 @@ S="${WORKDIR}/${MY_P}"
 DOCS="AUTHORS.txt NEWS.txt README.txt TODO.txt"
 PYTHON_MODULES="bs4"
 
-src_prepare() {
-	distutils_src_prepare
-
-	# https://bugs.launchpad.net/beautifulsoup/+bug/933860
-	sed -e "s/test_last_ditch_entity_replacement/_&/" -i bs4/tests/test_soup.py
-}
-
 src_compile() {
 	distutils_src_compile
 
