@@ -8,13 +8,14 @@ PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 
 inherit distutils eutils flag-o-matic fortran-2 toolchain-funcs versionator
 
+DOC_P="${PN}-0.10.0"
 
 DESCRIPTION="Scientific algorithms library for Python"
 HOMEPAGE="http://www.scipy.org/ http://pypi.python.org/pypi/scipy"
 SRC_URI="mirror://sourceforge/${PN}/${P}.tar.gz
 	doc? (
-		http://docs.scipy.org/doc/${P}/${PN}-html.zip -> ${P}-html.zip
-		http://docs.scipy.org/doc/${P}/${PN}-ref.pdf -> ${P}-ref.pdf
+		http://docs.scipy.org/doc/${DOC_P}/${PN}-html.zip -> ${DOC_P}-html.zip
+		http://docs.scipy.org/doc/${DOC_P}/${PN}-ref.pdf -> ${DOC_P}-ref.pdf
 	)"
 
 LICENSE="BSD LGPL-2"
@@ -64,7 +65,7 @@ pkg_setup() {
 src_unpack() {
 	unpack ${P}.tar.gz
 	if use doc; then
-		unzip -qo "${DISTDIR}"/${P}-html.zip -d html || die
+		unzip -qo "${DISTDIR}/${DOC_P}-html.zip" -d html || die
 	fi
 }
 
@@ -111,7 +112,11 @@ src_test() {
 
 src_install() {
 	distutils_src_install ${SCIPY_FCONFIG}
-	use doc && dohtml -r "${WORKDIR}"/html/* && dodoc "${DISTDIR}"/${P}*pdf
+
+	if use doc; then
+		dohtml -r "${WORKDIR}/html/"*
+		dodoc "${DISTDIR}/${DOC_P}-ref.pdf"
+	fi
 }
 
 pkg_postinst() {
