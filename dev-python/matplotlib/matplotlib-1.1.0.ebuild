@@ -126,11 +126,11 @@ src_prepare() {
 	if use doc || use examples; then
 		cat <<- EOF >> doc/matplotlibrc
 			examples.download : False
-			examples.directory : "${WORKDIR}/mpl_sampledata-${PV}"
+			examples.directory : ${WORKDIR}/mpl_sampledata-${PV}
 			EOF
 		cat <<- EOF >> matplotlibrc.template
 			examples.download : False
-			examples.directory : "${EPREFIX}/usr/share/doc/${PF}/examples"
+			examples.directory : ${EPREFIX}/usr/share/doc/${PF}/examples
 			EOF
 	fi
 }
