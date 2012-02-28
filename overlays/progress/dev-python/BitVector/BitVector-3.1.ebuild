@@ -9,8 +9,8 @@ PYTHON_RESTRICTED_ABIS="2.5"
 inherit distutils
 
 DESCRIPTION="A pure-Python memory-efficient packed representation for bit arrays"
-HOMEPAGE="http://cobweb.ecn.purdue.edu/~kak/dist/ http://pypi.python.org/pypi/BitVector"
-SRC_URI="http://cobweb.ecn.purdue.edu/~kak/dist/${P}.tar.gz"
+HOMEPAGE="https://engineering.purdue.edu/kak/dist/ http://pypi.python.org/pypi/BitVector"
+SRC_URI="https://engineering.purdue.edu/kak/dist/${P}.tar.gz"
 
 LICENSE="PSF-2"
 SLOT="0"
@@ -33,7 +33,12 @@ src_test() {
 	cd Test${PN}
 
 	testing() {
-		PYTHONPATH="../build-${PYTHON_ABI}/lib" "$(PYTHON)" Test.py
+		python_execute PYTHONPATH="../build-${PYTHON_ABI}/lib" "$(PYTHON)" Test.py
 	}
 	python_execute_function testing
+}
+
+src_install() {
+	distutils_src_install
+	dohtml ${P}.html
 }
