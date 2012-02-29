@@ -4,8 +4,6 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-# https://bitbucket.org/simplecodes/wtforms/issue/85
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.*"
 
 inherit distutils
 
@@ -32,13 +30,6 @@ DOCS="AUTHORS.txt CHANGES.txt README.txt"
 
 src_prepare() {
 	distutils_src_prepare
-
-	# https://bitbucket.org/simplecodes/wtforms/issue/84
-	sed \
-		-e "s/PYTHON_VERSION = tuple(int(x) for x in platform.python_version_tuple())/PYTHON_VERSION = tuple(int(x) for x in platform.python_version_tuple()[:2])/" \
-		-e "s/if PYTHON_VERSION < (3, 0, 0):/if PYTHON_VERSION < (3, 0):/" \
-		-e "s/if PYTHON_VERSION < (2, 6, 0):/if PYTHON_VERSION < (2, 6):/" \
-		-i tests/fields.py
 
 	# https://bitbucket.org/simplecodes/wtforms/issue/86
 	sed -e "/sys.path.insert/d" -i docs/conf.py
