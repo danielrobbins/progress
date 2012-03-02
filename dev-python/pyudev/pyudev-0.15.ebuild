@@ -36,6 +36,12 @@ DOCS="CHANGES.rst README.rst"
 src_prepare() {
 	distutils_src_prepare
 
+	# Disable failing tests.
+	# https://github.com/lunaryorn/pyudev/issues/43
+	sed -e "s/test_is_wrapped/_&/" -i tests/test_libudev.py
+	sed -e "s/test_from_device_file_non_existing/_&/" -i tests/test_device.py
+	sed -e "s/test_get_device_type_not_existing/_&/" -i tests/test_util.py
+
 	# Fix run_path.
 	sed -i -e "s|== \('/run/udev'\)|in (\1, '/dev/.udev')|g" tests/test_core.py
 
