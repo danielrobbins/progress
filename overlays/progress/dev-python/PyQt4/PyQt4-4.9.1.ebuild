@@ -25,8 +25,16 @@ fi
 
 LICENSE="|| ( GPL-2 GPL-3 )"
 SLOT="0"
-KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd ~amd64-linux ~x86-linux"
-IUSE="X assistant +dbus debug declarative doc examples kde multimedia opengl phonon sql svg webkit xmlpatterns"
+KEYWORDS="~amd64 ~arm ~ia64 ~ppc ~ppc64 ~x86 ~amd64-linux ~x86-linux"
+IUSE="X assistant dbus debug declarative doc examples kde multimedia opengl phonon sql svg webkit xmlpatterns"
+REQUIRED_USE="assistant? ( X )
+	declarative? ( X )
+	multimedia? ( X )
+	opengl? ( X )
+	phonon? ( X )
+	sql? ( X )
+	svg? ( X )
+	webkit? ( X )"
 
 RDEPEND="$(python_abi_depend ">=dev-python/sip-4.13.1")
 	>=x11-libs/qt-core-${QT_VER}:4
@@ -129,14 +137,14 @@ src_configure() {
 			CFLAGS="${CFLAGS}"
 			CXXFLAGS="${CXXFLAGS}"
 			LFLAGS="${LDFLAGS}")
-		python_execute "${myconf[@]}" || return 1
+		python_execute "${myconf[@]}" || return
 
 		local mod
 		for mod in QtCore $(use X && echo QtDesigner QtGui) $(use dbus && echo QtDBus) $(use declarative && echo QtDeclarative) $(use opengl && echo QtOpenGL); do
 			# Run eqmake4 inside the qpy subdirectories to respect CC, CXX, CFLAGS, CXXFLAGS and LDFLAGS and avoid stripping.
-			pushd qpy/${mod} > /dev/null || return 1
+			pushd qpy/${mod} > /dev/null || return
 			eqmake4 $(ls w_qpy*.pro)
-			popd > /dev/null || return 1
+			popd > /dev/null || return
 
 			# Fix insecure runpaths.
 			sed -e "/^LFLAGS[[:space:]]*=/s:-Wl,-rpath,${BUILDDIR}/qpy/${mod}::" -i ${mod}/Makefile || die "Fixing of runpaths failed"
@@ -144,9 +152,9 @@ src_configure() {
 
 		# Avoid stripping of libpythonplugin.so.
 		if use X; then
-			pushd designer > /dev/null || return 1
+			pushd designer > /dev/null || return
 			eqmake4 python.pro
-			popd > /dev/null || return 1
+			popd > /dev/null || return
 		fi
 	}
 	python_execute_function -s configuration
