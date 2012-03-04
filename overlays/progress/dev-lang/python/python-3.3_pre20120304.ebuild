@@ -11,13 +11,13 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="fd424ccc8cee"
+	EHG_REVISION="58eef400866e"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
 fi
 
-PATCHSET_REVISION="20111225"
+PATCHSET_REVISION="20120212"
 
 DESCRIPTION="Python is an interpreted, interactive, object-oriented programming language."
 HOMEPAGE="http://www.python.org/"
@@ -68,6 +68,11 @@ fi
 
 pkg_setup() {
 	python_pkg_setup
+
+	if has_version sys-apps/portage && has_version ${CATEGORY}/${PN}:${SLOT} && [[ "$(PYTHON -3 --ABI)" == "3.3" ]]; then
+		# http://bugs.python.org/issue14007
+		die "Python >=3.3_pre20120214 contains a bug, which breaks Portage"
+	fi
 }
 
 src_prepare() {
