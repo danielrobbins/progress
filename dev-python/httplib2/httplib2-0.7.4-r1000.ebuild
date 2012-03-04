@@ -12,23 +12,19 @@ inherit distutils
 
 DESCRIPTION="A comprehensive HTTP client library"
 HOMEPAGE="http://code.google.com/p/httplib2/ http://pypi.python.org/pypi/httplib2"
-SRC_URI="http://httplib2.googlecode.com/files/${P}.tar.gz"
+SRC_URI="http://${PN}.googlecode.com/files/${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
 KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x64-macos"
 IUSE=""
 
-DEPEND=""
+DEPEND="$(python_abi_depend dev-python/setuptools)"
 RDEPEND=""
 
 src_prepare() {
 	distutils_src_prepare
 
-	# cacerts.txt and other_cacerts.txt are missing in python3/httplib2 directory.
-	cp python2/httplib2/cacerts.txt python3/httplib2
-	mkdir python3/httplib2/test
-	cp python2/httplib2/test/other_cacerts.txt python3/httplib2/test
 
 	# Disable failing tests.
 	sed \
