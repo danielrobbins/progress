@@ -62,8 +62,8 @@ src_install() {
 pkg_postinst() {
 	python_mod_optimize sipconfig.py sipdistutils.py
 
-	ewarn "When updating dev-python/sip, you usually need to rebuild packages, which depend on dev-python/sip,"
-	ewarn "such as dev-python/PyQt4 and dev-python/qscintilla-python. If you have app-portage/gentoolkit"
+	ewarn "When updating dev-python/sip, you usually need to rebuild packages, which depend on it,"
+	ewarn "such as dev-python/PyQt4, dev-python/qscintilla-python and kde-base/pykde4. If you have app-portage/gentoolkit"
 	ewarn "installed, you can find these packages with \`equery d dev-python/sip dev-python/PyQt4\`."
 }
 
