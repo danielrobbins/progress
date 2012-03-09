@@ -20,10 +20,8 @@ IUSE="doc examples"
 PYTHON_MODULES="CXX"
 
 src_prepare() {
-	epatch "${FILESDIR}/${P}-python-3.patch"
-	epatch "${FILESDIR}/${P}-installation.patch"
-	epatch "${FILESDIR}/${P}-python-3.2.patch"
-	epatch "${FILESDIR}/${P}-python-3.2-Py_hash_t.patch"
+	epatch "${FILESDIR}/${PN}-6.2.3-python-3.patch"
+	epatch "${FILESDIR}/${PN}-6.2.3-installation.patch"
 
 	sed -e "/^#include/s:/Python[23]/:/:" -i CXX/*/*.hxx || die "sed failed"
 }
