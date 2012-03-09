@@ -6,7 +6,7 @@ EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.* *-jython"
 
-inherit distutils eutils
+inherit distutils
 
 DESCRIPTION="Tool for transforming reStructuredText to PDF using ReportLab"
 HOMEPAGE="http://code.google.com/p/rst2pdf/ http://pypi.python.org/pypi/rst2pdf"
@@ -24,11 +24,6 @@ DEPEND="$(python_abi_depend dev-python/docutils)
 RDEPEND="${DEPEND}"
 
 DOCS="Contributors.txt CHANGES.txt README.txt doc/*"
-
-src_prepare() {
-	distutils_src_prepare
-	epatch "${FILESDIR}/${P}_docutils-0.8.patch"
-}
 
 pkg_postinst() {
 	distutils_pkg_postinst
