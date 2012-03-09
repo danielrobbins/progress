@@ -91,6 +91,9 @@ src_prepare() {
 	# Make hash functions less predictable to prevent DoS
 	epatch "${FILESDIR}/${P}-hash-randomization.patch"
 
+	# Fix building against pthreads-win32, bug #407371
+	epatch "${FILESDIR}/${P}-windows-thread_t.patch"
+
 	# Python bindings are built/tested/installed manually.
 	sed -e "s/@PYTHON_SUBDIR@//" -i Makefile.am || die "sed failed"
 
