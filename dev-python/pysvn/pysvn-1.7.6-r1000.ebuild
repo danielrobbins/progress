@@ -30,7 +30,10 @@ src_prepare() {
 	# Don't use internal copy of dev-python/pycxx.
 	rm -fr Import
 
-	epatch "${FILESDIR}/${P}-respect_flags.patch"
+	epatch "${FILESDIR}/${PN}-1.7.6_pre1437-respect_flags.patch"
+
+	# http://pysvn.tigris.org/source/browse/pysvn?view=rev&revision=1469
+	sed -e "s/PYSVN_HAS_SVN_CLIENT_CTX_T__CONFLICT_FUNC_16/PYSVN_HAS_SVN_CLIENT_CTX_T__CONFLICT_FUNC_1_6/" -i Source/pysvn_svnenv.hpp
 
 	python_copy_sources
 
@@ -49,6 +52,7 @@ src_configure() {
 		python_execute "$(PYTHON)" setup.py configure \
 			--pycxx-src-dir="${EPREFIX}/usr/share/python$(python_get_version)/CXX" \
 			--apr-inc-dir="${EPREFIX}/usr/include/apr-1" \
+			--apu-inc-dir="${EPREFIX}/usr/include/apr-1" \
 			--svn-root-dir="${EPREFIX}/usr"
 	}
 	python_execute_function -s configuration
