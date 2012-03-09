@@ -6,7 +6,7 @@ EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 
-inherit distutils eutils flag-o-matic fortran-2 toolchain-funcs versionator
+inherit distutils eutils flag-o-matic fortran-2 toolchain-funcs
 
 DOC_P="${PN}-0.10.0"
 
@@ -24,9 +24,7 @@ IUSE="doc test umfpack"
 KEYWORDS="~amd64 ~ppc ~ppc64 ~x86 ~amd64-linux ~x86-linux ~ppc-macos ~x86-macos"
 
 CDEPEND="$(python_abi_depend dev-python/numpy)
-	media-libs/qhull
 	sci-libs/arpack
-	>=sci-libs/superlu-4.3
 	virtual/cblas
 	virtual/lapack
 	umfpack? ( sci-libs/umfpack )"
@@ -70,12 +68,6 @@ src_unpack() {
 }
 
 src_prepare() {
-	# remove bundled libs
-	epatch \
-		"${FILESDIR}"/${PN}-0.9.0-superlu.patch \
-		"${FILESDIR}"/${PN}-0.9.0-superlu-4.3.patch \
-		"${FILESDIR}"/${PN}-0.9.0-qhull.patch
-	rm -rf ./scipy/sparse/linalg/dsolve/SuperLU ./scipy/spatial/qhull
 	local libdir="${EPREFIX}"/usr/$(get_libdir)
 	cat >> site.cfg <<-EOF
 		[blas]
