@@ -20,7 +20,7 @@ KEYWORDS="~alpha ~amd64 ~ppc ~sparc ~x86"
 IUSE=""
 
 RDEPEND="$(python_abi_depend net-zope/namespaces-zope[zope,zope.app])
-	$(python_abi_depend net-zope/zodb)
+	$(python_abi_depend net-zope/transaction)
 	$(python_abi_depend net-zope/zope-authentication)
 	$(python_abi_depend net-zope/zope-browser)
 	$(python_abi_depend net-zope/zope-component)
