@@ -54,7 +54,7 @@ RDEPEND="app-arch/bzip2
 			xml? ( >=dev-libs/expat-2 )
 		)"
 DEPEND="${RDEPEND}
-		$([[ "${PV}" == *_pre* ]] && echo "=${CATEGORY}/${PN}-${PV%%.*}*")
+		$([[ "${PV}" == *_pre* ]] && echo ${CATEGORY}/${PN})
 		dev-util/pkgconfig
 		>=sys-devel/autoconf-2.65
 		$([[ "${PV}" =~ ^[[:digit:]]+\.[[:digit:]]+_pre ]] && echo "doc? ( dev-python/sphinx )")
@@ -221,7 +221,7 @@ src_configure() {
 }
 
 src_compile() {
-	emake EPYTHON="python${PV%%.*}" CPPFLAGS="" CFLAGS="" LDFLAGS="" || die "emake failed"
+	emake CPPFLAGS="" CFLAGS="" LDFLAGS="" || die "emake failed"
 
 	if use doc; then
 		einfo "Generation of documentation"
