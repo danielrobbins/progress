@@ -11,12 +11,12 @@ inherit autotools flag-o-matic python
 
 DESCRIPTION="POSIX 1003.1e capabilities"
 HOMEPAGE="http://people.redhat.com/sgrubb/libcap-ng/"
-SRC_URI="http://people.redhat.com/sgrubb/libcap-ng/${P}.tar.gz"
+SRC_URI="http://people.redhat.com/sgrubb/${PN}/${P}.tar.gz"
 
 LICENSE="LGPL-2.1"
 SLOT="0"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86"
-IUSE="python"
+IUSE="python static-libs"
 
 RDEPEND="sys-apps/attr"
 DEPEND="${RDEPEND}
@@ -33,7 +33,7 @@ src_prepare() {
 	python_clean_py-compile_files
 
 	# Python bindings are built/tested/installed manually.
-	sed -e "/^SUBDIRS/s/ python//" -i bindings/Makefile.am
+	sed -e "/^SUBDIRS/s/ python//" -i bindings/Makefile.am || die "sed failed"
 
 	eautoreconf
 
@@ -41,7 +41,9 @@ src_prepare() {
 }
 
 src_configure() {
-	econf $(use_with python)
+	econf \
+		$(use_enable static-libs static) \
+		$(use_with python)
 }
 
 src_compile() {
@@ -83,7 +85,7 @@ src_test() {
 }
 
 src_install() {
-	emake install DESTDIR="${D}" || die "emake install failed"
+	emake DESTDIR="${D}" install
 
 	if use python; then
 		installation() {
@@ -99,7 +101,9 @@ src_install() {
 		python_clean_installation_image
 	fi
 
-	dodoc ChangeLog README
+	dodoc AUTHORS ChangeLog README
+
+	rm -f "${ED}"/usr/lib*/${PN}.la
 }
 
 pkg_postinst() {
