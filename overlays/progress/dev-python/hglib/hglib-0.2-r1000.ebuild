@@ -13,9 +13,9 @@ inherit distutils
 MY_PN="python-${PN}"
 MY_P="${MY_PN}-${PV}"
 
-DESCRIPTION="Library for using the Mercurial Command Server from Python"
-HOMEPAGE="http://mercurial.selenic.com/"
-SRC_URI="http://mercurial.selenic.com/release/${MY_PN}/${MY_P}.tar.gz"
+DESCRIPTION="Mercurial Python library"
+HOMEPAGE="http://mercurial.selenic.com/ http://pypi.python.org/pypi/python-hglib"
+SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
@@ -26,13 +26,6 @@ DEPEND="$(python_abi_depend ">=dev-vcs/mercurial-1.9")"
 RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/${MY_P}"
-
-src_prepare() {
-	distutils_src_prepare
-
-	# Disable failing test.
-	sed -e "s/test_remote/_&/" -i tests/test-summary.py
-}
 
 src_test() {
 	testing() {
