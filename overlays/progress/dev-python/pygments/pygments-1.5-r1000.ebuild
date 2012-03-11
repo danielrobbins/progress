@@ -4,8 +4,9 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 
-inherit distutils eutils
+inherit distutils
 
 MY_PN="Pygments"
 MY_P="${MY_PN}-${PV}"
@@ -19,7 +20,8 @@ SLOT="0"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~x86-fbsd ~x86-interix ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
 IUSE="doc test"
 
-DEPEND="test? (
+DEPEND="$(python_abi_depend dev-python/setuptools)
+	test? (
 		$(python_abi_depend dev-python/nose)
 		virtual/ttf-fonts
 	)"
@@ -27,16 +29,19 @@ RDEPEND=""
 
 S="${WORKDIR}/${MY_P}"
 
-DOCS="CHANGES"
+DOCS="AUTHORS CHANGES"
 
 src_prepare() {
 	distutils_src_prepare
-	epatch "${FILESDIR}/${P}-fix_tests.patch"
+
+	# Disable failing test.
+	# https://bitbucket.org/birkenfeld/pygments-main/issue/747
+	sed -e "s/test_valid_output/_&/" -i tests/test_html_formatter.py
 }
 
 src_test() {
 	testing() {
-		PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" tests/run.py
+		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" tests/run.py
 	}
 	python_execute_function testing
 }
@@ -45,6 +50,6 @@ src_install(){
 	distutils_src_install
 
 	if use doc; then
-		dohtml -r docs/build
+		dohtml docs/build/*
 	fi
 }
