@@ -20,12 +20,12 @@ SLOT="0"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~x86-fbsd ~x86-interix ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
 IUSE="doc test"
 
-DEPEND="$(python_abi_depend dev-python/setuptools)
+RDEPEND="$(python_abi_depend dev-python/setuptools)"
+DEPEND="${RDEPEND}
 	test? (
 		$(python_abi_depend dev-python/nose)
 		virtual/ttf-fonts
 	)"
-RDEPEND=""
 
 S="${WORKDIR}/${MY_P}"
 
