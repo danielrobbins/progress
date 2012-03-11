@@ -11,13 +11,13 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="4b32309631da"
+	EHG_REVISION="a5b073b1cfea"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
 fi
 
-PATCHSET_REVISION="20120212"
+PATCHSET_REVISION="20120226"
 
 DESCRIPTION="Python is an interpreted, interactive, object-oriented programming language."
 HOMEPAGE="http://www.python.org/"
@@ -53,7 +53,7 @@ RDEPEND="app-arch/bzip2
 			xml? ( >=dev-libs/expat-2 )
 		)"
 DEPEND="${RDEPEND}
-		$([[ "${PV}" == *_pre* ]] && echo "=${CATEGORY}/${PN}-${PV%%.*}*")
+		$([[ "${PV}" == *_pre* ]] && echo ${CATEGORY}/${PN})
 		dev-util/pkgconfig
 		>=sys-devel/autoconf-2.65
 		$([[ "${PV}" =~ ^[[:digit:]]+\.[[:digit:]]+_pre ]] && echo "doc? ( dev-python/sphinx )")
@@ -221,7 +221,7 @@ src_configure() {
 }
 
 src_compile() {
-	emake EPYTHON="python${PV%%.*}" CPPFLAGS="" CFLAGS="" LDFLAGS="" || die "emake failed"
+	emake CPPFLAGS="" CFLAGS="" LDFLAGS="" || die "emake failed"
 }
 
 src_test() {
