@@ -8,7 +8,7 @@ PYTHON_RESTRICTED_ABIS="3.* *-jython"
 DISTUTILS_SRC_TEST="trial buildslave"
 DISTUTILS_DISABLE_TEST_DEPENDENCY="1"
 
-inherit distutils eutils
+inherit distutils user
 
 DESCRIPTION="BuildBot Slave Daemon"
 HOMEPAGE="http://trac.buildbot.net/ http://code.google.com/p/buildbot/ http://pypi.python.org/pypi/buildbot-slave"
