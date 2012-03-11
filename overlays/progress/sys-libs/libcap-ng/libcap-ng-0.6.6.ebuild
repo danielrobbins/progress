@@ -30,7 +30,7 @@ pkg_setup() {
 }
 
 src_prepare() {
-	python_clean_py-compile_files
+	use python && python_clean_py-compile_files
 
 	# Python bindings are built/tested/installed manually.
 	sed -e "/^SUBDIRS/s/ python//" -i bindings/Makefile.am || die "sed failed"
