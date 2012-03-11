@@ -31,14 +31,6 @@ S="${WORKDIR}/${MY_P}"
 
 DOCS="AUTHORS CHANGES"
 
-src_prepare() {
-	distutils_src_prepare
-
-	# Disable failing test.
-	# https://bitbucket.org/birkenfeld/pygments-main/issue/747
-	sed -e "s/test_valid_output/_&/" -i tests/test_html_formatter.py
-}
-
 src_test() {
 	testing() {
 		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" tests/run.py
