@@ -8,7 +8,7 @@ PYTHON_RESTRICTED_ABIS="3.* *-jython"
 DISTUTILS_SRC_TEST="trial"
 DISTUTILS_DISABLE_TEST_DEPENDENCY="1"
 
-inherit distutils eutils
+inherit distutils user
 
 MY_PV="${PV/_p/p}"
 MY_P="${PN}-${MY_PV}"
@@ -20,10 +20,7 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${MY_P}.tar.gz"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86"
-IUSE="examples irc mail manhole test"
-# https://github.com/buildbot/buildbot/commit/f77c47aa5fb9ba56dbe7d16c450990d186e2ff6d
-# https://github.com/buildbot/buildbot/commit/c65e84b007d334de5690738fdab7dd8cae479cce
-# IUSE="doc examples irc mail manhole test"
+IUSE="doc examples irc mail manhole test"
 
 RDEPEND="$(python_abi_depend ">=dev-python/jinja-2.1")
 	$(python_abi_depend dev-python/sqlalchemy)
@@ -40,13 +37,13 @@ RDEPEND="$(python_abi_depend ">=dev-python/jinja-2.1")
 	manhole? ( $(python_abi_depend -e "*-pypy-*" dev-python/twisted-conch) )"
 DEPEND="${DEPEND}
 	$(python_abi_depend dev-python/setuptools)
+	doc? ( $(python_abi_depend dev-python/sphinx) )
 	test? (
 		$(python_abi_depend dev-python/mock)
 		$(python_abi_depend dev-python/twisted-mail)
 		$(python_abi_depend dev-python/twisted-web)
 		$(python_abi_depend dev-python/twisted-words)
 	)"
-#	doc? ( $(python_abi_depend dev-python/sphinx) )
 
 S="${WORKDIR}/${MY_P}"
 
@@ -57,18 +54,18 @@ pkg_setup() {
 
 src_prepare() {
 	distutils_src_prepare
-	sed -e "s/sqlalchemy-migrate ==0.6.0, ==0.6.1, ==0.7.0, ==0.7.1/sqlalchemy-migrate ==0.6, ==0.7/" -i setup.py
+	sed -e "s/sqlalchemy-migrate ==0.6.0, ==0.6.1, ==0.7.0, ==0.7.1, ==0.7.2/sqlalchemy-migrate ==0.6, ==0.7/" -i setup.py
 }
 
 src_compile() {
 	distutils_src_compile
 
-#	if use doc; then
-#		einfo "Generation of documentation"
-#		pushd docs > /dev/null
-#		emake html
-#		popd > /dev/null
-#	fi
+	if use doc; then
+		einfo "Generation of documentation"
+		pushd docs > /dev/null
+		emake html
+		popd > /dev/null
+	fi
 }
 
 src_install() {
@@ -81,12 +78,12 @@ src_install() {
 
 	doman docs/buildbot.1
 
-#	if use doc; then
-#		pushd docs/_build/html > /dev/null
-#		insinto /usr/share/doc/${PF}/html
-#		doins -r [a-z]* _images _static
-#		popd > /dev/null
-#	fi
+	if use doc; then
+		pushd docs/_build/html > /dev/null
+		insinto /usr/share/doc/${PF}/html
+		doins -r [a-z]* _images _static
+		popd > /dev/null
+	fi
 
 	if use examples; then
 		insinto /usr/share/doc/${PF}
