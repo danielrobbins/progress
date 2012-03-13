@@ -13,7 +13,7 @@ PHP_EXT_NAME="xapian"
 PHP_EXT_INI="yes"
 PHP_EXT_OPTIONAL_USE="php"
 
-inherit autotools java-pkg-opt-2 mono php-ext-source-r2 python
+inherit java-pkg-opt-2 mono php-ext-source-r2 python
 
 DESCRIPTION="SWIG and JNI bindings for Xapian"
 HOMEPAGE="http://www.xapian.org/"
@@ -44,9 +44,6 @@ pkg_setup() {
 }
 
 src_prepare() {
-	epatch "${FILESDIR}/fix-LUA_LIB-envvar.patch"
-	eautoreconf
-
 	java-pkg-opt-2_src_prepare
 	if use java; then
 		sed \
