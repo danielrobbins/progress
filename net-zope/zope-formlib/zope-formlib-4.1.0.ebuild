@@ -12,7 +12,7 @@ MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Form generation and validation library for Zope"
 HOMEPAGE="http://pypi.python.org/pypi/zope.formlib"
-SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.zip"
+SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="ZPL"
 SLOT="0"
@@ -34,7 +34,6 @@ RDEPEND="$(python_abi_depend net-zope/namespaces-zope[zope])
 	$(python_abi_depend net-zope/zope-schema)
 	$(python_abi_depend net-zope/zope-security)"
 DEPEND="${RDEPEND}
-	app-arch/unzip
 	$(python_abi_depend dev-python/setuptools)"
 
 S="${WORKDIR}/${MY_P}"
