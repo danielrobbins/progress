@@ -25,5 +25,5 @@ DEPEND="${RDEPEND}
 
 S="${WORKDIR}/${MY_P}"
 
-DOCS="README.txt"
+DOCS="src/zope/deprecation/README.txt"
 PYTHON_MODULES="${PN/-//}"
