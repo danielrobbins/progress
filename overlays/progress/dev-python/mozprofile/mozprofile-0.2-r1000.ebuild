@@ -2,7 +2,6 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="4-python"
-PYTHON_DEPEND="<<[sqlite]>>"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.* *-jython"
 
@@ -19,5 +18,6 @@ IUSE=""
 
 DEPEND="$(python_abi_depend dev-python/manifestdestiny)
 	$(python_abi_depend dev-python/setuptools)
-	$(python_abi_depend virtual/python-json[external])"
+	$(python_abi_depend virtual/python-json[external])
+	$(python_abi_depend virtual/python-sqlite)"
 RDEPEND="${DEPEND}"
