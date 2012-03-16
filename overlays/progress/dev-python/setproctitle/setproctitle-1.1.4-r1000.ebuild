@@ -9,7 +9,7 @@ DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils toolchain-funcs
 
-DESCRIPTION="Allow customization of the process title."
+DESCRIPTION="A library to allow customization of the process title."
 HOMEPAGE="http://code.google.com/p/py-setproctitle/ http://pypi.python.org/pypi/setproctitle"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
@@ -22,7 +22,6 @@ DEPEND=""
 RDEPEND=""
 
 DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES="1"
-DOCS="HISTORY README"
 
 src_prepare() {
 	python_copy_sources
@@ -36,7 +35,7 @@ src_prepare() {
 }
 
 distutils_src_test_pre_hook() {
-	ln -fs pyrun-${PYTHON_ABI} tests/pyrun
+	ln -fs pyrun-${PYTHON_ABI} tests/pyrun$(python_get_version -l --major)
 }
 
 src_test() {
