@@ -37,16 +37,16 @@ http://bugs.python.org/issue12619
 +python$EXE ../../Tools/scripts/h2py.py /usr/include/sys/stropts.h
 --- Makefile.pre.in
 +++ Makefile.pre.in
-@@ -396,7 +396,7 @@
+@@ -366,7 +366,7 @@
  
  # Default target
  all:		build_all
--build_all:	$(BUILDPYTHON) oldsharedmods sharedmods gdbhooks Modules/_testembed
-+build_all:	$(BUILDPYTHON) oldsharedmods sharedmods platformspecificmods gdbhooks Modules/_testembed
+-build_all:	$(BUILDPYTHON) oldsharedmods sharedmods gdbhooks
++build_all:	$(BUILDPYTHON) oldsharedmods sharedmods platformspecificmods gdbhooks
  
  # Compile a binary with gcc profile guided optimization.
  profile-opt:
-@@ -439,6 +439,26 @@
+@@ -411,6 +411,26 @@
  	*) $(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' ./$(BUILDPYTHON) -E $(srcdir)/setup.py build;; \
  	esac
  
@@ -73,18 +73,18 @@ http://bugs.python.org/issue12619
  # Build static library
  # avoid long command lines, same as LIBRARY_OBJS
  $(LIBRARY): $(LIBRARY_OBJS)
-@@ -946,7 +966,7 @@
- 		multiprocessing multiprocessing/dummy \
+@@ -890,7 +910,7 @@
  		unittest unittest/test \
+ 		lib-old \
  		curses pydoc_data $(MACHDEPS)
 -libinstall:	build_all $(srcdir)/Lib/$(PLATDIR) $(srcdir)/Modules/xxmodule.c
 +libinstall:	build_all $(srcdir)/Modules/xxmodule.c
  	@for i in $(SCRIPTDIR) $(LIBDEST); \
  	do \
  		if test ! -d $(DESTDIR)$$i; then \
-@@ -1027,16 +1047,6 @@
+@@ -971,16 +991,6 @@
  	-PYTHONPATH=$(DESTDIR)$(LIBDEST) $(RUNSHARED) \
- 		./$(BUILDPYTHON) -Wi -c "import lib2to3.pygram, lib2to3.patcomp;lib2to3.patcomp.PatternCompiler()"
+ 		./$(BUILDPYTHON) -Wi -t -c "import lib2to3.pygram, lib2to3.patcomp;lib2to3.patcomp.PatternCompiler()"
  
 -# Create the PLATDIR source directory, if one wasn't distributed..
 -$(srcdir)/Lib/$(PLATDIR):
@@ -99,7 +99,7 @@ http://bugs.python.org/issue12619
  python-config: $(srcdir)/Misc/python-config.in
  	# Substitution happens here, as the completely-expanded BINDIR
  	# is not available in configure
-@@ -1330,7 +1340,7 @@
+@@ -1267,7 +1277,7 @@
  Python/thread.o: @THREADHEADERS@
  
  # Declare targets that aren't real files

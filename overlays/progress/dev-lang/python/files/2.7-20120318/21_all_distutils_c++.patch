@@ -2,7 +2,7 @@ http://bugs.python.org/issue1222585
 
 --- Lib/distutils/cygwinccompiler.py
 +++ Lib/distutils/cygwinccompiler.py
-@@ -136,9 +136,13 @@
+@@ -132,9 +132,13 @@
          self.set_executables(compiler='gcc -mcygwin -O -Wall',
                               compiler_so='gcc -mcygwin -mdll -O -Wall',
                               compiler_cxx='g++ -mcygwin -O -Wall',
@@ -17,8 +17,8 @@ http://bugs.python.org/issue1222585
  
          # cygwin and mingw32 need different sets of libraries
          if self.gcc_version == "2.91.57":
-@@ -162,8 +166,12 @@
-                 raise CompileError(msg)
+@@ -160,8 +164,12 @@
+                 raise CompileError, msg
          else: # for other files use the C-compiler
              try:
 -                self.spawn(self.compiler_so + cc_args + [src, '-o', obj] +
@@ -29,10 +29,10 @@ http://bugs.python.org/issue1222585
 +                else:
 +                    self.spawn(self.compiler_so + cc_args + [src, '-o', obj] +
 +                               extra_postargs)
-             except DistutilsExecError as msg:
-                 raise CompileError(msg)
+             except DistutilsExecError, msg:
+                 raise CompileError, msg
  
-@@ -294,10 +302,15 @@
+@@ -322,10 +330,15 @@
          self.set_executables(compiler='gcc -mno-cygwin -O -Wall',
                               compiler_so='gcc -mno-cygwin -mdll -O -Wall',
                               compiler_cxx='g++ -mno-cygwin -O -Wall',
@@ -51,7 +51,7 @@ http://bugs.python.org/issue1222585
          # (-mthreads: Support thread-safe exception handling on `Mingw32')
 --- Lib/distutils/emxccompiler.py
 +++ Lib/distutils/emxccompiler.py
-@@ -63,8 +63,12 @@
+@@ -65,8 +65,12 @@
          # XXX optimization, warnings etc. should be customizable.
          self.set_executables(compiler='gcc -Zomf -Zmt -O3 -fomit-frame-pointer -mprobe -Wall',
                               compiler_so='gcc -Zomf -Zmt -O3 -fomit-frame-pointer -mprobe -Wall',
@@ -65,8 +65,8 @@ http://bugs.python.org/issue1222585
  
          # want the gcc library statically linked (so that we don't have
          # to distribute a version dependent on the compiler we have)
-@@ -81,8 +85,12 @@
-                 raise CompileError(msg)
+@@ -83,8 +87,12 @@
+                 raise CompileError, msg
          else: # for other files use the C-compiler
              try:
 -                self.spawn(self.compiler_so + cc_args + [src, '-o', obj] +
@@ -77,28 +77,29 @@ http://bugs.python.org/issue1222585
 +                else:
 +                    self.spawn(self.compiler_so + cc_args + [src, '-o', obj] +
 +                               extra_postargs)
-             except DistutilsExecError as msg:
-                 raise CompileError(msg)
+             except DistutilsExecError, msg:
+                 raise CompileError, msg
  
 --- Lib/distutils/sysconfig.py
 +++ Lib/distutils/sysconfig.py
-@@ -155,9 +155,12 @@
+@@ -150,10 +150,12 @@
      varies across Unices and is stored in Python's Makefile.
      """
      if compiler.compiler_type == "unix":
 -        (cc, cxx, opt, cflags, ccshared, ldshared, so_ext, ar, ar_flags) = \
 -            get_config_vars('CC', 'CXX', 'OPT', 'CFLAGS',
--                            'CCSHARED', 'LDSHARED', 'SO', 'AR', 'ARFLAGS')
+-                            'CCSHARED', 'LDSHARED', 'SO', 'AR',
+-                            'ARFLAGS')
 +        (cc, cxx, ccshared, ldshared, ldcxxshared, so_ext, ar, ar_flags) = \
-+            get_config_vars('CC', 'CXX', 'CCSHARED', 'LDSHARED',
-+                            'LDCXXSHARED', 'SO', 'AR', 'ARFLAGS')
++            get_config_vars('CC', 'CXX', 'CCSHARED', 'LDSHARED', 'LDCXXSHARED',
++                            'SO', 'AR', 'ARFLAGS')
 +
 +        cflags = ''
 +        cxxflags = ''
  
          newcc = None
          if 'CC' in os.environ:
-@@ -195,19 +198,27 @@
+@@ -191,19 +193,27 @@
              cxx = os.environ['CXX']
          if 'LDSHARED' in os.environ:
              ldshared = os.environ['LDSHARED']
@@ -127,7 +128,7 @@ http://bugs.python.org/issue1222585
          if 'AR' in os.environ:
              ar = os.environ['AR']
          if 'ARFLAGS' in os.environ:
-@@ -216,13 +227,17 @@
+@@ -212,13 +222,17 @@
              archiver = ar + ' ' + ar_flags
  
          cc_cmd = cc + ' ' + cflags
@@ -146,17 +147,17 @@ http://bugs.python.org/issue1222585
              archiver=archiver)
  
          compiler.shared_lib_extension = so_ext
-@@ -555,7 +570,7 @@
-                 for key in ('LDFLAGS', 'BASECFLAGS',
+@@ -530,7 +544,7 @@
+                 for key in ('LDFLAGS', 'BASECFLAGS', 'LDSHARED',
                          # a number of derived variables. These need to be
                          # patched up as well.
 -                        'CFLAGS', 'PY_CFLAGS', 'BLDSHARED'):
 +                        'CFLAGS', 'CXXFLAGS', 'PY_CFLAGS', 'BLDSHARED'):
                      flags = _config_vars[key]
-                     flags = re.sub('-arch\s+\w+\s', ' ', flags, re.ASCII)
+                     flags = re.sub('-arch\s+\w+\s', ' ', flags)
                      flags = re.sub('-isysroot [^ \t]*', ' ', flags)
-@@ -574,7 +589,7 @@
-                     for key in ('LDFLAGS', 'BASECFLAGS',
+@@ -549,7 +563,7 @@
+                     for key in ('LDFLAGS', 'BASECFLAGS', 'LDSHARED',
                          # a number of derived variables. These need to be
                          # patched up as well.
 -                        'CFLAGS', 'PY_CFLAGS', 'BLDSHARED'):
@@ -164,9 +165,18 @@ http://bugs.python.org/issue1222585
  
                          flags = _config_vars[key]
                          flags = re.sub('-arch\s+\w+\s', ' ', flags)
+@@ -573,7 +587,7 @@
+                         for key in ('LDFLAGS', 'BASECFLAGS', 'LDSHARED',
+                              # a number of derived variables. These need to be
+                              # patched up as well.
+-                            'CFLAGS', 'PY_CFLAGS', 'BLDSHARED'):
++                            'CFLAGS', 'CXXFLAGS', 'PY_CFLAGS', 'BLDSHARED'):
+ 
+                             flags = _config_vars[key]
+                             flags = re.sub('-isysroot\s+\S+(\s|$)', ' ', flags)
 --- Lib/distutils/unixccompiler.py
 +++ Lib/distutils/unixccompiler.py
-@@ -111,14 +111,17 @@
+@@ -114,14 +114,17 @@
      # are pretty generic; they will probably have to be set by an outsider
      # (eg. using information discovered by the sysconfig about building
      # Python extensions).
@@ -192,7 +202,7 @@ http://bugs.python.org/issue1222585
                    }
  
      if sys.platform[:6] == "darwin":
-@@ -167,11 +170,18 @@
+@@ -171,11 +174,18 @@
  
      def _compile(self, obj, src, ext, cc_args, extra_postargs, pp_opts):
          compiler_so = self.compiler_so
@@ -210,10 +220,10 @@ http://bugs.python.org/issue1222585
 +            else:
 +                self.spawn(compiler_so + cc_args + [src, '-o', obj] +
 +                           extra_postargs)
-         except DistutilsExecError as msg:
-             raise CompileError(msg)
+         except DistutilsExecError, msg:
+             raise CompileError, msg
  
-@@ -229,22 +239,16 @@
+@@ -232,23 +242,16 @@
                  ld_args.extend(extra_postargs)
              self.mkpath(os.path.dirname(output_filename))
              try:
@@ -236,7 +246,8 @@ http://bugs.python.org/issue1222585
 -                    if os.path.basename(linker[0]) == "env":
 -                        i = 1
 -                        while '=' in linker[i]:
--                            i += 1
+-                            i = i + 1
+-
 -                    linker[i] = self.compiler_cxx[i]
 +                    if target_desc == CCompiler.EXECUTABLE:
 +                        linker = self.linker_exe[:]
@@ -247,12 +258,12 @@ http://bugs.python.org/issue1222585
                      linker = _darwin_compiler_fixup(linker, ld_args)
 --- Makefile.pre.in
 +++ Makefile.pre.in
-@@ -436,7 +436,7 @@
+@@ -408,7 +408,7 @@
  # Build the shared modules
  sharedmods: $(BUILDPYTHON)
  	@case $$MAKEFLAGS in \
 -	*) $(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' ./$(BUILDPYTHON) -E $(srcdir)/setup.py build;; \
-+	*) $(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' CFLAGS='$(PY_CFLAGS)' ./$(BUILDPYTHON) -E $(srcdir)/setup.py build;; \
++	*) $(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' CFLAGS='$(CFLAGS)' ./$(BUILDPYTHON) -E $(srcdir)/setup.py build;; \
  	esac
  
  # Build the platform-specific modules

@@ -1,6 +1,6 @@
 --- Lib/site.py
 +++ Lib/site.py
-@@ -289,6 +289,7 @@
+@@ -304,6 +304,7 @@
                                          "python" + sys.version[:3],
                                          "site-packages"))
              sitepackages.append(os.path.join(prefix, "lib", "site-python"))
@@ -10,7 +10,7 @@
              sitepackages.append(os.path.join(prefix, "lib", "site-packages"))
 --- Lib/test/test_site.py
 +++ Lib/test/test_site.py
-@@ -236,7 +236,7 @@
+@@ -241,7 +241,7 @@
              self.assertEqual(dirs[2], wanted)
          elif os.sep == '/':
              # OS X non-framwework builds, Linux, FreeBSD, etc
