@@ -1,6 +1,6 @@
 --- Makefile.pre.in
 +++ Makefile.pre.in
-@@ -436,7 +436,6 @@
+@@ -408,7 +408,6 @@
  # Build the shared modules
  sharedmods: $(BUILDPYTHON)
  	@case $$MAKEFLAGS in \
