@@ -11,7 +11,7 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="39ddcc5c7fb9"
+	EHG_REVISION="c1191cbc7b37"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
@@ -51,10 +51,10 @@ RDEPEND="app-arch/bzip2
 				>=dev-lang/tk-8.0
 				dev-tcltk/blt
 			)
-			xml? ( >=dev-libs/expat-2 )
+			xml? ( >=dev-libs/expat-2.1.0_beta )
 		)"
 DEPEND="${RDEPEND}
-		$([[ "${PV}" == *_pre* ]] && echo "=${CATEGORY}/${PN}-${PV%%.*}*")
+		$([[ "${PV}" == *_pre* ]] && echo ${CATEGORY}/${PN})
 		dev-util/pkgconfig
 		>=sys-devel/autoconf-2.65
 		$([[ "${PV}" =~ ^[[:digit:]]+\.[[:digit:]]+_pre ]] && echo "doc? ( dev-python/sphinx )")
@@ -132,7 +132,7 @@ src_prepare() {
 		setup.py || die "sed failed to replace @@GENTOO_LIBDIR@@"
 
 	# Disable ABI flags.
-	sed -e "s/ABIFLAGS=\"\${ABIFLAGS}.*\"/:/" -i configure.in || die "sed failed"
+	sed -e "s/ABIFLAGS=\"\${ABIFLAGS}.*\"/:/" -i configure.ac || die "sed failed"
 
 	eautoconf
 	eautoheader
@@ -221,7 +221,7 @@ src_configure() {
 }
 
 src_compile() {
-	emake EPYTHON="python${PV%%.*}" CPPFLAGS="" CFLAGS="" LDFLAGS="" || die "emake failed"
+	emake CPPFLAGS="" CFLAGS="" LDFLAGS="" || die "emake failed"
 
 	if use doc; then
 		einfo "Generation of documentation"
