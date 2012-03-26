@@ -10,9 +10,12 @@ DISTUTILS_DISABLE_TEST_DEPENDENCY="1"
 
 inherit distutils user
 
+MY_PV="${PV/_p/p}"
+MY_P="${PN}-${MY_PV}"
+
 DESCRIPTION="BuildBot Slave Daemon"
 HOMEPAGE="http://trac.buildbot.net/ http://code.google.com/p/buildbot/ http://pypi.python.org/pypi/buildbot-slave"
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${MY_P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
@@ -25,6 +28,8 @@ RDEPEND="$(python_abi_depend dev-python/setuptools)
 	!<dev-util/buildbot-0.8.3"
 DEPEND="${RDEPEND}
 	test? ( $(python_abi_depend dev-python/mock) )"
+
+S="${WORKDIR}/${MY_P}"
 
 PYTHON_MODULES="buildslave"
 
