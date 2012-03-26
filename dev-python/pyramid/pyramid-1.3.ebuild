@@ -3,7 +3,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5 3.* *-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="2.5 3.1 *-jython"
 DISTUTILS_SRC_TEST="setup.py"
 
 inherit distutils
@@ -19,27 +19,24 @@ IUSE="doc test"
 
 RDEPEND="$(python_abi_depend dev-python/chameleon)
 	$(python_abi_depend dev-python/mako)
-	$(python_abi_depend dev-python/paste)
 	$(python_abi_depend dev-python/pastedeploy)
-	$(python_abi_depend dev-python/pastescript)
 	$(python_abi_depend dev-python/repoze-lru)
 	$(python_abi_depend dev-python/setuptools)
 	$(python_abi_depend dev-python/translationstring)
 	$(python_abi_depend dev-python/venusian)
 	$(python_abi_depend dev-python/webob)
-	$(python_abi_depend net-zope/zope-component)
 	$(python_abi_depend net-zope/zope-deprecation)
-	$(python_abi_depend net-zope/zope-interface)
-	$(python_abi_depend virtual/python-json)"
+	$(python_abi_depend net-zope/zope-interface)"
 DEPEND="${RDEPEND}
 	doc? (
-		$(python_abi_depend dev-python/docutils)
-		$(python_abi_depend dev-python/repoze-sphinx-autointerface)
-		$(python_abi_depend dev-python/sphinx)
+		dev-python/docutils[python_abis_2.7]
+		dev-python/repoze-sphinx-autointerface[python_abis_2.7]
+		dev-python/sphinx[python_abis_2.7]
 	)
 	test? (
 		$(python_abi_depend dev-python/virtualenv)
 		$(python_abi_depend dev-python/webtest)
+		$(python_abi_depend -i "2.*-cpython" net-zope/zope-component)
 	)"
 
 DOCS="BFG_HISTORY.txt CHANGES.txt HISTORY.txt README.rst TODO.txt"
@@ -48,7 +45,7 @@ src_prepare() {
 	distutils_src_prepare
 
 	# Fix Sphinx theme.
-	sed -e "/# Add and use Pylons theme/,+23d" -i docs/conf.py || die "sed failed"
+	sed -e "/# Add and use Pylons theme/,+36d" -i docs/conf.py || die "sed failed"
 }
 
 src_compile() {
@@ -56,7 +53,7 @@ src_compile() {
 
 	if use doc; then
 		einfo "Generation of documentation"
-		python_execute "$(PYTHON -f)" setup.py build_sphinx || die "Generation of documentation failed"
+		python_execute "$(PYTHON 2.7)" setup.py build_sphinx || die "Generation of documentation failed"
 	fi
 }
 
