@@ -22,6 +22,7 @@ DEPEND=""
 RDEPEND=""
 
 DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES="1"
+DOCS="HISTORY.rst README.rst"
 
 src_prepare() {
 	python_copy_sources
