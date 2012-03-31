@@ -4,6 +4,8 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
+# ast module is absent in CPython 2.5.
+PYTHON_RESTRICTED_ABIS="2.5-cpython"
 
 inherit distutils
 
