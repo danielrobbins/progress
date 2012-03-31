@@ -23,7 +23,10 @@ IUSE="debug doc examples mxdatetime"
 RDEPEND=">=dev-db/postgresql-base-8.1
 	mxdatetime? ( $(python_abi_depend -e "3.* *-pypy-*" dev-python/egenix-mx-base) )"
 DEPEND="${RDEPEND}
-	doc? ( $(python_abi_depend dev-python/sphinx) )"
+	doc? (
+		=dev-lang/python-2*
+		$(python_abi_depend dev-python/sphinx)
+	)"
 RESTRICT="test"
 
 S="${WORKDIR}/${MY_P}"
@@ -37,6 +40,7 @@ src_prepare() {
 	epatch "${FILESDIR}/${PN}-2.0.9-round-solaris.patch"
 	epatch "${FILESDIR}/${PN}-2.4.2-setup.py.patch"
 
+	# http://psycopg.lighthouseapp.com/projects/62710/tickets/107
 	python_convert_shebangs 2 doc/src/tools/stitch_text.py
 
 	if use debug; then
