@@ -23,7 +23,10 @@ RDEPEND="$(python_abi_depend dev-python/namespaces-sphinxcontrib)
 	$(python_abi_depend ">=dev-python/sphinx-1.0")"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
-	test? ( $(python_abi_depend -e "${PYTHON_TESTS_RESTRICTED_ABIS}" dev-python/pyquery) )"
+	test? ( 
+		$(python_abi_depend -e "${PYTHON_TESTS_RESTRICTED_ABIS}" dev-python/mock)
+		$(python_abi_depend -e "${PYTHON_TESTS_RESTRICTED_ABIS}" dev-python/pyquery)
+	)"
 
 PYTHON_MODULES="${PN/-//}.py"
 
