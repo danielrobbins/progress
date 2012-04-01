@@ -23,7 +23,7 @@ IUSE="doc examples numpy"
 DEPEND="numpy? ( $(python_abi_depend dev-python/numpy) )"
 RDEPEND="${DEPEND}"
 
-S="${WORKDIR}/${MY_PN}-${PV%_*}"
+S="${WORKDIR}/${MY_P}"
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 
@@ -32,7 +32,7 @@ PYTHON_MODULES="Cython cython.py pyximport"
 
 src_test() {
 	testing() {
-		"$(PYTHON)" runtests.py -vv --work-dir tests-${PYTHON_ABI}
+		python_execute "$(PYTHON)" runtests.py -vv --work-dir tests-${PYTHON_ABI}
 	}
 	python_execute_function testing
 }
