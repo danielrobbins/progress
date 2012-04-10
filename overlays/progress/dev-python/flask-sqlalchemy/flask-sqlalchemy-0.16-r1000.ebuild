@@ -28,4 +28,4 @@ DEPEND="${RDEPEND}
 
 S="${WORKDIR}/${MY_P}"
 
-PYTHON_MODULES="flaskext/sqlalchemy.py"
+PYTHON_MODULES="flask_sqlalchemy.py"
