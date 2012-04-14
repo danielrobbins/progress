@@ -5,7 +5,7 @@ EAPI="3"
 WANT_AUTOMAKE="none"
 WANT_LIBTOOL="none"
 
-inherit autotools eutils flag-o-matic multilib python toolchain-funcs
+inherit autotools eutils flag-o-matic multilib pax-utils python toolchain-funcs
 
 if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
@@ -24,8 +24,10 @@ HOMEPAGE="http://www.python.org/"
 if [[ "${PV}" == *_pre* ]]; then
 	SRC_URI=""
 else
-	SRC_URI="http://www.python.org/ftp/python/${MY_PV}/${MY_P}.tar.bz2
-		http://people.apache.org/~Arfrever/gentoo/python-gentoo-patches-${MY_PV}$([[ "${PATCHSET_REVISION}" != "0" ]] && echo "-r${PATCHSET_REVISION}").tar.bz2"
+	SRC_URI="http://www.python.org/ftp/python/${MY_PV}/${MY_P}.tar.bz2"
+	if [[ "${PR#r}" -lt 1000 ]]; then
+		SRC_URI+=" http://people.apache.org/~Arfrever/gentoo/python-gentoo-patches-${MY_PV}$([[ "${PATCHSET_REVISION}" != "0" ]] && echo "-r${PATCHSET_REVISION}").tar.bz2"
+	fi
 fi
 
 LICENSE="PSF-2"
@@ -105,6 +107,8 @@ src_prepare() {
 	local patchset_dir
 	if [[ "${PV}" == *_pre* ]]; then
 		patchset_dir="${FILESDIR}/${SLOT}-${PATCHSET_REVISION}"
+	elif [[ "${PR#r}" -ge 1000 ]]; then
+		patchset_dir="${FILESDIR}/${PV}-${PATCHSET_REVISION}"
 	else
 		patchset_dir="${WORKDIR}/${MY_PV}"
 	fi
@@ -197,6 +201,8 @@ src_configure() {
 
 src_compile() {
 	emake || die "emake failed"
+
+	pax-mark m libpython${SLOT}.so.1.0 python
 }
 
 src_test() {
@@ -219,7 +225,7 @@ src_test() {
 	local skipped_tests="__all__ contextlib decimal distutils fractions json smtplib tcl tokenize zlib"
 
 	for test in ${skipped_tests}; do
-		mv "${S}/Lib/test/test_${test}.py" "${T}"
+		mv Lib/test/test_${test}.py "${T}"
 	done
 
 	# Rerun failed tests in verbose mode (regrtest -w).
@@ -227,7 +233,7 @@ src_test() {
 	local result="$?"
 
 	for test in ${skipped_tests}; do
-		mv "${T}/test_${test}.py" "${S}/Lib/test/test_${test}.py"
+		mv "${T}/test_${test}.py" Lib/test
 	done
 
 	elog "The following tests have been skipped:"
@@ -277,7 +283,7 @@ src_install() {
 
 	if use examples; then
 		insinto /usr/share/doc/${PF}/examples
-		doins -r "${S}/Tools" || die "doins failed"
+		doins -r Tools || die "doins failed"
 	fi
 
 	newconfd "${FILESDIR}/pydoc.conf" pydoc-${SLOT} || die "newconfd failed"
@@ -313,9 +319,11 @@ pkg_postinst() {
 		ewarn
 		ewarn "\e[1;31m************************************************************************\e[0m"
 		ewarn
-		ewarn "You have just upgraded from an older version of Python."
-		ewarn "You should switch active version of Python ${PV%%.*} and run"
-		ewarn "'python-updater \${options}' to rebuild Python modules."
+		ewarn "You have just upgraded from an older version of Python. You should:"
+		ewarn "1. Switch active version of Python ${PV%%.*} using 'eselect python'"
+		ewarn "2. Update PYTHON_ABIS variable in make.conf"
+		ewarn "3. Run 'emerge --update --deep --newuse world'"
+		ewarn "4. Run 'python-updater [options]' to rebuild potential remaining Python-related packages"
 		ewarn
 		ewarn "\e[1;31m************************************************************************\e[0m"
 		ewarn
