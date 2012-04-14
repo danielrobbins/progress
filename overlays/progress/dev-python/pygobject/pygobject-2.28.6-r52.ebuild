@@ -4,11 +4,9 @@
 
 EAPI="4-python"
 GCONF_DEBUG="no"
-GNOME_TARBALL_SUFFIX="xz"
 GNOME2_LA_PUNT="yes"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 *-jython *-pypy-*"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 
 # XXX: Is the alternatives stuff needed anymore?
 inherit alternatives autotools gnome2 multilib python virtualx
@@ -42,8 +40,6 @@ RDEPEND="${COMMON_DEPEND}
 PDEPEND="introspection? ( dev-python/pygobject:3 )"
 
 pkg_setup() {
-	python_pkg_setup
-
 	DOCS="AUTHORS ChangeLog* NEWS README"
 	# --disable-introspection and --disable-cairo because we use pygobject:3
 	# for introspection support
@@ -53,6 +49,7 @@ pkg_setup() {
 		--disable-cairo
 		$(use_enable doc docs)
 		$(use_with libffi ffi)"
+	python_pkg_setup
 }
 
 src_prepare() {
@@ -68,9 +65,13 @@ src_prepare() {
 	# Disable tests that fail
 	epatch "${FILESDIR}/${PN}-2.28.3-disable-failing-tests.patch"
 
+	# Fix warning spam
+	epatch "${FILESDIR}/${P}-set_qdata.patch"
+	epatch "${FILESDIR}/${P}-gio-types-2.32.patch"
+
+	# Support Python 3.
 	epatch "${FILESDIR}/${P}-python-3.patch"
 	epatch "${FILESDIR}/${P}-python-3-codegen.patch"
-
 	sed -e "s/print datetime.date.today()/print(datetime.date.today())/" -i docs/Makefile.am
 
 	python_clean_py-compile_files
