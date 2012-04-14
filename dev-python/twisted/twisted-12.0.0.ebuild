@@ -33,6 +33,9 @@ src_prepare(){
 	# Respect TWISTED_DISABLE_WRITING_OF_PLUGIN_CACHE variable.
 	epatch "${FILESDIR}/${PN}-9.0.0-respect_TWISTED_DISABLE_WRITING_OF_PLUGIN_CACHE.patch"
 
+	# Fix a test, which fails in some timezones.
+	epatch "${FILESDIR}/${P}-fix_test_timeFormatting.patch"
+
 	if [[ "${EUID}" -eq 0 ]]; then
 		# Disable tests failing with root permissions.
 		sed \
