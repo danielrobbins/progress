@@ -48,7 +48,7 @@ waf-utils_src_configure() {
 waf-utils_src_compile() {
 	debug-print-function ${FUNCNAME} "$@"
 
-	local jobs=$(echo -j1 ${MAKEOPTS} | sed -r "s/.*(-j\s*|--jobs=)([0-9]+).*/--jobs=\2/" )
+	local jobs=$(makeopts_jobs)
 	echo "\"${WAF_BINARY}\" build ${jobs}"
 	"${WAF_BINARY}" ${jobs} || die "build failed"
 }
