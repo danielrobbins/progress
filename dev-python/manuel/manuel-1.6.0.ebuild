@@ -3,7 +3,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.*"
+PYTHON_RESTRICTED_ABIS="2.5"
 DISTUTILS_SRC_TEST="setup.py"
 
 inherit distutils
@@ -17,8 +17,9 @@ SLOT="0"
 KEYWORDS="~alpha amd64 ~ppc sparc x86"
 IUSE="test"
 
-DEPEND="$(python_abi_depend dev-python/setuptools)
+RDEPEND="$(python_abi_depend dev-python/six)"
+DEPEND="${RDEPEND}
+	$(python_abi_depend dev-python/setuptools)
 	test? ( $(python_abi_depend net-zope/zope-testing) )"
-RDEPEND=""
 
 DOCS="CHANGES.txt"
