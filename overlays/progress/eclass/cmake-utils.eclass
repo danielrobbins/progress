@@ -63,7 +63,7 @@ EXPORT_FUNCTIONS ${CMAKE_EXPF}
 : ${DESCRIPTION:="Based on the ${ECLASS} eclass"}
 
 if [[ ${PN} != cmake ]]; then
-	CMAKEDEPEND+=">=dev-util/cmake-${CMAKE_MIN_VERSION}"
+	CMAKEDEPEND+=" >=dev-util/cmake-${CMAKE_MIN_VERSION}"
 fi
 
 CMAKEDEPEND+=" userland_GNU? ( >=sys-apps/findutils-4.4.0 )"
@@ -160,6 +160,7 @@ _check_build_dir() {
 	else
 		: ${CMAKE_BUILD_DIR:=${WORKDIR}/${P}_build}
 	fi
+	mkdir -p "${CMAKE_BUILD_DIR}"
 	echo ">>> Working in BUILD_DIR: \"$CMAKE_BUILD_DIR\""
 }
 # @FUNCTION: cmake-utils_use_with
@@ -311,7 +312,7 @@ enable_cmake-utils_src_configure() {
 	fi
 
 	# Prepare Gentoo override rules (set valid compiler, append CPPFLAGS)
-	local build_rules=${T}/gentoo_rules.cmake
+	local build_rules=${CMAKE_BUILD_DIR}/gentoo_rules.cmake
 	cat > "${build_rules}" <<- _EOF_
 		SET (CMAKE_C_COMPILER $(type -P $(tc-getCC)) CACHE FILEPATH "C compiler" FORCE)
 		SET (CMAKE_C_COMPILE_OBJECT "<CMAKE_C_COMPILER> <DEFINES> ${CPPFLAGS} <FLAGS> -o <OBJECT> -c <SOURCE>" CACHE STRING "C compile command" FORCE)
@@ -345,7 +346,7 @@ enable_cmake-utils_src_configure() {
 	fi
 
 	# Common configure parameters (invariants)
-	local common_config=${T}/gentoo_common_config.cmake
+	local common_config=${CMAKE_BUILD_DIR}/gentoo_common_config.cmake
 	local libdir=$(get_libdir)
 	cat > "${common_config}" <<- _EOF_
 		SET (LIB_SUFFIX ${libdir/lib} CACHE STRING "library path suffix" FORCE)
@@ -376,7 +377,6 @@ enable_cmake-utils_src_configure() {
 		"${MYCMAKEARGS}"
 	)
 
-	mkdir -p "${CMAKE_BUILD_DIR}"
 	pushd "${CMAKE_BUILD_DIR}" > /dev/null
 	debug-print "${LINENO} ${ECLASS} ${FUNCNAME}: mycmakeargs is ${mycmakeargs_local[*]}"
 	echo "${CMAKE_BINARY}" "${cmakeargs[@]}" "${CMAKE_USE_DIR}"
