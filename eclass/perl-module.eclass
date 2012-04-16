@@ -196,8 +196,8 @@ perl-module_src_test() {
 	debug-print-function $FUNCNAME "$@"
 	if has 'do' ${SRC_TEST} || has 'parallel' ${SRC_TEST} ; then
 		if has "${TEST_VERBOSE:-0}" 0 && has 'parallel' ${SRC_TEST} ; then
-			export HARNESS_OPTIONS=j$(echo -j1 ${MAKEOPTS} | sed -r "s/.*(-j\s*|--jobs=)([0-9]+).*/\2/" )
-			einfo "Test::Harness Jobs=${HARNESS_OPTIONS}"
+			export HARNESS_OPTIONS=j$(makeopts_jobs)
+			einfo "Test::Harness Jobs=$(makeopts_jobs)"
 		fi
 		${perlinfo_done} || perl_set_version
 		if [[ -f Build ]] ; then
