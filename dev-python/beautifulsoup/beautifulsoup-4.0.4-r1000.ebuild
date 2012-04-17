@@ -11,7 +11,7 @@ inherit distutils
 MY_PN="beautifulsoup4"
 MY_P="${MY_PN}-${PV/_beta/b}"
 
-DESCRIPTION="HTML/XML parser for quick-turnaround applications like screen-scraping."
+DESCRIPTION="Beautiful Soup is a Python library for pulling data out of HTML and XML files"
 HOMEPAGE="http://www.crummy.com/software/BeautifulSoup/ https://launchpad.net/beautifulsoup http://pypi.python.org/pypi/beautifulsoup4"
 SRC_URI="http://www.crummy.com/software/BeautifulSoup/bs4/download/4.0/${MY_P}.tar.gz"
 
