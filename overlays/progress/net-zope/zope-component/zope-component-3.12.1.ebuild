@@ -12,7 +12,7 @@ MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Zope Component Architecture"
 HOMEPAGE="http://pypi.python.org/pypi/zope.component"
-SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
+SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.zip"
 
 LICENSE="ZPL"
 SLOT="0"
@@ -29,6 +29,7 @@ RDEPEND="$(python_abi_depend net-zope/namespaces-zope[zope])
 	$(python_abi_depend net-zope/zope-proxy)
 	$(python_abi_depend net-zope/zope-schema)"
 DEPEND="${RDEPEND}
+	app-arch/unzip
 	$(python_abi_depend dev-python/setuptools)"
 PDEPEND="$(python_abi_depend net-zope/zope-security)"
 
