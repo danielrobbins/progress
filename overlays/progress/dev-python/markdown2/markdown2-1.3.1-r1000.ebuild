@@ -9,7 +9,7 @@ PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 
 inherit distutils
 
-DESCRIPTION="A fast and complete Python implementaion of Markdown"
+DESCRIPTION="A fast and complete Python implementation of Markdown"
 HOMEPAGE="https://github.com/trentm/python-markdown2 http://pypi.python.org/pypi/markdown2"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.zip"
 
