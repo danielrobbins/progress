@@ -13,7 +13,7 @@ MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="zope.interface extension for defining data schemas"
 HOMEPAGE="http://pypi.python.org/pypi/zope.schema"
-SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
+SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.zip"
 
 LICENSE="ZPL"
 SLOT="0"
@@ -21,11 +21,13 @@ KEYWORDS="~alpha amd64 ~ppc sparc x86"
 IUSE="test"
 
 RDEPEND="$(python_abi_depend net-zope/namespaces-zope[zope])
+	$(python_abi_depend -i "2.6" dev-python/ordereddict)
 	$(python_abi_depend dev-python/six)
 	$(python_abi_depend net-zope/zope-event)
 	$(python_abi_depend ">=net-zope/zope-interface-3.6.0")
 	$(python_abi_depend net-zope/zope-i18nmessageid)"
 DEPEND="${RDEPEND}
+	app-arch/unzip
 	$(python_abi_depend dev-python/setuptools)
 	test? ( $(python_abi_depend net-zope/zope-testing) )"
 
