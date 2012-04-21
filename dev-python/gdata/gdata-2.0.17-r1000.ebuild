@@ -9,11 +9,9 @@ PYTHON_RESTRICTED_ABIS="3.*"
 
 inherit distutils
 
-MY_P="gdata-${PV}"
-
 DESCRIPTION="Python client library for Google data APIs"
 HOMEPAGE="http://code.google.com/p/gdata-python-client/ http://pypi.python.org/pypi/gdata"
-SRC_URI="http://gdata-python-client.googlecode.com/files/${MY_P}.tar.gz"
+SRC_URI="http://gdata-python-client.googlecode.com/files/${P}.tar.gz"
 
 LICENSE="Apache-2.0"
 SLOT="0"
@@ -23,17 +21,15 @@ IUSE="examples"
 DEPEND=""
 RDEPEND=""
 
-S="${WORKDIR}/${MY_P}"
-
 DOCS="RELEASE_NOTES.txt"
 PYTHON_MODULES="atom gdata"
 
 src_test() {
 	testing() {
-		PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" tests/run_data_tests.py -v || return 1
+		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" tests/run_data_tests.py -v || return
 
 		# run_service_tests.py requires interaction (and a valid Google account), so skip it.
-		# PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" tests/run_service_tests.py -v || return 1
+		# python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" tests/run_service_tests.py -v || return
 	}
 	python_execute_function testing
 }
