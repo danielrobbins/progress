@@ -18,7 +18,7 @@ KEYWORDS="amd64 x86"
 IUSE=""
 
 RDEPEND="$(python_abi_depend dev-python/pyasn1)
-	$(python_abi_depend ">=dev-python/pysnmp-4.2.1")"
+	$(python_abi_depend ">=dev-python/pysnmp-4.2.2")"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
