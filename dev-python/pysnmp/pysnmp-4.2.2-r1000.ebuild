@@ -17,8 +17,8 @@ SLOT="0"
 KEYWORDS="amd64 ~ia64 ~ppc sparc x86"
 IUSE="examples"
 
-RDEPEND="$(python_abi_depend ">=dev-python/pyasn1-0.0.14")
-	$(python_abi_depend ">=dev-python/pycrypto-2.3")"
+RDEPEND="$(python_abi_depend ">=dev-python/pyasn1-0.1.2")
+	$(python_abi_depend ">=dev-python/pycrypto-2.4.1")"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
