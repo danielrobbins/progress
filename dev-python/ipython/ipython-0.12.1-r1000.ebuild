@@ -6,8 +6,6 @@ EAPI="4-python"
 PYTHON_DEPEND="<<[{*-cpython}readline?,{*-cpython}sqlite?]>>"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 *-jython"
-# IPython.core.tests.test_magic_terminal.test_cpaste() fails with CPython 3.1.
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.1"
 
 inherit distutils elisp-common eutils virtualx
 
@@ -55,8 +53,8 @@ PYTHON_MODULES="IPython"
 
 src_prepare() {
 	distutils_src_prepare
-	epatch "${FILESDIR}/${P}-global_path.patch"
-	epatch "${FILESDIR}/${P}-python3-scripts_versioning.patch"
+	epatch "${FILESDIR}/${PN}-0.12-global_path.patch"
+	epatch "${FILESDIR}/${PN}-0.12-python3-scripts_versioning.patch"
 
 	# Disable failing tests.
 	sed \
