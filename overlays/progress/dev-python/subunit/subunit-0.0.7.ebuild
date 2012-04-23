@@ -34,11 +34,12 @@ src_prepare() {
 
 	epatch "${FILESDIR}/${P}-python-3.patch"
 	epatch "${FILESDIR}/${P}-tests.patch"
+	epatch "${FILESDIR}/${P}-test_test_protocol.patch"
 }
 
 src_test() {
 	testing() {
-		PYTHONPATH="python" "$(PYTHON)" -m testtools.run subunit.test_suite
+		python_execute PYTHONPATH="python" "$(PYTHON)" -m testtools.run subunit.test_suite
 	}
 	python_execute_function testing
 }
