@@ -22,6 +22,13 @@ IUSE=""
 DEPEND=""
 RDEPEND=""
 
+src_prepare() {
+	distutils_src_prepare
+
+	# Avoid ImportError with Python 3 due to not installed testtools/_compat2x.py.
+	sed -e "s/except SyntaxError:/except (ImportError, SyntaxError):/" -i testtools/compat.py || die "sed failed"
+}
+
 src_test() {
 	testing() {
 		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" -m testtools.run testtools.tests.test_suite
