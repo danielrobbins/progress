@@ -10,7 +10,7 @@ inherit distutils
 
 DESCRIPTION="Python package to handle polygonal shapes in 2D"
 HOMEPAGE="http://www.j-raedler.de/projects/polygon/ https://github.com/jraedler/Polygon2"
-SRC_URI="https://github.com/downloads/jraedler/Polygon2/Polygon-${PV}.zip"
+SRC_URI="mirror://github/jraedler/Polygon2/Polygon-${PV}.zip"
 
 LICENSE="LGPL-2"
 SLOT="2"
