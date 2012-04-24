@@ -15,12 +15,13 @@ SRC_URI="mirror://sourceforge/pymilter/${P}.tar.gz"
 LICENSE="PSF-2"
 SLOT="0"
 KEYWORDS="amd64 x86"
-IUSE=""
+IUSE="test"
 
-DEPEND="$(python_abi_depend dev-python/authres)
+RDEPEND="$(python_abi_depend dev-python/authres)
 	$(python_abi_depend -i "2.*" dev-python/pydns:2)
 	$(python_abi_depend -i "3.*" dev-python/pydns:3)"
-RDEPEND="${DEPEND}"
+DEPEND="${RDEPEND}
+	test? ( $(python_abi_depend dev-python/pyyaml) )"
 
 PYTHON_MODULES="spf.py"
 
