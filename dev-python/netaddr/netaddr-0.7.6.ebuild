@@ -10,7 +10,7 @@ inherit distutils
 
 DESCRIPTION="Network address representation and manipulation library"
 HOMEPAGE="https://github.com/drkjam/netaddr http://pypi.python.org/pypi/netaddr"
-SRC_URI="https://github.com/downloads/drkjam/${PN}/${P}.tar.gz"
+SRC_URI="mirror://github/drkjam/${PN}/${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
@@ -29,7 +29,7 @@ src_prepare() {
 
 src_test() {
 	testing() {
-		PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" netaddr/tests/__init__.py
+		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" netaddr/tests/__init__.py
 	}
 	python_execute_function testing
 }
