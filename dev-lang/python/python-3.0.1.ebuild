@@ -56,7 +56,6 @@ RDEPEND="app-arch/bzip2
 		)"
 DEPEND="${RDEPEND}
 		$([[ "${PV}" == *_pre* ]] && echo ${CATEGORY}/${PN})
-		sys-apps/paxctl
 		>=sys-devel/autoconf-2.61
 		$([[ "${PV}" =~ ^[[:digit:]]+\.[[:digit:]]+_pre ]] && echo "doc? ( dev-python/sphinx )")
 		!sys-devel/gcc[libffi]"
@@ -203,7 +202,7 @@ src_configure() {
 src_compile() {
 	emake || die "emake failed"
 
-	pax-mark m libpython${SLOT}.so.1.0 python
+	pax-mark m python
 }
 
 src_test() {
