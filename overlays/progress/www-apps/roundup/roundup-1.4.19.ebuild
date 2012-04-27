@@ -29,5 +29,6 @@ DOCS="CHANGES.txt doc/*.txt"
 
 src_install() {
 	distutils_src_install
-	dohtml doc/*.html
+	rm -fr "${ED}usr/share/doc/${PN}"
+	dohtml -r doc/*
 }
