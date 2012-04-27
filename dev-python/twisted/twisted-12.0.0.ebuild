@@ -47,10 +47,9 @@ src_prepare(){
 
 src_test() {
 	testing() {
-		local exit_status="0"
-		python_execute "$(PYTHON)" setup.py build -b "build-${PYTHON_ABI}" install --root="${T}/tests" --no-compile || die "Installation of tests failed with $(python_get_implementation_and_version)"
+		python_execute "$(PYTHON)" setup.py build -b "build-${PYTHON_ABI}" install --root="${T}/tests-${PYTHON_ABI}" --no-compile || die "Installation of tests failed with $(python_get_implementation_and_version)"
 
-		pushd "${T}/tests${EPREFIX}$(python_get_sitedir)" > /dev/null || die
+		pushd "${T}/tests-${PYTHON_ABI}${EPREFIX}$(python_get_sitedir)" > /dev/null || die
 
 		# Skip broken tests.
 		sed -e "s/test_buildAllTarballs/_&/" -i twisted/python/test/test_release.py || die "sed failed"
@@ -64,17 +63,9 @@ src_test() {
 		# An empty file doesn't work because the tests check for doc strings in all packages.
 		echo "'''plugins stub'''" > twisted/plugins/__init__.py || die
 
-		if ! python_execute PYTHONPATH="." "${T}/tests${EPREFIX}/usr/bin/trial" twisted; then
-			if [[ -n "${TWISTED_DEBUG_TESTS}" ]]; then
-				die "Tests failed with $(python_get_implementation_and_version)"
-			else
-				exit_status="1"
-			fi
-		fi
+		python_execute PYTHONPATH="." "${T}/tests-${PYTHON_ABI}${EPREFIX}/usr/bin/trial" twisted || return
 
 		popd > /dev/null || die
-		rm -fr "${T}/tests"
-		return "${exit_status}"
 	}
 	python_execute_function testing
 }
