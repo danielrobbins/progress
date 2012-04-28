@@ -25,10 +25,10 @@ PYTHON_MODULES="decorator.py"
 
 src_test() {
 	testing() {
-		if [[ "${PYTHON_ABI}" == 3.* ]]; then
-			PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" documentation3.py
+		if [[ "$(python_get_version -l --major)" == "3" ]]; then
+			python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" documentation3.py
 		else
-			PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" documentation.py
+			python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" documentation.py
 		fi
 	}
 	python_execute_function testing
