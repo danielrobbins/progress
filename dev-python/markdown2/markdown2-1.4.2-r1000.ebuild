@@ -4,7 +4,6 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.*"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 
 inherit distutils
@@ -36,7 +35,7 @@ src_test() {
 	cd test
 
 	testing() {
-		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" test.py
+		python_execute PYTHONPATH="../build-${PYTHON_ABI}/lib" "$(PYTHON)" test.py
 	}
 	python_execute_function testing
 }
