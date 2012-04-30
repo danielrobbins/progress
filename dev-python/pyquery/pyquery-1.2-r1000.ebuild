@@ -15,10 +15,11 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~ppc sparc x86"
+KEYWORDS="~alpha amd64 ~arm ~hppa ~ppc sparc x86 ~x86-fbsd"
 IUSE=""
 
-RDEPEND="$(python_abi_depend ">=dev-python/lxml-2.1")
+RDEPEND="$(python_abi_depend dev-python/cssselect)
+	$(python_abi_depend ">=dev-python/lxml-2.1")
 	$(python_abi_depend dev-python/webob)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
@@ -29,7 +30,7 @@ src_install() {
 	distutils_src_install
 
 	delete_tests() {
-		rm -f "${ED}$(python_get_sitedir)/pyquery/"{test.py,tests.txt}
+		rm -f "${ED}$(python_get_sitedir)/pyquery/"{test.html,test.py,tests.txt}
 	}
 	python_execute_function -q delete_tests
 }
