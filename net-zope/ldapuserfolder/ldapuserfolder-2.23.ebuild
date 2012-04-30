@@ -36,8 +36,15 @@ DEPEND="${RDEPEND}
 
 S="${WORKDIR}/${MY_P}"
 
-DOCS="Products/LDAPUserFolder/CHANGES.txt Products/LDAPUserFolder/HISTORY.txt Products/LDAPUserFolder/README.ActiveDirectory.txt Products/LDAPUserFolder/README.txt Products/LDAPUserFolder/SAMPLE_RECORDS.txt"
+DOCS="CHANGES.txt HISTORY.txt README.ActiveDirectory.txt README.txt SAMPLE_RECORDS.txt"
 PYTHON_MODULES="${MY_PN/.//}"
+
+src_prepare() {
+	distutils_src_prepare
+
+	# Don't require setuptools-git.
+	sed -e "s/'setuptools-git'//" -i setup.py
+}
 
 pkg_postinst() {
 	python_mod_optimize -x /skins/ ${MY_PN/.//}
