@@ -6,7 +6,7 @@ EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.1 *-jython"
 
-inherit distutils eutils
+inherit distutils
 
 DESCRIPTION="Scalable, non-blocking web server and tools"
 HOMEPAGE="http://www.tornadoweb.org/ http://pypi.python.org/pypi/tornado"
@@ -21,11 +21,6 @@ RDEPEND="curl? ( $(python_abi_depend -i "2.*" dev-python/pycurl) )
 	$(python_abi_depend virtual/python-json)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
-
-src_prepare() {
-	distutils_src_prepare
-	epatch "${FILESDIR}/${P}-python-3.2.3.patch"
-}
 
 src_test() {
 	testing() {
