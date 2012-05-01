@@ -21,7 +21,7 @@ KEYWORDS="amd64 x86"
 IUSE=""
 
 RDEPEND="$(python_abi_depend net-zope/namespaces-z3c[z3c])
-	$(python_abi_depend ">=dev-python/chameleon-2.7.2")
+	$(python_abi_depend ">=dev-python/chameleon-2.4")
 	$(python_abi_depend net-zope/zope-component)
 	$(python_abi_depend net-zope/zope-contentprovider)
 	$(python_abi_depend net-zope/zope-i18n)
