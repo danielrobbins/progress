@@ -62,9 +62,9 @@ DEPEND="${CDEPEND}
 	!!<sys-apps/sandbox-1.6
 	ctypes-python? ( $(python_abi_depend dev-python/ctypesgen) )
 	doc? ( app-doc/doxygen )
-	gnome-keyring? ( dev-util/pkgconfig )
+	gnome-keyring? ( virtual/pkgconfig )
 	java? ( >=virtual/jdk-1.5 )
-	kde? ( dev-util/pkgconfig )
+	kde? ( virtual/pkgconfig )
 	nls? ( sys-devel/gettext )
 $(if [[ "${PV}" == *_pre* ]]; then
 	echo "	perl? ( >=dev-lang/swig-1.3.24 )"
@@ -75,7 +75,7 @@ fi)
 		webdav-neon? ( ${APACHE_TEST_DEPEND} )
 		webdav-serf? ( ${APACHE_TEST_DEPEND} )
 	)
-	webdav-neon? ( dev-util/pkgconfig )"
+	webdav-neon? ( virtual/pkgconfig )"
 
 want_apache
 
