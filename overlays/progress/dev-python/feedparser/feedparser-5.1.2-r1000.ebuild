@@ -9,7 +9,7 @@ PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 
 inherit distutils eutils
 
-DESCRIPTION="Parse RSS and Atom feeds in Python"
+DESCRIPTION="Universal feed parser, handles RSS 0.9x, RSS 1.0, RSS 2.0, CDF, Atom 0.3, and Atom 1.0 feeds"
 HOMEPAGE="http://code.google.com/p/feedparser/ http://pypi.python.org/pypi/feedparser"
 SRC_URI="http://${PN}.googlecode.com/files/${P}.tar.bz2"
 
@@ -27,7 +27,7 @@ DOCS="NEWS"
 
 src_prepare() {
 	mv feedparser/sgmllib3.py feedparser/_feedparser_sgmllib.py || die "Renaming sgmllib3.py failed"
-	epatch "${FILESDIR}/${P}-sgmllib.patch"
+	epatch "${FILESDIR}/${PN}-5.1.1-sgmllib.patch"
 
 	sed -e "/import feedparser/isys.path.insert(0, '../build/lib')" -i feedparser/feedparsertest.py
 
