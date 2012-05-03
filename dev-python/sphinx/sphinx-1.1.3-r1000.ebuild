@@ -25,7 +25,10 @@ DEPEND="$(python_abi_depend ">=dev-python/docutils-0.7")
 	$(python_abi_depend ">=dev-python/jinja-2.3")
 	$(python_abi_depend ">=dev-python/pygments-1.2")
 	$(python_abi_depend dev-python/setuptools)
-	latex? ( dev-texlive/texlive-latexextra )"
+	latex? (
+		app-text/dvipng
+		dev-texlive/texlive-latexextra
+	)"
 RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/${MY_P}"
