@@ -66,10 +66,9 @@ RDEPEND="app-arch/bzip2
 		!!<sys-apps/portage-2.1.9"
 DEPEND="${RDEPEND}
 		$([[ "${PV}" == *_pre* ]] && echo "=${CATEGORY}/${PN}-${PV%%.*}*")
-		dev-util/pkgconfig
 		>=sys-devel/autoconf-2.65
-		$([[ "${PV}" =~ ^[[:digit:]]+\.[[:digit:]]+_pre ]] && echo "doc? ( dev-python/sphinx )")
-		!sys-devel/gcc[libffi]"
+		virtual/pkgconfig
+		$([[ "${PV}" =~ ^[[:digit:]]+\.[[:digit:]]+_pre ]] && echo "doc? ( dev-python/sphinx )")"
 RDEPEND+=" !build? ( app-misc/mime-types )
 		$([[ "${PV}" =~ ^[[:digit:]]+\.[[:digit:]]+_pre ]] || echo "doc? ( dev-python/python-docs:${SLOT} )")"
 

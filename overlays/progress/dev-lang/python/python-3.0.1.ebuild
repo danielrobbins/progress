@@ -57,8 +57,7 @@ RDEPEND="app-arch/bzip2
 DEPEND="${RDEPEND}
 		$([[ "${PV}" == *_pre* ]] && echo ${CATEGORY}/${PN})
 		>=sys-devel/autoconf-2.61
-		$([[ "${PV}" =~ ^[[:digit:]]+\.[[:digit:]]+_pre ]] && echo "doc? ( dev-python/sphinx )")
-		!sys-devel/gcc[libffi]"
+		$([[ "${PV}" =~ ^[[:digit:]]+\.[[:digit:]]+_pre ]] && echo "doc? ( dev-python/sphinx )")"
 RDEPEND+=" !build? ( app-misc/mime-types )
 		$([[ "${PV}" =~ ^[[:digit:]]+\.[[:digit:]]+_pre ]] || echo "doc? ( dev-python/python-docs:${SLOT} )")"
 
