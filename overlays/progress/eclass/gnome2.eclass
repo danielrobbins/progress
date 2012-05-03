@@ -124,6 +124,11 @@ gnome2_src_configure() {
 		G2CONF="${G2CONF} --disable-maintainer-mode"
 	fi
 
+	# Pass --disable-scrollkeeper when possible
+	if grep -q "disable-scrollkeeper" configure; then
+		G2CONF="${G2CONF} --disable-scrollkeeper"
+	fi
+
 	# Avoid sandbox violations caused by gnome-vfs (bug #128289 and #345659)
 	addwrite "$(unset HOME; echo ~)/.gnome2"
 
@@ -179,10 +184,9 @@ gnome2_src_install() {
 	# 1. The scrollkeeper database is regenerated at pkg_postinst()
 	# 2. ${installation_prefix}/var/lib/scrollkeeper contains only indexes for the current pkg
 	#    thus it makes no sense if pkg_postinst ISN'T run for some reason.
-	if [[ -z "$(find "${GNOME2_DESTDIR:-${D}}" -name '*.omf')" ]]; then
-		export SCROLLKEEPER_UPDATE="0"
-	fi
 	rm -rf "${installation_prefix}${sk_tmp_dir}"
+	rmdir "${installation_prefix}var/lib" 2>/dev/null
+	rmdir "${installation_prefix}var" 2>/dev/null
 
 	# Make sure this one doesn't get in the portage db
 	rm -fr "${installation_prefix}/usr/share/applications/mimeinfo.cache"
@@ -204,6 +208,7 @@ gnome2_pkg_preinst() {
 	gnome2_gconf_savelist
 	gnome2_icon_savelist
 	gnome2_schemas_savelist
+	gnome2_scrollkeeper_savelist
 }
 
 # @FUNCTION: gnome2_pkg_postinst
@@ -216,10 +221,7 @@ gnome2_pkg_postinst() {
 	fdo-mime_mime_database_update
 	gnome2_icon_cache_update
 	gnome2_schemas_update
-
-	if [[ "${SCROLLKEEPER_UPDATE}" = "1" ]]; then
-		gnome2_scrollkeeper_update
-	fi
+	gnome2_scrollkeeper_update
 }
 
 # @#FUNCTION: gnome2_pkg_prerm
@@ -237,8 +239,5 @@ gnome2_pkg_postrm() {
 	fdo-mime_mime_database_update
 	gnome2_icon_cache_update
 	gnome2_schemas_update
-
-	if [[ "${SCROLLKEEPER_UPDATE}" = "1" ]]; then
-		gnome2_scrollkeeper_update
-	fi
+	gnome2_scrollkeeper_update
 }
