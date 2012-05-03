@@ -15,6 +15,7 @@ inherit kde4-base multilib portability python toolchain-funcs
 DESCRIPTION="Python bindings for KDE4"
 KEYWORDS="amd64 ~arm x86 ~amd64-linux ~x86-linux"
 IUSE="debug doc examples semantic-desktop"
+REQUIRED_USE="test? ( semantic-desktop )"
 
 RDEPEND="
 	$(python_abi_depend ">=dev-python/sip-4.12")
