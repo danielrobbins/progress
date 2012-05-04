@@ -31,7 +31,7 @@ DEPEND="${COMMON_DEPEND}
 	test? (
 		media-fonts/font-cursor-misc
 		media-fonts/font-misc-misc )
-	>=dev-util/pkgconfig-0.12"
+	virtual/pkgconfig"
 RDEPEND="${COMMON_DEPEND}
 	!<dev-python/pygtk-2.13"
 # Use slot 3 for introspection support per upstream recommendation
