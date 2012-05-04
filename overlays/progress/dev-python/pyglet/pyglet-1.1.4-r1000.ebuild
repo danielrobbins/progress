@@ -36,5 +36,6 @@ src_install() {
 	if use examples; then
 		insinto /usr/share/doc/${PF}/examples
 		doins -r examples/*
+		docompress -x /usr/share/doc/${PF}/examples
 	fi
 }
