@@ -63,7 +63,7 @@ RDEPEND="$(python_abi_depend ">=dev-python/sip-4.13.1")
 	webkit? ( >=x11-libs/qt-webkit-${QT_VER}:4 )
 	xmlpatterns? ( >=x11-libs/qt-xmlpatterns-${QT_VER}:4 )"
 DEPEND="${RDEPEND}
-	dbus? ( dev-util/pkgconfig )"
+	dbus? ( virtual/pkgconfig )"
 
 S="${WORKDIR}/${MY_P}"
 
