@@ -23,7 +23,7 @@ RDEPEND="$(python_abi_depend dev-python/pygobject:2)
 	dev-libs/libxslt
 	>=net-libs/webkit-gtk-1.1.15:2"
 DEPEND="${RDEPEND}
-	dev-util/pkgconfig"
+	virtual/pkgconfig"
 
 src_configure() {
 	python_src_configure --disable-static

@@ -36,7 +36,7 @@ RDEPEND="
 	opengl? ( $(python_abi_depend dev-python/pyopengl) )"
 
 DEPEND="${RDEPEND}
-	dev-util/pkgconfig"
+	virtual/pkgconfig"
 
 S="${WORKDIR}/${MY_P}/wxPython"
 DOC_S="${WORKDIR}/wxPython-${PV}"

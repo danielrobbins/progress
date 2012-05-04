@@ -33,7 +33,7 @@ DEPEND="${RDEPEND}
 	doc? (
 		dev-libs/libxslt
 		>=app-text/docbook-xsl-stylesheets-1.70.1 )
-	>=dev-util/pkgconfig-0.9"
+	virtual/pkgconfig"
 
 src_prepare() {
 	# Let tests pass without permissions problems, bug #245103

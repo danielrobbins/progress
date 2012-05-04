@@ -35,7 +35,7 @@ CDEPEND="$(python_abi_depend dev-python/numpy)
 
 DEPEND="${CDEPEND}
 	$(python_abi_depend dev-python/pycxx)
-	dev-util/pkgconfig
+	virtual/pkgconfig
 	doc? (
 		app-text/dvipng
 		$(python_abi_depend dev-python/imaging)

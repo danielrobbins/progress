@@ -26,7 +26,7 @@ RDEPEND=">=app-editors/gvim-6.3[gtk]
 	$(python_abi_depend x11-libs/vte:0[python])"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
-	dev-util/pkgconfig"
+	virtual/pkgconfig"
 
 src_prepare() {
 	distutils_src_prepare

@@ -18,9 +18,9 @@ SLOT="0"
 KEYWORDS="amd64 x86"
 IUSE="doc gpg gtk openssl pam pkcs11 python suid tpm"
 
-RDEPEND=">=sys-apps/keyutils-1.0
-	>=dev-libs/libgcrypt-1.2.0
+RDEPEND=">=dev-libs/libgcrypt-1.2.0
 	dev-libs/nss
+	>=sys-apps/keyutils-1.0
 	gpg? ( app-crypt/gpgme )
 	gtk? ( x11-libs/gtk+:2 )
 	openssl? ( >=dev-libs/openssl-0.9.7 )
@@ -31,9 +31,9 @@ RDEPEND=">=sys-apps/keyutils-1.0
 	)
 	tpm? ( app-crypt/trousers )"
 DEPEND="${RDEPEND}
-	>=dev-util/pkgconfig-0.9.0
-	sys-devel/gettext
 	>=dev-util/intltool-0.41.0
+	sys-devel/gettext
+	virtual/pkgconfig
 	python? ( dev-lang/swig )"
 
 pkg_setup() {

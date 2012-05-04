@@ -24,7 +24,7 @@ IUSE=""
 RDEPEND="$(python_abi_depend ">=dev-libs/boost-1.48[python]")
 	>=media-gfx/imagemagick-6.4"
 DEPEND="${RDEPEND}
-	dev-util/pkgconfig"
+	virtual/pkgconfig"
 
 S="${WORKDIR}/${MY_P}"
 

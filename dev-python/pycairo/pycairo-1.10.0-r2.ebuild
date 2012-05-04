@@ -25,7 +25,7 @@ IUSE="doc examples +svg test"
 
 RDEPEND=">=x11-libs/cairo-1.10.0[svg?]"
 DEPEND="${RDEPEND}
-	dev-util/pkgconfig
+	virtual/pkgconfig
 	test? ( $(python_abi_depend dev-python/pytest) )"
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
