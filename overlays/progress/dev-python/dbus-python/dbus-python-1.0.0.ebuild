@@ -21,7 +21,7 @@ IUSE="doc examples test"
 RDEPEND=">=dev-libs/dbus-glib-0.70
 	>=sys-apps/dbus-1.4"
 DEPEND="${RDEPEND}
-	dev-util/pkgconfig
+	virtual/pkgconfig
 	doc? ( =dev-python/epydoc-3* )
 	test? (
 		$(python_abi_depend dev-python/pygobject:2)

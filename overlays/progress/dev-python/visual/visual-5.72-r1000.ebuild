@@ -28,7 +28,7 @@ RDEPEND=">=dev-cpp/gtkglextmm-1.2
 	$(python_abi_depend -i "3.*" dev-python/polygon:3)
 	$(python_abi_depend -i "2.*" dev-python/ttfquery)"
 DEPEND="${RDEPEND}
-	dev-util/pkgconfig"
+	virtual/pkgconfig"
 
 S="${WORKDIR}/${MY_P}"
 

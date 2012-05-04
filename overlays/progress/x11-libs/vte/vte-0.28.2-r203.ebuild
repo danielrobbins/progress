@@ -33,8 +33,8 @@ RDEPEND=">=dev-libs/glib-2.26:2
 	python? ( $(python_abi_depend ">=dev-python/pygtk-2.4:2") )"
 DEPEND="${RDEPEND}
 	>=dev-util/intltool-0.35
-	>=dev-util/pkgconfig-0.9
 	sys-devel/gettext
+	virtual/pkgconfig
 	doc? ( >=dev-util/gtk-doc-1.13 )"
 
 pkg_setup() {

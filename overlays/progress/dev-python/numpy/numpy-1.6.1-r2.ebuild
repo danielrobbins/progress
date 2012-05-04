@@ -29,7 +29,7 @@ RDEPEND="
 	lapack? ( virtual/cblas virtual/lapack virtual/fortran )"
 DEPEND="${RDEPEND}
 	doc? ( app-arch/unzip )
-	lapack? ( dev-util/pkgconfig )
+	lapack? ( virtual/pkgconfig )
 	test? ( $(python_abi_depend ">=dev-python/nose-0.10") )"
 
 PYTHON_CFLAGS=("* + -fno-strict-aliasing")
