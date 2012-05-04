@@ -30,7 +30,7 @@ CDEPEND="$(python_abi_depend dev-python/numpy)
 	umfpack? ( sci-libs/umfpack )"
 
 DEPEND="${CDEPEND}
-	dev-util/pkgconfig
+	virtual/pkgconfig
 	doc? ( app-arch/unzip )
 	test? ( $(python_abi_depend dev-python/nose) )
 	umfpack? ( dev-lang/swig )"
