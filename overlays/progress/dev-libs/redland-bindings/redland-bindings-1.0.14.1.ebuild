@@ -24,7 +24,7 @@ RDEPEND=">=dev-libs/redland-1.0.14
 	php? ( dev-lang/php )
 	ruby? ( dev-lang/ruby dev-ruby/log4r )"
 DEPEND="${RDEPEND}
-	dev-util/pkgconfig
+	virtual/pkgconfig
 	>=dev-lang/swig-2
 	sys-apps/sed"
 
