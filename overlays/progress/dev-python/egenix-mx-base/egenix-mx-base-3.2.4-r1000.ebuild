@@ -50,8 +50,8 @@ src_compile() {
 src_test() {
 	testing() {
 		local exit_status="0" test
-		for test in $(find "$(ls -d build-${PYTHON_ABI}/lib.*)" -name "*test*.py" | sort); do
-			if ! python_execute PYTHONPATH="$(ls -d build-${PYTHON_ABI}/lib.*)" "$(PYTHON)" "${test}"; then
+		for test in build-${PYTHON_ABI}/lib*/**/*test*.py; do
+			if ! python_execute PYTHONPATH="$(ls -d build-${PYTHON_ABI}/lib*)" "$(PYTHON)" "${test}"; then
 				eerror "${test} failed with $(python_get_implementation_and_version)"
 				exit_status="1"
 			fi
