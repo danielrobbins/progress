@@ -143,7 +143,7 @@ src_configure() {
 	fi
 
 	use icu && OPTIONS+=" -sICU_PATH=/usr"
-	use icu || OPTIONS+=" --disable-icu"
+	use icu || OPTIONS+=" --disable-icu boost.locale.icu=off"
 	use mpi || OPTIONS+=" --without-mpi"
 	use python || OPTIONS+=" --without-python"
 
