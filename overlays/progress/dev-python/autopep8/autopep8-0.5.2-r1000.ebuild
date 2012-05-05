@@ -7,7 +7,7 @@ PYTHON_MULTIPLE_ABIS="1"
 # ast module is absent in CPython 2.5.
 PYTHON_RESTRICTED_ABIS="2.5-cpython"
 
-inherit distutils
+inherit distutils eutils
 
 DESCRIPTION="A tool that automatically formats Python code to conform to the PEP 8 style guide"
 HOMEPAGE="https://github.com/hhatto/autopep8 http://pypi.python.org/pypi/autopep8"
@@ -23,6 +23,11 @@ DEPEND="$(python_abi_depend dev-python/pep8)
 RDEPEND="${DEPEND}"
 
 PYTHON_MODULES="${PN}.py"
+
+src_prepare() {
+	distutils_src_prepare
+	epatch "${FILESDIR}/${P}-issue-10.patch"
+}
 
 src_test() {
 	testing() {
