@@ -27,20 +27,27 @@ S="${WORKDIR}/logilab-${P}"
 
 PYTHON_MODULES="logilab/astng"
 
+src_prepare() {
+	distutils_src_prepare
+
+	# https://hg.logilab.org/logilab/astng/rev/0272006bdfbe
+	sed -e "s/return file/return open/" -i scoped_nodes.py
+}
+
 src_test() {
 	testing() {
 		local tpath="${T}/test-${PYTHON_ABI}"
 		local spath="${tpath}$(python_get_sitedir)"
 
-		mkdir -p "${spath}/logilab" || return 1
-		cp -r "$(python_get_sitedir)/logilab/common" "${spath}/logilab" || return 1
+		mkdir -p "${spath}/logilab" || return
+		cp -r "$(python_get_sitedir)/logilab/common" "${spath}/logilab" || return
 
 		python_execute "$(PYTHON)" setup.py build -b "build-${PYTHON_ABI}" install --root="${tpath}" || die "Installation for tests failed with $(python_get_implementation_and_version)"
 
 		# pytest uses tests placed relatively to the current directory.
-		pushd "${spath}/logilab/astng" > /dev/null || return 1
-		python_execute PYTHONPATH="${spath}" pytest -v || return 1
-		popd > /dev/null || return 1
+		pushd "${spath}/logilab/astng" > /dev/null || return
+		python_execute PYTHONPATH="${spath}" pytest -v || return
+		popd > /dev/null || return
 	}
 	python_execute_function testing
 }
@@ -50,10 +57,10 @@ src_install() {
 
 	delete_unneeded_files() {
 		# Avoid collisions with dev-python/logilab-common.
-		rm -f "${ED}$(python_get_sitedir)/logilab/__init__.py" || return 1
+		rm -f "${ED}$(python_get_sitedir)/logilab/__init__.py" || return
 
 		# Don't install tests.
-		rm -fr "${ED}$(python_get_sitedir)/logilab/astng/test" || return 1
+		rm -fr "${ED}$(python_get_sitedir)/logilab/astng/test" || return
 	}
 	python_execute_function -q delete_unneeded_files
 }
