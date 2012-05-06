@@ -7,7 +7,7 @@ PYTHON_MULTIPLE_ABIS="1"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
-inherit distutils
+inherit distutils eutils
 
 MY_PN="Sphinx"
 MY_P="${MY_PN}-${PV}"
@@ -37,6 +37,7 @@ DOCS="CHANGES"
 
 src_prepare() {
 	distutils_src_prepare
+	epatch "${FILESDIR}/${P}-python3.patch"
 
 	prepare_tests() {
 		cp -r tests tests-${PYTHON_ABI}
