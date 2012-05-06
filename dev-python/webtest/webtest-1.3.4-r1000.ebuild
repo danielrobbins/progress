@@ -19,7 +19,7 @@ SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~ppc ~ppc64 sparc x86"
+KEYWORDS="~alpha amd64 ~arm ~hppa ~ppc ~ppc64 sparc x86 ~x86-fbsd"
 IUSE="doc"
 
 RDEPEND="$(python_abi_depend -e "*-jython *-pypy-*" dev-python/pyquery)
@@ -35,16 +35,17 @@ src_prepare() {
 	distutils_src_prepare
 
 	# https://bitbucket.org/ianb/webtest/issue/24
-	# https://bitbucket.org/ianb/webtest/raw/c0faae620b78/docs/index_fixt.py
+	# https://bitbucket.org/ianb/webtest/raw/1d13d172f935/docs/index_fixt.py
 	cat << EOF > docs/index_fixt.py
 # -*- coding: utf-8 -*-
 from doctest import ELLIPSIS
 
+
 def setup_test(test):
     for example in test.examples:
         example.options.setdefault(ELLIPSIS, 1)
-setup_test.__test__ = False
 
+setup_test.__test__ = False
 EOF
 }
 
