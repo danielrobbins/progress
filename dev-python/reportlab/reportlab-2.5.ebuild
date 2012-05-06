@@ -38,6 +38,9 @@ src_prepare() {
 
 	rm -fr src/rl_addons/renderPM/libart_lgpl
 	epatch "${FILESDIR}/${PN}-2.4-external_libart_lgpl.patch"
+
+	# Fix compilation with PyPy.
+	sed -e '/#include "Python.h"/a #ifndef PyArg_NoArgs\n#define PyArg_NoArgs(v) PyArg_Parse(v, "")\n#endif' -i src/rl_addons/rl_accel/sgmlop.c
 }
 
 src_compile() {
