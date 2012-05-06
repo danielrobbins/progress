@@ -14,11 +14,13 @@ SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="ISC"
 SLOT="0"
-KEYWORDS="amd64 x86"
-IUSE=""
+KEYWORDS="amd64 ~arm x86"
+IUSE="async"
 
 RDEPEND="$(python_abi_depend ">=dev-python/certifi-0.0.7")
-	$(python_abi_depend dev-python/chardet)"
+	$(python_abi_depend dev-python/chardet)
+	$(python_abi_depend -i "2.*" "=dev-python/oauthlib-0.1*")
+	async? ( $(python_abi_depend -e "3.* *-jython *-pypy-*" dev-python/gevent) )"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
