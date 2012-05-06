@@ -9,8 +9,8 @@ PYTHON_RESTRICTED_ABIS="3.* *-jython"
 inherit distutils eutils versionator
 
 DESCRIPTION="Tools for generating printable PDF documents from any data source."
-HOMEPAGE="http://www.reportlab.org/ http://pypi.python.org/pypi/reportlab"
-SRC_URI="http://www.reportlab.org/ftp/${P}.tar.gz"
+HOMEPAGE="http://www.reportlab.com/ http://pypi.python.org/pypi/reportlab"
+SRC_URI="http://www.reportlab.com/ftp/${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
