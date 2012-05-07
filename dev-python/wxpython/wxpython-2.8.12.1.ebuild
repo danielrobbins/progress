@@ -53,6 +53,11 @@ src_prepare() {
 	# drop editra - we have it as a separate package now
 	epatch "${FILESDIR}"/${PN}-2.8.12-drop-editra.patch
 
+	epatch "${FILESDIR}"/${P}-c++.patch
+	pushd wx/build > /dev/null
+	epatch "${FILESDIR}"/${P}-c++.patch
+	popd > /dev/null
+
 	if use doc; then
 		cd "${DOC_S}"
 		epatch "${FILESDIR}"/${PN}-${SLOT}-cache-writable.patch
