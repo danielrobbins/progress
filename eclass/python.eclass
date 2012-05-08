@@ -1043,7 +1043,7 @@ python_execute() {
 		if [[ "${argument}" =~ ^[${letters}_][${letters}0123456789_]*= ]]; then
 			printed_command+=("${argument%%=*}=\"${argument#*=}\"")
 		else
-			if [[ "${argument}" =~ [${IFS}] ]]; then
+			if [[ -z "${argument}" || "${argument}" =~ [${IFS}] ]]; then
 				printed_command+=("\"${argument}\"")
 			else
 				printed_command+=("${argument}")
