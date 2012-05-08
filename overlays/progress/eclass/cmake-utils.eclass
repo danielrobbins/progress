@@ -138,13 +138,15 @@ _use_me_now_inverted() {
 
 # @ECLASS-VARIABLE: CMAKE_VERBOSE
 # @DESCRIPTION:
-# Set to enable verbose messages during compilation.
+# Set to OFF to disable verbose messages during compilation
+: ${CMAKE_VERBOSE:=ON}
 
 # @ECLASS-VARIABLE: PREFIX
 # @DESCRIPTION:
 # Eclass respects PREFIX variable, though it's not recommended way to set
 # install/lib/bin prefixes.
 # Use -DCMAKE_INSTALL_PREFIX=... CMake variable instead.
+: ${PREFIX:=/usr}
 
 # @ECLASS-VARIABLE: CMAKE_BINARY
 # @DESCRIPTION:
@@ -333,13 +335,13 @@ enable_cmake-utils_src_configure() {
 
 			ELSE ()
 
-			SET(CMAKE_PREFIX_PATH "${EPREFIX}${PREFIX:-/usr}" CACHE STRING ""FORCE)
+			SET(CMAKE_PREFIX_PATH "${EPREFIX}${PREFIX}" CACHE STRING ""FORCE)
 			SET(CMAKE_SKIP_BUILD_RPATH OFF CACHE BOOL "" FORCE)
 			SET(CMAKE_SKIP_RPATH OFF CACHE BOOL "" FORCE)
 			SET(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE CACHE BOOL "")
-			SET(CMAKE_INSTALL_RPATH "${EPREFIX}${PREFIX:-/usr}/lib;${EPREFIX}/usr/${CHOST}/lib/gcc;${EPREFIX}/usr/${CHOST}/lib;${EPREFIX}/usr/$(get_libdir);${EPREFIX}/$(get_libdir)" CACHE STRING "" FORCE)
+			SET(CMAKE_INSTALL_RPATH "${EPREFIX}${PREFIX}/lib;${EPREFIX}/usr/${CHOST}/lib/gcc;${EPREFIX}/usr/${CHOST}/lib;${EPREFIX}/usr/$(get_libdir);${EPREFIX}/$(get_libdir)" CACHE STRING "" FORCE)
 			SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE CACHE BOOL "" FORCE)
-			SET(CMAKE_INSTALL_NAME_DIR "${EPREFIX}${PREFIX:-/usr}/lib" CACHE STRING "" FORCE)
+			SET(CMAKE_INSTALL_NAME_DIR "${EPREFIX}${PREFIX}/lib" CACHE STRING "" FORCE)
 
 			ENDIF (NOT APPLE)
 		_EOF_
@@ -350,7 +352,7 @@ enable_cmake-utils_src_configure() {
 	local libdir=$(get_libdir)
 	cat > "${common_config}" <<- _EOF_
 		SET (LIB_SUFFIX ${libdir/lib} CACHE STRING "library path suffix" FORCE)
-		SET (CMAKE_INSTALL_LIBDIR ${libdir} CACHE PATH "Output directory for libraries")
+		SET (CMAKE_INSTALL_LIBDIR ${PREFIX}/${libdir} CACHE PATH "Output directory for libraries")
 	_EOF_
 	[[ "${NOCOLOR}" = true || "${NOCOLOR}" = yes ]] && echo 'SET (CMAKE_COLOR_MAKEFILE OFF CACHE BOOL "pretty colors during make" FORCE)' >> "${common_config}"
 
@@ -369,7 +371,7 @@ enable_cmake-utils_src_configure() {
 	local cmakeargs=(
 		--no-warn-unused-cli
 		-C "${common_config}"
-		-DCMAKE_INSTALL_PREFIX="${EPREFIX}${PREFIX:-/usr}"
+		-DCMAKE_INSTALL_PREFIX="${EPREFIX}${PREFIX}"
 		"${mycmakeargs_local[@]}"
 		-DCMAKE_BUILD_TYPE="${CMAKE_BUILD_TYPE}"
 		-DCMAKE_INSTALL_DO_STRIP=OFF
@@ -402,7 +404,7 @@ cmake-utils_src_make() {
 	pushd "${CMAKE_BUILD_DIR}" > /dev/null
 	# first check if Makefile exist otherwise die
 	[[ -e Makefile ]] || die "Makefile not found. Error during configure stage."
-	if [[ -n ${CMAKE_VERBOSE} ]]; then
+	if [[ "${CMAKE_VERBOSE}" != "OFF" ]]; then
 		emake VERBOSE=1 "$@" || die "Make failed!"
 	else
 		emake "$@" || die "Make failed!"
