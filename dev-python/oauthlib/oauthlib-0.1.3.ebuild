@@ -18,7 +18,7 @@ SLOT="0"
 KEYWORDS="amd64 ~arm x86"
 IUSE="test"
 
-RDEPEND="$(python_abi_depend -e "*-jython *-pypy-*" dev-python/pycrypto)"
+RDEPEND="$(python_abi_depend dev-python/rsa)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	test? ( $(python_abi_depend dev-python/unittest2) )"
