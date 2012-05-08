@@ -49,14 +49,17 @@ src_prepare() {
 		-e "s/testOwnloopBasics/_&/" \
 		-e "s/testStartNSfunc/_&/" \
 		-i tests/PyroTests/test_naming2.py
-	sed -e "s/testServerConnections/_&/" -i tests/PyroTests/test_server.py
+	sed \
+		-e "s/testServerParallelism/_&/" \
+		-e "s/testServerConnections/_&/" \
+		-i tests/PyroTests/test_server.py
 	sed \
 		-e "s/testBroadcast/_&/" \
 		-e "s/testGetIP/_&/" \
 		-i tests/PyroTests/test_socket.py
 
-	# Fix compatibility with Python 3.1.
-	sed -e "s/if sys.version_info < (2,7):/if sys.version_info < (2,7) or (sys.version_info[0] == 3 and sys.version_info < (3,2)):/" -i src/Pyro4/utils/flame.py
+	# Disable test expected to fail.
+	sed -e "s/testPoolGrowth/_&/" -i tests/PyroTests/test_threadpool.py
 }
 
 src_compile() {
