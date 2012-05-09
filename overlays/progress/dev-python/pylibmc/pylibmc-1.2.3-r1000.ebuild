@@ -27,7 +27,7 @@ src_prepare() {
 }
 
 src_test() {
-	memcached -d -l localhost -p 11219 -P "${T}/memcached.pid"
+	memcached -d -l localhost -p 11219 -P "${T}/memcached.pid" -u nobody
 	MEMCACHED_PORT="11219" distutils_src_test
 	kill "$(<"${T}/memcached.pid")"
 }
