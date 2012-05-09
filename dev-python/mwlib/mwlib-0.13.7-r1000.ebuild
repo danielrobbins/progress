@@ -31,9 +31,9 @@ RDEPEND="dev-lang/perl
 	$(python_abi_depend dev-python/roman)
 	$(python_abi_depend ">=dev-python/qserve-0.2.7")
 	$(python_abi_depend dev-python/setuptools)
+	$(python_abi_depend ">=dev-python/simplejson-2.5")
 	$(python_abi_depend dev-python/sqlite3dbm)
 	$(python_abi_depend ">=dev-python/timelib-0.2")
-	$(python_abi_depend virtual/python-json[external])
 	latex? ( virtual/latex-base )"
 DEPEND="${RDEPEND}
 	app-arch/unzip
