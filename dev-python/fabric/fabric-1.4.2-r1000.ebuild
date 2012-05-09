@@ -22,7 +22,7 @@ KEYWORDS="amd64 x86"
 IUSE=""
 
 RDEPEND="$(python_abi_depend dev-python/pycrypto)
-	$(python_abi_depend ">=dev-python/ssh-1.7.12")"
+	$(python_abi_depend ">=dev-python/ssh-1.7.14")"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 #	test? ( $(python_abi_depend dev-python/fudge) )
