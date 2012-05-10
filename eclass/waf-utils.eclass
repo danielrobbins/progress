@@ -21,6 +21,13 @@ case ${EAPI:-0} in
 	*) die "EAPI=${EAPI} is not supported" ;;
 esac
 
+# Python with threads is required to run waf. We do not know which python slot
+# is being used as the system interpreter, so we are forced to block all
+# slots that have USE=-threads.
+DEPEND="${DEPEND}
+	dev-lang/python
+	!dev-lang/python[-threads]"
+
 # @FUNCTION: waf-utils_src_configure
 # @DESCRIPTION:
 # General function for configuring with waf.
