@@ -116,7 +116,7 @@ gnome2_src_configure() {
 
 	# Prevent a QA warning
 	if has doc ${IUSE} ; then
-		G2CONF="${G2CONF} $(use_enable doc gtk-doc)"
+		grep -q "enable-gtk-doc" configure && G2CONF="${G2CONF} $(use_enable doc gtk-doc)"
 	fi
 
 	# Pass --disable-maintainer-mode when needed
