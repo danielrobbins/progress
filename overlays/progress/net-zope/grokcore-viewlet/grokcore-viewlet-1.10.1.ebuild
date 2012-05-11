@@ -20,10 +20,10 @@ KEYWORDS="amd64 x86"
 IUSE=""
 
 RDEPEND="$(python_abi_depend net-zope/namespaces-grok)
-	$(python_abi_depend ">=dev-python/martian-0.13")
-	$(python_abi_depend ">=net-zope/grokcore-component-2.1")
-	$(python_abi_depend ">=net-zope/grokcore-security-1.5")
-	$(python_abi_depend ">=net-zope/grokcore-view-2.2")
+	$(python_abi_depend ">=dev-python/martian-0.14")
+	$(python_abi_depend ">=net-zope/grokcore-component-2.5")
+	$(python_abi_depend ">=net-zope/grokcore-security-1.6")
+	$(python_abi_depend ">=net-zope/grokcore-view-2.7")
 	$(python_abi_depend net-zope/zope-browserpage)
 	$(python_abi_depend net-zope/zope-component)
 	$(python_abi_depend net-zope/zope-contentprovider)
