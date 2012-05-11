@@ -21,7 +21,7 @@ IUSE=""
 
 RDEPEND="$(python_abi_depend net-zope/namespaces-grok)
 	$(python_abi_depend dev-python/martian)
-	$(python_abi_depend net-zope/grokcore-component)
+	$(python_abi_depend ">=net-zope/grokcore-component-2.5")
 	$(python_abi_depend net-zope/zodb)
 	$(python_abi_depend net-zope/zope-annotation)
 	$(python_abi_depend net-zope/zope-component)
