@@ -26,6 +26,7 @@ RDEPEND="$(python_abi_depend net-zope/namespaces-grok)
 	$(python_abi_depend net-zope/zope-annotation)
 	$(python_abi_depend net-zope/zope-component)
 	$(python_abi_depend net-zope/zope-container)
+	$(python_abi_depend net-zope/zope-event)
 	$(python_abi_depend net-zope/zope-interface)
 	$(python_abi_depend net-zope/zope-lifecycleevent)
 	$(python_abi_depend net-zope/zope-site)"
