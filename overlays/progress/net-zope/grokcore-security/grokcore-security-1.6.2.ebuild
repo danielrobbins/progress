@@ -23,8 +23,11 @@ RDEPEND="$(python_abi_depend net-zope/namespaces-grok)
 	$(python_abi_depend ">=dev-python/martian-0.13")
 	$(python_abi_depend ">=net-zope/grokcore-component-2.1")
 	$(python_abi_depend net-zope/zope-component)
+	$(python_abi_depend net-zope/zope-dottedname)
+	$(python_abi_depend net-zope/zope-i18nmessageid)
 	$(python_abi_depend net-zope/zope-interface)
-	$(python_abi_depend net-zope/zope-security)"
+	$(python_abi_depend net-zope/zope-security)
+	$(python_abi_depend net-zope/zope-securitypolicy)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
