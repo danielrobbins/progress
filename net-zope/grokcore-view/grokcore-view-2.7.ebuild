@@ -21,7 +21,7 @@ IUSE=""
 
 RDEPEND="$(python_abi_depend net-zope/namespaces-grok)
 	$(python_abi_depend ">=dev-python/martian-0.13")
-	$(python_abi_depend ">=net-zope/grokcore-component-2.1")
+	$(python_abi_depend ">=net-zope/grokcore-component-2.5")
 	$(python_abi_depend ">=net-zope/grokcore-security-1.5")
 	$(python_abi_depend net-zope/zope-app-publication)
 	$(python_abi_depend net-zope/zope-browserpage)
