@@ -568,7 +568,7 @@ src_test() {
 			--dump-tests 2>&1 | tee regress.log || die
 
 		# Postprocessing
-		cat regress.log | ../tools/regression/build/bin/gcc-$(gcc-version)/gentoorelease/pch-off/process_jam_log --v2
+		cat regress.log | "$(find ../tools/regression/build/bin/gcc-$(gcc-version)/gentoorelease -name process_jam_log)" --v2
 		if test $? != 0; then
 			die "Postprocessing the build log failed"
 		fi
@@ -578,7 +578,7 @@ src_test() {
 __EOF__
 
 		# Generate the build log html summary page
-		../tools/regression/build/bin/gcc-$(gcc-version)/gentoorelease/pch-off/compiler_status --v2 \
+		"$(find ../tools/regression/build/bin/gcc-$(gcc-version)/gentoorelease -name compiler_status)" --v2 \
 			--comment comment.html "${S}" \
 			cs-$(uname).html cs-$(uname)-links.html
 		if test $? != 0; then
