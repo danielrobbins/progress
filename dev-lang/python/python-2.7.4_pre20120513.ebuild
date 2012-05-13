@@ -11,7 +11,7 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="225126c9d4b5"
+	EHG_REVISION="94fb31fb3a9b"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
@@ -66,11 +66,9 @@ RDEPEND="app-arch/bzip2
 		!!<sys-apps/portage-2.1.9"
 DEPEND="${RDEPEND}
 		$([[ "${PV}" == *_pre* ]] && echo "=${CATEGORY}/${PN}-${PV%%.*}*")
-		dev-util/pkgconfig
-		sys-apps/paxctl
 		>=sys-devel/autoconf-2.65
-		$([[ "${PV}" =~ ^[[:digit:]]+\.[[:digit:]]+_pre ]] && echo "doc? ( dev-python/sphinx )")
-		!sys-devel/gcc[libffi]"
+		virtual/pkgconfig
+		$([[ "${PV}" =~ ^[[:digit:]]+\.[[:digit:]]+_pre ]] && echo "doc? ( dev-python/sphinx )")"
 RDEPEND+=" !build? ( app-misc/mime-types )
 		$([[ "${PV}" =~ ^[[:digit:]]+\.[[:digit:]]+_pre ]] || echo "doc? ( dev-python/python-docs:${SLOT} )")"
 
@@ -247,7 +245,7 @@ src_configure() {
 src_compile() {
 	emake EPYTHON="python${PV%%.*}" || die "emake failed"
 
-	pax-mark m libpython${SLOT}.so.1.0 python
+	pax-mark m python
 }
 
 src_test() {
