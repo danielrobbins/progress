@@ -7,7 +7,7 @@ PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 *-jython *-pypy-*"
 PYTHON_EXPORT_PHASE_FUNCTIONS="1"
 
-inherit eutils python
+inherit python
 
 DESCRIPTION="Python bindings for the D-Bus messagebus"
 HOMEPAGE="http://www.freedesktop.org/wiki/Software/DBusBindings http://dbus.freedesktop.org/doc/dbus-python/"
@@ -15,7 +15,7 @@ SRC_URI="http://dbus.freedesktop.org/releases/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh sparc x86 ~x86-fbsd ~amd64-linux ~x86-linux"
+KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh sparc x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux"
 IUSE="doc examples test"
 
 RDEPEND=">=dev-libs/dbus-glib-0.70
@@ -31,8 +31,6 @@ DEPEND="${RDEPEND}
 src_prepare() {
 	# Fix tests with Python 3.1.
 	sed -e 's/if sys.version_info\[:2\] >= (2, 7):/if sys.version_info[:2] == (2, 7) or sys.version_info[:2] >= (3, 2):/' -i test/test-standalone.py || die "sed failed"
-
-	epatch "${FILESDIR}/${P}-test-socket-tmpdir.patch"
 
 	python_clean_py-compile_files
 	python_src_prepare
