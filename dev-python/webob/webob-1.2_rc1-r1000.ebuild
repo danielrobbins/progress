@@ -10,7 +10,7 @@ DISTUTILS_SRC_TEST="nosetests"
 inherit distutils
 
 MY_PN="WebOb"
-MY_P="${MY_PN}-${PV/_beta/b}"
+MY_P="${MY_PN}-${PV/_rc/rc}"
 
 DESCRIPTION="WSGI request and response object"
 HOMEPAGE="http://webob.org/ http://pypi.python.org/pypi/WebOb"
@@ -21,10 +21,11 @@ SLOT="0"
 KEYWORDS="~alpha amd64 ~arm ~ppc ~ppc64 sparc x86 ~amd64-linux ~x86-linux ~ppc-macos ~x86-macos"
 IUSE="doc"
 
-DEPEND="app-arch/unzip
+RDEPEND="$(python_abi_depend virtual/python-json[external])"
+DEPEND="${RDEPEND}
+	app-arch/unzip
 	$(python_abi_depend dev-python/setuptools)
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
-RDEPEND=""
 
 S="${WORKDIR}/${MY_P}"
 
