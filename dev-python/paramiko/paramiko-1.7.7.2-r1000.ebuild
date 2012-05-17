@@ -10,7 +10,7 @@ inherit distutils
 
 DESCRIPTION="SSH2 protocol library"
 HOMEPAGE="http://www.lag.net/paramiko/ http://pypi.python.org/pypi/paramiko"
-SRC_URI="http://www.lag.net/paramiko/download/${P}.tar.gz"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.zip"
 
 LICENSE="LGPL-2.1"
 SLOT="0"
@@ -19,11 +19,12 @@ IUSE="doc examples"
 
 RDEPEND="$(python_abi_depend ">=dev-python/pycrypto-2.1")"
 DEPEND="${RDEPEND}
+	app-arch/unzip
 	$(python_abi_depend dev-python/setuptools)"
 
 src_test() {
 	testing() {
-		PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" test.py --verbose
+		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" test.py --verbose
 	}
 	python_execute_function testing
 }
@@ -32,7 +33,7 @@ src_install() {
 	distutils_src_install
 
 	if use doc; then
-		dohtml -r docs/*
+		dohtml docs/*
 	fi
 
 	if use examples; then
