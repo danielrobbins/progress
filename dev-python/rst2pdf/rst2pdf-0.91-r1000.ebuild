@@ -20,7 +20,8 @@ IUSE=""
 DEPEND="$(python_abi_depend dev-python/docutils)
 	$(python_abi_depend dev-python/imaging)
 	$(python_abi_depend dev-python/pygments)
-	$(python_abi_depend ">=dev-python/reportlab-2.4")"
+	$(python_abi_depend ">=dev-python/reportlab-2.4")
+	$(python_abi_depend dev-python/roman)"
 RDEPEND="${DEPEND}"
 
 DOCS="Contributors.txt CHANGES.txt README.txt doc/*"
