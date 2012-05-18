@@ -5,9 +5,9 @@
 EAPI="4-python"
 PYTHON_DEPEND="python? ( <<>> )"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 
-inherit eutils distutils libtool toolchain-funcs
+inherit distutils libtool toolchain-funcs
 
 MY_P=${P/_}
 DESCRIPTION="Password Checking Library"
@@ -44,7 +44,6 @@ pkg_setup() {
 }
 
 src_prepare() {
-	epatch "${FILESDIR}"/${P}-python-stat.patch #403777
 	elibtoolize #269003
 	use python && do_python
 }
@@ -64,7 +63,7 @@ src_compile() {
 
 src_install() {
 	emake DESTDIR="${D}" install || die
-	use static-libs || rm -f "${ED}"/usr/lib*/libcrack.la
+	use static-libs || find "${ED}"/usr -name libcrack.la -delete
 	rm -r "${ED}"/usr/share/cracklib
 
 	use python && do_python
