@@ -8,22 +8,22 @@ PYTHON_RESTRICTED_ABIS="3.* *-jython"
 
 inherit distutils multilib
 
-DOC_P="${PN}-docs-html-2.4.4"
-
 DESCRIPTION="Python modules for implementing LDAP clients"
 HOMEPAGE="http://python-ldap.org/ http://sourceforge.net/projects/python-ldap/ http://pypi.python.org/pypi/python-ldap"
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz
-	doc? ( http://www.python-ldap.org/doc/${DOC_P}.tar.gz )"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="PSF-2"
 SLOT="0"
 KEYWORDS="~alpha amd64 ~hppa ~ia64 ~ppc ~ppc64 sparc x86 ~x86-solaris"
 IUSE="doc examples sasl ssl"
 
-RDEPEND=">=net-nds/openldap-2.4.11
+RDEPEND="$(python_abi_depend dev-python/pyasn1)
+	$(python_abi_depend dev-python/pyasn1-modules)
+	>=net-nds/openldap-2.4.11
 	sasl? ( dev-libs/cyrus-sasl )"
-DEPEND="${DEPEND}
-	$(python_abi_depend dev-python/setuptools)"
+DEPEND="${RDEPEND}
+	$(python_abi_depend dev-python/setuptools)
+	doc? ( $(python_abi_depend dev-python/sphinx) )"
 
 DOCS="CHANGES README"
 PYTHON_MODULES="dsml.py ldap ldapurl.py ldif.py"
@@ -57,11 +57,25 @@ src_prepare() {
 		-i setup.cfg || die "sed failed"
 }
 
+src_compile() {
+	distutils_src_compile
+
+	if use doc; then
+		einfo "Generation of documentation"
+		pushd Doc > /dev/null
+		PYTHONPATH="$(ls -d ../build-$(PYTHON -f --ABI)/lib*)" emake html
+		popd > /dev/null
+	fi
+}
+
 src_install() {
 	distutils_src_install
 
 	if use doc; then
-		dohtml -r "${WORKDIR}/${DOC_P}"/*
+		pushd Doc/.build/html > /dev/null
+		insinto /usr/share/doc/${PF}/html
+		doins -r [a-z]* _static
+		popd > /dev/null
 	fi
 
 	if use examples; then
