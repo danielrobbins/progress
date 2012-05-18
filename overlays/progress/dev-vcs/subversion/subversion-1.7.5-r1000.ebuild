@@ -854,12 +854,14 @@ pkg_postinst() {
 		python_mod_optimize $(use ctypes-python && echo csvn) $(use python && echo libsvn svn)
 	fi
 
-	elog "If you intend to use svn-hot-backup, you can specify the number of"
-	elog "backups to keep per repository by specifying an environment variable."
-	elog "If you want to keep e.g. 2 backups, do the following:"
-	elog "echo '# hot-backup: Keep that many repository backups around' > /etc/env.d/80subversion"
-	elog "echo 'SVN_HOTBACKUP_BACKUPS_NUMBER=2' >> /etc/env.d/80subversion"
-	elog
+	if use extras; then
+		elog "If you intend to use hot-backup.py, you can specify the number of"
+		elog "backups to keep per repository by specifying an environment variable."
+		elog "If you want to keep e.g. 2 backups, do the following:"
+		elog "echo '# hot-backup.py: Keep that many repository backups around' > /etc/env.d/80subversion"
+		elog "echo 'SVN_HOTBACKUP_BACKUPS_NUMBER=2' >> /etc/env.d/80subversion"
+		elog
+	fi
 
 	elog "Subversion contains support for the use of Memcached"
 	elog "to cache data of FSFS repositories."
