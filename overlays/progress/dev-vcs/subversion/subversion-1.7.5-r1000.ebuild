@@ -50,6 +50,7 @@ CDEPEND=">=dev-db/sqlite-3.6.18[threadsafe]
 	)"
 RDEPEND="${CDEPEND}
 	apache2? ( www-servers/apache[apache2_modules_dav] )
+	extras? ( =dev-lang/python-2* )
 	java? ( >=virtual/jre-1.5 )
 	kde? ( kde-base/kwalletd )
 	nls? ( virtual/libintl )
@@ -718,10 +719,6 @@ EOF
 	newbashcomp tools/client-side/bash_completion subversion
 	rm -f tools/client-side/bash_completion
 
-	# Install hot backup script, bug 54304.
-	newbin tools/backup/hot-backup.py svn-hot-backup
-	rm -fr tools/backup
-
 	# Install svnserve init script and xinet.d configuration.
 	newconfd "${FILESDIR}/svnserve.confd" svnserve
 	newinitd "${FILESDIR}/svnserve.initd" svnserve
@@ -762,6 +759,8 @@ EOF
 
 		insinto /usr/share/${PN}
 		doins -r tools
+
+		python_convert_shebangs -r 2 "${ED}usr/share/${PN}"
 	fi
 
 	if use doc; then
