@@ -7,7 +7,7 @@ PYTHON_DEPEND="python? ( <<>> )"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 
-inherit distutils libtool toolchain-funcs
+inherit distutils eutils libtool toolchain-funcs
 
 MY_P=${P/_}
 DESCRIPTION="Password Checking Library"
@@ -17,9 +17,9 @@ SRC_URI="mirror://sourceforge/cracklib/${MY_P}.tar.gz"
 LICENSE="LGPL-2.1"
 SLOT="0"
 KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh sparc x86 ~x86-fbsd"
-IUSE="nls python static-libs"
+IUSE="nls python static-libs zlib"
 
-RDEPEND="sys-libs/zlib"
+RDEPEND="zlib? ( sys-libs/zlib )"
 DEPEND="${RDEPEND}
 	python? ( $(python_abi_depend dev-python/setuptools) )"
 
@@ -27,9 +27,17 @@ S=${WORKDIR}/${MY_P}
 
 PYTHON_MODULES="cracklib.py"
 do_python() {
-	pushd python > /dev/null || die
-	distutils_src_${EBUILD_PHASE}
-	popd > /dev/null
+	use python || return 0
+	case ${EBUILD_PHASE} in
+	prepare|compile|install)
+		pushd python > /dev/null || die
+		distutils_src_${EBUILD_PHASE}
+		popd > /dev/null
+		;;
+	*)
+		distutils_pkg_${EBUILD_PHASE}
+		;;
+	esac
 }
 
 pkg_setup() {
@@ -45,10 +53,12 @@ pkg_setup() {
 
 src_prepare() {
 	elibtoolize #269003
-	use python && do_python
+	do_python
 }
 
 src_configure() {
+	export ac_cv_header_zlib_h=$(usex zlib)
+	export ac_cv_search_gzopen=$(usex zlib -lz no)
 	econf \
 		--with-default-dict='$(libdir)/cracklib_dict' \
 		--without-python \
@@ -58,7 +68,7 @@ src_configure() {
 
 src_compile() {
 	default
-	use python && do_python
+	do_python
 }
 
 src_install() {
@@ -66,7 +76,7 @@ src_install() {
 	use static-libs || find "${ED}"/usr -name libcrack.la -delete
 	rm -r "${ED}"/usr/share/cracklib
 
-	use python && do_python
+	do_python
 
 	# move shared libs to /
 	gen_usr_ldscript -a crack
@@ -84,9 +94,9 @@ pkg_postinst() {
 		eend $?
 	fi
 
-	use python && distutils_pkg_postinst
+	do_python
 }
 
 pkg_postrm() {
-	use python && distutils_pkg_postrm
+	do_python
 }
