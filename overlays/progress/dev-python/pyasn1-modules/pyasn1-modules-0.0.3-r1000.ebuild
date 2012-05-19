@@ -23,6 +23,21 @@ DEPEND="${RDEPEND}
 DOCS="CHANGES README"
 PYTHON_MODULES="pyasn1_modules"
 
+src_test() {
+	testing() {
+		local exit_status="0" test
+		for test in test/*.sh; do
+			if ! python_execute PATH="tools:${PATH}" PYTHONPATH="build-${PYTHON_ABI}/lib" sh "${test}"; then
+				eerror "${test} failed with $(python_get_implementation_and_version)"
+				exit_status="1"
+			fi
+		done
+
+		return "${exit_status}"
+	}
+	python_execute_function testing
+}
+
 src_install() {
 	distutils_src_install
 
