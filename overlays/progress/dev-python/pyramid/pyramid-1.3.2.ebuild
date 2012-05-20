@@ -45,7 +45,7 @@ src_prepare() {
 	distutils_src_prepare
 
 	# Fix Sphinx theme.
-	sed -e "/# Add and use Pylons theme/,+36d" -i docs/conf.py || die "sed failed"
+	sed -e "/# Add and use Pylons theme/,+31d" -i docs/conf.py || die "sed failed"
 }
 
 src_compile() {
