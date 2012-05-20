@@ -8,19 +8,15 @@ PYTHON_RESTRICTED_ABIS="3.* *-jython"
 
 inherit distutils
 
-MY_P="${P/_rc/-rc}"
-
 DESCRIPTION="A helper for using rope refactoring library in IDEs"
 HOMEPAGE="http://pypi.python.org/pypi/ropemode"
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${MY_P}.tar.gz"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="amd64 x86"
 IUSE=""
 
-RDEPEND="$(python_abi_depend ">=dev-python/rope-0.9.2")"
-DEPEND="${DEPEND}
+RDEPEND="$(python_abi_depend ">=dev-python/rope-0.9.4")"
+DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
-
-S="${WORKDIR}/${MY_P}"
