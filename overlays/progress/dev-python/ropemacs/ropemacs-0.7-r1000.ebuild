@@ -6,31 +6,23 @@ EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.* *-jython"
 
-inherit distutils eutils
+inherit distutils
 
-DESCRIPTION="Rope in Emacs"
+DESCRIPTION="An emacs mode for using rope python refactoring library"
 HOMEPAGE="http://rope.sourceforge.net/ropemacs.html http://pypi.python.org/pypi/ropemacs"
-SRC_URI="http://bitbucket.org/agr/ropemacs/get/8b277a188d00.gz -> ${P}.tar.gz"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="amd64 x86"
 IUSE=""
 
-DEPEND="$(python_abi_depend dev-python/rope)
-	$(python_abi_depend dev-python/ropemode)"
-RDEPEND="${DEPEND}"
-
-S="${WORKDIR}/${PN}"
+RDEPEND="$(python_abi_depend ">=dev-python/rope-0.9.4")
+	$(python_abi_depend ">=dev-python/ropemode-0.2")"
+DEPEND="${RDEPEND}
+	$(python_abi_depend dev-python/setuptools)"
 
 DOCS="docs/*.txt"
-
-src_prepare() {
-	distutils_src_prepare
-
-	# Patch for nonexistent ropemode in setup.py
-	epatch "${FILESDIR}/${P}-ropemode-dir.patch"
-}
 
 pkg_postinst() {
 	distutils_pkg_postinst
