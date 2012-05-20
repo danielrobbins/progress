@@ -35,7 +35,7 @@ RDEPEND="$(python_abi_depend ">=dev-python/jinja-2.1")
 	irc? ( $(python_abi_depend dev-python/twisted-words) )
 	mail? ( $(python_abi_depend dev-python/twisted-mail) )
 	manhole? ( $(python_abi_depend -e "*-pypy-*" dev-python/twisted-conch) )"
-DEPEND="${DEPEND}
+DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	doc? ( $(python_abi_depend dev-python/sphinx) )
 	test? (
