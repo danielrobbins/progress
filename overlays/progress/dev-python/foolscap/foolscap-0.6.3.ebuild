@@ -22,7 +22,7 @@ IUSE="doc ssl"
 RDEPEND="$(python_abi_depend ">=dev-python/twisted-2.5.0")
 	$(python_abi_depend ">=dev-python/twisted-web-2.5.0")
 	ssl? ( $(python_abi_depend dev-python/pyopenssl) )"
-DEPEND="${DEPEND}
+DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
 src_test() {
