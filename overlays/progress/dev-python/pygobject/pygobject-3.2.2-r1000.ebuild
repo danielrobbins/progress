@@ -8,7 +8,7 @@ GNOME2_LA_PUNT="yes"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 *-jython *-pypy-*"
 
-inherit autotools gnome2 python virtualx
+inherit autotools eutils gnome2 python virtualx
 
 DESCRIPTION="GLib's GObject library bindings for Python"
 HOMEPAGE="http://www.pygtk.org/"
