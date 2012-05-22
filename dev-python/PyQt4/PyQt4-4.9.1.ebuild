@@ -7,7 +7,7 @@ PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 PYTHON_EXPORT_PHASE_FUNCTIONS="1"
 
-inherit python qt4-r2 toolchain-funcs
+inherit eutils python qt4-r2 toolchain-funcs
 
 # Minimal supported version of Qt.
 QT_VER="4.7.2"
