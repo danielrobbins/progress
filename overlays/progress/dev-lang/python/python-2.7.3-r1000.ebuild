@@ -62,8 +62,7 @@ RDEPEND="app-arch/bzip2
 				dev-tcltk/blt
 			)
 			xml? ( >=dev-libs/expat-2.1 )
-		)
-		!!<sys-apps/portage-2.1.9"
+		)"
 DEPEND="${RDEPEND}
 		$([[ "${PV}" == *_pre* ]] && echo "=${CATEGORY}/${PN}-${PV%%.*}*")
 		>=sys-devel/autoconf-2.65
