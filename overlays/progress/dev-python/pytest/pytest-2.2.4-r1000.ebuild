@@ -15,10 +15,10 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.zip"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh sparc x86 ~x86-fbsd ~amd64-linux ~ia64-linux ~x86-linux ~ppc-macos ~x86-macos"
+KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh sparc x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~ia64-linux ~x86-linux ~ppc-macos ~x86-macos"
 IUSE=""
 
-RDEPEND="$(python_abi_depend ">=dev-python/py-1.4.7")"
+RDEPEND="$(python_abi_depend ">=dev-python/py-1.4.8")"
 DEPEND="${RDEPEND}
 	app-arch/unzip
 	$(python_abi_depend dev-python/setuptools)"
@@ -40,7 +40,7 @@ src_test() {
 	python_execute_function testing
 
 	find -name "__pycache__" -print0 | xargs -0 rm -fr
-	find "(" -name "*.pyc" -o -name "*\$py.class" ")" -print0 | xargs -0 rm -f
+	find "(" -name "*.pyc" -o -name "*\$py.class" ")" -delete
 }
 
 src_install() {
