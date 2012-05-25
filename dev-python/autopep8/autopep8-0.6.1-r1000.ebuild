@@ -24,6 +24,16 @@ RDEPEND="${DEPEND}"
 
 PYTHON_MODULES="${PN}.py"
 
+src_prepare() {
+	distutils_src_prepare
+
+	# Fix compatibility with Jython 2.5.
+	sed \
+		-e "/except IOError as error:/a\\        error = sys.exc_info()[1]" \
+		-e "s/except IOError as error:/except IOError:/" \
+		-i autopep8.py
+}
+
 src_test() {
 	testing() {
 		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" test/test_${PN}.py
