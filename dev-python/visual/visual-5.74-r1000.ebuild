@@ -12,7 +12,7 @@ inherit flag-o-matic multilib python versionator
 MY_P="${PN}-$(delete_version_separator 2)_release"
 
 DESCRIPTION="Real-time 3D graphics library for Python"
-HOMEPAGE="http://www.vpython.org/"
+HOMEPAGE="http://www.vpython.org/ https://github.com/vpython/visual"
 SRC_URI="http://www.vpython.org/contents/download/${MY_P}.tar.bz2"
 
 LICENSE="visual"
@@ -33,10 +33,6 @@ DEPEND="${RDEPEND}
 S="${WORKDIR}/${MY_P}"
 
 src_prepare() {
-	# Delete redundant file, which causes compilation failure.
-	rm -f src/gtk2/random_device.cpp
-	sed -e "s/ random_device.l\?o//" -i src/Makefile.in src/gtk2/makefile || die "sed failed"
-
 	# Verbose build.
 	sed -e 's/2\?>>[[:space:]]*\$(LOGFILE).*//' -i src/Makefile.in || die "sed failed"
 
@@ -44,6 +40,7 @@ src_prepare() {
 	sed -e "s/-module/-avoid-version -module/" -i src/Makefile.in || die "sed failed"
 
 	# Fix compatibility with Python 3.
+	# https://github.com/vpython/visual/issues/2
 	sed -e '/initcvisual;/a\\t\tPyInit_cvisual;' -i src/linux-symbols.map || die "sed failed"
 
 	python_clean_py-compile_files
@@ -81,9 +78,6 @@ src_install() {
 	python_clean_installation_image
 
 	dodoc authors.txt HACKING.txt NEWS.txt
-
-	# Don't install useless vpython script.
-	rm -fr "${ED}usr/bin"
 }
 
 pkg_postinst() {
