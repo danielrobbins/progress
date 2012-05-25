@@ -65,9 +65,6 @@ src_prepare() {
 
 	epunt_cxx
 
-	# In next release
-	epatch "${FILESDIR}/${P}-randomization-threads.patch"
-
 	epatch "${FILESDIR}/${PN}-2.7.8-disable_static_modules.patch"
 
 	# Python bindings are built/tested/installed manually.
