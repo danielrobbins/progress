@@ -15,15 +15,16 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 LICENSE="MIT ZPL"
 SLOT="0"
 KEYWORDS="amd64 ~ppc sparc x86"
-IUSE="mysql postgres sqlite ssl timezone xapian"
+IUSE="chameleon mysql postgres sqlite ssl timezone xapian"
 
-DEPEND="mysql? ( $(python_abi_depend dev-python/mysql-python) )
+DEPEND="chameleon? ( $(python_abi_depend dev-python/chameleon) )
+	mysql? ( $(python_abi_depend dev-python/mysql-python) )
 	postgres? ( $(python_abi_depend -e "*-pypy-*" dev-python/psycopg:2) )
 	sqlite? ( $(python_abi_depend virtual/python-sqlite) )
 	ssl? ( $(python_abi_depend dev-python/pyopenssl) )
 	timezone? ( $(python_abi_depend dev-python/pytz) )
 	xapian? ( $(python_abi_depend -e "*-pypy-*" dev-libs/xapian-bindings[python]) )"
-RDEPEND=""
+RDEPEND="${DEPEND}"
 
 DOCS="CHANGES.txt doc/*.txt"
 
