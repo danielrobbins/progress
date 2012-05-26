@@ -25,19 +25,24 @@ DEPEND="${RDEPEND}
 		>=dev-python/epydoc-3
 	)"
 
-# Some tests fail with some limit of inlining of functions.
-# Avoid warnings about breaking strict-aliasing rules.
-PYTHON_CFLAGS=("2.* + -fno-inline-functions -fno-strict-aliasing")
+PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 
 DOCS="ACKS ChangeLog README TODO"
 PYTHON_MODULES="Crypto"
 
-src_configure() {
-	if use gmp; then
-		ac_cv_lib_mpir___gmpz_init="no" econf
-	else
-		ac_cv_lib_gmp___gmpz_init="no" ac_cv_lib_mpir___gmpz_init="no" econf
+src_prepare() {
+	distutils_src_prepare
+
+	if ! use gmp; then
+		# https://bugs.launchpad.net/pycrypto/+bug/1004781
+		sed -e "s/test_negative_number_roundtrip_mpzToLongObj_longObjToMPZ/_&/" -i lib/Crypto/SelfTest/Util/test_number.py
 	fi
+}
+
+src_configure() {
+	econf \
+		$(use_with gmp) \
+		--without-mpir
 }
 
 src_compile() {
@@ -45,8 +50,8 @@ src_compile() {
 
 	if use doc; then
 		einfo "Generation of documentation"
-		rst2html.py Doc/pycrypt.rst > Doc/index.html || die "Generation of documentation failed"
-		PYTHONPATH="$(ls -d build-$(PYTHON --ABI -f)/lib.*)" epydoc --config=Doc/epydoc-config --exclude-introspect="^Crypto\.(Random\.OSRNG\.nt|Util\.winrandom)$" || die "Generation of documentation failed"
+		python_execute rst2html.py Doc/pycrypt.rst > Doc/index.html || die "Generation of documentation failed"
+		python_execute PYTHONPATH="$(ls -d build-$(PYTHON --ABI -f)/lib.*)" epydoc --config=Doc/epydoc-config --exclude-introspect="^Crypto\.(Random\.OSRNG\.nt|Util\.winrandom)$" || die "Generation of documentation failed"
 	fi
 }
 
