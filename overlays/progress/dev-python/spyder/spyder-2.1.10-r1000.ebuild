@@ -28,6 +28,7 @@ RDEPEND="$(python_abi_depend ">=dev-python/PyQt4-4.4[webkit]")
 	scipy? ( $(python_abi_depend sci-libs/scipy) )
 	sphinx? ( $(python_abi_depend dev-python/sphinx) )"
 DEPEND="${RDEPEND}
+	app-arch/unzip
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
 
 PYTHON_MODULES="spyderlib spyderplugins"
