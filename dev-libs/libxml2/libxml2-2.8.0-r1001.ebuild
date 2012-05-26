@@ -67,6 +67,8 @@ src_prepare() {
 
 	epatch "${FILESDIR}/${PN}-2.7.8-disable_static_modules.patch"
 
+	epatch "${FILESDIR}/${P}-linking.patch"
+
 	# Python bindings are built/tested/installed manually.
 	sed -e "s/@PYTHON_SUBDIR@//" -i Makefile.am || die "sed failed"
 
