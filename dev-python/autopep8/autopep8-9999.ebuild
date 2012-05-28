@@ -4,8 +4,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-# ast module is absent in CPython 2.5.
-PYTHON_RESTRICTED_ABIS="2.5-cpython"
+PYTHON_RESTRICTED_ABIS="2.5"
 
 inherit distutils git-2
 
@@ -24,16 +23,6 @@ DEPEND="$(python_abi_depend dev-python/pep8)
 RDEPEND="${DEPEND}"
 
 PYTHON_MODULES="${PN}.py"
-
-src_prepare() {
-	distutils_src_prepare
-
-	# Fix compatibility with Jython 2.5.
-	sed \
-		-e "/except IOError as error:/a\\        error = sys.exc_info()[1]" \
-		-e "s/except IOError as error:/except IOError:/" \
-		-i autopep8.py
-}
 
 src_test() {
 	testing() {
