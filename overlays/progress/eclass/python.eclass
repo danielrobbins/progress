@@ -3552,7 +3552,7 @@ python_mod_optimize() {
 
 	if ! has "${EAPI:-0}" 0 1 2 || _python_package_supporting_installation_for_multiple_python_abis || _python_implementation || [[ "${CATEGORY}/${PN}" == "sys-apps/portage" ]]; then
 		# PYTHON_ABI variable cannot be local in packages not supporting installation for multiple Python ABIs.
-		local ABIs_patterns="*" allow_evaluated_non_sitedir_paths="0" dir dirs=() enabled_PYTHON_ABI enabled_PYTHON_ABIS evaluated_dirs=() evaluated_files=() exit_status file files=() iterated_PYTHON_ABIS options=() other_dirs=() other_files=() previous_PYTHON_ABI="${PYTHON_ABI}" root site_packages_dirs=() site_packages_files=() stderr stderr_line
+		local ABIs_patterns="*" allow_evaluated_non_sitedir_paths="0" dir dirs=() enabled_PYTHON_ABI enabled_PYTHON_ABIS evaluated_dirs=() evaluated_files=() exit_status file files=() iterated_PYTHON_ABIS options=() other_dirs=() other_files=() previous_PYTHON_ABI="${PYTHON_ABI}" root site_packages_dirs=() site_packages_files=() stderr stderr_line stderr_lines=()
 
 		if _python_package_supporting_installation_for_multiple_python_abis; then
 			if has "${EAPI:-0}" 0 1 2 3 && [[ -z "${PYTHON_ABIS}" ]]; then
@@ -3672,6 +3672,7 @@ python_mod_optimize() {
 			if ((${#site_packages_dirs[@]})) || ((${#site_packages_files[@]})) || ((${#evaluated_dirs[@]})) || ((${#evaluated_files[@]})); then
 				exit_status="0"
 				stderr=""
+				stderr_lines=()
 				ebegin "Compilation and optimization of Python modules for $(python_get_implementation_and_version)"
 				if ((${#site_packages_dirs[@]})) || ((${#evaluated_dirs[@]})); then
 					for dir in "${site_packages_dirs[@]}"; do
@@ -3701,10 +3702,18 @@ python_mod_optimize() {
 				fi
 				eend "${exit_status}"
 				if [[ -n "${stderr}" ]]; then
-					eerror "Syntax errors / warnings in Python modules for $(python_get_implementation_and_version):" &> /dev/null
 					while read stderr_line; do
-						eerror "    ${stderr_line}"
+						# Ignore debugging output of Jython.
+						if [[ ! ("$(_python_get_implementation "${PYTHON_ABI}")" == "Jython" && "${stderr_line}" =~ ^"*sys-package-mgr*: processing "(new|modified)" jar") ]]; then
+							stderr_lines+=("${stderr_line}")
+						fi
 					done <<< "${stderr}"
+					if [[ "${#stderr_lines[@]}" -ge 1 ]]; then
+						eerror "Syntax errors / warnings in Python modules for $(python_get_implementation_and_version):" &> /dev/null
+						for stderr_line in "${stderr_lines[@]}"; do
+							eerror "    ${stderr_line}"
+						done
+					fi
 				fi
 			fi
 			unset dirs files
@@ -3722,6 +3731,7 @@ python_mod_optimize() {
 		if ((${#other_dirs[@]})) || ((${#other_files[@]})); then
 			exit_status="0"
 			stderr=""
+			stderr_lines=()
 			ebegin "Compilation and optimization of Python modules placed outside of site-packages directories for $(python_get_implementation_and_version)"
 			if ((${#other_dirs[@]})); then
 				stderr+="${stderr:+$'\n'}$("$(PYTHON ${PYTHON_ABI})" -m compileall "${options[@]}" "${other_dirs[@]}" 2>&1)" || exit_status="1"
@@ -3739,10 +3749,18 @@ python_mod_optimize() {
 			fi
 			eend "${exit_status}"
 			if [[ -n "${stderr}" ]]; then
-				eerror "Syntax errors / warnings in Python modules placed outside of site-packages directories for $(python_get_implementation_and_version):" &> /dev/null
 				while read stderr_line; do
-					eerror "    ${stderr_line}"
+					# Ignore debugging output of Jython.
+					if [[ ! ("$(_python_get_implementation "${PYTHON_ABI}")" == "Jython" && "${stderr_line}" =~ ^"*sys-package-mgr*: processing "(new|modified)" jar") ]]; then
+						stderr_lines+=("${stderr_line}")
+					fi
 				done <<< "${stderr}"
+				if [[ "${#stderr_lines[@]}" -ge 1 ]]; then
+					eerror "Syntax errors / warnings in Python modules placed outside of site-packages directories for $(python_get_implementation_and_version):" &> /dev/null
+					for stderr_line in "${stderr_lines[@]}"; do
+						eerror "    ${stderr_line}"
+					done
+				fi
 			fi
 		fi
 	else
