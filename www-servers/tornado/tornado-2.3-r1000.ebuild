@@ -9,8 +9,8 @@ PYTHON_RESTRICTED_ABIS="3.1 *-jython"
 inherit distutils
 
 DESCRIPTION="Scalable, non-blocking web server and tools"
-HOMEPAGE="http://www.tornadoweb.org/ http://pypi.python.org/pypi/tornado"
-SRC_URI="http://github.com/downloads/facebook/tornado/${P}.tar.gz"
+HOMEPAGE="http://www.tornadoweb.org/ https://github.com/facebook/tornado http://pypi.python.org/pypi/tornado"
+SRC_URI="https://github.com/downloads/facebook/tornado/${P}.tar.gz"
 
 LICENSE="Apache-2.0"
 SLOT="0"
@@ -21,6 +21,13 @@ RDEPEND="curl? ( $(python_abi_depend -i "2.*" dev-python/pycurl) )
 	$(python_abi_depend virtual/python-json)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
+
+src_prepare() {
+	distutils_src_prepare
+
+	# https://github.com/facebook/tornado/issues/524
+	sed -e '/warnings.filterwarnings("error")/a\    warnings.filterwarnings("ignore", category=ImportWarning)' -i tornado/test/runtests.py
+}
 
 src_test() {
 	testing() {
