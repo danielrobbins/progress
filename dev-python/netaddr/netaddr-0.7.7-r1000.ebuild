@@ -20,13 +20,6 @@ IUSE=""
 DEPEND=""
 RDEPEND=""
 
-src_prepare() {
-	distutils_src_prepare
-
-	# https://github.com/drkjam/netaddr/issues/20
-	sed -e "s/AddrFormatError/netaddr.core.AddrFormatError/" -i netaddr/tests/3.x/ip/{platform_linux2.txt,platform_win32.txt}
-}
-
 src_test() {
 	testing() {
 		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" netaddr/tests/__init__.py
