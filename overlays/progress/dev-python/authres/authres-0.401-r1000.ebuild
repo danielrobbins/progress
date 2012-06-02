@@ -20,3 +20,10 @@ DEPEND=""
 RDEPEND=""
 
 DOCS="CHANGES README"
+
+src_prepare() {
+	distutils_src_prepare
+
+	# https://bugs.launchpad.net/authentication-results-python/+bug/1007909
+	sed -e "/^_test()$/,+1d" -i authres/__init__.py
+}
