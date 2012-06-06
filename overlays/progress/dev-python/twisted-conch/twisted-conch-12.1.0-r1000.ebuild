@@ -24,6 +24,10 @@ PYTHON_MODULES="twisted/conch twisted/plugins"
 src_prepare() {
 	distutils_src_prepare
 
+	# Disable failing test.
+	# https://twistedmatrix.com/trac/ticket/5700
+	sed -e "s/test_getCipher/_&/" -i twisted/conch/test/test_transport.py
+
 	if [[ "${EUID}" -eq 0 ]]; then
 		# Disable tests failing with root permissions.
 		sed -e "s/test_checkKeyAsRoot/_&/" -i twisted/conch/test/test_checkers.py
