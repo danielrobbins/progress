@@ -9,17 +9,19 @@ MY_PACKAGE="Core"
 
 inherit eutils twisted versionator
 
-DESCRIPTION="An asynchronous networking framework written in Python"
+DESCRIPTION="The core parts of the Twisted networking framework"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh sparc x86 ~x86-fbsd ~ia64-hpux ~x86-interix ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
-IUSE="crypt gtk serial"
+KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh sparc x86 ~amd64-fbsd ~x86-fbsd ~ia64-hpux ~x86-interix ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
+IUSE="crypt gtk pygobject serial wxwidgets"
 
 DEPEND="$(python_abi_depend net-zope/zope-interface)
 	crypt? ( $(python_abi_depend ">=dev-python/pyopenssl-0.10") )
 	gtk? ( $(python_abi_depend -e "2.5 *-pypy-*" dev-python/pygtk:2) )
-	serial? ( $(python_abi_depend dev-python/pyserial) )"
+	pygobject? ( $(python_abi_depend -e "2.5 *-pypy-*" dev-python/pygobject:3) )
+	serial? ( $(python_abi_depend dev-python/pyserial) )
+	wxwidgets? ( $(python_abi_depend -e "*-pypy-*" dev-python/wxpython) )"
 RDEPEND="${DEPEND}"
 
 DOCS="CREDITS NEWS README"
@@ -33,8 +35,17 @@ src_prepare(){
 	# Respect TWISTED_DISABLE_WRITING_OF_PLUGIN_CACHE variable.
 	epatch "${FILESDIR}/${PN}-9.0.0-respect_TWISTED_DISABLE_WRITING_OF_PLUGIN_CACHE.patch"
 
-	# Fix a test, which fails in some timezones.
-	epatch "${FILESDIR}/${P}-fix_test_timeFormatting.patch"
+	# Disable failing tests.
+	# https://twistedmatrix.com/trac/ticket/5701
+	# https://twistedmatrix.com/trac/ticket/5702
+	# https://twistedmatrix.com/trac/ticket/5703
+	sed \
+		-e "s/test_avoidLeakingFileDescriptors/_&/" \
+		-e "s/test_descriptorDeliveredBeforeBytes/_&/" \
+		-e "s/test_sendFileDescriptor[(.]/_&/" \
+		-i twisted/internet/test/test_unix.py
+	sed -e "s/test_sendSubProcessFD/_&/" -i twisted/python/test/test_sendmsg.py
+	sed -e "356s/test_isChecker/_&/" -i twisted/test/test_strcred.py
 
 	if [[ "${EUID}" -eq 0 ]]; then
 		# Disable tests failing with root permissions.

@@ -9,7 +9,7 @@ MY_PACKAGE="Pair"
 
 inherit twisted versionator
 
-DESCRIPTION="Twisted Pair contains low-level networking support."
+DESCRIPTION="Twisted Pair contains low-level networking support"
 
 KEYWORDS="amd64 x86"
 IUSE=""
