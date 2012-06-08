@@ -17,7 +17,7 @@ SLOT="0"
 KEYWORDS="amd64 ~arm x86"
 IUSE=""
 
-RDEPEND="$(python_abi_depend ">=dev-python/certifi-0.0.7")
+RDEPEND="app-misc/ca-certificates
 	$(python_abi_depend dev-python/chardet)
 	$(python_abi_depend -i "2.*" "=dev-python/oauthlib-0.1*")"
 DEPEND="${RDEPEND}
@@ -27,6 +27,12 @@ DOCS="HISTORY.rst README.rst"
 
 src_prepare() {
 	distutils_src_prepare
+
+	# Do not require certifi.
+	sed -e "/^requires =/s/'certifi>=0.0.7'//" -i setup.py
+
+	# Fix dependency on chardet.
+	sed -e "/chardet_package =/s/chardet2/chardet>=1.0.0/" -i setup.py
 
 	# https://github.com/kennethreitz/requests/issues/600
 	sed \
