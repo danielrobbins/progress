@@ -14,7 +14,7 @@
 # waf-based packages much easier.
 # Its main features are support of common portage default settings.
 
-inherit base eutils multilib toolchain-funcs
+inherit base eutils multilib toolchain-funcs multiprocessing
 
 case ${EAPI:-0} in
 	4-python|4|3) EXPORT_FUNCTIONS src_configure src_compile src_install ;;
