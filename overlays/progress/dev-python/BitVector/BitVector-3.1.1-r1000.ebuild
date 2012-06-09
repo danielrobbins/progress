@@ -25,7 +25,7 @@ PYTHON_MODULES="BitVector.py"
 src_prepare() {
 	distutils_src_prepare
 
-	# Don't install test.py.
+	# Do not install test.py.
 	rm -f test.py
 }
 
