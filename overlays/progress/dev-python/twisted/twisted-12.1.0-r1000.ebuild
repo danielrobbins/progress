@@ -35,16 +35,11 @@ src_prepare(){
 	# Respect TWISTED_DISABLE_WRITING_OF_PLUGIN_CACHE variable.
 	epatch "${FILESDIR}/${PN}-9.0.0-respect_TWISTED_DISABLE_WRITING_OF_PLUGIN_CACHE.patch"
 
-	# Disable failing tests.
-	# https://twistedmatrix.com/trac/ticket/5701
-	# https://twistedmatrix.com/trac/ticket/5702
+	# Use -fno-strict-aliasing for twisted.python.sendmsg extension.
+	epatch "${FILESDIR}/${P}-twisted.python.sendmsg_compiler_flags.patch"
+
+	# Disable failing test.
 	# https://twistedmatrix.com/trac/ticket/5703
-	sed \
-		-e "s/test_avoidLeakingFileDescriptors/_&/" \
-		-e "s/test_descriptorDeliveredBeforeBytes/_&/" \
-		-e "s/test_sendFileDescriptor[(.]/_&/" \
-		-i twisted/internet/test/test_unix.py
-	sed -e "s/test_sendSubProcessFD/_&/" -i twisted/python/test/test_sendmsg.py
 	sed -e "356s/test_isChecker/_&/" -i twisted/test/test_strcred.py
 
 	if [[ "${EUID}" -eq 0 ]]; then
