@@ -130,7 +130,7 @@ _python_check_python_abi_matching() {
 _python_implementation() {
 	if [[ "${CATEGORY}/${PN}" == "dev-lang/python" ]]; then
 		return 0
-	elif [[ "${CATEGORY}/${PN}" == "dev-java/jython" ]]; then
+	elif [[ "${CATEGORY}/${PN}" == "dev-lang/jython" ]]; then
 		return 0
 	elif [[ "${CATEGORY}/${PN}" == "dev-python/pypy" ]]; then
 		return 0
@@ -463,7 +463,7 @@ _python_parse_dependencies_in_new_EAPIs() {
 						if [[ "${PYTHON_ABI}" =~ ^[[:digit:]]+\.[[:digit:]]+$ ]]; then
 							output_value+="${output_value:+ }python_abis_${PYTHON_ABI}? ( dev-lang/python:${PYTHON_ABI}$(_get_matched_USE_dependencies) )"
 						elif [[ "${PYTHON_ABI}" =~ ^[[:digit:]]+\.[[:digit:]]+-jython$ ]]; then
-							output_value+="${output_value:+ }python_abis_${PYTHON_ABI}? ( dev-java/jython:${PYTHON_ABI%-jython}$(_get_matched_USE_dependencies) )"
+							output_value+="${output_value:+ }python_abis_${PYTHON_ABI}? ( dev-lang/jython:${PYTHON_ABI%-jython}$(_get_matched_USE_dependencies) )"
 						elif [[ "${PYTHON_ABI}" =~ ^[[:digit:]]+\.[[:digit:]]+-pypy-[[:digit:]]+\.[[:digit:]]+$ ]]; then
 							output_value+="${output_value:+ }python_abis_${PYTHON_ABI}? ( dev-python/pypy:${PYTHON_ABI#*-pypy-}$(_get_matched_USE_dependencies) )"
 						fi
@@ -2708,7 +2708,7 @@ python_get_implementational_package() {
 		if [[ "$(_python_get_implementation "${PYTHON_ABI}")" == "CPython" ]]; then
 			echo "=dev-lang/python-${PYTHON_ABI}*"
 		elif [[ "$(_python_get_implementation "${PYTHON_ABI}")" == "Jython" ]]; then
-			echo "=dev-java/jython-${PYTHON_ABI%-jython}*"
+			echo "=dev-lang/jython-${PYTHON_ABI%-jython}*"
 		elif [[ "$(_python_get_implementation "${PYTHON_ABI}")" == "PyPy" ]]; then
 			echo "=dev-python/pypy-${PYTHON_ABI#*-pypy-}*"
 		fi
@@ -2716,7 +2716,7 @@ python_get_implementational_package() {
 		if [[ "$(_python_get_implementation "${PYTHON_ABI}")" == "CPython" ]]; then
 			echo "dev-lang/python:${PYTHON_ABI}"
 		elif [[ "$(_python_get_implementation "${PYTHON_ABI}")" == "Jython" ]]; then
-			echo "dev-java/jython:${PYTHON_ABI%-jython}"
+			echo "dev-lang/jython:${PYTHON_ABI%-jython}"
 		elif [[ "$(_python_get_implementation "${PYTHON_ABI}")" == "PyPy" ]]; then
 			echo "dev-python/pypy:${PYTHON_ABI#*-pypy-}"
 		fi
