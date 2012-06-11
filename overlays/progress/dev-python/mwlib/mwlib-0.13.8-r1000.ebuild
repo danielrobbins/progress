@@ -20,6 +20,7 @@ KEYWORDS="amd64 x86"
 IUSE="doc latex"
 
 RDEPEND="dev-lang/perl
+	$(python_abi_depend ">=dev-python/apipkg-1.2")
 	$(python_abi_depend dev-python/bottle)
 	$(python_abi_depend dev-python/gevent)
 	$(python_abi_depend dev-python/imaging)
@@ -47,9 +48,6 @@ DOCS="changelog.rst"
 
 src_prepare() {
 	distutils_src_prepare
-
-	# mwlib.apipkg is actually used.
-	sed -e 's/, "apipkg"//' -i setup.py
 
 	# Execute odflint script.
 	sed \
