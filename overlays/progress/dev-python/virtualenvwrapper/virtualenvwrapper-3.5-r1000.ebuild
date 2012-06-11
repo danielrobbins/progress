@@ -19,7 +19,8 @@ KEYWORDS="amd64 x86"
 IUSE=""
 
 DEPEND="$(python_abi_depend dev-python/setuptools)
-	$(python_abi_depend dev-python/virtualenv)"
+	$(python_abi_depend dev-python/virtualenv)
+	dev-python/virtualenv-clone"
 RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/${P}"
