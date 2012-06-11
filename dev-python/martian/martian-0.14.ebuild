@@ -17,10 +17,10 @@ SLOT="0"
 KEYWORDS="amd64 x86"
 IUSE=""
 
-RDEPEND="$(python_abi_depend net-zope/zope-interface)"
+RDEPEND="$(python_abi_depend net-zope/zope.interface)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
-	test? ( $(python_abi_depend net-zope/zope-testing) )"
+	test? ( $(python_abi_depend net-zope/zope.testing) )"
 
 DOCS="CHANGES.txt CREDITS.txt src/martian/README.txt"
 

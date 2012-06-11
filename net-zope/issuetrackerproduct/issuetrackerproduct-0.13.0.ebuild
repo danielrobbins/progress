@@ -32,8 +32,8 @@ DEPEND="$(python_abi_depend net-zope/namespaces-zope[Products])
 	$(python_abi_depend net-zope/zlog)
 	$(python_abi_depend net-zope/zodb)
 	$(python_abi_depend net-zope/zope)
-	$(python_abi_depend net-zope/zope-contenttype)
-	$(python_abi_depend net-zope/zope-structuredtext)"
+	$(python_abi_depend net-zope/zope.contenttype)
+	$(python_abi_depend net-zope/zope.structuredtext)"
 RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/${MY_PN}"

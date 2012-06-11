@@ -25,8 +25,8 @@ RDEPEND="$(python_abi_depend dev-python/restrictedpython)
 	$(python_abi_depend net-zope/acquisition)
 	$(python_abi_depend net-zope/extensionclass)
 	$(python_abi_depend net-zope/zexceptions)
-	$(python_abi_depend net-zope/zope-sequencesort)
-	$(python_abi_depend net-zope/zope-structuredtext)"
+	$(python_abi_depend net-zope/zope.sequencesort)
+	$(python_abi_depend net-zope/zope.structuredtext)"
 DEPEND="${RDEPEND}
 	app-arch/unzip
 	$(python_abi_depend dev-python/setuptools)"

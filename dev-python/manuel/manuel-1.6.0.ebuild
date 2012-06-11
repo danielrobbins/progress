@@ -20,6 +20,6 @@ IUSE="test"
 RDEPEND="$(python_abi_depend dev-python/six)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
-	test? ( $(python_abi_depend net-zope/zope-testing) )"
+	test? ( $(python_abi_depend net-zope/zope.testing) )"
 
 DOCS="CHANGES.txt"

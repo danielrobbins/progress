@@ -17,7 +17,7 @@ SLOT="0"
 KEYWORDS="~alpha amd64 ~ppc sparc x86"
 IUSE=""
 
-RDEPEND="$(python_abi_depend net-zope/zope-interface)"
+RDEPEND="$(python_abi_depend net-zope/zope.interface)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 

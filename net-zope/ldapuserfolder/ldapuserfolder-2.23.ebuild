@@ -29,8 +29,8 @@ RDEPEND="$(python_abi_depend net-zope/namespaces-zope[Products])
 	$(python_abi_depend net-zope/persistence)
 	$(python_abi_depend net-zope/zodb)
 	$(python_abi_depend net-zope/zope)
-	$(python_abi_depend net-zope/zope-component)
-	$(python_abi_depend net-zope/zope-interface)"
+	$(python_abi_depend net-zope/zope.component)
+	$(python_abi_depend net-zope/zope.interface)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
