@@ -2833,7 +2833,11 @@ python_get_libdir() {
 	elif [[ "$(_python_get_implementation "${PYTHON_ABI}")" == "Jython" ]]; then
 		echo "${prefix}usr/share/jython-${PYTHON_ABI%-jython}/Lib"
 	elif [[ "$(_python_get_implementation "${PYTHON_ABI}")" == "PyPy" ]]; then
-		die "${FUNCNAME}(): PyPy has multiple standard library directories"
+		if [[ "${PYTHON_ABI#*-pypy-}" < "1.9" ]]; then
+			die "${FUNCNAME}(): PyPy has multiple standard library directories"
+		else
+			echo "${prefix}usr/${_PYTHON_MULTILIB_LIBDIR}/pypy${PYTHON_ABI#*-pypy-}/lib-python/${PYTHON_ABI%-pypy-*}"
+		fi
 	fi
 }
 
