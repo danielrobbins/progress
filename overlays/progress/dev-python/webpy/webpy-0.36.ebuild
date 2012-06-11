@@ -9,10 +9,11 @@ PYTHON_RESTRICTED_ABIS="3.*"
 inherit distutils
 
 MY_PN="web.py"
+MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="A small and simple web framework for Python"
 HOMEPAGE="http://www.webpy.org http://pypi.python.org/pypi/web.py"
-SRC_URI="http://www.webpy.org/static/${MY_PN}-${PV}.tar.gz"
+SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="public-domain"
 SLOT="0"
@@ -22,15 +23,18 @@ IUSE=""
 DEPEND=""
 RDEPEND=""
 
-S="${WORKDIR}/web.py-${PV}"
+S="${WORKDIR}/${MY_P}"
 
 PYTHON_MODULES="web"
 
 src_test() {
 	testing() {
-		local exit_status="0" test tests="db http net template utils"
-		for test in ${tests}; do
-			python_execute "$(PYTHON)" web/${test}.py || exit_status="$?"
+		local exit_status="0" test
+		for test in db http net template utils; do
+			if ! python_execute "$(PYTHON)" web/${test}.py; then
+				eerror "${test} failed with $(python_get_implementation_and_version)"
+				exit_status="1"
+			fi
 		done
 
 		return "${exit_status}"
