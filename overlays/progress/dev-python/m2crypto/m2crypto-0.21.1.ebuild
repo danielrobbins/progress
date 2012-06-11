@@ -10,14 +10,15 @@ DISTUTILS_SRC_TEST="setup.py"
 inherit distutils
 
 MY_PN="M2Crypto"
+MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="M2Crypto: A Python crypto and SSL toolkit"
 HOMEPAGE="http://chandlerproject.org/bin/view/Projects/MeTooCrypto http://pypi.python.org/pypi/M2Crypto"
-SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_PN}-${PV}.tar.gz"
+SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh sparc x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux ~ppc-macos ~x86-macos"
+KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh sparc x86 ~amd64-fbsd ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux ~ppc-macos ~x86-macos"
 IUSE="doc examples"
 
 RDEPEND=">=dev-libs/openssl-0.9.8"
@@ -26,7 +27,7 @@ DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	doc? ( dev-python/epydoc )"
 
-S="${WORKDIR}/${MY_PN}-${PV}"
+S="${WORKDIR}/${MY_P}"
 
 DOCS="CHANGES"
 PYTHON_MODULES="${MY_PN}"
