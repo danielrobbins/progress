@@ -3,9 +3,10 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-# Future versions of net-zope/zope.testing will support Python 3.
+# fcntl module required.
+PYTHON_RESTRICTED_ABIS="*-jython"
+# Tests broken with Python 3.
 PYTHON_TESTS_RESTRICTED_ABIS="3.*"
-DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
 
@@ -21,18 +22,14 @@ IUSE="test"
 RDEPEND="$(python_abi_depend net-zope/namespaces-zc[zc])"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
-	test? ( $(python_abi_depend -e "3.*" net-zope/zope.testing) )"
-
-S="${WORKDIR}"/${MY_P}
+	test? ( $(python_abi_depend -e "${PYTHON_TESTS_RESTRICTED_ABIS}" net-zope/zope.testing) )"
 
 DOCS="doc.txt src/zc/lockfile/CHANGES.txt src/zc/lockfile/README.txt"
 PYTHON_MODULES="${PN/.//}"
 
-src_install() {
-	distutils_src_install
-
-	delete_tests() {
-		rm -f "${ED}"$(python_get_sitedir)/zc/lockfile/tests.py
+src_test() {
+	testing() {
+		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" -c "import sys, unittest, zc.lockfile.tests; sys.exit(not unittest.TextTestRunner(verbosity=2).run(zc.lockfile.tests.test_suite()).wasSuccessful())"
 	}
-	python_execute_function -q delete_tests
+	python_execute_function testing
 }
