@@ -22,12 +22,12 @@ IUSE=""
 
 RDEPEND="$(python_abi_depend dev-python/manuel)
 	$(python_abi_depend ">=net-zope/transaction-1.1.0")
-	$(python_abi_depend net-zope/zc-lockfile)
+	$(python_abi_depend net-zope/zc.lockfile)
 	$(python_abi_depend net-zope/zconfig)
 	$(python_abi_depend net-zope/zdaemon)
-	$(python_abi_depend net-zope/zope-event)
-	$(python_abi_depend net-zope/zope-interface)
-	$(python_abi_depend net-zope/zope-testing)
+	$(python_abi_depend net-zope/zope.event)
+	$(python_abi_depend net-zope/zope.interface)
+	$(python_abi_depend net-zope/zope.testing)
 	!media-libs/FusionSound"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"

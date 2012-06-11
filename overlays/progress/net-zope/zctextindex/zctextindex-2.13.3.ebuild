@@ -28,7 +28,7 @@ RDEPEND="$(python_abi_depend net-zope/namespaces-zope[Products])
 	$(python_abi_depend net-zope/zexceptions)
 	$(python_abi_depend net-zope/zodb)
 	$(python_abi_depend net-zope/zope)
-	$(python_abi_depend net-zope/zope-interface)"
+	$(python_abi_depend net-zope/zope.interface)"
 DEPEND="${RDEPEND}
 	app-arch/unzip
 	$(python_abi_depend dev-python/setuptools)"

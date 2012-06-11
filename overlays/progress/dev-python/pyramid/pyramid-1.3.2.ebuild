@@ -20,23 +20,23 @@ IUSE="doc test"
 RDEPEND="$(python_abi_depend dev-python/chameleon)
 	$(python_abi_depend dev-python/mako)
 	$(python_abi_depend dev-python/pastedeploy)
-	$(python_abi_depend dev-python/repoze-lru)
+	$(python_abi_depend dev-python/repoze.lru)
 	$(python_abi_depend dev-python/setuptools)
 	$(python_abi_depend dev-python/translationstring)
 	$(python_abi_depend dev-python/venusian)
 	$(python_abi_depend dev-python/webob)
-	$(python_abi_depend net-zope/zope-deprecation)
-	$(python_abi_depend net-zope/zope-interface)"
+	$(python_abi_depend net-zope/zope.deprecation)
+	$(python_abi_depend net-zope/zope.interface)"
 DEPEND="${RDEPEND}
 	doc? (
 		dev-python/docutils[python_abis_2.7]
-		dev-python/repoze-sphinx-autointerface[python_abis_2.7]
+		dev-python/repoze.sphinx.autointerface[python_abis_2.7]
 		dev-python/sphinx[python_abis_2.7]
 	)
 	test? (
 		$(python_abi_depend dev-python/virtualenv)
 		$(python_abi_depend dev-python/webtest)
-		$(python_abi_depend -i "2.*-cpython" net-zope/zope-component)
+		$(python_abi_depend -i "2.*-cpython" net-zope/zope.component)
 	)"
 
 DOCS="BFG_HISTORY.txt CHANGES.txt HISTORY.txt README.rst TODO.txt"

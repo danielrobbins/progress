@@ -21,7 +21,7 @@ KEYWORDS="~alpha amd64 ~ppc sparc x86"
 IUSE="test"
 
 DEPEND="$(python_abi_depend dev-python/setuptools)
-	test? ( $(python_abi_depend net-zope/zope-testing) )"
+	test? ( $(python_abi_depend net-zope/zope.testing) )"
 RDEPEND=""
 
 S="${WORKDIR}/${MY_P}"

@@ -32,13 +32,13 @@ RDEPEND="$(python_abi_depend net-zope/namespaces-zope[Products])
 	$(python_abi_depend net-zope/zexceptions)
 	$(python_abi_depend net-zope/zodb)
 	$(python_abi_depend net-zope/zope)
-	$(python_abi_depend net-zope/zope-dottedname)
-	$(python_abi_depend net-zope/zope-interface)
-	$(python_abi_depend net-zope/zope-schema)
-	$(python_abi_depend net-zope/zope-testing)
+	$(python_abi_depend net-zope/zope.dottedname)
+	$(python_abi_depend net-zope/zope.interface)
+	$(python_abi_depend net-zope/zope.schema)
+	$(python_abi_depend net-zope/zope.testing)
 	globalrequest? (
-		$(python_abi_depend net-zope/five-globalrequest)
-		$(python_abi_depend net-zope/zope-globalrequest)
+		$(python_abi_depend net-zope/five.globalrequest)
+		$(python_abi_depend net-zope/zope.globalrequest)
 	)"
 DEPEND="${RDEPEND}
 	app-arch/unzip

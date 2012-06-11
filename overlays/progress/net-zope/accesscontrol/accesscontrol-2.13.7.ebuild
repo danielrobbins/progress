@@ -27,20 +27,20 @@ RDEPEND="$(python_abi_depend dev-python/restrictedpython)
 	$(python_abi_depend net-zope/record)
 	$(python_abi_depend net-zope/zexceptions)
 	$(python_abi_depend net-zope/zodb)
-	$(python_abi_depend net-zope/zope-component)
-	$(python_abi_depend net-zope/zope-configuration)
-	$(python_abi_depend net-zope/zope-deferredimport)
-	$(python_abi_depend net-zope/zope-interface)
-	$(python_abi_depend net-zope/zope-publisher)
-	$(python_abi_depend net-zope/zope-schema)
-	$(python_abi_depend net-zope/zope-security)"
+	$(python_abi_depend net-zope/zope.component)
+	$(python_abi_depend net-zope/zope.configuration)
+	$(python_abi_depend net-zope/zope.deferredimport)
+	$(python_abi_depend net-zope/zope.interface)
+	$(python_abi_depend net-zope/zope.publisher)
+	$(python_abi_depend net-zope/zope.schema)
+	$(python_abi_depend net-zope/zope.security)"
 DEPEND="${RDEPEND}
 	app-arch/unzip
 	$(python_abi_depend dev-python/setuptools)
 	test? (
 		$(python_abi_depend net-zope/datetime)
 		$(python_abi_depend net-zope/transaction)
-		$(python_abi_depend net-zope/zope-testing)
+		$(python_abi_depend net-zope/zope.testing)
 	)"
 
 S="${WORKDIR}/${MY_P}"

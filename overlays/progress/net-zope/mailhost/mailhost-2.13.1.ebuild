@@ -26,9 +26,9 @@ RDEPEND="$(python_abi_depend net-zope/namespaces-zope[Products])
 	$(python_abi_depend net-zope/documenttemplate)
 	$(python_abi_depend net-zope/persistence)
 	$(python_abi_depend net-zope/zope)
-	$(python_abi_depend net-zope/zope-deferredimport)
-	$(python_abi_depend net-zope/zope-interface)
-	$(python_abi_depend net-zope/zope-sendmail)"
+	$(python_abi_depend net-zope/zope.deferredimport)
+	$(python_abi_depend net-zope/zope.interface)
+	$(python_abi_depend net-zope/zope.sendmail)"
 DEPEND="${RDEPEND}
 	app-arch/unzip
 	$(python_abi_depend dev-python/setuptools)"
