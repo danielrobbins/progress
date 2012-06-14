@@ -13,14 +13,24 @@ DESCRIPTION="Reliable start/stop/configuration of Mozilla Applications (Firefox,
 HOMEPAGE="http://pypi.python.org/pypi/mozrunner"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
-LICENSE="|| ( MPL-1.1 GPL-2 LGPL-2.1 )"
+LICENSE="MPL-2.0"
 SLOT="0"
 KEYWORDS="amd64 x86"
 IUSE=""
 
-DEPEND="$(python_abi_depend dev-python/mozinfo)
-	$(python_abi_depend dev-python/mozprocess)
-	$(python_abi_depend ">=dev-python/mozprofile-0.3.2")
+DEPEND="$(python_abi_depend ">=dev-python/mozinfo-0.3.3")
+	$(python_abi_depend ">=dev-python/mozprocess-0.2")
+	$(python_abi_depend ">=dev-python/mozprofile-0.4")
 	$(python_abi_depend dev-python/setuptools)
 	$(python_abi_depend virtual/python-json[external])"
 RDEPEND="${DEPEND}"
+
+src_prepare() {
+	distutils_src_prepare
+
+	sed \
+		-e "s/mozinfo == 0.3.3/mozinfo >= 0.3.3/" \
+		-e "s/mozprocess == 0.2/mozprocess >= 0.2/" \
+		-e "s/mozprofile == 0.4/mozprofile >= 0.4/" \
+		-i setup.py
+}
