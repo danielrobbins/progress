@@ -17,7 +17,7 @@ SLOT="0"
 KEYWORDS="amd64 x86"
 IUSE="curl"
 
-RDEPEND="curl? ( $(python_abi_depend -i "2.*" dev-python/pycurl) )
+RDEPEND="curl? ( $(python_abi_depend -i "2.*-cpython" dev-python/pycurl) )
 	$(python_abi_depend virtual/python-json)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
