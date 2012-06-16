@@ -46,7 +46,9 @@ pkg_setup() {
 }
 
 src_prepare() {
-	python_clean_py-compile_files
+	if use python; then
+		python_clean_py-compile_files
+	fi
 
 	# Python bindings are built/installed manually.
 	sed -e "/SUBDIRS =/s/ libecryptfs-swig//" -i src/Makefile.am || die "sed failed"
@@ -116,7 +118,7 @@ src_install(){
 
 	use suid && fperms u+s /sbin/mount.ecryptfs_private
 
-	find "${ED}" -name "*.la" -print0 -delete
+	find "${ED}" -name "*.la" -delete
 }
 
 pkg_postinst() {
