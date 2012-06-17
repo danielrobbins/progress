@@ -11,13 +11,13 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="17efda0a2b2b"
+	EHG_REVISION="3680b3423aa3"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
 fi
 
-PATCHSET_REVISION="20120520"
+PATCHSET_REVISION="20120527"
 
 DESCRIPTION="Python is an interpreted, interactive, object-oriented programming language."
 HOMEPAGE="http://www.python.org/"
@@ -33,7 +33,7 @@ fi
 LICENSE="PSF-2"
 SLOT="3.3"
 PYTHON_ABI="${SLOT}"
-KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~sparc-fbsd ~x86-fbsd"
+KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd"
 IUSE="build doc elibc_uclibc examples gdbm ipv6 +ncurses +readline sqlite +ssl +threads tk wininst +xml"
 
 RDEPEND="app-arch/bzip2
@@ -69,11 +69,6 @@ fi
 
 pkg_setup() {
 	python_pkg_setup
-
-	if has_version sys-apps/portage && has_version ${CATEGORY}/${PN}:${SLOT} && [[ "$(PYTHON -3 --ABI)" == "3.3" ]]; then
-		# http://bugs.python.org/issue14007
-		die "Python >=3.3_pre20120214 contains a bug, which breaks Portage"
-	fi
 }
 
 src_prepare() {
