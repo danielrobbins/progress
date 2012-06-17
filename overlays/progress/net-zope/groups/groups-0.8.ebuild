@@ -16,7 +16,7 @@ SRC_URI="${HOMEPAGE}/${PV}/${MY_P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="amd64 x86"
+KEYWORDS="amd64 ~ppc ~ppc64 sparc x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux"
 IUSE=""
 
 RDEPEND="$(python_abi_depend net-zope/namespaces-zope[Products])
