@@ -7,4 +7,4 @@ PYTHON_NAMESPACES="+repoze +repoze.sphinx"
 
 inherit python-namespaces
 
-KEYWORDS="amd64 x86"
+KEYWORDS="amd64 ~ppc ~ppc64 sparc x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux"
