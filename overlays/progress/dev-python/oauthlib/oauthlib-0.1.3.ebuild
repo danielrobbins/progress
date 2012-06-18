@@ -26,6 +26,9 @@ DEPEND="${RDEPEND}
 src_prepare() {
 	distutils_src_prepare
 	touch tests/__init__.py
+
+	# multiprocessing module is missing in Jython.
+	sed -e "/^import multiprocessing$/d" -i setup.py
 }
 
 src_install() {
