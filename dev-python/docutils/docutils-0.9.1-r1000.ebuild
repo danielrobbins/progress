@@ -22,19 +22,13 @@ SLOT="0"
 KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh sparc x86 ~ppc-aix ~amd64-fbsd ~sparc-fbsd ~x86-fbsd ~x86-freebsd ~hppa-hpux ~ia64-hpux ~x86-interix ~amd64-linux ~ia64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~m68k-mint ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
 IUSE="glep"
 
-RDEPEND="$(python_abi_depend dev-python/pygments)
+DEPEND="$(python_abi_depend dev-python/pygments)
 	$(python_abi_depend dev-python/roman)"
-DEPEND="${RDEPEND}
-	$(python_abi_depend dev-python/setuptools)"
+RDEPEND="${DEPEND}"
 
 DOCS="*.txt"
 
 GLEP_SRC="${WORKDIR}/glep-0.4-r1"
-
-src_prepare() {
-	distutils_src_prepare
-	sed -e "s/from distutils.core/from setuptools/" -i setup.py || die "sed setup.py failed"
-}
 
 src_compile() {
 	distutils_src_compile
@@ -46,7 +40,7 @@ src_compile() {
 
 	pushd tools > /dev/null
 
-	python_execute PYTHONPATH="../build-$(PYTHON -f --ABI)/lib" "$(PYTHON -f)" $([[ -f ../build-$(PYTHON -f --ABI)/lib/tools/buildhtml.py ]] && echo ../build-$(PYTHON -f --ABI)/lib/tools/buildhtml.py || echo ../tools/buildhtml.py) --input-encoding=utf-8 --stylesheet-path=../html4css1.css --traceback ../docs || die "buildhtml.py failed"
+	python_execute PYTHONPATH="../build-$(PYTHON -f --ABI)/lib" "$(PYTHON -f)" ../tools/buildhtml.py --input-encoding=utf-8 --stylesheet-path=../html4css1.css --traceback ../docs || die "buildhtml.py failed"
 
 	popd > /dev/null
 
@@ -56,7 +50,11 @@ src_compile() {
 
 src_test() {
 	testing() {
-		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" $([[ -f build-${PYTHON_ABI}/lib/test/alltests.py ]] && echo build-${PYTHON_ABI}/lib/test/alltests.py || echo test/alltests.py)
+		if [[ "$(python_get_version -l --major)" == "2" ]]; then
+			python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" test/alltests.py
+		else
+			python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" test3/alltests.py
+		fi
 	}
 	python_execute_function testing
 }
@@ -74,12 +72,9 @@ src_install() {
 	postinstallational_preparation() {
 		# Install tools.
 		mkdir -p "${T}/images/${PYTHON_ABI}${EPREFIX}/usr/bin"
-		pushd $([[ -d build-${PYTHON_ABI}/lib/tools ]] && echo build-${PYTHON_ABI}/lib/tools || echo tools) > /dev/null
+		pushd tools > /dev/null
 		cp buildhtml.py quicktest.py "${T}/images/${PYTHON_ABI}${EPREFIX}/usr/bin"
 		popd > /dev/null
-
-		# Delete useless files, which are installed only with Python 3.
-		rm -fr "${ED}$(python_get_sitedir)/"{test,tools}
 	}
 	python_execute_function -q postinstallational_preparation
 	python_merge_intermediate_installation_images "${T}/images"
@@ -91,7 +86,7 @@ src_install() {
 	insinto /usr/share/doc/${PF}/html
 	doins docutils/writers/html4css1/html4css1.css
 	local doc
-	for doc in $(find docs tools -name "*.txt"); do
+	for doc in {docs,tools}/**/*.txt; do
 		install_txt_doc "${doc}"
 	done
 
