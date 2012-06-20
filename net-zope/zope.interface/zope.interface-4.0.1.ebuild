@@ -23,8 +23,8 @@ RDEPEND="$(python_abi_depend net-zope/namespaces-zope[zope])
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	doc? (
-		dev-python/repoze.sphinx.autointerface[python_abis_2.7]
-		dev-python/sphinx[python_abis_2.7]
+		$(python_abi_depend dev-python/repoze.sphinx.autointerface)
+		$(python_abi_depend dev-python/sphinx)
 	)
 	test? ( $(python_abi_depend net-zope/zope.event) )"
 
@@ -53,7 +53,7 @@ src_compile() {
 	if use doc; then
 		einfo "Generation of documentation"
 		pushd docs > /dev/null
-		emake html SPHINXBUILD="sphinx-build-2.7"
+		emake html
 		popd > /dev/null
 	fi
 }
