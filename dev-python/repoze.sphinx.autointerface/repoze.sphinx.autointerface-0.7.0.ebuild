@@ -3,7 +3,6 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.*"
 
 inherit distutils
 
@@ -23,4 +22,4 @@ DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
 DOCS="CHANGES.txt README.txt TODO.txt"
-PYTHON_MODULES="${PN//-//}.py"
+PYTHON_MODULES="${PN//.//}.py"
