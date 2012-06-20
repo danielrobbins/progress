@@ -29,9 +29,9 @@ RDEPEND="$(python_abi_depend dev-python/chameleon)
 	$(python_abi_depend net-zope/zope.interface)"
 DEPEND="${RDEPEND}
 	doc? (
-		dev-python/docutils[python_abis_2.7]
-		dev-python/repoze.sphinx.autointerface[python_abis_2.7]
-		dev-python/sphinx[python_abis_2.7]
+		$(python_abi_depend dev-python/docutils)
+		$(python_abi_depend dev-python/repoze.sphinx.autointerface)
+		$(python_abi_depend dev-python/sphinx)
 	)
 	test? (
 		$(python_abi_depend dev-python/virtualenv)
@@ -53,7 +53,7 @@ src_compile() {
 
 	if use doc; then
 		einfo "Generation of documentation"
-		python_execute "$(PYTHON 2.7)" setup.py build_sphinx || die "Generation of documentation failed"
+		python_execute "$(PYTHON -f)" setup.py build_sphinx || die "Generation of documentation failed"
 	fi
 }
 
