@@ -39,6 +39,7 @@ src_prepare() {
 	epatch "${FILESDIR}/${PV}-gentoolkit-304125.patch"
 	epatch "${FILESDIR}/${PV}-euse-410365.patch"
 	epatch "${FILESDIR}/${PV}-eshowkw-409449.patch"
+	epatch "${FILESDIR}/${PV}-euse-422675.patch"
 	sed -e "/^_pkg_re =/s/a-zA-Z0-9+_/a-zA-Z0-9+._/" -i pym/gentoolkit/cpv.py
 }
 
