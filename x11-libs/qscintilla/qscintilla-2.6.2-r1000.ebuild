@@ -25,7 +25,7 @@ S="${WORKDIR}/${MY_P}"
 PATCHES=("${FILESDIR}/${PN}-2.4-designer.patch")
 
 src_configure() {
-	pushd Qt4 > /dev/null
+	pushd Qt4Qt5 > /dev/null
 	einfo "Configuration of qscintilla"
 	eqmake4 qscintilla.pro
 	popd > /dev/null
@@ -37,7 +37,7 @@ src_configure() {
 }
 
 src_compile() {
-	pushd Qt4 > /dev/null
+	pushd Qt4Qt5 > /dev/null
 	einfo "Building of qscintilla"
 	emake
 	popd > /dev/null
@@ -49,7 +49,7 @@ src_compile() {
 }
 
 src_install() {
-	pushd Qt4 > /dev/null
+	pushd Qt4Qt5 > /dev/null
 	einfo "Installation of qscintilla"
 	emake INSTALL_ROOT="${D}" install
 	popd > /dev/null
@@ -62,7 +62,7 @@ src_install() {
 	dodoc NEWS
 	if use doc; then
 		einfo "Installation of documentation"
-		dohtml doc/html-Qt4/*
+		dohtml doc/html-Qt4Qt5/*
 		insinto /usr/share/doc/${PF}/Scintilla
 		doins doc/Scintilla/*
 	fi
