@@ -36,7 +36,7 @@ REQUIRED_USE="assistant? ( X )
 	svg? ( X )
 	webkit? ( X )"
 
-RDEPEND="$(python_abi_depend ">=dev-python/sip-4.13.1")
+RDEPEND="$(python_abi_depend ">=dev-python/sip-4.13.3")
 	>=x11-libs/qt-core-${QT_VER}:4
 	>=x11-libs/qt-script-${QT_VER}:4
 	X? (
