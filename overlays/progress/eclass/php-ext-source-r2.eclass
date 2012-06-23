@@ -220,7 +220,7 @@ php_init_slot_env() {
 php-ext-source-r2_buildinilist() {
 	# Work out the list of <ext>.ini files to edit/add to
 	if [[ -z "${PHPSAPILIST}" ]] ; then
-		PHPSAPILIST="apache2 cli cgi fpm"
+		PHPSAPILIST="apache2 cli cgi fpm embed"
 	fi
 
 	PHPINIFILELIST=""
