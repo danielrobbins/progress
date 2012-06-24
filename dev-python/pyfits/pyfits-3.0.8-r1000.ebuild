@@ -7,7 +7,7 @@ PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 DISTUTILS_SRC_TEST="nosetests"
 
-inherit distutils
+inherit distutils eutils
 
 DESCRIPTION="Reads FITS images and tables into numpy or numarray objects and manipulates FITS headers"
 HOMEPAGE="http://www.stsci.edu/resources/software_hardware/pyfits http://pypi.python.org/pypi/pyfits"
@@ -22,6 +22,11 @@ RDEPEND="$(python_abi_depend dev-python/numpy)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/d2to1)
 	$(python_abi_depend dev-python/stsci-distutils)"
+
+src_prepare() {
+	distutils_src_prepare
+	epatch "${FILESDIR}/${P}-debundle_zlib.patch"
+}
 
 src_test() {
 	python_execute_nosetests -e -P '$(ls -d build-${PYTHON_ABI}/lib.*)' -- -P '$(ls -d build-${PYTHON_ABI}/lib.*)'
