@@ -4,6 +4,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 DISTUTILS_SRC_TEST="py.test"
 
 inherit distutils
@@ -28,7 +29,7 @@ src_compile() {
 	if use doc; then
 		einfo "Generation of documentation"
 		pushd doc > /dev/null
-		emake html
+		PYTHONPATH=".." emake html
 		popd > /dev/null
 	fi
 }
@@ -41,9 +42,6 @@ src_install() {
 	distutils_src_install
 
 	if use doc; then
-		pushd doc/_build/html > /dev/null
-		insinto /usr/share/doc/${PF}/html
-		doins -r [a-z]* _images _static
-		popd > /dev/null
+		dohtml -r doc/_build/html/*
 	fi
 }
