@@ -5,34 +5,30 @@
 EAPI="4-python"
 PYTHON_DEPEND="<<[xml]>>"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.*"
+PYTHON_RESTRICTED_ABIS="2.5"
 
-inherit distutils eutils
+inherit distutils
 
 DESCRIPTION="A Python module to deal with freedesktop.org specifications"
-HOMEPAGE="http://freedesktop.org/wiki/Software/pyxdg http://people.freedesktop.org/~lanius/"
-SRC_URI="http://people.freedesktop.org/~lanius/${P}.tar.gz"
+HOMEPAGE="http://freedesktop.org/wiki/Software/pyxdg http://cgit.freedesktop.org/xdg/pyxdg/"
+SRC_URI="http://people.freedesktop.org/~takluyver/${P}.tar.gz"
 
 LICENSE="LGPL-2"
 SLOT="0"
 KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 sparc x86 ~x86-fbsd"
-IUSE=""
+IUSE="examples"
 
 DEPEND=""
 RDEPEND=""
 
-DOCS="AUTHORS"
+DOCS="AUTHORS ChangeLog README TODO"
 PYTHON_MODULES="xdg"
 
-src_prepare() {
-	distutils_src_prepare
-	epatch "${FILESDIR}/${PN}-subprocess.patch"
-}
-
-src_install () {
+src_install() {
 	distutils_src_install
 
-	insinto /usr/share/doc/${PF}/tests
-	insopts -m 755
-	doins test/*
+	if use examples; then
+		docinto examples
+		dodoc test/*.py
+	fi
 }
