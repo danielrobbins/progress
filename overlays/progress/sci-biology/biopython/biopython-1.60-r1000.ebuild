@@ -5,7 +5,7 @@
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 
-inherit distutils eutils
+inherit distutils
 
 DESCRIPTION="Python modules for computational molecular biology"
 HOMEPAGE="http://biopython.org http://pypi.python.org/pypi/biopython"
@@ -21,19 +21,13 @@ RDEPEND="$(python_abi_depend -e "*-jython *-pypy-*" dev-python/numpy)
 	postgres? ( $(python_abi_depend -e "*-jython *-pypy-*" dev-python/psycopg:2) )
 	reportlab? ( $(python_abi_depend -e "3.* *-jython" dev-python/reportlab) )"
 DEPEND="${RDEPEND}
-	$(python_abi_depend dev-python/setuptools)
-	sys-devel/flex"
+	$(python_abi_depend dev-python/setuptools)"
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 
 DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES="1"
 DOCS="CONTRIB DEPRECATED NEWS README"
 PYTHON_MODULES="Bio BioSQL"
-
-src_prepare() {
-	distutils_src_prepare
-	epatch "${FILESDIR}/${PN}-1.51-flex.patch"
-}
 
 src_test() {
 	testing() {
