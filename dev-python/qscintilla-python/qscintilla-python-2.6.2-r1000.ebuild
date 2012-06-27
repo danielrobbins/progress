@@ -9,7 +9,7 @@ PYTHON_EXPORT_PHASE_FUNCTIONS="1"
 
 inherit eutils python toolchain-funcs
 
-MY_P="QScintilla-gpl-${PV/_pre/-snapshot-}"
+MY_P="QScintilla-gpl-${PV}"
 
 DESCRIPTION="Python bindings for QScintilla"
 HOMEPAGE="http://www.riverbankcomputing.co.uk/software/qscintilla/intro"
@@ -20,9 +20,11 @@ SLOT="0"
 KEYWORDS="~alpha amd64 ~ia64 ~ppc ~ppc64 sparc x86"
 IUSE="debug"
 
-DEPEND="$(python_abi_depend ">=dev-python/sip-4.10")
-	$(python_abi_depend ">=dev-python/PyQt4-4.7[X]")
-	~x11-libs/qscintilla-${PV}"
+DEPEND="
+	$(python_abi_depend ">=dev-python/sip-4.12")
+	$(python_abi_depend ">=dev-python/PyQt4-4.8[X]")
+	~x11-libs/qscintilla-${PV}
+"
 RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/${MY_P}/Python"
@@ -34,11 +36,13 @@ src_prepare() {
 
 src_configure() {
 	configuration() {
-		local myconf=("$(PYTHON)"
+		local myconf=(
+			"$(PYTHON)"
 			configure.py
 			-p 4
 			--destdir="${EPREFIX}$(python_get_sitedir)/PyQt4"
-			$(use debug && echo --debug))
+			$(use debug && echo --debug)
+		)
 		python_execute "${myconf[@]}"
 	}
 	python_execute_function -s configuration
