@@ -19,11 +19,21 @@ SLOT="0"
 KEYWORDS="amd64 ~ia64 ~ppc ~ppc64 ~s390 x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos"
 IUSE="doc ssl"
 
-RDEPEND="$(python_abi_depend ">=dev-python/twisted-2.5.0")
-	$(python_abi_depend ">=dev-python/twisted-web-2.5.0")
+RDEPEND="$(python_abi_depend dev-python/twisted)
+	$(python_abi_depend dev-python/twisted-web)
 	ssl? ( $(python_abi_depend dev-python/pyopenssl) )"
 DEPEND="${RDEPEND}
-	$(python_abi_depend dev-python/setuptools)"
+	$(python_abi_depend dev-python/setuptools)
+	doc? ( dev-python/twisted-lore )"
+
+src_compile() {
+	distutils_src_compile
+
+	if use doc; then
+		einfo "Generation of documentation"
+		emake docs
+	fi
+}
 
 src_test() {
 	LC_ALL="C" distutils_src_test
@@ -39,6 +49,6 @@ src_install() {
 
 	if use doc; then
 		dodoc doc/*.txt
-		dohtml -A py,tpl,xhtml -r doc/*
+		dohtml -a css,html,py -r doc/*
 	fi
 }
