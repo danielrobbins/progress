@@ -5,7 +5,7 @@ EAPI="4-python"
 
 inherit qt4-r2
 
-MY_P="QScintilla-gpl-${PV/_pre/-snapshot-}"
+MY_P="QScintilla-gpl-${PV}"
 
 DESCRIPTION="A Qt port of Neil Hodgson's Scintilla C++ editor class"
 HOMEPAGE="http://www.riverbankcomputing.co.uk/software/qscintilla/intro"
@@ -16,13 +16,18 @@ SLOT="0"
 KEYWORDS="~alpha amd64 ~ia64 ~ppc ~ppc64 sparc x86"
 IUSE="doc python"
 
-DEPEND="x11-libs/qt-gui:4"
+DEPEND="
+	x11-libs/qt-core:4
+	x11-libs/qt-gui:4
+"
 RDEPEND="${DEPEND}"
 PDEPEND="python? ( ~dev-python/qscintilla-python-${PV} )"
 
 S="${WORKDIR}/${MY_P}"
 
-PATCHES=("${FILESDIR}/${PN}-2.4-designer.patch")
+PATCHES=(
+	"${FILESDIR}/${PN}-2.6.2-designer.patch"
+)
 
 src_configure() {
 	pushd Qt4Qt5 > /dev/null
@@ -60,10 +65,10 @@ src_install() {
 	popd > /dev/null
 
 	dodoc NEWS
+
 	if use doc; then
-		einfo "Installation of documentation"
 		dohtml doc/html-Qt4Qt5/*
-		insinto /usr/share/doc/${PF}/Scintilla
-		doins doc/Scintilla/*
+		insinto /usr/share/doc/${PF}
+		doins -r doc/Scintilla
 	fi
 }
