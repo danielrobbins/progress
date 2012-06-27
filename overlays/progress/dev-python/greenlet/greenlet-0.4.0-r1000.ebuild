@@ -10,7 +10,7 @@ DISTUTILS_SRC_TEST="setup.py"
 inherit distutils
 
 DESCRIPTION="Lightweight in-process concurrent programming"
-HOMEPAGE="http://pypi.python.org/pypi/greenlet"
+HOMEPAGE="https://github.com/python-greenlet/greenlet http://pypi.python.org/pypi/greenlet"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.zip"
 
 LICENSE="MIT"
@@ -42,9 +42,6 @@ src_install() {
 	distutils_src_install
 
 	if use doc; then
-		pushd doc/_build/html > /dev/null
-		insinto /usr/share/doc/${PF}/html
-		doins -r [a-z]* _static
-		popd > /dev/null
+		dohtml -r doc/_build/html/*
 	fi
 }
