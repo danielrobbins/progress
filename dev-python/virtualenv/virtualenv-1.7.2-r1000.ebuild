@@ -33,8 +33,8 @@ src_unpack() {
 src_prepare() {
 	distutils_src_prepare
 
-	# Disable test, which hardcodes old data.
-	sed -e "s/test_version/_&/" -i tests/test_virtualenv.py
+	# Disable versioning of virtualenv script to avoid collision with versioning performed by python_merge_intermediate_installation_images().
+	sed -e "/'virtualenv-%s.%s=virtualenv:main' % sys.version_info\[:2\]/d" -i setup.py
 }
 
 src_compile() {
@@ -52,9 +52,6 @@ src_install() {
 	distutils_src_install
 
 	if use doc; then
-		pushd docs/_build/html > /dev/null
-		insinto /usr/share/doc/${PF}/html
-		doins -r [a-z]* _static
-		popd > /dev/null
+		dohtml -r docs/_build/html/*
 	fi
 }
