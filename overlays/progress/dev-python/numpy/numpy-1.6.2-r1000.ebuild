@@ -57,7 +57,7 @@ pkg_setup() {
 		append-fflags -fPIC
 		NUMPY_FCONFIG="config_fc --noopt --noarch"
 		# workaround bug 335908
-		[[ ${FC} == *gfortran* ]] && NUMPY_FCONFIG+=" --fcompiler=gnu95"
+		[[ $(tc-getFC) == *gfortran* ]] && NUMPY_FCONFIG+=" --fcompiler=gnu95"
 	fi
 }
 
@@ -68,26 +68,38 @@ src_unpack() {
 	fi
 }
 
+pc_incdir() {
+	pkg-config --cflags-only-I $@ | \
+		sed -e 's/^-I//' -e 's/[ ]*-I/:/g'
+}
+
+pc_libdir() {
+	pkg-config --libs-only-L $@ | \
+		sed -e 's/^-L//' -e 's/[ ]*-L/:/g'
+}
+
+pc_libs() {
+	pkg-config --libs-only-l $@ | \
+		sed -e 's/[ ]-l*\(pthread\|m\)[ ]*//g' \
+		-e 's/^-l//' -e 's/[ ]*-l/,/g'
+}
+
 src_prepare() {
 	epatch "${FILESDIR}/${PN}-1.6.1-atlas.patch"
 
 	if use lapack; then
 		append-ldflags "$(pkg-config --libs-only-other cblas lapack)"
-		sed -i -e '/NO_ATLAS_INFO/,+1d' numpy/core/setup.py || die
 		local libdir="${EPREFIX}"/usr/$(get_libdir)
+		# make sure _dotblas.so gets built
+		sed -i -e '/NO_ATLAS_INFO/,+1d' numpy/core/setup.py || die
 		cat >> site.cfg <<-EOF
 			[blas]
-			include_dirs = $(pkg-config --cflags-only-I \
-				cblas | sed -e 's/^-I//' -e 's/ -I/:/g')
-			library_dirs = $(pkg-config --libs-only-L \
-				cblas blas | sed -e 's/^-L//' -e 's/ -L/:/g' -e 's/ //g'):${libdir}
-			blas_libs = $(pkg-config --libs-only-l \
-				cblas blas | sed -e 's/^-l//' -e 's/ -l/, /g' -e 's/,.pthread//g')
+			include_dirs = $(pc_incdir cblas)
+			library_dirs = $(pc_libdir cblas blas):${libdir}
+			blas_libs = $(pc_libs cblas blas)
 			[lapack]
-			library_dirs = $(pkg-config --libs-only-L \
-				lapack | sed -e 's/^-L//' -e 's/ -L/:/g' -e 's/ //g'):${libdir}
-			lapack_libs = $(pkg-config --libs-only-l \
-				lapack | sed -e 's/^-l//' -e 's/ -l/, /g' -e 's/,.pthread//g')
+			library_dirs = $(pc_libdir lapack):${libdir}
+			lapack_libs = $(pc_libs lapack)
 		EOF
 	else
 		export {ATLAS,PTATLAS,BLAS,LAPACK,MKL}=None
