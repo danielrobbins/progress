@@ -5,6 +5,7 @@
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 
 inherit distutils eutils flag-o-matic fortran-2 toolchain-funcs
 
@@ -67,21 +68,33 @@ src_unpack() {
 	fi
 }
 
+
+pc_incdir() {
+	pkg-config --cflags-only-I $@ | \
+		sed -e 's/^-I//' -e 's/[ ]*-I/:/g'
+}
+
+pc_libdir() {
+	pkg-config --libs-only-L $@ | \
+		sed -e 's/^-L//' -e 's/[ ]*-L/:/g'
+}
+
+pc_libs() {
+	pkg-config --libs-only-l $@ | \
+		sed -e 's/[ ]-l*\(pthread\|m\)[ ]*//g' \
+		-e 's/^-l//' -e 's/[ ]*-l/,/g'
+}
+
 src_prepare() {
 	local libdir="${EPREFIX}"/usr/$(get_libdir)
 	cat >> site.cfg <<-EOF
 		[blas]
-		include_dirs = $(pkg-config --cflags-only-I \
-			cblas | sed -e 's/^-I//' -e 's/ -I/:/g')
-		library_dirs = $(pkg-config --libs-only-L \
-			cblas blas | sed -e 's/^-L//' -e 's/ -L/:/g' -e 's/ //g'):${libdir}
-		blas_libs = $(pkg-config --libs-only-l \
-			cblas blas | sed -e 's/^-l//' -e 's/ -l/, /g' -e 's/,.pthread//g')
+		include_dirs = $(pc_incdir cblas)
+		library_dirs = $(pc_libdir cblas blas):${libdir}
+		blas_libs = $(pc_libs cblas blas)
 		[lapack]
-		library_dirs = $(pkg-config --libs-only-L \
-			lapack | sed -e 's/^-L//' -e 's/ -L/:/g' -e 's/ //g'):${libdir}
-		lapack_libs = $(pkg-config --libs-only-l \
-			lapack | sed -e 's/^-l//' -e 's/ -l/, /g' -e 's/,.pthread//g')
+		library_dirs = $(pc_libdir lapack):${libdir}
+		lapack_libs = $(pc_libs lapack)
 	EOF
 }
 
@@ -95,7 +108,7 @@ src_test() {
 			--home="${S}/test-${PYTHON_ABI}" --no-compile ${SCIPY_FCONFIG} || return
 		pushd "${S}/test-${PYTHON_ABI}/"lib*/python > /dev/null
 		python_execute PYTHONPATH="." "$(PYTHON)" -c "import scipy; scipy.test('full')" 2>&1 | tee test.log
-		grep -q ^ERROR test.log && return 1
+		grep -Eq "^(ERROR|FAIL):" test.log && return 1
 		popd > /dev/null
 		rm -fr test-${PYTHON_ABI}
 	}
