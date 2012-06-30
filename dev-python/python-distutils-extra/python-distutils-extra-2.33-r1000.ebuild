@@ -33,11 +33,21 @@ src_prepare() {
 		-e "s/test_policykit/_&/" \
 		-e "s/test_requires_provides/_&/" \
 		-i test/auto.py
+
+	# Fix compatibility with Jython.
+	# https://bugs.launchpad.net/python-distutils-extra/+bug/1019653
+	sed \
+		-e "s:import unittest, shutil, tempfile, os, os.path, subprocess, re:&, sys:" \
+		-e "s:'/proc/self/exe':sys.executable:" \
+		-i test/auto.py
 }
 
 src_test() {
 	# 5 tests fail with disabled byte-compilation.
 	python_enable_pyc
+
+	# https://bugs.launchpad.net/python-distutils-extra/+bug/951257
+	unset PYTHONWARNINGS
 
 	testing() {
 		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" test/auto.py
