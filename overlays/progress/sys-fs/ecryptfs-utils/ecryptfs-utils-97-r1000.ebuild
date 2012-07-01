@@ -57,7 +57,7 @@ src_prepare() {
 }
 
 src_configure() {
-	append-flags -D_FILE_OFFSET_BITS=64
+	append-cppflags -D_FILE_OFFSET_BITS=64
 
 	econf \
 		--docdir="/usr/share/doc/${PF}" \
