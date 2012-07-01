@@ -25,19 +25,12 @@ IUSE="doc examples"
 
 RDEPEND="$(python_abi_depend dev-python/blinker)
 	$(python_abi_depend ">=dev-python/jinja-2.4")
-	$(python_abi_depend ">=dev-python/werkzeug-0.6.1")"
+	$(python_abi_depend ">=dev-python/werkzeug-0.7")"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
 
 S="${WORKDIR}/${MY_P}"
-
-src_prepare() {
-	distutils_src_prepare
-
-	# https://github.com/mitsuhiko/flask/commit/0dd9dc37b6618b8091c2a0f849f5f3143dc6eafc
-	sed -e "s/\(from .sessions import\).*/\1 SecureCookieSession, NullSession/" -i flask/session.py
-}
 
 src_compile() {
 	distutils_src_compile
@@ -52,7 +45,7 @@ src_compile() {
 
 src_test() {
 	testing() {
-		PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" run-tests.py
+		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" run-tests.py
 	}
 	python_execute_function testing
 }
@@ -67,10 +60,7 @@ src_install() {
 	python_execute_function -q delete_tests
 
 	if use doc; then
-		pushd docs/_build/html > /dev/null
-		insinto /usr/share/doc/${PF}/html
-		doins -r [a-z]* _images _static
-		popd > /dev/null
+		dohtml -r docs/_build/html/*
 	fi
 
 	if use examples; then
