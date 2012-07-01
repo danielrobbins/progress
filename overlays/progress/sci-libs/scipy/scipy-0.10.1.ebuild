@@ -68,7 +68,6 @@ src_unpack() {
 	fi
 }
 
-
 pc_incdir() {
 	pkg-config --cflags-only-I $@ | \
 		sed -e 's/^-I//' -e 's/[ ]*-I/:/g'
