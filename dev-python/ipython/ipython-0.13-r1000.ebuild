@@ -54,30 +54,19 @@ PYTHON_MODULES="IPython"
 src_prepare() {
 	distutils_src_prepare
 	epatch "${FILESDIR}/${PN}-0.12-global_path.patch"
-	epatch "${FILESDIR}/${PN}-0.12-python3-scripts_versioning.patch"
+	epatch "${FILESDIR}/${P}-python3-scripts_versioning.patch"
 
 	# Disable failing tests.
-	sed \
-		-e "s/test_smoketest_aimport/_&/" \
-		-e "s/test_smoketest_autoreload/_&/" \
-		-i IPython/extensions/tests/test_autoreload.py
 	sed \
 		-e "s/test_pylab_import_all_disabled/_&/" \
 		-e "s/test_pylab_import_all_enabled/_&/" \
 		-i IPython/lib/tests/test_irunner_pylab_magic.py
-	sed \
-		-e "/test_startup_py/i\\@dec.known_failure_py3" \
-		-e "/test_startup_ipy/i\\@dec.known_failure_py3" \
-		-i IPython/core/tests/test_profile.py
-	sed -e "/test_tclass/i\\    @dec.known_failure_py3" -i IPython/core/tests/test_run.py
 
 	# Fix installation directory for documentation.
 	sed \
 		-e "/docdirbase  = pjoin/s/ipython/${PF}/" \
 		-e "/pjoin(docdirbase,'manual')/s/manual/html/" \
 		-i setupbase.py || die "sed failed"
-
-	rm -fr docs/html/{.buildinfo,_sources,objects.inv}
 
 	if ! use doc; then
 		sed \
@@ -100,6 +89,9 @@ src_compile() {
 }
 
 src_test() {
+	# https://github.com/ipython/ipython/issues/2083
+	unset PYTHONWARNINGS
+
 	if use mongodb; then
 		mkdir -p "${T}/mongo.db"
 		mongod --dbpath "${T}/mongo.db" --fork --logpath "${T}/mongo.log"

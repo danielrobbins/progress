@@ -22,7 +22,7 @@
  class IPythonRunner(InteractiveRunner):
 --- IPython/testing/tools.py
 +++ IPython/testing/tools.py
-@@ -211,7 +211,7 @@
+@@ -207,7 +207,7 @@
      _ip = get_ipython()
      test_dir = os.path.dirname(__file__)
  
@@ -31,14 +31,14 @@
      # Absolute path for filename
      full_fname = os.path.join(test_dir, fname)
      full_cmd = '%s %s %s' % (ipython_cmd, cmdargs, full_fname)
---- setup3.py
-+++ setup3.py
-@@ -10,7 +10,7 @@
-                        record_commit_info,
-                        )
-     
--setup_args['entry_points'] = find_scripts(True, suffix='3')
-+setup_args['entry_points'] = find_scripts(True)
- setup_args['packages'] = find_packages()
- setup_args['package_data'] = find_package_data()
- setup_args['cmdclass'] = {'build_py': record_commit_info('IPython', build_cmd=build_py)}
+--- setup.py
++++ setup.py
+@@ -236,7 +236,7 @@
+         setuptools_extra_args['use_2to3'] = True
+         from setuptools.command.build_py import build_py
+         setup_args['cmdclass'] = {'build_py': record_commit_info('IPython', build_cmd=build_py)}
+-        setuptools_extra_args['entry_points'] = find_scripts(True, suffix='3')
++        setuptools_extra_args['entry_points'] = find_scripts(True)
+         setuptools._dont_write_bytecode = True
+ else:
+     # If we are running without setuptools, call this function which will
