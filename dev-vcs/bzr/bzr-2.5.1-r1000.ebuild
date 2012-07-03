@@ -27,10 +27,7 @@ RDEPEND="curl? ( $(python_abi_depend dev-python/pycurl) )
 
 DEPEND="test? (
 		${RDEPEND}
-		|| (
-			$(python_abi_depend dev-python/pyftpdlib)
-			$(python_abi_depend dev-python/medusa)
-		)
+		$(python_abi_depend ">=dev-python/pyftpdlib-0.7.0")
 		$(python_abi_depend dev-python/subunit)
 		$(python_abi_depend ">=dev-python/testtools-0.9.5")
 	)"
