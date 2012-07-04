@@ -4,6 +4,7 @@
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
@@ -13,7 +14,7 @@ MY_P="${MY_PN}-${PV/_beta/b}"
 
 DESCRIPTION="Beautiful Soup is a Python library for pulling data out of HTML and XML files"
 HOMEPAGE="http://www.crummy.com/software/BeautifulSoup/ https://launchpad.net/beautifulsoup http://pypi.python.org/pypi/beautifulsoup4"
-SRC_URI="http://www.crummy.com/software/BeautifulSoup/bs4/download/4.0/${MY_P}.tar.gz"
+SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="4"
