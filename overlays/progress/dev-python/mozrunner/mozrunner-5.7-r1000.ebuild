@@ -19,7 +19,7 @@ KEYWORDS="amd64 x86"
 IUSE=""
 
 DEPEND="$(python_abi_depend ">=dev-python/mozinfo-0.3.3")
-	$(python_abi_depend ">=dev-python/mozprocess-0.2")
+	$(python_abi_depend ">=dev-python/mozprocess-0.3")
 	$(python_abi_depend ">=dev-python/mozprofile-0.4")
 	$(python_abi_depend dev-python/setuptools)
 	$(python_abi_depend virtual/python-json[external])"
@@ -30,7 +30,7 @@ src_prepare() {
 
 	sed \
 		-e "s/mozinfo == 0.3.3/mozinfo >= 0.3.3/" \
-		-e "s/mozprocess == 0.2/mozprocess >= 0.2/" \
+		-e "s/mozprocess == 0.3/mozprocess >= 0.3/" \
 		-e "s/mozprofile == 0.4/mozprofile >= 0.4/" \
 		-i setup.py
 }
