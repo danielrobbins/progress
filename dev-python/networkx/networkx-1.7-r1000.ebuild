@@ -35,7 +35,7 @@ DEPEND="${RDEPEND}
 src_prepare() {
 	distutils_src_prepare
 
-	# Don't use internal copy of dev-python/decorator.
+	# Do not use internal copy of dev-python/decorator.
 	rm -f networkx/external/decorator/{_decorator.py,_decorator3.py}
 	echo "from decorator import *" > networkx/external/decorator/__init__.py
 
