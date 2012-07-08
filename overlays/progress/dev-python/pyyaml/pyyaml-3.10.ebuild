@@ -34,6 +34,13 @@ pkg_setup() {
 	DISTUTILS_GLOBAL_OPTIONS=("* $(use_with libyaml)")
 }
 
+src_prepare() {
+	distutils_src_prepare
+
+	# http://pyyaml.org/ticket/235
+	sed -e "s/'Java' in sys.version/'java' in sys.platform/" -i setup.py
+}
+
 src_install() {
 	distutils_src_install
 
