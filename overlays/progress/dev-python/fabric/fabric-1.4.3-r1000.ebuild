@@ -19,12 +19,13 @@ SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="amd64 x86"
-IUSE=""
+IUSE="doc"
 
 RDEPEND="$(python_abi_depend dev-python/pycrypto)
 	$(python_abi_depend ">=dev-python/ssh-1.7.14")"
 DEPEND="${RDEPEND}
-	$(python_abi_depend dev-python/setuptools)"
+	$(python_abi_depend dev-python/setuptools)
+	doc? ( $(python_abi_depend dev-python/sphinx) )"
 #	test? ( $(python_abi_depend dev-python/fudge) )
 
 # Tests broken.
@@ -34,6 +35,25 @@ S="${WORKDIR}/${MY_P}"
 
 PYTHON_MODULES="fabfile fabric"
 
+src_compile() {
+	distutils_src_compile
+
+	if use doc; then
+		einfo "Generation of documentation"
+		pushd docs > /dev/null
+		emake html
+		popd > /dev/null
+	fi
+}
+
 src_test() {
 	distutils_src_test --with-doctest
+}
+
+src_install() {
+	distutils_src_install
+
+	if use doc; then
+		dohtml -r docs/_build/html/*
+	fi
 }
