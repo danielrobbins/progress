@@ -11,13 +11,13 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="2059910e7d76"
+	EHG_REVISION="34e705fa4da4"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
 fi
 
-PATCHSET_REVISION="20120527"
+PATCHSET_REVISION="20120701"
 
 DESCRIPTION="Python is an interpreted, interactive, object-oriented programming language."
 HOMEPAGE="http://www.python.org/"
@@ -101,11 +101,6 @@ src_prepare() {
 		fi
 	fi
 
-	local excluded_patches
-	if ! tc-is-cross-compiler; then
-		excluded_patches="*_all_crosscompile.patch"
-	fi
-
 	local patchset_dir
 	if [[ "${PV}" == *_pre* ]]; then
 		patchset_dir="${FILESDIR}/${SLOT}-${PATCHSET_REVISION}"
@@ -115,14 +110,13 @@ src_prepare() {
 		patchset_dir="${WORKDIR}/${MY_PV}"
 	fi
 
-	EPATCH_EXCLUDE="${excluded_patches}" EPATCH_SUFFIX="patch" epatch "${patchset_dir}"
+	EPATCH_SUFFIX="patch" epatch "${patchset_dir}"
 
 	sed -i -e "s:@@GENTOO_LIBDIR@@:$(get_libdir):g" \
 		Lib/distutils/command/install.py \
 		Lib/distutils/sysconfig.py \
-		Lib/packaging/tests/test_command_install_dist.py \
 		Lib/site.py \
-		Lib/sysconfig.cfg \
+		Lib/sysconfig.py \
 		Lib/test/test_site.py \
 		Makefile.pre.in \
 		Modules/Setup.dist \
@@ -175,19 +169,6 @@ src_configure() {
 	if is-flagq -O3; then
 		is-flagq -fstack-protector-all && replace-flags -O3 -O2
 		use hardened && replace-flags -O3 -O2
-	fi
-
-	if tc-is-cross-compiler; then
-		OPT="-O1" CFLAGS="" LDFLAGS="" CC="" \
-		./configure --{build,host}=${CBUILD} || die "cross-configure failed"
-		emake python Parser/pgen || die "cross-make failed"
-		mv python hostpython
-		mv Parser/pgen Parser/hostpgen
-		make distclean
-		sed -i \
-			-e "/^HOSTPYTHON/s:=.*:=./hostpython:" \
-			-e "/^HOSTPGEN/s:=.*:=./Parser/hostpgen:" \
-			Makefile.pre.in || die "sed failed"
 	fi
 
 	# Export CXX so it ends up in /usr/lib/python3.X/config/Makefile.
