@@ -48,10 +48,7 @@ src_install() {
 	distutils_src_install
 
 	if use doc; then
-		pushd doc > /dev/null
-		rm -fr build
-		insinto /usr/share/doc/${PF}/html
-		doins -r [a-z]* _static
-		popd > /dev/null
+		rm -fr doc/build
+		dohtml -r doc/
 	fi
 }
