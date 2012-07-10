@@ -13,7 +13,7 @@ MY_PN="Markdown"
 MY_P=${MY_PN}-${PV}
 
 DESCRIPTION="Python implementation of Markdown."
-HOMEPAGE="http://www.freewisdom.org/projects/python-markdown http://pypi.python.org/pypi/Markdown"
+HOMEPAGE="http://packages.python.org/Markdown/ https://github.com/waylan/Python-Markdown http://pypi.python.org/pypi/Markdown"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="|| ( BSD GPL-2 )"
@@ -29,6 +29,17 @@ S="${WORKDIR}/${MY_P}"
 DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES="1"
 
 src_prepare() {
+	# Disable failing tests.
+	# https://github.com/waylan/Python-Markdown/issues/112
+	sed \
+		-e "s/testLoadBadExtension/_&/" \
+		-e "s/testLoadExtensionFailure/_&/" \
+		-i- tests/test_apis.py
+
+	# Fix support for Python 2.5.
+	# https://github.com/waylan/Python-Markdown/issues/113
+	sed -e "s/except Exception as e:/except Exception, e:/" -i markdown/odict.py
+
 	distutils_src_prepare
 
 	prepare_tests() {
@@ -48,7 +59,7 @@ src_install() {
 
 	if use doc; then
 		install_documentation() {
-			dodoc -r build/docs/*
+			dohtml -r build/docs/
 		}
 		python_execute_function -f -q -s install_documentation
 	fi
