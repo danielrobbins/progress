@@ -5,6 +5,7 @@
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.*"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 
 inherit distutils eutils
 
@@ -29,7 +30,7 @@ src_prepare() {
 
 src_test() {
 	testing() {
-		PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" validate.py -v
+		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" validate.py -v
 	}
 	python_execute_function testing
 }
