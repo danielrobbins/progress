@@ -5,6 +5,7 @@
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.*"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
@@ -47,7 +48,7 @@ src_compile() {
 
 	if use doc; then
 		einfo "Generation of documentation"
-		PYTHONPATH="." "$(PYTHON -f)" setup.py build_sphinx || die "Generation of documentation failed"
+		python_execute PYTHONPATH="." "$(PYTHON -f)" setup.py build_sphinx || die "Generation of documentation failed"
 	fi
 }
 
@@ -60,9 +61,6 @@ src_install() {
 	distutils_src_install
 
 	if use doc; then
-		pushd build/sphinx/html > /dev/null
-		insinto /usr/share/doc/${PF}/html
-		doins -r [a-z]* _static
-		popd > /dev/null
+		dohtml -r build/sphinx/html/
 	fi
 }
