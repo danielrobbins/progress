@@ -5,6 +5,7 @@
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.*"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 
 inherit distutils
 
@@ -42,7 +43,7 @@ src_prepare() {
 
 src_test() {
 	testing() {
-		PYTHONPATH="$(ls -d build-${PYTHON_ABI}/lib.*)" "$(PYTHON)" cheetah/Tests/Test.py
+		python_execute PYTHONPATH="$([[ -d build-${PYTHON_ABI}/lib ]] && echo build-${PYTHON_ABI}/lib || ls -d build-${PYTHON_ABI}/lib*)" "$(PYTHON)" cheetah/Tests/Test.py
 	}
 	python_execute_function testing
 }
