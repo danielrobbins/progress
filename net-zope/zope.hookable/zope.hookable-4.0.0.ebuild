@@ -3,7 +3,6 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="*-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
@@ -22,8 +21,16 @@ DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
 
+DISTUTILS_GLOBAL_OPTIONS=("*-jython --without-Cwrapper")
 DOCS="CHANGES.txt README.txt"
 PYTHON_MODULES="${PN/.//}"
+
+src_prepare() {
+	distutils_src_prepare
+
+	# https://bugs.launchpad.net/zope.hookable/+bug/1025470
+	sed -e "75,79d" -i setup.py
+}
 
 src_compile() {
 	distutils_src_compile
