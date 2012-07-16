@@ -9,7 +9,7 @@ inherit distutils
 
 DESCRIPTION="Zope Template Application Language Expression Syntax (TALES)"
 HOMEPAGE="http://pypi.python.org/pypi/zope.tales"
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.zip"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="ZPL"
 SLOT="0"
@@ -20,7 +20,6 @@ RDEPEND="$(python_abi_depend net-zope/namespaces-zope[zope])
 	$(python_abi_depend net-zope/zope.interface)
 	$(python_abi_depend net-zope/zope.tal)"
 DEPEND="${RDEPEND}
-	app-arch/unzip
 	$(python_abi_depend dev-python/setuptools)"
 
 DOCS="CHANGES.txt README.txt"
