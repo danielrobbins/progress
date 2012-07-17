@@ -9,7 +9,7 @@ inherit distutils
 
 DESCRIPTION="The Zope publisher publishes Python objects on the web."
 HOMEPAGE="http://pypi.python.org/pypi/zope.publisher"
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.zip"
 
 LICENSE="ZPL"
 SLOT="0"
@@ -30,7 +30,8 @@ RDEPEND="$(python_abi_depend net-zope/namespaces-zope[zope])
 	$(python_abi_depend net-zope/zope.proxy)
 	$(python_abi_depend net-zope/zope.schema)
 	$(python_abi_depend net-zope/zope.security)"
-DEPEND="${RDEPEND}"
+DEPEND="${RDEPEND}
+	app-arch/unzip"
 
 DOCS="CHANGES.txt README.txt"
 PYTHON_MODULES="${PN/.//}"
