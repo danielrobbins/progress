@@ -4,7 +4,6 @@
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.*"
-DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
 
@@ -20,8 +19,7 @@ SLOT="0"
 KEYWORDS="amd64 ~ppc ~ppc64 sparc x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux"
 IUSE=""
 
-DEPEND="$(python_abi_depend dev-python/setuptools)
-	test? ( $(python_abi_depend net-zope/zconfig) )"
+DEPEND="$(python_abi_depend dev-python/setuptools)"
 RDEPEND=""
 
 S="${WORKDIR}/${MY_P}"
