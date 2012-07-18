@@ -9,7 +9,7 @@ inherit distutils
 
 DESCRIPTION="Browser menu implementation for Zope."
 HOMEPAGE="http://pypi.python.org/pypi/zope.browsermenu"
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.zip"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="ZPL"
 SLOT="0"
@@ -28,7 +28,6 @@ RDEPEND="$(python_abi_depend net-zope/namespaces-zope[zope])
 	$(python_abi_depend net-zope/zope.security)
 	$(python_abi_depend net-zope/zope.traversing)"
 DEPEND="${RDEPEND}
-	app-arch/unzip
 	$(python_abi_depend dev-python/setuptools)"
 
 DOCS="CHANGES.txt README.txt"
