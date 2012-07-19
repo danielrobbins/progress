@@ -5,7 +5,7 @@ EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 3.* *-jython *-pypy-*"
 
-inherit distutils multilib versionator
+inherit distutils eutils multilib versionator
 
 MY_PN="Zope2"
 MY_P="${MY_PN}-${PV}"
@@ -96,6 +96,11 @@ S="${WORKDIR}/${MY_P}"
 pkg_setup() {
 	python_pkg_setup
 	ZOPE_INSTALLATION_DIR="usr/$(get_libdir)/${PN}-${SLOT}"
+}
+
+src_prepare() {
+	distutils_src_prepare
+	epatch "${FILESDIR}/${P}-backports.patch"
 }
 
 src_compile() {
