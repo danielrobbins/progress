@@ -40,15 +40,11 @@ waf-utils_src_configure() {
 	: ${WAF_BINARY:="${S}/waf"}
 
 	tc-export AR CC CPP CXX RANLIB
-
-	# Make sure this waf supports --libdir #412133
-	if "${WAF_BINARY}" --help | grep -q -e--libdir ; then
-		set -- "--libdir=${EPREFIX}/usr/$(get_libdir)" "$@"
-	fi
-	echo "CCFLAGS=\"${CFLAGS}\" LINKFLAGS=\"${LDFLAGS}\" \"${WAF_BINARY}\" --prefix=${EPREFIX}/usr $@ configure"
+	echo "CCFLAGS=\"${CFLAGS}\" LINKFLAGS=\"${LDFLAGS}\" \"${WAF_BINARY}\" --prefix=${EPREFIX}/usr --libdir=${EPREFIX}/usr/$(get_libdir) $@ configure"
 
 	CCFLAGS="${CFLAGS}" LINKFLAGS="${LDFLAGS}" "${WAF_BINARY}" \
 		"--prefix=${EPREFIX}/usr" \
+		"--libdir=${EPREFIX}/usr/$(get_libdir)" \
 		"$@" \
 		configure || die "configure failed"
 }
