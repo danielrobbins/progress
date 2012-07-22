@@ -9,7 +9,7 @@ PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.* *-jython"
 inherit distutils
 
 DESCRIPTION="Abstract Syntax Tree New Generation for logilab packages"
-HOMEPAGE="http://www.logilab.org/projects/astng/ http://pypi.python.org/pypi/logilab-astng"
+HOMEPAGE="http://www.logilab.org/project/logilab-astng http://pypi.python.org/pypi/logilab-astng"
 SRC_URI="ftp://ftp.logilab.org/pub/astng/logilab-${P}.tar.gz mirror://pypi/l/logilab-astng/logilab-${P}.tar.gz"
 
 LICENSE="LGPL-2.1"
@@ -26,13 +26,6 @@ DEPEND="${RDEPEND}
 S="${WORKDIR}/logilab-${P}"
 
 PYTHON_MODULES="logilab/astng"
-
-src_prepare() {
-	distutils_src_prepare
-
-	# https://hg.logilab.org/logilab/astng/rev/0272006bdfbe
-	sed -e "s/return file/return open/" -i scoped_nodes.py
-}
 
 src_test() {
 	testing() {
