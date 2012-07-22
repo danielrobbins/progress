@@ -32,7 +32,7 @@ RDEPEND="dev-lang/perl
 	$(python_abi_depend dev-python/roman)
 	$(python_abi_depend ">=dev-python/qserve-0.2.7")
 	$(python_abi_depend dev-python/setuptools)
-	$(python_abi_depend ">=dev-python/simplejson-2.5")
+	$(python_abi_depend ">=dev-python/simplejson-2.3")
 	$(python_abi_depend dev-python/sqlite3dbm)
 	$(python_abi_depend ">=dev-python/timelib-0.2")
 	latex? ( virtual/latex-base )"
@@ -55,12 +55,8 @@ src_prepare() {
 		-e "s/odflint.lint(path)/os.system('odflint %s' % path)/" \
 		-i tests/test_odfwriter.py
 
-	# Disable tests, which require installed mw-zip script.
-	rm -f tests/test_nuwiki.py
+	# Disable failing tests.
 	rm -f tests/test_redirect.py
-	rm -f tests/test_zipwiki.py
-
-	# Disable failing test.
 	rm -f tests/test_render.py
 }
 
@@ -76,7 +72,7 @@ src_compile() {
 }
 
 src_test() {
-	distutils_src_test tests
+	PATH=".:${PATH}" distutils_src_test tests
 }
 
 src_install() {
