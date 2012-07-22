@@ -5,7 +5,7 @@ EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 3.* *-jython *-pypy-*"
 
-inherit distutils multilib subversion versionator
+inherit distutils eutils multilib subversion versionator
 
 MY_PN="Zope2"
 MY_P="${MY_PN}-${PV}"
@@ -100,6 +100,7 @@ pkg_setup() {
 
 src_prepare() {
 	distutils_src_prepare
+	epatch "${FILESDIR}/${PN}-2.13.15-backports.patch"
 
 	local files="$(find -type f | sed -e "s:^\./::" | sort)"
 	mkdir src/Zope2.egg-info
@@ -152,11 +153,7 @@ src_install() {
 	python_execute_function -q skel_preparation
 
 	if use doc; then
-		pushd build/sphinx/html > /dev/null
-		dodoc _sources/*
-		docinto html
-		dohtml -r [A-Za-z]* _static
-		popd > /dev/null
+		dohtml -r build/sphinx/html/
 	fi
 
 	# Copy the init script skeleton to skel directory of our installation.
