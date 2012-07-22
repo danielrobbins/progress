@@ -16,7 +16,7 @@ http://bugs.python.org/issue1674555
      setquit()
 --- Lib/test/regrtest.py
 +++ Lib/test/regrtest.py
-@@ -187,6 +187,7 @@
+@@ -188,6 +188,7 @@
  import unittest
  import warnings
  from inspect import isabstract
@@ -24,7 +24,7 @@ http://bugs.python.org/issue1674555
  
  try:
      import threading
-@@ -573,6 +574,62 @@
+@@ -574,6 +575,62 @@
      support.use_resources = use_resources
      save_modules = sys.modules.keys()
  
@@ -87,7 +87,7 @@ http://bugs.python.org/issue1674555
      def accumulate_result(test, result):
          ok, test_time = result
          test_times.append((test_time, test))
-@@ -610,22 +667,14 @@
+@@ -611,22 +668,14 @@
              print("Multiprocess option requires thread support")
              sys.exit(2)
          from queue import Queue
@@ -113,7 +113,7 @@ http://bugs.python.org/issue1674555
          def work():
              # A worker thread.
              try:
-@@ -700,14 +749,14 @@
+@@ -707,14 +756,14 @@
              if trace:
                  # If we're tracing code coverage, then we don't exit with status
                  # if on a false return value from main.
@@ -133,7 +133,7 @@ http://bugs.python.org/issue1674555
                      accumulate_result(test, result)
                  except KeyboardInterrupt:
                      interrupted = True
-@@ -778,7 +827,7 @@
+@@ -785,7 +834,7 @@
              sys.stdout.flush()
              try:
                  verbose = True
@@ -142,7 +142,7 @@ http://bugs.python.org/issue1674555
              except KeyboardInterrupt:
                  # print a newline separate from the ^C
                  print()
-@@ -1197,8 +1246,9 @@
+@@ -1163,8 +1212,9 @@
          for name, get, restore in self.resource_info():
              current = get()
              original = saved_values.pop(name)
@@ -176,7 +176,7 @@ http://bugs.python.org/issue1674555
  
 --- Makefile.pre.in
 +++ Makefile.pre.in
-@@ -834,7 +834,7 @@
+@@ -839,7 +839,7 @@
  ######################################################################
  
  TESTOPTS=	$(EXTRATESTOPTS)
