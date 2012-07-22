@@ -149,11 +149,7 @@ src_install() {
 	python_execute_function -q skel_preparation
 
 	if use doc; then
-		pushd build/sphinx/html > /dev/null
-		dodoc _sources/*
-		docinto html
-		dohtml -r [A-Za-z]* _static
-		popd > /dev/null
+		dohtml -r build/sphinx/html/
 	fi
 
 	# Copy the init script skeleton to skel directory of our installation.
