@@ -18,6 +18,22 @@ inherit base eutils multilib toolchain-funcs
 
 export XDG_CONFIG_HOME="${T}"
 
+# @ECLASS-VARIABLE: DOCS
+# @DEFAULT_UNSET
+# @DESCRIPTION:
+# Array containing documents passed to dodoc command.
+# Paths can be absolute or relative to ${S}.
+#
+# Example: DOCS=( ChangeLog README "${WORKDIR}/doc_folder/" )
+
+# @ECLASS-VARIABLE: HTML_DOCS
+# @DEFAULT_UNSET
+# @DESCRIPTION:
+# Array containing documents passed to dohtml command.
+# Paths can be absolute or relative to ${S}.
+#
+# Example: HTML_DOCS=( "doc/document.html" "${WORKDIR}/html_folder/" )
+
 # @ECLASS-VARIABLE: LANGS
 # @DEFAULT_UNSET
 # @DESCRIPTION:
@@ -43,6 +59,21 @@ for x in ${LANGSLONG}; do
 done
 unset x
 
+# @ECLASS-VARIABLE: PATCHES
+# @DEFAULT_UNSET
+# @DESCRIPTION:
+# Array variable containing all the patches to be applied. This variable
+# is expected to be defined in the global scope of ebuilds. Make sure to
+# specify the full path. This variable is used in src_prepare phase.
+#
+# Example:
+# @CODE
+#   PATCHES=(
+#       "${FILESDIR}/mypatch.patch"
+#       "${FILESDIR}/mypatch2.patch"
+#   )
+# @CODE
+
 # @FUNCTION: qt4-r2_src_unpack
 # @DESCRIPTION:
 # Default src_unpack function for packages that depend on qt4. If you have to
@@ -53,17 +84,6 @@ qt4-r2_src_unpack() {
 
 	base_src_unpack "$@"
 }
-
-# @ECLASS-VARIABLE: PATCHES
-# @DEFAULT_UNSET
-# @DESCRIPTION:
-# In case you have patches to apply, specify them here. Make sure to
-# specify the full path. This variable is used in src_prepare phase.
-# Example:
-# @CODE
-#   PATCHES=( "${FILESDIR}"/mypatch.patch
-#             "${FILESDIR}"/mypatch2.patch )
-# @CODE
 
 # @FUNCTION: qt4-r2_src_prepare
 # @DESCRIPTION:
@@ -103,33 +123,23 @@ qt4-r2_src_compile() {
 	base_src_compile "$@"
 }
 
-# @ECLASS-VARIABLE: DOCS
-# @DEFAULT_UNSET
-# @DESCRIPTION:
-# Use this variable if you want to install any documentation.
-# Example:
-# @CODE
-#   DOCS="README AUTHORS"
-# @CODE
-
-# @ECLASS-VARIABLE: DOCSDIR
-# @DESCRIPTION:
-# Directory containing documentation, defaults to ${S}.
-
 # @FUNCTION: qt4-r2_src_install
 # @DESCRIPTION:
 # Default src_install function for qt4-based packages. Installs compiled code
-# and misc documentation (via DOCS variable).
+# documentation (via DOCS and HTML_DOCS variables).
+
 qt4-r2_src_install() {
 	debug-print-function $FUNCNAME "$@"
 
-	emake INSTALL_ROOT="${D}" DESTDIR="${D}" install || die "emake install failed"
+	base_src_install INSTALL_ROOT="${D}" "$@"
 
-	# install documentation
-	local doc= dir=${DOCSDIR:-${S}}
-	for doc in ${DOCS}; do
-		dodoc "${dir}/${doc}" || die "dodoc failed"
-	done
+	# backward compatibility for non-array variables
+	if [[ -n ${DOCS} ]] && [[ "$(declare -p DOCS 2>/dev/null 2>&1)" != "declare -a"* ]]; then
+		dodoc ${DOCS} || die "dodoc failed"
+	fi
+	if [[ -n ${HTML_DOCS} ]] && [[ "$(declare -p HTML_DOCS 2>/dev/null 2>&1)" != "declare -a"* ]]; then
+		dohtml -r ${HTML_DOCS} || die "dohtml failed"
+	fi
 }
 
 # Internal function, used by eqmake4 and qt4-r2_src_configure
