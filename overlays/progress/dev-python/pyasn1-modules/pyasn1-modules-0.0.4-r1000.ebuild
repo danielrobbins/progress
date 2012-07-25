@@ -7,7 +7,7 @@ PYTHON_MULTIPLE_ABIS="1"
 
 inherit distutils
 
-DESCRIPTION="A collection of protocols modules written in ASN.1 language."
+DESCRIPTION="A collection of ASN.1-based protocols modules."
 HOMEPAGE="http://pyasn1.sourceforge.net/ http://pypi.python.org/pypi/pyasn1-modules"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
