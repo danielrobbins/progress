@@ -5,9 +5,10 @@
 EAPI="4-python"
 PYTHON_DEPEND="python? ( <<>> )"
 PYTHON_MULTIPLE_ABIS="1"
+# http://bugs.jython.org/issue1916
 PYTHON_RESTRICTED_ABIS="*-jython"
 
-inherit distutils eutils flag-o-matic libtool toolchain-funcs
+inherit distutils eutils libtool toolchain-funcs
 
 DESCRIPTION="identify a file's format by scanning binary data for patterns"
 HOMEPAGE="ftp://ftp.astron.com/pub/file/"
@@ -47,9 +48,6 @@ do_configure() {
 	popd >/dev/null
 }
 src_configure() {
-	# file uses things like strndup() and wcwidth()
-	append-flags -D_GNU_SOURCE
-
 	# when cross-compiling, we need to build up our own file
 	# because people often don't keep matching host/target
 	# file versions #362941
