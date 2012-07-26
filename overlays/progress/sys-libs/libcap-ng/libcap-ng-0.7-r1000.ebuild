@@ -85,7 +85,7 @@ src_test() {
 }
 
 src_install() {
-	emake DESTDIR="${D}" install
+	default
 
 	if use python; then
 		installation() {
@@ -100,8 +100,6 @@ src_install() {
 
 		python_clean_installation_image
 	fi
-
-	dodoc AUTHORS ChangeLog README
 
 	rm -f "${ED}"/usr/lib*/${PN}.la
 }
