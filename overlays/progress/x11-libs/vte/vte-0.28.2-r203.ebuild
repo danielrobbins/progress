@@ -16,7 +16,7 @@ HOMEPAGE="http://git.gnome.org/browse/vte"
 
 LICENSE="LGPL-2"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh sparc x86 ~x86-fbsd ~x86-linux"
+KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh sparc x86 ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~x86-linux ~x64-solaris ~x86-solaris"
 IUSE="debug doc glade +introspection python"
 
 PDEPEND="x11-libs/gnome-pty-helper"
@@ -48,6 +48,14 @@ pkg_setup() {
 		$(use_enable introspection)
 		$(use_enable python)
 		--with-gtk=2.0"
+
+	if [[ ${CHOST} == *-interix* ]]; then
+		G2CONF="${G2CONF} --disable-Bsymbolic"
+
+		# interix stropts.h is empty...
+		export ac_cv_header_stropts_h=no
+	fi
+
 	DOCS="AUTHORS ChangeLog HACKING NEWS README"
 
 	if use python; then
@@ -58,6 +66,8 @@ pkg_setup() {
 src_prepare() {
 	# https://bugzilla.gnome.org/show_bug.cgi?id=663779
 	epatch "${FILESDIR}/${PN}-0.30.1-alt-meta.patch"
+	# https://bugzilla.gnome.org/show_bug.cgi?id=652290
+	epatch "${FILESDIR}"/${PN}-0.28.2-interix.patch
 
 	# Python bindings are built/installed manually.
 	sed -e "/SUBDIRS += python/d" -i Makefile.am
