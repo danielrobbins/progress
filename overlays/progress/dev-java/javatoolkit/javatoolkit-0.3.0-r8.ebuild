@@ -31,5 +31,5 @@ src_prepare(){
 }
 
 src_install() {
-	distutils_src_install --install-scripts="/usr/$(get_libdir)/${PN}/bin"
+	distutils_src_install --install-scripts="${EPREFIX}/usr/$(get_libdir)/${PN}/bin"
 }
