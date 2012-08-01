@@ -28,11 +28,16 @@ S="${WORKDIR}/apache-${P}"
 
 src_prepare() {
 	distutils_src_prepare
-	cp test/secrets.py-dist test/secrets.py || die "cp failed"
+	cp libcloud/test/secrets.py-dist libcloud/test/secrets.py || die "cp failed"
 }
 
 src_install() {
 	distutils_src_install
+
+	delete_tests() {
+		rm -fr "${ED}$(python_get_sitedir)/libcloud/test"
+	}
+	python_execute_function -q delete_tests
 
 	if use examples; then
 		docinto examples
