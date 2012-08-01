@@ -31,7 +31,6 @@ DEPEND="${RDEPEND}
 
 S="${WORKDIR}/${MY_P}"
 
-DOCS="docs/* AUTHORS"
 WEBAPP_MANUAL_SLOT="yes"
 
 pkg_setup() {
@@ -80,8 +79,7 @@ src_install() {
 	newbashcomp extras/django_bash_completion ${PN}
 
 	if use doc; then
-		rm -fr docs/_build/html/_sources
-		dohtml -A txt -r docs/_build/html/*
+		dohtml -r docs/_build/html/
 	fi
 
 	insinto "${MY_HTDOCSDIR#${EPREFIX}}"
