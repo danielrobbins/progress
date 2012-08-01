@@ -166,7 +166,7 @@ php-ext-source-r2_src_compile() {
 	done
 }
 
-# @FUNCTION: php-ext-source-r1_src_install
+# @FUNCTION: php-ext-source-r2_src_install
 # @DESCRIPTION:
 # Takes care of standard install for PHP extensions (modules).
 
