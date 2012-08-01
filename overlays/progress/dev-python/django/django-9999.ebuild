@@ -4,10 +4,10 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.*"
+PYTHON_RESTRICTED_ABIS="2.5 3.*"
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
 
-inherit bash-completion-r1 distutils subversion webapp
+inherit bash-completion-r1 distutils git-2 webapp
 
 DESCRIPTION="High-level Python web framework"
 HOMEPAGE="http://www.djangoproject.com/ http://pypi.python.org/pypi/Django"
@@ -29,9 +29,8 @@ DEPEND="${RDEPEND}
 
 S="${WORKDIR}"
 
-ESVN_REPO_URI="http://code.djangoproject.com/svn/django/trunk/"
+EGIT_REPO_URI="https://github.com/django/django.git"
 
-DOCS="docs/* AUTHORS"
 WEBAPP_MANUAL_SLOT="yes"
 
 pkg_setup() {
@@ -80,8 +79,7 @@ src_install() {
 	newbashcomp extras/django_bash_completion ${PN}
 
 	if use doc; then
-		rm -fr docs/_build/html/_sources
-		dohtml -A txt -r docs/_build/html/*
+		dohtml -r docs/_build/html/
 	fi
 
 	insinto "${MY_HTDOCSDIR#${EPREFIX}}"
