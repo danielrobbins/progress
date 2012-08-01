@@ -5,14 +5,18 @@
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 *-jython"
+# https://github.com/lunaryorn/pyudev/issues/52
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 DISTUTILS_SRC_TEST="py.test"
 VIRTUALX_REQUIRED="manual"
 
 inherit distutils virtualx
 
 DESCRIPTION="Python binding to libudev"
-HOMEPAGE="http://pyudev.readthedocs.org/ http://pypi.python.org/pypi/pyudev"
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
+HOMEPAGE="http://pyudev.readthedocs.org/ https://github.com/lunaryorn/pyudev http://pypi.python.org/pypi/pyudev"
+# https://github.com/lunaryorn/pyudev/issues/53
+SRC_URI="https://github.com/lunaryorn/${PN}/tarball/v${PV} -> ${P}.tar.gz"
+# SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="LGPL-2.1"
 SLOT="0"
@@ -31,18 +35,14 @@ DEPEND="${RDEPEND}
 		wxwidgets? ( ${VIRTUALX_DEPEND} )
 	)"
 
+S="${WORKDIR}/lunaryorn-pyudev-2dac9f5"
+
 DOCS="CHANGES.rst README.rst"
 
 src_prepare() {
 	distutils_src_prepare
 
-	# Disable failing tests.
-	# https://github.com/lunaryorn/pyudev/issues/43
-	sed -e "s/test_is_wrapped/_&/" -i tests/test_libudev.py
-	sed -e "s/test_from_device_file_non_existing/_&/" -i tests/test_device.py
-	sed -e "s/test_get_device_type_not_existing/_&/" -i tests/test_util.py
-
-	# Fix run_path.
+	# Support old versions of udev.
 	sed -i -e "s|== \('/run/udev'\)|in (\1, '/dev/.udev')|g" tests/test_core.py
 
 	if ! use pygobject; then
@@ -67,6 +67,9 @@ src_prepare() {
 	if ! use pygobject && ! use pyqt4 && ! use pyside && ! use wxwidgets; then
 		rm -f tests/test_observer.py
 	fi
+
+	# https://github.com/lunaryorn/pyudev/issues/54
+	sed -e "s/attribtues/attributes/" -i tests/test_enumerate.py
 }
 
 src_test() {
