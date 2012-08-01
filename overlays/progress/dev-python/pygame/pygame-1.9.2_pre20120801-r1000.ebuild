@@ -24,11 +24,12 @@ KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~ppc sparc x86 ~x86-fbsd"
 IUSE="doc examples X"
 
 DEPEND="$(python_abi_depend dev-python/numpy)
-	>=media-libs/libsdl-1.2.5[X?]
-	>=media-libs/sdl-image-1.2.2[png,jpeg]
-	>=media-libs/sdl-mixer-1.2.4
-	>=media-libs/sdl-ttf-2.0.6
-	>=media-libs/smpeg-0.4.4-r1"
+	media-libs/freetype:2
+	media-libs/libsdl[X?]
+	media-libs/sdl-image[png,jpeg]
+	media-libs/sdl-mixer
+	media-libs/sdl-ttf
+	media-libs/smpeg"
 RDEPEND="${DEPEND}"
 
 if [[ "${PV}" != *_pre* ]]; then
@@ -48,11 +49,14 @@ src_configure() {
 
 	# Disable automagic dependency on PortMidi.
 	sed -e "s:^pypm :#&:" -i Setup || die "sed failed"
+
+	# Restore pygame.movie module.
+	sed -e "s:^#movie :movie :" -i Setup || die "sed failed"
 }
 
 src_test() {
 	testing() {
-		python_execute PYTHONPATH="$(ls -d build-${PYTHON_ABI}/lib.*)" "$(PYTHON)" run_tests.py
+		python_execute PYTHONPATH="$(ls -d build-${PYTHON_ABI}/lib*)" "$(PYTHON)" run_tests.py
 	}
 	VIRTUALX_COMMAND="python_execute_function" virtualmake testing
 }
