@@ -17,7 +17,7 @@ SRC_URI="mirror://sourceforge/boost/${MY_P}.tar.bz2"
 
 LICENSE="Boost-1.0"
 SLOT="$(get_version_component_range 1-2)"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh sparc x86 ~amd64-fbsd ~x86-fbsd"
+KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc x86 ~amd64-fbsd ~x86-fbsd"
 IUSE="debug doc +eselect icu mpi python static-libs test tools"
 
 RDEPEND="icu? ( >=dev-libs/icu-3.3 )
@@ -125,6 +125,7 @@ src_prepare() {
 	epatch "${FILESDIR}/${P}-disable_libboost_python3.patch"
 	epatch "${FILESDIR}/${P}-python_linking.patch"
 	epatch "${FILESDIR}/${P}-disable_icu_rpath.patch"
+	epatch "${FILESDIR}/${P}-gcc-4.7.patch"
 	epatch "${FILESDIR}/remove-toolset-${PV}.patch"
 }
 
