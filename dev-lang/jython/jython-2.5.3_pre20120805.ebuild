@@ -11,7 +11,7 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/jython"
-	EHG_REVISION="f4b6a6f04d9c"
+	EHG_REVISION="aa7d621dc769"
 fi
 
 PATCHSET_REVISION="20120610"
@@ -24,7 +24,7 @@ LICENSE="PSF-2"
 SLOT="2.5"
 PYTHON_ABI="${SLOT}-jython"
 KEYWORDS="~amd64 ~x86"
-IUSE="+readline +ssl +threads +xml"
+IUSE="+readline +ssl test +threads +xml"
 
 CDEPEND="dev-java/ant-core:0
 	dev-java/antlr:3
@@ -46,7 +46,8 @@ RDEPEND=">=virtual/jre-1.5
 	!dev-java/jython:${SLOT}"
 DEPEND=">=virtual/jdk-1.5
 	${CDEPEND}
-	dev-java/junit:0"
+	dev-java/junit:0
+	test? ( dev-java/ant-junit:0 )"
 
 pkg_setup() {
 	java-pkg-2_pkg_setup
@@ -83,6 +84,7 @@ java_prepare() {
 	java-pkg_jar-from --build-only --into extlibs jnr-ffi-0.5 jnr-ffi.jar jaffl.jar
 
 	echo "has.repositories.connection=false" > ant.properties
+	echo "templates.lazy=false" >> ant.properties
 
 	if use oracle; then
 		echo "oracle.jar=$(java-pkg-getjar jdbc-oracle-bin-10.2 ojdbc14.jar)" >> ant.properties
@@ -90,6 +92,10 @@ java_prepare() {
 }
 
 src_compile() {
+	if [[ -n "${JYTHON_REGENERATE_FILES}" ]]; then
+		EPYTHON="python2" ant template
+	fi
+
 	eant developer-build $(use_doc javadoc)
 }
 
