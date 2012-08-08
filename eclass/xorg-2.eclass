@@ -470,7 +470,9 @@ xorg-2_src_install() {
 	# Don't install libtool archives (even for modules)
 	prune_libtool_files --all
 
-	[[ -n ${FONT} ]] && remove_font_metadata
+	if [[ -n ${FONT} ]]; then
+		remove_font_metadata
+	fi
 }
 
 # @FUNCTION: xorg-2_pkg_postinst
