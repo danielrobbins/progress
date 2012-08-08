@@ -8,7 +8,7 @@
  import os
  import os.path as osp
  import sys
-@@ -40,30 +39,6 @@
+@@ -40,34 +39,6 @@
      return splist
  
  
@@ -29,7 +29,11 @@
 -        try:
 -            setup_command.BuildDoc.run(self)
 -        except UnicodeDecodeError:
--            print >>sys.stderr, "ERROR: unable to build documentation because Sphinx do not handle source path with non-ASCII characters. Please try to move the source package to another location (path with *only* ASCII characters)."        
+-            print >>sys.stderr, "ERROR: unable to build documentation "\
+-                                "because Sphinx do not handle source path "\
+-                                "with non-ASCII characters. Please try to "\
+-                                "move the source package to another location "\
+-                                "(path with *only* ASCII characters)."        
 -        sys.path.pop(0)
 -
 -
@@ -39,16 +43,16 @@
  NAME = 'spyder'
  LIBNAME = 'spyderlib'
  from spyderlib import __version__, __project_url__
-@@ -88,7 +63,7 @@
-                     get_package_data(LIBNAME, ('.mo', '.svg', '.png', '.css')),
+@@ -110,7 +81,7 @@
                      'spyderplugins':
-                     get_package_data('spyderplugins', ('.mo', '.svg', '.png'))},
+                     get_package_data('spyderplugins',
+                                      ('.mo', '.svg', '.png'))},
 -      requires=["rope (>=0.9.2)", "sphinx (>=0.6.0)", "PyQt4 (>=4.4)"],
 +      requires=["rope (>=0.9.2)", "PyQt4 (>=4.4)"],
        scripts=[osp.join('scripts', fname) for fname in 
-                (['spyder', 'spyder.bat'] if os.name == 'nt' else ['spyder'])],
-       classifiers=['License :: OSI Approved :: MIT License',
-@@ -102,5 +77,4 @@
+                (['spyder', 'spyder.bat', "%s_win_post_install.py" % NAME,
+                  'spyder.ico', 'spyder_light.ico']
+@@ -132,5 +103,4 @@
                     'Programming Language :: Python :: 2.7',
                     'Development Status :: 5 - Production/Stable',
                     'Topic :: Scientific/Engineering',

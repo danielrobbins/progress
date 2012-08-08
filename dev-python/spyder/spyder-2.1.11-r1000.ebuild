@@ -14,7 +14,7 @@ SRC_URI="http://spyderlib.googlecode.com/files/${P}.zip"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="amd64 x86"
+KEYWORDS="amd64 x86 ~amd64-linux ~x86-linux"
 IUSE="doc ipython matplotlib numpy pep8 +pyflakes pylint +rope scipy sphinx"
 
 RDEPEND="$(python_abi_depend ">=dev-python/PyQt4-4.4[webkit]")
@@ -35,7 +35,7 @@ PYTHON_MODULES="spyderlib spyderplugins"
 
 src_prepare() {
 	distutils_src_prepare
-	epatch "${FILESDIR}/${PN}-2.1.2-disable_sphinx_dependency.patch"
+	epatch "${FILESDIR}/${PN}-2.1.11-disable_sphinx_dependency.patch"
 }
 
 src_compile() {
@@ -54,9 +54,6 @@ src_install() {
 	make_desktop_entry spyder Spyder spyder "Development;IDE"
 
 	if use doc; then
-		pushd doc_output > /dev/null
-		insinto /usr/share/doc/${PF}/html
-		doins -r [a-z]* _images _static
-		popd > /dev/null
+		dohtml -r doc_output/
 	fi
 }
