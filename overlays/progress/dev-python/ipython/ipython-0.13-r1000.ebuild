@@ -16,7 +16,7 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="amd64 ~ia64 ~ppc ~ppc64 ~s390 x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos"
-IUSE="doc emacs examples matplotlib mongodb notebook qt4 readline +smp sqlite test wxwidgets"
+IUSE="doc emacs examples matplotlib mongodb notebook octave qt4 readline +smp sqlite test wxwidgets"
 
 RDEPEND="$(python_abi_depend dev-python/decorator)
 	$(python_abi_depend -e "*-pypy-*" dev-python/numpy)
@@ -36,6 +36,7 @@ RDEPEND="$(python_abi_depend dev-python/decorator)
 		$(python_abi_depend -e "*-pypy-*" ">=dev-python/pyzmq-2.1.4")
 		$(python_abi_depend -i "2.*" ">=www-servers/tornado-2.1")
 	)
+	octave? ( $(python_abi_depend -e "*-pypy-*" dev-python/oct2py) )
 	qt4? (
 		$(python_abi_depend dev-python/pygments)
 		|| (
@@ -61,6 +62,7 @@ src_prepare() {
 		-e "s/test_pylab_import_all_disabled/_&/" \
 		-e "s/test_pylab_import_all_enabled/_&/" \
 		-i IPython/lib/tests/test_irunner_pylab_magic.py
+	sed -e "s/test_for('oct2py')/False/" -i IPython/testing/iptest.py
 
 	# Fix installation directory for documentation.
 	sed \
