@@ -25,13 +25,6 @@ DEPEND="${RDEPEND}
 
 DOCS="CHANGES.txt CREDITS.txt README.txt"
 
-src_prepare() {
-	distutils_src_prepare
-
-	# https://bitbucket.org/fanstatic/fanstatic/issue/71
-	sed -e "s/test_serf(/_&/" -i fanstatic/test_wsgi.py
-}
-
 src_test() {
 	python_execute_py.test -e -P 'build-${PYTHON_ABI}/lib' 'build-${PYTHON_ABI}/lib'
 }
