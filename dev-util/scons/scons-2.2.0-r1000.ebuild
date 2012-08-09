@@ -31,7 +31,7 @@ PYTHON_MODULES="SCons"
 src_prepare() {
 	distutils_src_prepare
 	epatch "${FILESDIR}/scons-1.2.0-popen.patch"
-	epatch "${FILESDIR}/${P}-jython.patch"
+	epatch "${FILESDIR}/${PN}-2.1.0-jython.patch"
 
 	sed -e "s|/usr/local/bin:/opt/bin:/bin:/usr/bin|${EPREFIX}/usr/local/bin:${EPREFIX}/opt/bin:${EPREFIX}/bin:${EPREFIX}/usr/bin:/usr/local/bin:/opt/bin:/bin:/usr/bin|g" -i engine/SCons/Platform/posix.py || die "sed failed"
 	sed -e "s/sys.platform\[:6\] == 'darwin'/False/" -i setup.py || die "sed failed"
@@ -44,7 +44,6 @@ src_install () {
 		--standard-lib
 
 	if use doc; then
-		insinto /usr/share/doc/${PF}
-		doins "${DISTDIR}/${P}-user."{html,pdf}
+		dodoc "${DISTDIR}/${P}-user."{html,pdf}
 	fi
 }
