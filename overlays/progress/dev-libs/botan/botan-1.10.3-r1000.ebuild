@@ -6,7 +6,7 @@ EAPI="4-python"
 PYTHON_BDEPEND="<<>>"
 PYTHON_DEPEND="python? ( <<>> )"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="2.5 *-jython *-pypy-*"
 
 inherit multilib python toolchain-funcs
 
@@ -35,14 +35,14 @@ S="${WORKDIR}/${MY_P}"
 DOCS="readme.txt"
 
 src_prepare() {
-	sed \
-		-e "s/-Wl,-soname,\$@ //" \
-		-e "s/-lbotan/-lbotan-1.10/" \
-		-i src/build-data/makefile/python.in || die "sed failed"
+	sed -e "s/-Wl,-soname,\$@ //" -i src/build-data/makefile/python.in || die "sed failed"
 	sed \
 		-e "/DOCDIR/d" \
 		-e "/^install:/s/ docs//" \
 		-i src/build-data/makefile/unix_shr.in || die "sed failed"
+
+	# Fix ImportError with Python 3.
+	sed -e "s/_botan/.&/" -i src/wrap/python/__init__.py || die "sed failed"
 }
 
 src_configure() {
@@ -125,6 +125,12 @@ src_test() {
 
 src_install() {
 	emake DESTDIR="${ED}usr" install
+
+	# Add compatibility symlinks.
+	[[ -e "${ED}usr/bin/botan-config" ]] && die "Compatibility code no longer needed"
+	[[ -e "${ED}usr/$(get_libdir)/pkgconfig/botan.pc" ]] && die "Compatibility code no longer needed"
+	dosym botan-config-1.10 /usr/bin/botan-config
+	dosym botan-1.10.pc /usr/$(get_libdir)/pkgconfig/botan.pc
 
 	if use doc; then
 		pushd doc_output > /dev/null
