@@ -20,10 +20,13 @@ IUSE="test"
 
 RDEPEND=">=dev-vcs/subversion-1.4"
 DEPEND="${RDEPEND}
-	test? ( || (
-		$(python_abi_depend -i "2.5 2.6" dev-python/unittest2)
-		$(python_abi_depend -i "2.5 2.6" dev-python/testtools)
-	) )"
+	test? (
+		$(python_abi_depend -i "2.5" dev-python/unittest2)
+		|| (
+			$(python_abi_depend -i "2.6" dev-python/unittest2)
+			$(python_abi_depend -i "2.6" dev-python/testtools)
+		)
+	)"
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 
