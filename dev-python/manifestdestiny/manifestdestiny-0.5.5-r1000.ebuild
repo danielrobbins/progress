@@ -14,7 +14,7 @@ DESCRIPTION="Universal manifests for Mozilla test harnesses"
 HOMEPAGE="http://pypi.python.org/pypi/ManifestDestiny"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
-LICENSE="|| ( MPL-1.1 GPL-2 LGPL-2.1 )"
+LICENSE="MPL-2.0"
 SLOT="0"
 KEYWORDS="amd64 x86"
 IUSE=""
@@ -24,5 +24,4 @@ RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/${MY_P}"
 
-DOCS="README.txt"
-PYTHON_MODULES="manifestparser.py"
+PYTHON_MODULES="manifestparser"
