@@ -66,9 +66,6 @@ src_install() {
 	python_execute_function -q delete_tests
 
 	if use doc; then
-		pushd build/sphinx/html > /dev/null
-		insinto /usr/share/doc/${PF}/html
-		doins -r [a-z]* _images _static
-		popd > /dev/null
+		dohtml -r build/sphinx/html/
 	fi
 }
