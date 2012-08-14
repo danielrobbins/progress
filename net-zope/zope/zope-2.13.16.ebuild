@@ -100,7 +100,7 @@ pkg_setup() {
 
 src_prepare() {
 	distutils_src_prepare
-	epatch "${FILESDIR}/${P}-backports.patch"
+	epatch "${FILESDIR}/${PN}-2.13.15-backports.patch"
 }
 
 src_compile() {
