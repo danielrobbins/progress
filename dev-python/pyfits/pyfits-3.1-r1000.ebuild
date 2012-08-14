@@ -9,23 +9,24 @@ DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils eutils
 
-DESCRIPTION="Reads FITS images and tables into numpy or numarray objects and manipulates FITS headers"
-HOMEPAGE="http://www.stsci.edu/resources/software_hardware/pyfits http://pypi.python.org/pypi/pyfits"
+DESCRIPTION="Reads FITS images and tables into numpy arrays and manipulates FITS headers"
+HOMEPAGE="http://www.stsci.edu/institute/software_hardware/pyfits http://pypi.python.org/pypi/pyfits"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="amd64 x86 ~x86-fbsd"
+KEYWORDS="amd64 x86 ~x86-fbsd ~amd64-linux ~x86-linux"
 IUSE=""
 
-RDEPEND="$(python_abi_depend dev-python/numpy)"
+RDEPEND="$(python_abi_depend dev-python/numpy)
+	!dev-python/astropy"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/d2to1)
 	$(python_abi_depend dev-python/stsci-distutils)"
 
 src_prepare() {
 	distutils_src_prepare
-	epatch "${FILESDIR}/${P}-debundle_zlib.patch"
+	epatch "${FILESDIR}/${PN}-3.0.8-debundle_zlib.patch"
 }
 
 src_test() {
