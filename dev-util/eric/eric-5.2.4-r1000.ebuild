@@ -24,7 +24,7 @@ KEYWORDS="amd64 ~ppc ~ppc64 x86"
 IUSE="spell"
 
 DEPEND="$(python_abi_depend ">=dev-python/sip-4.12.4")
-	$(python_abi_depend ">=dev-python/PyQt4-4.7[assistant,svg,webkit,X]")
+	$(python_abi_depend ">=dev-python/PyQt4-4.7[X,help,svg,webkit]")
 	$(python_abi_depend ">=dev-python/qscintilla-python-2.4")"
 RDEPEND="${DEPEND}
 	$(python_abi_depend ">=dev-python/chardet-2.0.1")
