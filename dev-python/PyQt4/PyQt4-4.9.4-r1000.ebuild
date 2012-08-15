@@ -26,29 +26,30 @@ fi
 LICENSE="|| ( GPL-2 GPL-3 )"
 SLOT="0"
 KEYWORDS="amd64 ~arm ~ia64 ~ppc ~ppc64 x86 ~amd64-linux ~x86-linux"
-IUSE="X assistant dbus debug declarative doc examples kde multimedia opengl phonon sql svg webkit xmlpatterns"
-REQUIRED_USE="assistant? ( X )
+IUSE="X dbus debug declarative doc examples help kde multimedia opengl phonon script scripttools sql svg webkit xmlpatterns"
+REQUIRED_USE="
 	declarative? ( X )
+	help? ( X )
 	multimedia? ( X )
 	opengl? ( X )
 	phonon? ( X )
+	scripttools? ( X script )
 	sql? ( X )
 	svg? ( X )
 	webkit? ( X )"
 
 RDEPEND="$(python_abi_depend ">=dev-python/sip-4.13.3")
 	>=x11-libs/qt-core-${QT_VER}:4
-	>=x11-libs/qt-script-${QT_VER}:4
 	X? (
 		>=x11-libs/qt-gui-${QT_VER}:4[dbus?]
 		>=x11-libs/qt-test-${QT_VER}:4
 	)
-	assistant? ( >=x11-libs/qt-assistant-${QT_VER}:4 )
 	dbus? (
 		$(python_abi_depend -e "2.5" ">=dev-python/dbus-python-0.80")
 		>=x11-libs/qt-dbus-${QT_VER}:4
 	)
 	declarative? ( >=x11-libs/qt-declarative-${QT_VER}:4 )
+	help? ( >=x11-libs/qt-assistant-${QT_VER}:4 )
 	multimedia? ( >=x11-libs/qt-multimedia-${QT_VER}:4 )
 	opengl? (
 		>=x11-libs/qt-opengl-${QT_VER}:4
@@ -58,6 +59,7 @@ RDEPEND="$(python_abi_depend ">=dev-python/sip-4.13.3")
 		!kde? ( || ( >=x11-libs/qt-phonon-${QT_VER}:4 media-libs/phonon ) )
 		kde? ( media-libs/phonon )
 	)
+	script? ( >=x11-libs/qt-script-${QT_VER}:4 )
 	sql? ( >=x11-libs/qt-sql-${QT_VER}:4 )
 	svg? ( >=x11-libs/qt-svg-${QT_VER}:4 )
 	webkit? ( >=x11-libs/qt-webkit-${QT_VER}:4 )
@@ -114,18 +116,18 @@ src_configure() {
 			$(use debug && echo --debug)
 			--enable=QtCore
 			--enable=QtNetwork
-			--enable=QtScript
 			--enable=QtXml
 			$(pyqt4_use_enable X QtDesigner) $(use X || echo --no-designer-plugin)
 			$(pyqt4_use_enable X QtGui)
-			$(pyqt4_use_enable X QtScriptTools)
 			$(pyqt4_use_enable X QtTest)
-			$(pyqt4_use_enable assistant QtHelp)
 			$(pyqt4_use_enable dbus QtDBus)
 			$(pyqt4_use_enable declarative QtDeclarative)
+			$(pyqt4_use_enable help QtHelp)
 			$(pyqt4_use_enable multimedia QtMultimedia)
 			$(pyqt4_use_enable opengl QtOpenGL)
 			$(pyqt4_use_enable phonon)
+			$(pyqt4_use_enable script QtScript)
+			$(pyqt4_use_enable scripttools QtScriptTools)
 			$(pyqt4_use_enable sql QtSql)
 			$(pyqt4_use_enable svg QtSvg)
 			$(pyqt4_use_enable webkit QtWebKit)
