@@ -20,8 +20,8 @@ RDEPEND="
 	$(python_abi_depend ">=dev-python/sip-4.12")
 	$(add_kdebase_dep kdelibs 'opengl,semantic-desktop=')
 	semantic-desktop? ( $(add_kdebase_dep kdepimlibs 'semantic-desktop') )
-	aqua? ( $(python_abi_depend ">=dev-python/PyQt4-4.8.2[dbus,declarative,sql,svg,webkit,aqua]") )
-	!aqua? ( $(python_abi_depend ">=dev-python/PyQt4-4.8.2[dbus,declarative,sql,svg,webkit,X]") )
+	aqua? ( $(python_abi_depend ">=dev-python/PyQt4-4.8.2[aqua,dbus,declarative,script,sql,svg,webkit]") )
+	!aqua? ( $(python_abi_depend ">=dev-python/PyQt4-4.8.2[X,dbus,declarative,script,sql,svg,webkit]") )
 "
 DEPEND="${RDEPEND}
 	sys-devel/libtool
