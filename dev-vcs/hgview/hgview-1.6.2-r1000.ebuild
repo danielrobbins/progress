@@ -19,7 +19,7 @@ IUSE="doc +qt4 urwid"
 REQUIRED_USE="|| ( qt4 urwid )"
 
 RDEPEND="$(python_abi_depend dev-vcs/mercurial)
-	qt4? ( 
+	qt4? (
 		$(python_abi_depend dev-python/docutils)
 		$(python_abi_depend dev-python/PyQt4[X])
 		$(python_abi_depend dev-python/qscintilla-python)
@@ -32,19 +32,26 @@ RDEPEND="$(python_abi_depend dev-vcs/mercurial)
 DEPEND="${RDEPEND}
 	doc? ( app-text/asciidoc )"
 
+# Workaround for missing passing of options to "build" command in src_install().
+DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES="1"
 PYTHON_MODULES="hgext/hgview.py hgviewlib"
 
 src_prepare() {
-	distutils_src_prepare
+	# https://www.logilab.org/ticket/103668
+	sed \
+		-e 's:MANDIR=$(PREFIX)/man:MANDIR=$(PREFIX)/share/man:' \
+		-e 's:$(INSTALL) $$i:$(INSTALL) -m 644 $$i:' \
+		-i- doc/Makefile
 
-	if ! use doc; then
-		sed -e '/make -C doc/d' -i setup.py || die "sed failed"
-		sed -e '/share\/man\/man1/,+1 d' -i hgviewlib/__pkginfo__.py || die "sed failed"
-	fi
+	distutils_src_prepare
+}
+
+src_compile() {
+	distutils_src_compile $(use doc || echo --no-doc) $(use qt4 || echo --no-qt) $(use urwid || echo --no-curses)
 }
 
 src_install() {
-	distutils_src_install
+	distutils_src_install $(use doc || echo --no-doc) $(use qt4 || echo --no-qt) $(use urwid || echo --no-curses)
 
 	# Install Mercurial extension configuration file.
 	insinto /etc/mercurial/hgrc.d
