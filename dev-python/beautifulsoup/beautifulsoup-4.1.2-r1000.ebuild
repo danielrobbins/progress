@@ -4,13 +4,14 @@
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
+# https://bugs.launchpad.net/beautifulsoup/+bug/1038503
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.6 3.1 *-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
 
 MY_PN="beautifulsoup4"
-MY_P="${MY_PN}-${PV/_beta/b}"
+MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Beautiful Soup is a Python library for pulling data out of HTML and XML files"
 HOMEPAGE="http://www.crummy.com/software/BeautifulSoup/ https://launchpad.net/beautifulsoup http://pypi.python.org/pypi/beautifulsoup4"
@@ -55,9 +56,6 @@ src_install() {
 	python_execute_function -q delete_tests
 
 	if use doc; then
-		pushd doc/build/html > /dev/null
-		insinto /usr/share/doc/${PF}/html
-		doins -r [a-z]* _images _static
-		popd > /dev/null
+		dohtml -r doc/build/html/
 	fi
 }
