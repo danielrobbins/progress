@@ -19,7 +19,7 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${MY_P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~s390 ~sh sparc x86"
+KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~s390 ~sh sparc x86 ~x86-interix ~amd64-linux ~x86-linux ~x64-macos ~x86-macos ~sparc-solaris ~sparc64-solaris ~x64-solaris"
 IUSE="doc examples irc mail manhole test"
 
 RDEPEND="$(python_abi_depend ">=dev-python/jinja-2.1")
@@ -79,10 +79,7 @@ src_install() {
 	doman docs/buildbot.1
 
 	if use doc; then
-		pushd docs/_build/html > /dev/null
-		insinto /usr/share/doc/${PF}/html
-		doins -r [a-z]* _images _static
-		popd > /dev/null
+		dohtml -r docs/_build/html/
 	fi
 
 	if use examples; then
@@ -101,7 +98,7 @@ pkg_postinst() {
 	elog "to support starting buildbot through Gentoo's init system. To use this,"
 	elog "set up your build master following the documentation, make sure the"
 	elog "resulting directories are owned by the \"buildbot\" user and point"
-	elog "\"${ROOT}etc/conf.d/buildmaster\" at the right location. The scripts can"
+	elog "\"${EROOT}etc/conf.d/buildmaster\" at the right location. The scripts can"
 	elog "run as a different user if desired. If you need to run more than one"
 	elog "build master, just copy the scripts."
 	elog
