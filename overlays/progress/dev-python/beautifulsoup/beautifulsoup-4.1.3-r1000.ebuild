@@ -4,8 +4,7 @@
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5"
-# https://bugs.launchpad.net/beautifulsoup/+bug/1038503
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.6 3.1 *-jython"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
