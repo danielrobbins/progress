@@ -10,7 +10,7 @@ DISTUTILS_SRC_TEST="nosetests"
 inherit distutils
 
 DESCRIPTION="PyZMQ is a lightweight and super-fast messaging library built on top of the ZeroMQ library"
-HOMEPAGE="http://www.zeromq.org/bindings:python http://pypi.python.org/pypi/pyzmq"
+HOMEPAGE="http://www.zeromq.org/bindings:python https://github.com/zeromq/pyzmq http://pypi.python.org/pypi/pyzmq"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 # Main licenses: BSD LGPL-3
@@ -28,6 +28,13 @@ RDEPEND="${DEPEND}"
 
 DOCS="README.rst"
 PYTHON_MODULES="zmq"
+
+src_prepare() {
+	distutils_src_prepare
+
+	# https://github.com/zeromq/pyzmq/issues/253
+	sed -e "s/except gevent.Timeout, t:/except gevent.Timeout as t:/" -i zmq/green/core.py
+}
 
 src_test() {
 	python_execute_nosetests -e -P '$(ls -d build-${PYTHON_ABI}/lib.*)' -- -s -w '$(ls -d build-${PYTHON_ABI}/lib.*/zmq/tests)'
