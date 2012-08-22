@@ -30,13 +30,6 @@ DOCS="HISTORY.rst README.rst"
 src_prepare() {
 	distutils_src_prepare
 
-	# https://github.com/kennethreitz/requests/issues/600
-	sed \
-		-e "s/self.assertIn('preview', s.cookies)/self.assertTrue('preview' in s.cookies)/" \
-		-e "121s/self.assertNotIn('preview', json.loads(r2.text)\['cookies'\])/self.assertTrue('preview' not in json.loads(r2.text)['cookies'])/" \
-		-e "127s/self.assertNotIn('preview', json.loads(r2.text)\['cookies'\])/self.assertTrue('preview' not in json.loads(r3.text)['cookies'])/" \
-		-i tests/test_requests_ext.py
-
 	# Use system version of dev-python/chardet.
 	sed \
 		-e "s/from .packages import chardet$/import chardet/" \
