@@ -141,6 +141,7 @@ php-ext-source-r2_phpize() {
 php-ext-source-r2_src_configure() {
 	# net-snmp creates this file #385403
 	addpredict /usr/share/snmp/mibs/.index
+	addpredict /var/lib/net-snmp/mib_indexes
 
 	local slot
 	for slot in $(php_get_slots); do
@@ -156,6 +157,8 @@ php-ext-source-r2_src_configure() {
 php-ext-source-r2_src_compile() {
 	# net-snmp creates this file #324739
 	addpredict /usr/share/snmp/mibs/.index
+	addpredict /var/lib/net-snmp/mib_indexes
+
 	# shm extension createss a semaphore file #173574
 	addpredict /session_mm_cli0.sem
 	local slot
