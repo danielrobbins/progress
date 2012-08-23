@@ -18,10 +18,11 @@ SLOT="0"
 KEYWORDS="amd64 x86"
 IUSE=""
 
-DEPEND="$(python_abi_depend dev-python/setuptools)
+RDEPEND="$(python_abi_depend dev-python/stevedore)
 	$(python_abi_depend dev-python/virtualenv)
 	dev-python/virtualenv-clone"
-RDEPEND="${DEPEND}"
+DEPEND="${RDEPEND}
+	$(python_abi_depend dev-python/setuptools)"
 
 S="${WORKDIR}/${P}"
 
