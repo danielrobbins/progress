@@ -63,8 +63,7 @@ src_install() {
 	if use prefix; then
 		elog "The revdep-rebuild command is removed, the preserve-libs"
 		elog "feature of portage will handle issues."
-		rm "${ED}"/usr/bin/revdep-rebuild
-		rm "${ED}"/usr/bin/revdep-rebuild.sh
+		rm "${ED}"/usr/bin/revdep-rebuild*
 		rm "${ED}"/usr/share/man/man1/revdep-rebuild.1
 		rm -rf "${ED}"/etc/revdep-rebuild
 		rm -rf "${ED}"/var
