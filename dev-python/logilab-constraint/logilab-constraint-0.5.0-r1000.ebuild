@@ -10,7 +10,7 @@ PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 inherit distutils
 
 DESCRIPTION="A finite domain constraints solver written in 100% pure Python"
-HOMEPAGE="http://www.logilab.org/projects/constraint/"
+HOMEPAGE="http://www.logilab.org/project/logilab-constraint"
 SRC_URI="ftp://ftp.logilab.org/pub/constraint/${P}.tar.gz"
 
 LICENSE="LGPL-2.1"
