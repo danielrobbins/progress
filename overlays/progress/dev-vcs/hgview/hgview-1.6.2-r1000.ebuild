@@ -30,7 +30,10 @@ RDEPEND="$(python_abi_depend dev-vcs/mercurial)
 		$(python_abi_depend dev-python/urwid)
 	)"
 DEPEND="${RDEPEND}
-	doc? ( app-text/asciidoc )"
+	doc? (
+		app-text/asciidoc
+		app-text/xmlto
+	)"
 
 # Workaround for missing passing of options to "build" command in src_install().
 DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES="1"
@@ -41,7 +44,7 @@ src_prepare() {
 	sed \
 		-e 's:MANDIR=$(PREFIX)/man:MANDIR=$(PREFIX)/share/man:' \
 		-e 's:$(INSTALL) $$i:$(INSTALL) -m 644 $$i:' \
-		-i- doc/Makefile
+		-i doc/Makefile
 
 	distutils_src_prepare
 }
