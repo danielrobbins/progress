@@ -13,7 +13,7 @@ MY_PN="Paver"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Easy build, distribution and deployment scripting"
-HOMEPAGE="http://pypi.python.org/pypi/Paver"
+HOMEPAGE="http://paver.github.com/ https://github.com/paver/paver http://pypi.python.org/pypi/Paver"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="BSD"
@@ -35,9 +35,6 @@ src_install() {
 	python_execute_function -q delete_documentation
 
 	if use doc; then
-		pushd paver/docs > /dev/null
-		insinto /usr/share/doc/${PF}/html
-		doins -r [a-z]* _images _static
-		popd > /dev/null
+		dohtml -r paver/docs/
 	fi
 }
