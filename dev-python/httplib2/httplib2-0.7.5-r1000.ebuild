@@ -10,13 +10,13 @@ PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 
 inherit distutils
 
-DESCRIPTION="A comprehensive HTTP client library"
+DESCRIPTION="A comprehensive HTTP client library."
 HOMEPAGE="http://code.google.com/p/httplib2/ http://pypi.python.org/pypi/httplib2"
 SRC_URI="http://${PN}.googlecode.com/files/${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~ia64 ~ppc ~ppc64 sparc x86 ~x64-macos"
+KEYWORDS="~alpha amd64 ~arm ~ia64 ~ppc ~ppc64 sparc x86 ~amd64-linux ~x86-linux ~x64-macos"
 IUSE=""
 
 DEPEND="$(python_abi_depend dev-python/setuptools)"
