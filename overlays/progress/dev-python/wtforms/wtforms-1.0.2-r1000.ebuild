@@ -4,13 +4,16 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
+PYTHON_RESTRICTED_ABIS="2.5"
+# http://bugs.jython.org/issue1964
+PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
 
 inherit distutils
 
 MY_PN="WTForms"
 MY_P="${MY_PN}-${PV}"
 
-DESCRIPTION="Flexible forms validation and rendering library for python web development"
+DESCRIPTION="A flexible forms validation and rendering library for python web development."
 HOMEPAGE="http://wtforms.simplecodes.com/ https://bitbucket.org/simplecodes/wtforms http://pypi.python.org/pypi/WTForms"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.zip"
 
@@ -18,6 +21,8 @@ LICENSE="BSD"
 SLOT="0"
 KEYWORDS="amd64 x86"
 IUSE="doc"
+# https://bitbucket.org/simplecodes/wtforms/issue/109
+RESTRICT="test"
 
 S="${WORKDIR}/${MY_P}"
 
@@ -27,21 +32,6 @@ DEPEND="app-arch/unzip
 RDEPEND=""
 
 DOCS="AUTHORS.txt CHANGES.txt README.txt"
-
-src_prepare() {
-	distutils_src_prepare
-
-	# https://bitbucket.org/simplecodes/wtforms/issue/86
-	sed -e "/sys.path.insert/d" -i docs/conf.py
-
-	preparation() {
-		cp -r tests tests-${PYTHON_ABI} || return
-		if [[ "$(python_get_version -l --major)" == "3" ]]; then
-			2to3-${PYTHON_ABI} -nw --no-diffs tests-${PYTHON_ABI}
-		fi
-	}
-	python_execute_function preparation
-}
 
 src_compile() {
 	distutils_src_compile
@@ -56,7 +46,7 @@ src_compile() {
 
 src_test() {
 	testing() {
-		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" tests-${PYTHON_ABI}/runtests.py
+		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" tests/runtests.py
 	}
 	python_execute_function testing
 }
@@ -65,9 +55,6 @@ src_install() {
 	distutils_src_install
 
 	if use doc; then
-		pushd docs/_build/html > /dev/null
-		insinto /usr/share/doc/${PF}/html
-		doins -r [a-z]* _static
-		popd > /dev/null
+		dohtml -r docs/_build/html/
 	fi
 }
