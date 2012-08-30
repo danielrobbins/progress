@@ -12,14 +12,15 @@ MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="A general logging facility"
 HOMEPAGE="http://pypi.python.org/pypi/zLOG"
-SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
+SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.zip"
 
 LICENSE="ZPL"
 SLOT="0"
 KEYWORDS="amd64 ~ppc ~ppc64 sparc x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux"
 IUSE=""
 
-DEPEND="$(python_abi_depend dev-python/setuptools)"
+DEPEND="app-arch/unzip
+	$(python_abi_depend dev-python/setuptools)"
 RDEPEND=""
 
 S="${WORKDIR}/${MY_P}"
@@ -31,4 +32,13 @@ src_prepare() {
 
 	# net-zope/zconfig is actually used only by tests.
 	sed -e "/ZConfig/d" -i setup.py || die "sed failed"
+}
+
+src_install() {
+	distutils_src_install
+
+	delete_tests() {
+		rm -fr "${ED}$(python_get_sitedir)/zLOG/tests"
+	}
+	python_execute_function -q delete_tests
 }
