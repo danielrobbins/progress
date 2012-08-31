@@ -25,6 +25,7 @@ RDEPEND="$(python_abi_depend net-zope/namespaces-zope[five])
 	$(python_abi_depend net-zope/grokcore.annotation)
 	$(python_abi_depend ">=net-zope/grokcore.component-2.5")
 	$(python_abi_depend net-zope/grokcore.formlib)
+	$(python_abi_depend net-zope/grokcore.layout)
 	$(python_abi_depend ">=net-zope/grokcore.security-1.6.1")
 	$(python_abi_depend net-zope/grokcore.site)
 	$(python_abi_depend net-zope/grokcore.view)
@@ -44,3 +45,8 @@ DEPEND="${RDEPEND}
 
 DOCS="docs/CREDITS.txt docs/HISTORY.txt README.txt"
 PYTHON_MODULES="${PN/.//}"
+
+src_prepare() {
+	distutils_src_prepare
+	sed -e "s/from zope.location.interfaces import IPossibleSite/from zope.component.interfaces import IPossibleSite/" -i src/five/grok/components.py
+}
