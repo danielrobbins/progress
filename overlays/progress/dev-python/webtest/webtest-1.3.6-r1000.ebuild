@@ -31,24 +31,6 @@ DEPEND="${RDEPEND}
 
 S="${WORKDIR}/${MY_P}"
 
-src_prepare() {
-	distutils_src_prepare
-
-	# https://bitbucket.org/ianb/webtest/issue/24
-	# https://bitbucket.org/ianb/webtest/raw/1d13d172f935/docs/index_fixt.py
-	cat << EOF > docs/index_fixt.py
-# -*- coding: utf-8 -*-
-from doctest import ELLIPSIS
-
-
-def setup_test(test):
-    for example in test.examples:
-        example.options.setdefault(ELLIPSIS, 1)
-
-setup_test.__test__ = False
-EOF
-}
-
 src_compile() {
 	distutils_src_compile
 
@@ -71,9 +53,6 @@ src_install() {
 	python_execute_function -q delete_version-specific_modules
 
 	if use doc; then
-		pushd html > /dev/null
-		insinto /usr/share/doc/${PF}/html
-		doins -r [a-z]* _static
-		popd > /dev/null
+		dohtml -r html/
 	fi
 }
