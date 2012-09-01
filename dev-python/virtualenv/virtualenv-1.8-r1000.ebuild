@@ -52,6 +52,6 @@ src_install() {
 	distutils_src_install
 
 	if use doc; then
-		dohtml -r docs/_build/html/*
+		dohtml -r docs/_build/html/
 	fi
 }
