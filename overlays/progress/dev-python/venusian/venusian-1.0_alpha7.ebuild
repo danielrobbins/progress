@@ -16,10 +16,11 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${MY_P}.tar.gz"
 LICENSE="repoze"
 SLOT="0"
 KEYWORDS="amd64 x86"
-IUSE="doc"
+IUSE="doc test"
 
 DEPEND="$(python_abi_depend dev-python/setuptools)
-	doc? ( $(python_abi_depend dev-python/sphinx) )"
+	doc? ( $(python_abi_depend dev-python/sphinx) )
+	test? ( $(python_abi_depend dev-python/nose-exclude) )"
 RDEPEND=""
 
 S="${WORKDIR}/${MY_P}"
@@ -57,9 +58,6 @@ src_install() {
 	python_execute_function -q delete_tests
 
 	if use doc; then
-		pushd docs/_build/html > /dev/null
-		insinto /usr/share/doc/${PF}/html
-		doins -r [a-z]* _static
-		popd > /dev/null
+		dohtml -r docs/_build/html/
 	fi
 }
