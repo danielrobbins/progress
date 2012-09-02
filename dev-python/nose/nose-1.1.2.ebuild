@@ -25,7 +25,7 @@ DEPEND="${RDEPEND}
 		dev-python/sphinx[python_abis_2.6]
 		dev-python/sphinx[python_abis_2.5]
 	) )
-	test? ( $(python_abi_depend -e "3.* *-jython" dev-python/twisted) )"
+	test? ( $(python_abi_depend -e "2.5 3.* *-jython" dev-python/twisted) )"
 
 DOCS="AUTHORS"
 
