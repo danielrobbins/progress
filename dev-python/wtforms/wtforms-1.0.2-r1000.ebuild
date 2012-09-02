@@ -8,7 +8,7 @@ PYTHON_RESTRICTED_ABIS="2.5"
 # http://bugs.jython.org/issue1964
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
 
-inherit distutils
+inherit distutils eutils
 
 MY_PN="WTForms"
 MY_P="${MY_PN}-${PV}"
@@ -21,8 +21,6 @@ LICENSE="BSD"
 SLOT="0"
 KEYWORDS="amd64 x86"
 IUSE="doc"
-# https://bitbucket.org/simplecodes/wtforms/issue/109
-RESTRICT="test"
 
 S="${WORKDIR}/${MY_P}"
 
@@ -32,6 +30,19 @@ DEPEND="app-arch/unzip
 RDEPEND=""
 
 DOCS="AUTHORS.txt CHANGES.txt README.txt"
+
+src_prepare() {
+	distutils_src_prepare
+	epatch "${FILESDIR}/${P}-tests.patch"
+
+	preparation() {
+		cp -r tests tests-${PYTHON_ABI} || return
+		if [[ "$(python_get_version -l --major)" == "3" ]]; then
+			2to3-${PYTHON_ABI} -nw --no-diffs tests-${PYTHON_ABI}
+		fi
+	}
+	python_execute_function preparation
+}
 
 src_compile() {
 	distutils_src_compile
@@ -46,7 +57,7 @@ src_compile() {
 
 src_test() {
 	testing() {
-		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" tests/runtests.py
+		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" tests-${PYTHON_ABI}/runtests.py
 	}
 	python_execute_function testing
 }
