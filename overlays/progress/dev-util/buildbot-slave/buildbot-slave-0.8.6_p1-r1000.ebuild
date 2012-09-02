@@ -4,7 +4,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.* *-jython"
+PYTHON_RESTRICTED_ABIS="2.5 3.* *-jython"
 DISTUTILS_SRC_TEST="trial buildslave"
 DISTUTILS_DISABLE_TEST_DEPENDENCY="1"
 
@@ -59,7 +59,7 @@ pkg_postinst() {
 	elog "to support starting buildslave through Gentoo's init system. To use this,"
 	elog "set up your build slave following the documentation, make sure the"
 	elog "resulting directories are owned by the \"buildbot\" user and point"
-	elog "\"${ROOT}etc/conf.d/buildslave\" at the right location.  The scripts can"
+	elog "\"${EROOT}etc/conf.d/buildslave\" at the right location.  The scripts can"
 	elog "run as a different user if desired. If you need to run more than one"
 	elog "build slave, just copy the scripts."
 }

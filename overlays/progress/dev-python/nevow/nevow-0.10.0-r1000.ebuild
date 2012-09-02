@@ -4,7 +4,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.* *-jython"
+PYTHON_RESTRICTED_ABIS="2.5 3.* *-jython"
 DISTUTILS_SRC_TEST="trial formless nevow"
 DISTUTILS_DISABLE_TEST_DEPENDENCY="1"
 
@@ -41,7 +41,7 @@ src_install() {
 
 	doman doc/man/nevow-xmlgettext.1
 	if use doc; then
-		insinto /usr/share/doc/${PF}/
+		insinto /usr/share/doc/${PF}
 		doins -r doc/{howto,html,old} examples
 	fi
 	rm -fr "${ED}usr/doc"
