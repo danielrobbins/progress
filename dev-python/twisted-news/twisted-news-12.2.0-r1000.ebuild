@@ -4,18 +4,18 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.* *-jython"
-MY_PACKAGE="Words"
+PYTHON_RESTRICTED_ABIS="2.5 3.* *-jython"
+MY_PACKAGE="News"
 
 inherit twisted versionator
 
-DESCRIPTION="Twisted Words contains Instant Messaging implementations"
+DESCRIPTION="Twisted News is an NNTP server and programming library"
 
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh sparc x86"
+KEYWORDS="~alpha amd64 ~ia64 ~ppc ~ppc64 sparc x86"
 IUSE=""
 
 DEPEND="$(python_abi_depend "=dev-python/twisted-$(get_version_component_range 1-2)*")
-	$(python_abi_depend "=dev-python/twisted-web-$(get_version_component_range 1-2)*")"
+	$(python_abi_depend "=dev-python/twisted-mail-$(get_version_component_range 1-2)*")"
 RDEPEND="${DEPEND}"
 
-PYTHON_MODULES="twisted/plugins twisted/words"
+PYTHON_MODULES="twisted/news twisted/plugins"

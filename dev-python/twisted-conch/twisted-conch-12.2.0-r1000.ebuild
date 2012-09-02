@@ -4,7 +4,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="2.5 3.* *-jython *-pypy-*"
 MY_PACKAGE="Conch"
 
 inherit twisted versionator
@@ -23,10 +23,6 @@ PYTHON_MODULES="twisted/conch twisted/plugins"
 
 src_prepare() {
 	distutils_src_prepare
-
-	# Disable failing test.
-	# https://twistedmatrix.com/trac/ticket/5700
-	sed -e "s/test_getCipher/_&/" -i twisted/conch/test/test_transport.py
 
 	if [[ "${EUID}" -eq 0 ]]; then
 		# Disable tests failing with root permissions.
