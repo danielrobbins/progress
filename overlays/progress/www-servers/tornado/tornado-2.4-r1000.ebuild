@@ -22,13 +22,6 @@ RDEPEND="curl? ( $(python_abi_depend -i "2.*-cpython" dev-python/pycurl) )
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
-src_prepare() {
-	distutils_src_prepare
-
-	# https://github.com/facebook/tornado/issues/524
-	sed -e '/warnings.filterwarnings("error")/a\    warnings.filterwarnings("ignore", category=ImportWarning)' -i tornado/test/runtests.py
-}
-
 src_test() {
 	testing() {
 		python_execute "$(PYTHON)" setup.py build -b build-${PYTHON_ABI} install --root="${T}/tests-${PYTHON_ABI}" || die "Installation for tests failed with $(python_get_implementation_and_version)"
