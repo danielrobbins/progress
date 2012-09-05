@@ -69,7 +69,10 @@ DEPEND="${RDEPEND}
 
 S="${WORKDIR}/${MY_P}"
 
-PATCHES=("${FILESDIR}/${PN}-4.7.2-configure.py.patch")
+PATCHES=(
+	"${FILESDIR}/${PN}-4.7.2-configure.py.patch"
+	"${FILESDIR}/${P}-pyuic-custom-widgets.patch"
+)
 
 PYTHON_VERSIONED_EXECUTABLES=("/usr/bin/pyuic4")
 
