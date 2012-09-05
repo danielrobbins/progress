@@ -105,11 +105,9 @@ src_install() {
 
 	dodoc "${S}"/docs/{CHANGES,PyManual,README,wxPackage,wxPythonManual}.txt
 
-	insinto /usr/share/applications
-	doins "${S}"/distrib/{Py{AlaMode,Crust,Shell},XRCed}.desktop
-	insinto /usr/share/pixmaps
-	newins "${S}"/wx/py/PyCrust_32.png PyCrust.png
-	newins "${S}"/wx/tools/XRCed/XRCed_32.png XRCed.png
+	domenu "${S}"/distrib/{Py{AlaMode,Crust,Shell},XRCed}.desktop
+	newicon "${S}"/wx/py/PyCrust_32.png PyCrust.png
+	newicon "${S}"/wx/tools/XRCed/XRCed_32.png XRCed.png
 
 	docdir=${D}usr/share/doc/${PF}
 
