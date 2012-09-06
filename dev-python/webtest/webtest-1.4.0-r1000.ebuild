@@ -5,7 +5,8 @@
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 3.1"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython *-pypy-*"
+PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-pypy-*"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
@@ -36,7 +37,7 @@ src_compile() {
 
 	if use doc; then
 		einfo "Generation of documentation"
-		python_execute sphinx-build docs html || die "Generation of documentation failed"
+		python_execute PYTHONPATH="build-$(PYTHON -f --ABI)/lib" sphinx-build docs html || die "Generation of documentation failed"
 	fi
 }
 
