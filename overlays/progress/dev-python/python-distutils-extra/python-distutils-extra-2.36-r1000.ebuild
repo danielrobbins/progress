@@ -41,12 +41,9 @@ src_prepare() {
 		-e "s:'/proc/self/exe':sys.executable:" \
 		-i test/auto.py
 
-	# Fix compatibility with Python 2.6.
+	# Fix compatibility with Python 3.1.
 	# https://bugs.launchpad.net/python-distutils-extra/+bug/1028589
-	sed \
-		-e "s/sys.version_info.major/sys.version_info[0]/" \
-		-e "s/errors=//g" \
-		-i DistUtilsExtra/auto.py
+	sed -e "s/errors=//g" -i DistUtilsExtra/auto.py
 }
 
 src_test() {
