@@ -20,19 +20,6 @@ IUSE="cli"
 DEPEND="cli? ( $(python_abi_depend -e "2.5 *-jython" dev-python/ipython) )"
 RDEPEND="${DEPEND}"
 
-src_prepare() {
-	distutils_src_prepare
-
-	# https://github.com/drkjam/netaddr/issues/33
-	sed -e "s/if sys.version_info\[0\] == 3:/if False:/" -i setup.py
-
-	# https://github.com/drkjam/netaddr/issues/34
-	sed \
-		-e "s/from netaddr.compat import _dict_items/&, _callable/" \
-		-e "s/if callable/if _callable/" \
-		-i netaddr/ip/iana.py
-}
-
 src_test() {
 	testing() {
 		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" netaddr/tests/__init__.py
