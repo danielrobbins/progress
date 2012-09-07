@@ -3,6 +3,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
+DISTUTILS_SRC_TEST="py.test"
 
 inherit distutils
 
@@ -24,7 +25,12 @@ src_prepare() {
 	distutils_src_prepare
 
 	# Compatibility with Jython
-	sed -e "s/except OverflowError:/except (OverflowError, TypeError):/" -i six.py
+	# https://bitbucket.org/gutworth/six/issue/11
+	# https://bitbucket.org/gutworth/six/changeset/cc84a84e05ffda4b8c252c8395004f46d26152bb
+	sed -e 's/if sys.platform == "java":/if sys.platform.startswith("java"):/' -i six.py
+
+	# Disable tests requiring Tkinter.
+	sed -e "s/test_move_items/_&/" -i test_six.py
 }
 
 src_compile() {
@@ -42,9 +48,6 @@ src_install() {
 	distutils_src_install
 
 	if use doc; then
-		pushd documentation/_build/html > /dev/null
-		insinto /usr/share/doc/${PF}/html
-		doins -r [a-z]* _static
-		popd > /dev/null
+		dohtml -r documentation/_build/html/
 	fi
 }
