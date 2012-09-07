@@ -52,10 +52,7 @@ src_install() {
 	distutils_src_install
 
 	if use doc; then
-		pushd doc/_build/html > /dev/null
-		insinto /usr/share/doc/${PF}/html
-		doins -r [a-z]* _static
-		popd > /dev/null
+		dohtml -r doc/_build/html/
 	fi
 
 	if use examples; then
