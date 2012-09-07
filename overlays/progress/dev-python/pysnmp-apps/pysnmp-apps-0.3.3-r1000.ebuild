@@ -8,7 +8,7 @@ PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 
 inherit distutils
 
-DESCRIPTION="PySNMP applications"
+DESCRIPTION="SNMP command-line tools"
 HOMEPAGE="http://pysnmp.sourceforge.net/ http://pypi.python.org/pypi/pysnmp-apps"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
@@ -18,7 +18,7 @@ KEYWORDS="amd64 x86"
 IUSE=""
 
 RDEPEND="$(python_abi_depend dev-python/pyasn1)
-	$(python_abi_depend ">=dev-python/pysnmp-4.2.2")"
+	$(python_abi_depend ">=dev-python/pysnmp-4.2.3")"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
