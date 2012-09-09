@@ -26,7 +26,8 @@ XSTS_TARBALL_2="xsts-2004-01-14.tar.gz"
 SRC_URI="ftp://xmlsoft.org/${PN}/${PN}-${PV/_rc/-rc}.tar.gz
 	test? (
 		${XSTS_HOME}/${XSTS_NAME_1}/${XSTS_TARBALL_1}
-		${XSTS_HOME}/${XSTS_NAME_2}/${XSTS_TARBALL_2} )"
+		${XSTS_HOME}/${XSTS_NAME_2}/${XSTS_TARBALL_2} )
+	http://dev.gentoo.org/~tetromino/distfiles/${PN}/${P}-namespace-node-patches.tar.bz2"
 
 RDEPEND="sys-libs/zlib
 	icu? ( dev-libs/icu )
@@ -46,6 +47,7 @@ src_unpack() {
 	# ${A} isn't used to avoid unpacking of test tarballs into $WORKDIR,
 	# as they are needed as tarballs in ${S}/xstc instead and not unpacked
 	unpack ${P/_rc/-rc}.tar.gz
+	unpack "${P}-namespace-node-patches.tar.bz2"
 	cd "${S}"
 
 	if use test; then
@@ -68,6 +70,9 @@ src_prepare() {
 	epatch "${FILESDIR}/${PN}-2.7.8-disable_static_modules.patch"
 
 	epatch "${FILESDIR}/${P}-linking.patch"
+
+	# Namespace nodes require special treatment, bug #434344
+	epatch ../patch/*.patch
 
 	# Python bindings are built/tested/installed manually.
 	sed -e "s/@PYTHON_SUBDIR@//" -i Makefile.am || die "sed failed"
