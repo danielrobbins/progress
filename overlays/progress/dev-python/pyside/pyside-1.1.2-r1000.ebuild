@@ -62,7 +62,8 @@ RDEPEND="
 	xmlpatterns? ( >=x11-libs/qt-xmlpatterns-${QT_PV} )
 "
 DEPEND="${RDEPEND}
-	>=x11-libs/qt-gui-${QT_PV}"
+	>=x11-libs/qt-gui-${QT_PV}
+"
 
 S=${WORKDIR}/${MY_P}
 
