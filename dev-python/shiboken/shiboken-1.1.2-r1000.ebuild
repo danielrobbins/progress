@@ -38,6 +38,7 @@ src_prepare() {
 	# caused by the usage of a different version suffix with python >= 3.2
 	sed -i -e "/get_config_var('SOABI')/d" \
 		cmake/Modules/FindPython3InterpWithDebug.cmake || die
+
 	if use prefix; then
 		cp "${FILESDIR}"/rpath.cmake .
 		sed \
@@ -50,6 +51,7 @@ src_configure() {
 	configuration() {
 		local mycmakeargs=(
 			-DPYTHON_EXECUTABLE="$(PYTHON -a)"
+			-DPYTHON_SITE_PACKAGES="$(python_get_sitedir)"
 			-DPYTHON_SUFFIX="-python${PYTHON_ABI}"
 			$(cmake-utils_use_build test TESTS)
 		)
