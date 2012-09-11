@@ -17,15 +17,34 @@ SLOT="0"
 KEYWORDS="amd64 x86"
 IUSE="doc"
 
-DEPEND=""
-RDEPEND=""
+DEPEND="sci-libs/proj"
+RDEPEND="${DEPEND}"
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
+
+DISTUTILS_SETUP_FILES=("setup-proj.py")
+
+pkg_setup() {
+	python_pkg_setup
+
+	export PROJ_INCDIR=""
+	export PROJ_LIBDIR=""
+}
+
+src_prepare() {
+	distutils_src_prepare
+
+	# NumPy is not actually needed.
+	sed \
+		-e "/^import /s/, numpy//" \
+		-e "s/numpy.get_include()//" \
+		-i setup-proj.py
+}
 
 src_install() {
 	distutils_src_install
 
 	if use doc; then
-		dohtml -r docs/*
+		dohtml -r docs/
 	fi
 }
