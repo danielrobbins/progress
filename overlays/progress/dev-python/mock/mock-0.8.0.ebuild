@@ -4,7 +4,6 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
@@ -29,10 +28,6 @@ src_install() {
 	distutils_src_install
 
 	if use doc; then
-		pushd html > /dev/null
-		rm -f objects.inv output.txt
-		insinto /usr/share/doc/${PF}/html
-		doins -r [a-z]* _static
-		popd > /dev/null
+		dohtml -r html/
 	fi
 }
