@@ -44,6 +44,16 @@ src_prepare() {
 	# Fix off-by-one in xsltCompilePatternInternal, bug #402861
 	epatch "${FILESDIR}/${P}-pattern-out-of-bounds-read.patch"
 
+	# Namespace nodes require special treatment, bug #433603
+	epatch "${FILESDIR}/${P}-node-type-"{1,2,3}.patch
+
+	# Use-after-free errors, bug #433603
+	epatch "${FILESDIR}/${P}-pattern-compile-crash.patch"
+	epatch "${FILESDIR}/${P}-generate-id-crash.patch"
+
+	# Build fix for freebsd, bug #420335
+	epatch "${FILESDIR}/${P}-posix-comparison.patch"
+
 	eautoreconf
 	epunt_cxx
 }
