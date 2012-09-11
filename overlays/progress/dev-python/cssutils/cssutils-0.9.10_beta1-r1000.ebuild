@@ -4,15 +4,16 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
+# https://bitbucket.org/cthedot/cssutils/issue/20
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython 3.3"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
 
-MY_P="${PN}-${PV/_alpha/a}"
+MY_P="${PN}-${PV/_beta/b}"
 
 DESCRIPTION="A CSS Cascading Style Sheets library for Python"
-HOMEPAGE="https://bitbucket.org/cthedot/cssutils http://code.google.com/p/cssutils http://pypi.python.org/pypi/cssutils"
+HOMEPAGE="https://bitbucket.org/cthedot/cssutils http://pypi.python.org/pypi/cssutils"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${MY_P}.zip"
 
 LICENSE="LGPL-3"
@@ -32,10 +33,8 @@ PYTHON_MODULES="cssutils encutils"
 src_prepare() {
 	distutils_src_prepare
 
-	# Disable failing tests.
-	# https://bitbucket.org/cthedot/cssutils/issue/8
+	# Disable failing test.
 	# https://bitbucket.org/cthedot/cssutils/issue/10
-	sed -e "s/test_cssText2/_&/" -i src/tests/test_cssvariablesdeclaration.py
 	sed -e "s/test_getMetaInfo/_&/" -i src/tests/test_encutils/__init__.py
 }
 
