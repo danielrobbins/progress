@@ -4,12 +4,14 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
+# https://github.com/nose-devs/nose/issues/538
+# https://github.com/nose-devs/nose/issues/548
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython 2.7 3.2 3.3"
 
 inherit distutils eutils
 
 DESCRIPTION="nose extends unittest to make testing easier"
-HOMEPAGE="http://pypi.python.org/pypi/nose http://readthedocs.org/docs/nose/ https://bitbucket.org/jpellerin/nose/ http://code.google.com/p/python-nose/"
+HOMEPAGE="http://pypi.python.org/pypi/nose http://readthedocs.org/docs/nose/ https://github.com/nose-devs/nose"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="LGPL-2.1"
@@ -44,6 +46,9 @@ src_prepare() {
 
 	# Disable versioning of nosetests script to avoid collision with versioning performed by python_merge_intermediate_installation_images().
 	sed -e "/'nosetests%s = nose:run_exit' % py_vers_tag,/d" -i setup.py || die "sed failed"
+
+	# https://github.com/nose-devs/nose/issues/549
+	sed -e "s/__versioninfo__ = (1, 1, 3)/__versioninfo__ = (1, 2, 0)/" -i nose/__init__.py
 }
 
 src_compile() {
@@ -67,11 +72,11 @@ src_compile() {
 src_test() {
 	testing() {
 		if [[ "$(python_get_version -l --major)" == "3" ]]; then
-			rm -fr build || return 1
-			python_execute "$(PYTHON)" setup.py build_tests || return 1
+			rm -fr build || return
+			python_execute "$(PYTHON)" setup.py build_tests || return
 		fi
 
-		python_execute "$(PYTHON)" setup.py egg_info || return 1
+		python_execute "$(PYTHON)" setup.py egg_info || return
 		python_execute "$(PYTHON)" selftest.py -v
 	}
 	python_execute_function testing
@@ -83,10 +88,7 @@ src_install() {
 	python_generate_wrapper_scripts -E -f -q "${ED}usr/bin/nosetests"
 
 	if use doc; then
-		pushd doc/.build/html > /dev/null
-		insinto /usr/share/doc/${PF}/html
-		doins -r [a-z]* _static
-		popd > /dev/null
+		dohtml -r doc/.build/html/
 	fi
 
 	if use examples; then
