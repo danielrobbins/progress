@@ -46,9 +46,6 @@ src_prepare() {
 
 	# Disable versioning of nosetests script to avoid collision with versioning performed by python_merge_intermediate_installation_images().
 	sed -e "/'nosetests%s = nose:run_exit' % py_vers_tag,/d" -i setup.py || die "sed failed"
-
-	# https://github.com/nose-devs/nose/issues/549
-	sed -e "s/__versioninfo__ = (1, 1, 3)/__versioninfo__ = (1, 2, 0)/" -i nose/__init__.py
 }
 
 src_compile() {
