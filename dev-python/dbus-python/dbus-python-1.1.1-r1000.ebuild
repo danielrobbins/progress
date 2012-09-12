@@ -38,7 +38,7 @@ src_prepare() {
 
 src_configure() {
 	configuration() {
-		econf \
+		py_cv_mod_docutils___version__="yes" econf \
 			--docdir="${EPREFIX}/usr/share/doc/${PF}" \
 			--disable-html-docs \
 			$(use_enable doc api-docs)
