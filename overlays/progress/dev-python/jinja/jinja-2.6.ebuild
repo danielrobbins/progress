@@ -4,9 +4,10 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 DISTUTILS_SRC_TEST="setup.py"
 
-inherit distutils
+inherit distutils eutils
 
 MY_PN="Jinja2"
 MY_P="${MY_PN}-${PV}"
@@ -32,6 +33,11 @@ DOCS="CHANGES"
 PYTHON_MODULES="jinja2"
 
 DISTUTILS_GLOBAL_OPTIONS=("*-cpython --with-debugsupport")
+
+src_prepare() {
+	distutils_src_prepare
+	epatch "${FILESDIR}/${P}-python-3.3.patch"
+}
 
 src_compile(){
 	distutils_src_compile
