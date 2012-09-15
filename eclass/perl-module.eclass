@@ -49,8 +49,6 @@ case "${PERL_EXPORT_PHASE_FUNCTIONS:-yes}" in
 		;;
 esac
 
-DESCRIPTION="Based on the $ECLASS eclass"
-
 LICENSE="${LICENSE:-|| ( Artistic GPL-1 GPL-2 GPL-3 )}"
 
 if [[ -n ${MY_PN} || -n ${MY_PV} || -n ${MODULE_VERSION} ]] ; then
