@@ -1669,10 +1669,14 @@ python_execute_function() {
 			}
 		elif [[ "${EBUILD_PHASE}" == "test" ]]; then
 			python_default_function() {
+				local options=()
+				if has "${EAPI}" 2 3 4 4-python; then
+					options+=("-j1")
+				fi
 				if make -n check &> /dev/null; then
-					python_execute ${MAKE:-make} ${MAKEOPTS} ${EXTRA_EMAKE} -j1 check "$@"
+					python_execute ${MAKE:-make} ${MAKEOPTS} ${EXTRA_EMAKE} "${options[@]}" check "$@"
 				elif make -n test &> /dev/null; then
-					python_execute ${MAKE:-make} ${MAKEOPTS} ${EXTRA_EMAKE} -j1 test "$@"
+					python_execute ${MAKE:-make} ${MAKEOPTS} ${EXTRA_EMAKE} "${options[@]}" test "$@"
 				fi
 			}
 		elif [[ "${EBUILD_PHASE}" == "install" ]]; then
