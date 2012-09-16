@@ -11,13 +11,13 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="3654c711019a"
+	EHG_REVISION="bc5c5b79b7e1"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
 fi
 
-PATCHSET_REVISION="20120729"
+PATCHSET_REVISION="20120916"
 
 DESCRIPTION="Python is an interpreted, interactive, object-oriented programming language."
 HOMEPAGE="http://www.python.org/"
@@ -51,6 +51,7 @@ RDEPEND="app-arch/bzip2
 			tk? (
 				>=dev-lang/tk-8.0
 				dev-tcltk/blt
+				dev-tcltk/tix
 			)
 			xml? ( >=dev-libs/expat-2.1 )
 		)"
@@ -104,6 +105,12 @@ src_prepare() {
 				-e "s/\(#define PY_VERSION[[:space:]]\+\"\)[^\"]\+\(\"\)/\1${version_string}\2/" \
 				-i Include/patchlevel.h || die "sed failed"
 		fi
+	fi
+
+	if [[ "${PV}" == *_pre* ]]; then
+		# http://bugs.python.org/issue15923
+		touch Include/Python-ast.h
+		touch Python/Python-ast.c
 	fi
 
 	local excluded_patches
@@ -247,7 +254,6 @@ src_test() {
 		mv Lib/test/test_${test}.py "${T}"
 	done
 
-	# Rerun failed tests in verbose mode (regrtest -w).
 	emake test EXTRATESTOPTS="-w" CPPFLAGS="" CFLAGS="" LDFLAGS="" < /dev/tty
 	local result="$?"
 
