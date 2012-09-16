@@ -11,7 +11,7 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/jython"
-	EHG_REVISION="546e63253a0e"
+	EHG_REVISION="ae51dbe75e27"
 fi
 
 PATCHSET_REVISION="20120610"
@@ -29,7 +29,7 @@ IUSE="+readline +ssl test +threads +xml"
 CDEPEND="dev-java/ant-core:0
 	dev-java/antlr:3
 	dev-java/asm:4
-	dev-java/guava:12
+	dev-java/guava:13
 	dev-java/jffi:1.2
 	dev-java/jline:0
 	dev-java/jnr-constants:0
@@ -65,7 +65,7 @@ java_prepare() {
 	java-pkg_jar-from --into extlibs asm-4 asm.jar asm-4.0.jar
 	java-pkg_jar-from --into extlibs asm-4 asm-commons.jar asm-commons-4.0.jar
 	java-pkg_jar-from --into extlibs asm-4 asm-util.jar asm-util-4.0.jar
-	java-pkg_jar-from --into extlibs guava-12 guava.jar guava-11.0.2.jar
+	java-pkg_jar-from --into extlibs guava-13 guava.jar guava-11.0.2.jar
 	java-pkg_jar-from --into extlibs jffi-1.2 jffi.jar jffi-1.2.2-SNAPSHOT.jar
 	java-pkg_jar-from --into extlibs jline jline.jar jline-0.9.95-SNAPSHOT.jar
 	java-pkg_jar-from --into extlibs jnr-constants jnr-constants.jar jnr-constants-0.8.3-SNAPSHOT.jar
