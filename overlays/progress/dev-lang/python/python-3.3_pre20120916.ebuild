@@ -11,13 +11,13 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="34d5ec8a1019"
+	EHG_REVISION="1704deb7e6d7"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
 fi
 
-PATCHSET_REVISION="20120729"
+PATCHSET_REVISION="20120916"
 
 DESCRIPTION="Python is an interpreted, interactive, object-oriented programming language."
 HOMEPAGE="http://www.python.org/"
@@ -52,6 +52,7 @@ RDEPEND="app-arch/bzip2
 			tk? (
 				>=dev-lang/tk-8.0
 				dev-tcltk/blt
+				dev-tcltk/tix
 			)
 			xml? ( >=dev-libs/expat-2.1 )
 		)"
@@ -101,6 +102,12 @@ src_prepare() {
 		fi
 	fi
 
+	if [[ "${PV}" == *_pre* ]]; then
+		# http://bugs.python.org/issue15923
+		touch Include/Python-ast.h
+		touch Python/Python-ast.c
+	fi
+
 	local patchset_dir
 	if [[ "${PV}" == *_pre* ]]; then
 		patchset_dir="${FILESDIR}/${SLOT}-${PATCHSET_REVISION}"
@@ -122,6 +129,8 @@ src_prepare() {
 		Modules/Setup.dist \
 		Modules/getpath.c \
 		setup.py || die "sed failed to replace @@GENTOO_LIBDIR@@"
+
+	sed -e "s/test_stty_match/_&/" -i Lib/test/test_shutil.py
 
 	# Disable ABI flags.
 	sed -e "s/ABIFLAGS=\"\${ABIFLAGS}.*\"/:/" -i configure.ac || die "sed failed"
@@ -230,9 +239,7 @@ src_test() {
 		mv Lib/test/test_${test}.py "${T}"
 	done
 
-	# Rerun failed tests in verbose mode (regrtest -w).
-	# emake test EXTRATESTOPTS="-w" CPPFLAGS="" CFLAGS="" LDFLAGS="" < /dev/tty
-	CPPFLAGS="" CFLAGS="" LDFLAGS="" LD_LIBRARY_PATH="$(pwd)" _PYTHONNOSITEPACKAGES="1" ./python -Wd -E -bb Lib/test/regrtest.py -w < /dev/tty
+	emake test EXTRATESTOPTS="-j1 -ucpu,decimal,subprocess" CPPFLAGS="" CFLAGS="" LDFLAGS="" < /dev/tty
 	local result="$?"
 
 	for test in ${skipped_tests}; do
