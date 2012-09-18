@@ -3,8 +3,10 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="4-python"
+PYTHON_DEPEND="<<[xml]>>"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
+# http://sourceforge.net/tracker/index.php?func=detail&aid=3555164&group_id=38414&atid=422030
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.3 *-jython"
 
 inherit distutils
 
