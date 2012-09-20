@@ -52,6 +52,7 @@ src_configure() {
 	# because people often don't keep matching host/target
 	# file versions #362941
 	if tc-is-cross-compiler && ! ROOT=/ has_version ~${CATEGORY}/${P} ; then
+		tc-export_build_env BUILD_C{C,XX}
 		ac_cv_header_zlib_h=no \
 		ac_cv_lib_z_gzopen=no \
 		CHOST=${CBUILD} \
@@ -59,6 +60,8 @@ src_configure() {
 		CXXFLAGS=${BUILD_CXXFLAGS} \
 		CPPFLAGS=${BUILD_CPPFLAGS} \
 		LDFLAGS="${BUILD_LDFLAGS} -static" \
+		CC=${BUILD_CC} \
+		CXX=${BUILD_CXX} \
 		do_configure --disable-shared
 	fi
 
