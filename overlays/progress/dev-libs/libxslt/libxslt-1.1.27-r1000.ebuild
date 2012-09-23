@@ -30,29 +30,19 @@ pkg_setup() {
 }
 
 src_prepare() {
-	epatch "${FILESDIR}"/libxslt.m4-${P}.patch \
-		"${FILESDIR}"/${PN}-1.1.23-parallel-install.patch \
-		"${FILESDIR}"/${P}-undefined.patch \
-		"${FILESDIR}"/${P}-disable_static_modules.patch
+	# https://bugzilla.gnome.org/show_bug.cgi?id=684621
+	epatch "${FILESDIR}"/libxslt.m4-${PN}-1.1.26.patch
+
+	epatch "${FILESDIR}"/${PN}-1.1.26-disable_static_modules.patch
+
+	# Use python-config, not python2.7-config
+	epatch "${FILESDIR}/${PN}-1.1.27-python-config.patch"
+
+	# bug #435900, https://bugzilla.gnome.org/show_bug.cgi?id=684637
+	epatch "${FILESDIR}/${P}-python-includes.patch"
 
 	# Python bindings are built/tested/installed manually.
-	sed -e "s/@PYTHON_SUBDIR@//" -i Makefile.am || die "sed failed"
-
-	# Fix generate-id() to not expose object addresses, bug #358615
-	epatch "${FILESDIR}/${P}-id-generation.patch"
-
-	# Fix off-by-one in xsltCompilePatternInternal, bug #402861
-	epatch "${FILESDIR}/${P}-pattern-out-of-bounds-read.patch"
-
-	# Namespace nodes require special treatment, bug #433603
-	epatch "${FILESDIR}/${P}-node-type-"{1,2,3}.patch
-
-	# Use-after-free errors, bug #433603
-	epatch "${FILESDIR}/${P}-pattern-compile-crash.patch"
-	epatch "${FILESDIR}/${P}-generate-id-crash.patch"
-
-	# Build fix for freebsd, bug #420335
-	epatch "${FILESDIR}/${P}-posix-comparison.patch"
+	sed -e 's/$(PYTHON_SUBDIR)//' -i Makefile.am || die "sed failed"
 
 	eautoreconf
 	epunt_cxx
