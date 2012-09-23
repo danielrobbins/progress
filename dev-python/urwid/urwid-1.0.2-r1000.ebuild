@@ -6,7 +6,7 @@ EAPI="4-python"
 PYTHON_DEPEND="<<[ncurses]>>"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.1"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.1 *-pypy-*"
 DISTUTILS_SRC_TEST="setup.py"
 
 inherit distutils
@@ -24,6 +24,16 @@ DEPEND="$(python_abi_depend dev-python/setuptools)"
 RDEPEND=""
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
+
+src_prepare() {
+	distutils_src_prepare
+
+	# urwid.str_util extension module is incompatible with PyPy.
+	sed \
+		-e "/import os/a import platform" \
+		-e "/'ext_modules':/s:\[Extension('urwid.str_util', sources=\['source/str_util.c'\])\]:& if not (hasattr(platform, \"python_implementation\") and platform.python_implementation() == \"PyPy\") else []:" \
+		-i setup.py
+}
 
 src_install() {
 	distutils_src_install
