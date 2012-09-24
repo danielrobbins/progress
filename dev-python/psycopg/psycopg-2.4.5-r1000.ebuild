@@ -58,7 +58,7 @@ src_compile() {
 	if use doc; then
 		einfo "Generation of documentation"
 		pushd doc > /dev/null
-		emake -j1 html text
+		PYTHONPATH="../$(ls -d ../build-$(PYTHON -f --ABI)/lib*)" emake -j1 html text
 		popd > /dev/null
 	fi
 }
