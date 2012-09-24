@@ -44,7 +44,7 @@ src_compile() {
 		einfo "Generation of documentation"
 		pushd docs > /dev/null
 		mkdir _themes
-		emake html
+		PYTHONPATH="../build-$(PYTHON -f --ABI)/lib" emake html
 		popd > /dev/null
 	fi
 }
