@@ -18,7 +18,7 @@ SLOT="0"
 KEYWORDS=""
 IUSE=""
 
-DEPEND="$(python_abi_depend ">=dev-python/pep8-1.3")
+DEPEND="$(python_abi_depend ">=dev-python/pep8-1.3.2")
 	$(python_abi_depend dev-python/setuptools)"
 RDEPEND="${DEPEND}"
 
@@ -26,7 +26,12 @@ PYTHON_MODULES="${PN}.py"
 
 src_test() {
 	testing() {
-		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" test/test_${PN}.py
+		if [[ "$(python_get_implementation)" == "Jython" ]]; then
+			# http://bugs.jython.org/issue1944
+			python_execute LC_ALL="en_US.UTF-8" PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" test/test_${PN}.py
+		else
+			python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" test/test_${PN}.py
+		fi
 	}
 	python_execute_function testing
 }
