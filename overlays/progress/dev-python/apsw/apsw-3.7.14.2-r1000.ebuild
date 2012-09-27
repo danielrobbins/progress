@@ -7,6 +7,8 @@ PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython"
 # http://code.google.com/p/apsw/issues/detail?id=129
 PYTHON_TESTS_RESTRICTED_ABIS="*-pypy-*"
+# http://code.google.com/p/apsw/issues/detail?id=132
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.3"
 
 inherit distutils eutils versionator
 
