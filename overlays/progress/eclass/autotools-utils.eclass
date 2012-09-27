@@ -88,7 +88,7 @@
 # Keep variable names synced with cmake-utils and the other way around!
 
 case ${EAPI:-0} in
-	2|3|4|4-python) ;;
+	2|3|4|4-python|5|5-progress) ;;
 	*) die "EAPI=${EAPI} is not supported" ;;
 esac
 

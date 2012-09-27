@@ -10,7 +10,7 @@
 # dealing with packages using Qt4 libraries. Requires EAPI=2 or later.
 
 case ${EAPI} in
-	2|3|4|4-python)	: ;;
+	2|3|4|4-python|5|5-progress)	: ;;
 	*)	die "EAPI=${EAPI} is not supported by ${ECLASS} eclass." ;;
 esac
 
