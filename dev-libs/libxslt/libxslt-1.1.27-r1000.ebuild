@@ -56,7 +56,6 @@ src_configure() {
 	fi
 
 	econf \
-		--disable-dependency-tracking \
 		--with-html-dir=/usr/share/doc/${PF} \
 		--with-html-subdir=html \
 		$(use_with crypt crypto) \
@@ -101,12 +100,10 @@ src_install() {
 				install
 		}
 		python_execute_function -s --source-dir python installation
-
 		python_clean_installation_image
-	fi
 
-	mv -vf "${ED}"/usr/share/doc/${PN}-python-${PV} \
-		"${ED}"/usr/share/doc/${PF}/python
+		mv -fv "${ED}usr/share/doc/${PN}-python-${PV}" "${ED}usr/share/doc/${PF}/python"
+	fi
 
 	if ! use static-libs; then
 		# Remove useless .la files
