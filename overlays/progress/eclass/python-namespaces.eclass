@@ -12,7 +12,7 @@ if [[ -z "${_PYTHON_ECLASS_INHERITED}" ]]; then
 	inherit python
 fi
 
-if ! has "${EAPI:-0}" 4 4-python; then
+if ! has "${EAPI:-0}" 4 4-python 5 5-progress; then
 	die "EAPI=\"${EAPI}\" not supported by python-namespaces.eclass"
 fi
 
@@ -53,7 +53,7 @@ _python-namespaces_set_metadata() {
 	SLOT="0"
 
 	if [[ "${_PYTHON_NAMESPACES_COUNT}" -ge 2 ]]; then
-		if has "${EAPI:-0}" 4; then
+		if has "${EAPI:-0}" 4 5; then
 			IUSE="${PYTHON_NAMESPACES//./-}"
 			REQUIRED_USE="|| ( ${_PYTHON_NAMESPACES//./-} )"
 
@@ -95,7 +95,7 @@ _python-namespaces_get_enabled_namespaces() {
 
 	if [[ "${_PYTHON_NAMESPACES_COUNT}" -ge 2 ]]; then
 		for namespace in ${_PYTHON_NAMESPACES}; do
-			if has "${EAPI:-0}" 4; then
+			if has "${EAPI:-0}" 4 5; then
 				if use ${namespace//./-}; then
 					echo ${namespace}
 				fi
