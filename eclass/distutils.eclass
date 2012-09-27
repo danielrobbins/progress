@@ -65,7 +65,7 @@ fi
 if [[ -z "${DISTUTILS_DISABLE_TEST_DEPENDENCY}" ]]; then
 	if [[ "${DISTUTILS_SRC_TEST}" == "nosetests" ]]; then
 		IUSE="test"
-		if has "${EAPI:-0}" 2 3 4; then
+		if has "${EAPI:-0}" 2 3 4 5; then
 			DEPEND+="${DEPEND:+ }test? ( dev-python/nose )"
 		else
 			if [[ -n "${PYTHON_TESTS_RESTRICTED_ABIS}" ]]; then
@@ -76,7 +76,7 @@ if [[ -z "${DISTUTILS_DISABLE_TEST_DEPENDENCY}" ]]; then
 		fi
 	elif [[ "${DISTUTILS_SRC_TEST}" == "py.test" ]]; then
 		IUSE="test"
-		if has "${EAPI:-0}" 2 3 4; then
+		if has "${EAPI:-0}" 2 3 4 5; then
 			DEPEND+="${DEPEND:+ }test? ( dev-python/pytest )"
 		else
 			if [[ -n "${PYTHON_TESTS_RESTRICTED_ABIS}" ]]; then
@@ -88,7 +88,7 @@ if [[ -z "${DISTUTILS_DISABLE_TEST_DEPENDENCY}" ]]; then
 	# trial requires an argument, which is usually equal to "${PN}".
 	elif [[ "${DISTUTILS_SRC_TEST}" =~ ^trial(\ .*)?$ ]]; then
 		IUSE="test"
-		if has "${EAPI:-0}" 2 3 4; then
+		if has "${EAPI:-0}" 2 3 4 5; then
 			DEPEND+="${DEPEND:+ }test? ( dev-python/twisted )"
 		else
 			if [[ -n "${PYTHON_TESTS_RESTRICTED_ABIS}" ]]; then
