@@ -36,12 +36,16 @@ src_prepare() {
 	# Verbose build.
 	sed -e 's/2\?>>[[:space:]]*\$(LOGFILE).*//' -i src/Makefile.in || die "sed failed"
 
-	# Avoid version suffix in cvisualmodule.so.
+	# Avoid version suffix in cvisual.so.
 	sed -e "s/-module/-avoid-version -module/" -i src/Makefile.in || die "sed failed"
 
 	# Fix compatibility with Python 3.
 	# https://github.com/vpython/visual/issues/2
 	sed -e '/initcvisual;/a\\t\tPyInit_cvisual;' -i src/linux-symbols.map || die "sed failed"
+
+	# Fix compatibility with Python 3.3.
+	# https://github.com/vpython/visual/issues/6
+	sed -e "s/cvisualmodule.\(la\|so\)/cvisual.\1/" -i src/Makefile.in || die "sed failed"
 
 	epatch "${FILESDIR}/${P}-boost-1.50.patch"
 
