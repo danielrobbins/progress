@@ -14,7 +14,7 @@ MY_PV="${PV/_p/p}"
 MY_P="${PN}-${MY_PV}"
 
 DESCRIPTION="BuildBot build automation system"
-HOMEPAGE="http://trac.buildbot.net/ http://code.google.com/p/buildbot/ http://pypi.python.org/pypi/buildbot"
+HOMEPAGE="http://trac.buildbot.net/ https://github.com/buildbot/buildbot http://pypi.python.org/pypi/buildbot"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${MY_P}.tar.gz"
 
 LICENSE="GPL-2"
@@ -23,12 +23,13 @@ KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~s390 ~sh sparc x86 ~x86-int
 IUSE="doc examples irc mail manhole test"
 
 RDEPEND="$(python_abi_depend ">=dev-python/jinja-2.1")
+	dev-python/python-dateutil
 	$(python_abi_depend dev-python/sqlalchemy)
 	|| (
 		$(python_abi_depend "=dev-python/sqlalchemy-migrate-0.7*")
 		$(python_abi_depend "=dev-python/sqlalchemy-migrate-0.6*")
 	)
-	$(python_abi_depend ">=dev-python/twisted-8.0.0")
+	$(python_abi_depend dev-python/twisted)
 	$(python_abi_depend dev-python/twisted-web)
 	$(python_abi_depend virtual/python-json[external])
 	$(python_abi_depend virtual/python-sqlite[external])
@@ -54,7 +55,10 @@ pkg_setup() {
 
 src_prepare() {
 	distutils_src_prepare
-	sed -e "s/sqlalchemy-migrate ==0.6.0, ==0.6.1, ==0.7.0, ==0.7.1, ==0.7.2/sqlalchemy-migrate ==0.6, ==0.7/" -i setup.py
+	sed \
+		-e "s/sqlalchemy-migrate ==0.6.1, ==0.7.0, ==0.7.1, ==0.7.2/sqlalchemy-migrate ==0.6, ==0.7/" \
+		-e "s/python-dateutil==1.5/python-dateutil/" \
+		-i setup.py
 }
 
 src_compile() {
