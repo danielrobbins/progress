@@ -15,7 +15,7 @@
 #  * scrollkeeper (old Gnome help system) management
 
 case "${EAPI:-0}" in
-	0|1|2|3|4|4-python) ;;
+	0|1|2|3|4|4-python|5|5-progress) ;;
 	*) die "EAPI=${EAPI} is not supported" ;;
 esac
 

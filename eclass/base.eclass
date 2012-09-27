@@ -17,7 +17,7 @@ inherit eutils
 
 BASE_EXPF="src_unpack src_compile src_install"
 case "${EAPI:-0}" in
-	2|3|4|4-python) BASE_EXPF+=" src_prepare src_configure" ;;
+	2|3|4|4-python|5|5-progress) BASE_EXPF+=" src_prepare src_configure" ;;
 	*) ;;
 esac
 

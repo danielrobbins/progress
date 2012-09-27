@@ -17,7 +17,7 @@
 inherit base eutils multilib toolchain-funcs multiprocessing
 
 case ${EAPI:-0} in
-	4-python|4|3) EXPORT_FUNCTIONS src_configure src_compile src_install ;;
+	3|4|4-python|5|5-progress) EXPORT_FUNCTIONS src_configure src_compile src_install ;;
 	*) die "EAPI=${EAPI} is not supported" ;;
 esac
 
