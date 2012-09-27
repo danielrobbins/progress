@@ -26,7 +26,7 @@ _PYTHON_TOOLCHAIN_FUNCS_CC="${_PYTHON_INHERITED_ECLASSES_FUNCTIONS_OUTPUTS[3]}"
 _PYTHON_TOOLCHAIN_FUNCS_CXX="${_PYTHON_INHERITED_ECLASSES_FUNCTIONS_OUTPUTS[4]}"
 unset _PYTHON_INHERITED_ECLASSES_FUNCTIONS_OUTPUTS
 
-if ! has "${EAPI:-0}" 0 1 2 3 4 4-python; then
+if ! has "${EAPI:-0}" 0 1 2 3 4 4-python 5 5-progress; then
 	die "API of python.eclass in EAPI=\"${EAPI}\" not established"
 fi
 
@@ -42,10 +42,10 @@ case "${EAPI:-0}" in
 	0|1|2|3)
 		_PYTHON_ECLASS_SUPPORTED_APIS=(0)
 		;;
-	4)
+	4|5)
 		_PYTHON_ECLASS_SUPPORTED_APIS=(0 1)
 		;;
-	4-python)
+	4-python|5-progress)
 		_PYTHON_ECLASS_SUPPORTED_APIS=(0)
 		;;
 esac
@@ -140,7 +140,7 @@ _python_implementation() {
 }
 
 _python_package_supporting_installation_for_multiple_python_abis() {
-	if has "${EAPI:-0}" 0 1 2 3 || { has "${EAPI:-0}" 4 && has "${PYTHON_ECLASS_API}" 0; }; then
+	if has "${EAPI:-0}" 0 1 2 3 || { has "${EAPI:-0}" 4 5 && has "${PYTHON_ECLASS_API}" 0; }; then
 		if [[ -n "${PYTHON_MULTIPLE_ABIS}" || -n "${SUPPORT_PYTHON_ABIS}" ]]; then
 			return 0
 		else
@@ -167,7 +167,7 @@ _python_set_IUSE() {
 		fi
 	done
 
-	if ! has "${EAPI:-0}" 4; then
+	if ! has "${EAPI:-0}" 4 5; then
 		IUSE="${USE_flags}"
 	fi
 }
@@ -181,12 +181,25 @@ unset -f _python_set_IUSE
 # @DESCRIPTION:
 # Specification of build time and run time dependency on Python implementational packages.
 #
-# PYTHON_DEPEND in EAPI >=4 is a dependency string with <<>> markers.
+# Old API:
+#   EAPI="0"
+#   EAPI="1"
+#   EAPI="2"
+#   EAPI="3"
+#   EAPI="4" + PYTHON_ECLASS_API="0"
+#   EAPI="5" + PYTHON_ECLASS_API="0"
+# New API:
+#   EAPI="4" + PYTHON_ECLASS_API="1"
+#   EAPI="4-python"
+#   EAPI="5" + PYTHON_ECLASS_API="1"
+#   EAPI="5-progress"
+#
+# PYTHON_DEPEND in new API is a dependency string with <<>> markers.
 # <<>> markers indicate atoms of Python implementational packages.
 # <<>> markers can contain USE dependencies.
 # <<>> markers must contain versions ranges in ebuilds of packages not supporting installation for multiple Python ABIs.
 #
-# Syntax in EAPI <=3:
+# Syntax in old API:
 #   PYTHON_DEPEND:             [[!]USE_flag? ]<versions_range>
 #
 # Syntax of versions range:
@@ -200,12 +213,25 @@ unset -f _python_set_IUSE
 # @DESCRIPTION:
 # Specification of build time dependency on Python implementational packages.
 #
-# PYTHON_BDEPEND in EAPI >=4 is a dependency string with <<>> markers.
+# Old API:
+#   EAPI="0"
+#   EAPI="1"
+#   EAPI="2"
+#   EAPI="3"
+#   EAPI="4" + PYTHON_ECLASS_API="0"
+#   EAPI="5" + PYTHON_ECLASS_API="0"
+# New API:
+#   EAPI="4" + PYTHON_ECLASS_API="1"
+#   EAPI="4-python"
+#   EAPI="5" + PYTHON_ECLASS_API="1"
+#   EAPI="5-progress"
+#
+# PYTHON_BDEPEND in new API is a dependency string with <<>> markers.
 # <<>> markers indicate atoms of Python implementational packages.
 # <<>> markers can contain USE dependencies.
 # <<>> markers must contain versions ranges in ebuilds of packages not supporting installation for multiple Python ABIs.
 #
-# Syntax in EAPI <=3:
+# Syntax in old API:
 #   PYTHON_BDEPEND:            [[!]USE_flag? ]<versions_range>
 #
 # Syntax of versions range:
@@ -368,7 +394,7 @@ _python_parse_dependencies_in_new_EAPIs() {
 	input_variable="$1"
 	output_variables="$2"
 
-	if has "${EAPI:-0}" 4 && _python_package_supporting_installation_for_multiple_python_abis; then
+	if has "${EAPI:-0}" 4 5 && _python_package_supporting_installation_for_multiple_python_abis; then
 		cpython_abis=(${_CPYTHON2_GLOBALLY_SUPPORTED_ABIS[@]} ${_CPYTHON3_GLOBALLY_SUPPORTED_ABIS[@]})
 		for ((i = $((${#cpython_abis[@]} - 1)); i >= 0; i--)); do
 			cpython_reversed_abis+=("${cpython_abis[${i}]}")
@@ -435,7 +461,7 @@ _python_parse_dependencies_in_new_EAPIs() {
 				if [[ -n "${versions_range}" ]]; then
 					die "Invalid syntax of ${input_variable}: Versions range cannot be used in ebuilds of packages supporting installation for multiple Python ABIs"
 				fi
-				if has "${EAPI:-0}" 4; then
+				if has "${EAPI:-0}" 4 5; then
 					cpython_atoms=()
 					for PYTHON_ABI in "${cpython_reversed_abis[@]}"; do
 						if ! _python_check_python_abi_matching --patterns-list "${PYTHON_ABI}" "${PYTHON_RESTRICTED_ABIS}"; then
@@ -455,7 +481,7 @@ _python_parse_dependencies_in_new_EAPIs() {
 					fi
 				fi
 				for PYTHON_ABI in "${_PYTHON_LOCALLY_SUPPORTED_ABIS[@]}"; do
-					if has "${EAPI:-0}" 4; then
+					if has "${EAPI:-0}" 4 5; then
 						if [[ -n "${USE_dependencies}" ]]; then
 							_PYTHON_USE_FLAGS_CHECKS_CODE+="${_PYTHON_USE_FLAGS_CHECKS_CODE:+ }if [[ \"\${PYTHON_ABI}\" == \"${PYTHON_ABI}\" ]] && ! has_version \"\$(python_get_implementational_package)$(_get_matched_USE_dependencies)\"; then die \"\$(python_get_implementational_package)$(_get_matched_USE_dependencies) not installed in ROOT=\\\"\${ROOT}\\\"\"; fi;"
 						fi
@@ -469,7 +495,7 @@ _python_parse_dependencies_in_new_EAPIs() {
 						fi
 					fi
 				done
-				if ! has "${EAPI:-0}" 4; then
+				if ! has "${EAPI:-0}" 4 5; then
 					if [[ "${#_PYTHON_LOCALLY_SUPPORTED_ABIS[@]}" -gt 1 ]]; then
 						required_USE_flags+="${required_USE_flags:+ }|| ( ${_PYTHON_LOCALLY_SUPPORTED_ABIS[@]/#/python_abis_} )"
 					else
@@ -501,7 +527,7 @@ _python_parse_dependencies_in_new_EAPIs() {
 			fi
 			_PYTHON_USE_FLAGS_CHECKS_CODE+="${_PYTHON_USE_FLAGS_CHECKS_CODE:+ }if use ${component%\?};"
 		elif [[ "${component}" == "||" ]]; then
-			if has "${EAPI:-0}" 4 || ! _python_package_supporting_installation_for_multiple_python_abis; then
+			if has "${EAPI:-0}" 4 5 || ! _python_package_supporting_installation_for_multiple_python_abis; then
 				die "Invalid syntax of ${input_variable}: Unrecognized component '${component}'"
 			fi
 			output_value+="${output_value:+ }${component}"
@@ -530,7 +556,7 @@ _python_parse_dependencies_in_new_EAPIs() {
 	done
 
 
-	if ! has "${EAPI:-0}" 4 && _python_package_supporting_installation_for_multiple_python_abis; then
+	if ! has "${EAPI:-0}" 4 5 && _python_package_supporting_installation_for_multiple_python_abis; then
 		REQUIRED_USE+="${REQUIRED_USE:+ }${required_USE_flags}"
 	fi
 
@@ -543,7 +569,7 @@ if _python_implementation; then
 	PDEPEND="app-admin/python-updater"
 fi
 
-if has "${EAPI:-0}" 0 1 2 3 || { has "${EAPI:-0}" 4 && has "${PYTHON_ECLASS_API}" 0; }; then
+if has "${EAPI:-0}" 0 1 2 3 || { has "${EAPI:-0}" 4 5 && has "${PYTHON_ECLASS_API}" 0; }; then
 	_PYTHON_ATOMS_FROM_PYTHON_DEPEND=()
 	_PYTHON_ATOMS_FROM_PYTHON_BDEPEND=()
 	if [[ -z "${PYTHON_DEPEND}" && -z "${PYTHON_BDEPEND}" ]]; then
@@ -568,7 +594,7 @@ else
 	if [[ -n "${PYTHON_BDEPEND}" ]]; then
 		_python_parse_dependencies_in_new_EAPIs PYTHON_BDEPEND "DEPEND"
 	fi
-	if ! has "${EAPI:-0}" 4 && _python_package_supporting_installation_for_multiple_python_abis; then
+	if ! has "${EAPI:-0}" 4 5 && _python_package_supporting_installation_for_multiple_python_abis; then
 		unset _PYTHON_DEPEND_CHECKS_CODE _PYTHON_USE_FLAGS_CHECKS_CODE
 	else
 		_PYTHON_DEPEND_CHECKS_CODE="${_PYTHON_DEPEND_CHECKS_CODE%;}"
@@ -584,6 +610,7 @@ unset -f _python_parse_versions_range _python_parse_dependencies_in_old_EAPIs _p
 #   EAPI="2"
 #   EAPI="3"
 #   EAPI="4" + PYTHON_ECLASS_API="0"
+#   EAPI="5" + PYTHON_ECLASS_API="0"
 
 # @ECLASS-VARIABLE: PYTHON_USE_WITH_OR
 # @DESCRIPTION:
@@ -593,6 +620,7 @@ unset -f _python_parse_versions_range _python_parse_dependencies_in_old_EAPIs _p
 #   EAPI="2"
 #   EAPI="3"
 #   EAPI="4" + PYTHON_ECLASS_API="0"
+#   EAPI="5" + PYTHON_ECLASS_API="0"
 
 # @ECLASS-VARIABLE: PYTHON_USE_WITH_OPT
 # @DESCRIPTION:
@@ -602,8 +630,9 @@ unset -f _python_parse_versions_range _python_parse_dependencies_in_old_EAPIs _p
 #   EAPI="2"
 #   EAPI="3"
 #   EAPI="4" + PYTHON_ECLASS_API="0"
+#   EAPI="5" + PYTHON_ECLASS_API="0"
 
-if has "${EAPI:-0}" 2 3 || { has "${EAPI:-0}" 4 && has "${PYTHON_ECLASS_API}" 0; }; then
+if has "${EAPI:-0}" 2 3 || { has "${EAPI:-0}" 4 5 && has "${PYTHON_ECLASS_API}" 0; }; then
 	if [[ -n "${PYTHON_USE_WITH}" || -n "${PYTHON_USE_WITH_OR}" ]]; then
 		_PYTHON_USE_WITH_ATOMS_ARRAY_FROM_PYTHON_DEPEND=()
 		_PYTHON_USE_WITH_ATOMS_ARRAY_FROM_PYTHON_BDEPEND=()
@@ -665,7 +694,7 @@ else
 	fi
 fi
 
-if has "${EAPI:-0}" 0 1 2 3 || { has "${EAPI:-0}" 4 && has "${PYTHON_ECLASS_API}" 0; }; then
+if has "${EAPI:-0}" 0 1 2 3 || { has "${EAPI:-0}" 4 5 && has "${PYTHON_ECLASS_API}" 0; }; then
 	unset _PYTHON_ATOMS_FROM_PYTHON_DEPEND _PYTHON_ATOMS_FROM_PYTHON_BDEPEND
 fi
 
@@ -679,7 +708,7 @@ fi
 python_abi_depend() {
 	local atom atom_index atoms=() exclude_ABIs="0" excluded_ABIs include_ABIs="0" included_ABIs PYTHON_ABI USE_dependencies USE_flag USE_flag_index USE_flags=()
 
-	if has "${EAPI:-0}" 0 1 2 3 4; then
+	if has "${EAPI:-0}" 0 1 2 3 4 5; then
 		die "${FUNCNAME}() cannot be used in this EAPI"
 	fi
 
@@ -817,10 +846,10 @@ python_abi_depend() {
 # ================================================================================================
 
 _python_check_run-time_dependency() {
-	if has "${EAPI:-0}" 0 1 2 3 || { has "${EAPI:-0}" 4 && has "${PYTHON_ECLASS_API}" 0; }; then
+	if has "${EAPI:-0}" 0 1 2 3 || { has "${EAPI:-0}" 4 5 && has "${PYTHON_ECLASS_API}" 0; }; then
 		return 0
 	else
-		if ! has "${EAPI:-0}" 4 && _python_package_supporting_installation_for_multiple_python_abis; then
+		if ! has "${EAPI:-0}" 4 5 && _python_package_supporting_installation_for_multiple_python_abis; then
 			die "${FUNCNAME} called illegally"
 		fi
 
@@ -874,7 +903,7 @@ _python_final_sanity_checks() {
 
 		for PYTHON_ABI in ${iterated_PYTHON_ABIS}; do
 			# Ensure that appropriate version of Python is installed.
-			if has "${EAPI:-0}" 0 1 2 3 4 || { ! has "${EAPI:-0}" 0 1 2 3 4 && ! _python_package_supporting_installation_for_multiple_python_abis; }; then
+			if has "${EAPI:-0}" 0 1 2 3 4 5 || { ! has "${EAPI:-0}" 0 1 2 3 4 5 && ! _python_package_supporting_installation_for_multiple_python_abis; }; then
 				if ! ROOT="/" has_version "$(python_get_implementational_package)"; then
 					die "$(python_get_implementational_package) not installed in ROOT=\"/\""
 				fi
@@ -962,7 +991,7 @@ python_pkg_setup() {
 		PYTHON_ABI="${PYTHON_ABI:-$(PYTHON --ABI)}"
 	fi
 
-	if { has "${EAPI:-0}" 2 3 || { has "${EAPI:-0}" 4 && has "${PYTHON_ECLASS_API}" 0; }; } && [[ -n "${PYTHON_USE_WITH}" || -n "${PYTHON_USE_WITH_OR}" ]]; then
+	if { has "${EAPI:-0}" 2 3 || { has "${EAPI:-0}" 4 5 && has "${PYTHON_ECLASS_API}" 0; }; } && [[ -n "${PYTHON_USE_WITH}" || -n "${PYTHON_USE_WITH_OR}" ]]; then
 		if [[ "${PYTHON_USE_WITH_OPT}" ]]; then
 			if [[ "${PYTHON_USE_WITH_OPT}" == !* ]]; then
 				use ${PYTHON_USE_WITH_OPT#!} && return
@@ -1003,7 +1032,7 @@ python_pkg_setup() {
 		unset -f python_pkg_setup_check_USE_flags
 	fi
 
-	if { has "${EAPI:-0}" 4 && ! has "${PYTHON_ECLASS_API}" 0; } || { ! has "${EAPI:-0}" 0 1 2 3 4 && ! _python_package_supporting_installation_for_multiple_python_abis; }; then
+	if { has "${EAPI:-0}" 4 5 && ! has "${PYTHON_ECLASS_API}" 0; } || { ! has "${EAPI:-0}" 0 1 2 3 4 5 && ! _python_package_supporting_installation_for_multiple_python_abis; }; then
 		python_pkg_setup_check_USE_flags() {
 			ROOT="/" eval "${_PYTHON_USE_FLAGS_CHECKS_CODE}"
 			if [[ "${ROOT}" != "/" ]] && _python_check_run-time_dependency; then
@@ -1264,7 +1293,7 @@ python_clean_installation_image() {
 # =========== FUNCTIONS FOR PACKAGES SUPPORTING INSTALLATION FOR MULTIPLE PYTHON ABIS ============
 # ================================================================================================
 
-if ! { has "${EAPI:-0}" 0 1 2 3 || { has "${EAPI:-0}" 4 && has "${PYTHON_ECLASS_API}" 0; }; }; then
+if ! { has "${EAPI:-0}" 0 1 2 3 || { has "${EAPI:-0}" 4 5 && has "${PYTHON_ECLASS_API}" 0; }; }; then
 	if [[ -n "${SUPPORT_PYTHON_ABIS}" ]]; then
 		eerror "Use PYTHON_MULTIPLE_ABIS variable instead of SUPPORT_PYTHON_ABIS variable."
 		die "SUPPORT_PYTHON_ABIS variable is banned"
@@ -1363,7 +1392,7 @@ if ! has "${EAPI:-0}" 0 1; then
 	fi
 fi
 
-if has "${EAPI:-0}" 0 1 2 3 4; then
+if has "${EAPI:-0}" 0 1 2 3 4 5; then
 	unset PYTHON_ABIS
 fi
 
@@ -1374,7 +1403,7 @@ _python_calculate_PYTHON_ABIS() {
 
 	_python_initial_sanity_checks
 
-	if has "${EAPI:-0}" 0 1 2 3 || { has "${EAPI:-0}" 4 && has "${PYTHON_ECLASS_API}" 0; }; then
+	if has "${EAPI:-0}" 0 1 2 3 || { has "${EAPI:-0}" 4 5 && has "${PYTHON_ECLASS_API}" 0; }; then
 		if [[ -z "${PYTHON_RESTRICTED_ABIS}" && -n "${RESTRICT_PYTHON_ABIS}" ]]; then
 			PYTHON_RESTRICTED_ABIS="${RESTRICT_PYTHON_ABIS}"
 		fi
@@ -1389,7 +1418,7 @@ _python_calculate_PYTHON_ABIS() {
 		fi
 	fi
 
-	if [[ "$(declare -p PYTHON_ABIS 2> /dev/null)" != "declare -x PYTHON_ABIS="* ]] && has "${EAPI:-0}" 0 1 2 3 4; then
+	if [[ "$(declare -p PYTHON_ABIS 2> /dev/null)" != "declare -x PYTHON_ABIS="* ]] && has "${EAPI:-0}" 0 1 2 3 4 5; then
 		local PYTHON_ABI
 
 		if [[ "$(declare -p USE_PYTHON 2> /dev/null)" == "declare -x USE_PYTHON="* ]]; then
