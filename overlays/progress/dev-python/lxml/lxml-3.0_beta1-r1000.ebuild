@@ -13,7 +13,8 @@ MY_P="${PN}-${PV/_/}"
 
 DESCRIPTION="Powerful and Pythonic XML processing library combining libxml2/libxslt with the ElementTree API."
 HOMEPAGE="http://lxml.de/ http://pypi.python.org/pypi/lxml"
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${MY_P}.tar.gz"
+# SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${MY_P}.tar.gz"
+SRC_URI="http://lxml.de/files/${MY_P}.tgz"
 
 LICENSE="BSD ElementTree GPL-2 PSF-2"
 SLOT="0"
