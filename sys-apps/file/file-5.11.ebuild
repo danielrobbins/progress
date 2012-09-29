@@ -25,6 +25,12 @@ DEPEND="${RDEPEND}"
 
 PYTHON_MODULES="magic.py"
 
+if [[ "${EAPI}" == "4-python" ]]; then
+	usex() { use "$1" && echo "${2-yes}$4" || echo "${3-no}$5" ; }
+else
+	die "Compatibility code not deleted"
+fi
+
 pkg_setup() {
 	use python && python_pkg_setup
 }
