@@ -26,6 +26,13 @@ DEPEND="${RDEPEND}
 S=${WORKDIR}/${MY_P}
 
 PYTHON_MODULES="cracklib.py"
+
+if [[ "${EAPI}" == "4-python" ]]; then
+	usex() { use "$1" && echo "${2-yes}$4" || echo "${3-no}$5" ; }
+else
+	die "Compatibility code not deleted"
+fi
+
 do_python() {
 	use python || return 0
 	case ${EBUILD_PHASE} in
