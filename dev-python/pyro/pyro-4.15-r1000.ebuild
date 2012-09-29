@@ -5,6 +5,7 @@
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 
 inherit distutils
 
@@ -12,7 +13,7 @@ MY_PN="Pyro4"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Advanced and powerful Distributed Object Technology system written entirely in Python"
-HOMEPAGE="http://irmen.home.xs4all.nl/pyro/ http://pypi.python.org/pypi/Pyro4"
+HOMEPAGE="http://packages.python.org/Pyro4/ http://pypi.python.org/pypi/Pyro4"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="MIT"
@@ -58,7 +59,7 @@ src_prepare() {
 		-e "s/testGetIP/_&/" \
 		-i tests/PyroTests/test_socket.py
 
-	# Disable test expected to fail.
+	# Avoid test failure with Python 2.6.
 	sed -e "s/testPoolGrowth/_&/" -i tests/PyroTests/test_threadpool.py
 }
 
@@ -68,7 +69,7 @@ src_compile() {
 	if use doc; then
 		einfo "Generation of documentation"
 		pushd docs > /dev/null
-		emake html
+		PYTHONPATH="../build-$(PYTHON -f --ABI)/lib" emake html
 		popd > /dev/null
 	fi
 }
