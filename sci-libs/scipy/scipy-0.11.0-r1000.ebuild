@@ -10,7 +10,7 @@ PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 inherit distutils eutils flag-o-matic fortran-2 toolchain-funcs
 
 MY_P="${PN}-${PV/_/}"
-DOC_P="${PN}-0.10.0"
+DOC_P="${PN}-0.11.0"
 
 DESCRIPTION="Scientific algorithms library for Python"
 HOMEPAGE="http://www.scipy.org/ http://pypi.python.org/pypi/scipy"
