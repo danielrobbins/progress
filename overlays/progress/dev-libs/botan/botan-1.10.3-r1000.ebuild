@@ -8,7 +8,7 @@ PYTHON_DEPEND="python? ( <<>> )"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 *-jython *-pypy-*"
 
-inherit multilib python toolchain-funcs
+inherit boost-utils multilib python toolchain-funcs
 
 MY_PN="Botan"
 MY_P="${MY_PN}-${PV}"
@@ -108,8 +108,8 @@ src_compile() {
 			sed -e "s/-lboost_python/-lboost_python-${PYTHON_ABI}/" -i Makefile.python-${PYTHON_ABI} || return
 			emake -f Makefile.python-${PYTHON_ABI} \
 				CXX="$(tc-getCXX)" \
-				CFLAGS="${CXXFLAGS}" \
-				LDFLAGS="${LDFLAGS}" \
+				CFLAGS="${CXXFLAGS} -I$(boost-utils_get_includedir)" \
+				LDFLAGS="${LDFLAGS} -L$(boost-utils_get_libdir)" \
 				PYTHON_ROOT="/usr/$(get_libdir)" \
 				PYTHON_INC="-I$(python_get_includedir)"
 		}
