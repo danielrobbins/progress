@@ -7,7 +7,7 @@ PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 *-jython *-pypy-*"
 PYTHON_EXPORT_PHASE_FUNCTIONS="1"
 
-inherit autotools eutils python
+inherit autotools boost-utils eutils python
 
 MY_PN="PythonMagick"
 MY_P="${MY_PN}-${PV}"
@@ -34,22 +34,15 @@ src_prepare() {
 	epatch "${FILESDIR}/${PN}-0.9.1-use_active_python_version.patch"
 	epatch "${FILESDIR}/${PN}-0.9.2-fix_detection_of_python_includedir.patch"
 
-	sed -e "s/AM_PATH_PYTHON(3.1)/AM_PATH_PYTHON(2.6)/" -i configure.ac || die "sed failed"
-
 	eautoreconf
-
 	python_clean_py-compile_files
-
-	# Support Python 3.
-	sed -e "s/import _PythonMagick/from . import _PythonMagick/" -i PythonMagick/__init__.py || die "sed failed"
-
 	python_src_prepare
 }
 
 src_configure() {
 	configuration() {
 		sed -e "s/-lboost_python/-lboost_python-${PYTHON_ABI}/" -i Makefile.in
-		econf \
+		LDFLAGS="${LDFLAGS} -L$(boost-utils_get_libdir)" econf \
 			--disable-static \
 			--with-boost-python="boost_python-${PYTHON_ABI}"
 	}
