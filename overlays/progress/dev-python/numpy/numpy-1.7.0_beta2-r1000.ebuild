@@ -15,9 +15,9 @@ DESCRIPTION="Fast array and numerical python library"
 HOMEPAGE="http://numpy.scipy.org/ http://pypi.python.org/pypi/numpy"
 SRC_URI="mirror://sourceforge/numpy/${MY_P}.tar.gz
 	doc? (
-		http://docs.scipy.org/doc/${DOC_P}/numpy-html.zip -> ${DOC_P}-html.zip
-		http://docs.scipy.org/doc/${DOC_P}/numpy-ref.pdf -> ${DOC_P}-ref.pdf
-		http://docs.scipy.org/doc/${DOC_P}/numpy-user.pdf -> ${DOC_P}-user.pdf
+		http://docs.scipy.org/doc/${DOC_P}/${PN}-html.zip -> ${DOC_P}-html.zip
+		http://docs.scipy.org/doc/${DOC_P}/${PN}-ref.pdf -> ${DOC_P}-ref.pdf
+		http://docs.scipy.org/doc/${DOC_P}/${PN}-user.pdf -> ${DOC_P}-user.pdf
 	)"
 
 LICENSE="BSD"
