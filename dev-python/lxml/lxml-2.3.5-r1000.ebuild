@@ -4,7 +4,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="3.3 3.4 *-jython *-pypy-*"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.*"
 
 inherit distutils

@@ -4,7 +4,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="3.3 3.4 *-jython *-pypy-*"
 
 inherit distutils eutils flag-o-matic fortran-2 toolchain-funcs versionator
 
