@@ -59,6 +59,7 @@ RDEPEND="app-arch/bzip2
 			tk? (
 				>=dev-lang/tk-8.0
 				dev-tcltk/blt
+				dev-tcltk/tix
 			)
 			xml? ( >=dev-libs/expat-2.1 )
 		)"
@@ -215,7 +216,7 @@ src_configure() {
 	# Please query BSD team before removing this!
 	append-ldflags "-L."
 
-	OPT="" econf \
+	ac_cv_path_PKG_CONFIG="$(tc-getPKG_CONFIG)" OPT="" econf \
 		--with-fpectl \
 		--enable-shared \
 		$(use_enable ipv6) \
@@ -251,7 +252,6 @@ src_test() {
 		mv Lib/test/test_${test}.py "${T}"
 	done
 
-	# Rerun failed tests in verbose mode (regrtest -w).
 	emake test EXTRATESTOPTS="-w" < /dev/tty
 	local result="$?"
 
