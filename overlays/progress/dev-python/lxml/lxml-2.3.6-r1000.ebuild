@@ -5,7 +5,7 @@
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.3 3.4 *-jython *-pypy-*"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.*"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 
 inherit distutils
 
@@ -59,7 +59,7 @@ src_install() {
 	distutils_src_install
 
 	if use doc; then
-		dohtml -r doc/html/*
+		dohtml -r doc/html/
 		dodoc *.txt
 		docinto doc
 		dodoc doc/*.txt
