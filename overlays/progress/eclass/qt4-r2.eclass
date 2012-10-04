@@ -10,8 +10,8 @@
 # dealing with packages using Qt4 libraries. Requires EAPI=2 or later.
 
 case ${EAPI} in
-	2|3|4|4-python|5|5-progress)	: ;;
-	*)	die "EAPI=${EAPI} is not supported by ${ECLASS} eclass." ;;
+	2|3|4|4-python|5|5-progress) : ;;
+	*)	 die "qt4-r2.eclass: unsupported EAPI=${EAPI:-0}" ;;
 esac
 
 inherit base eutils multilib toolchain-funcs
