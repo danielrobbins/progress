@@ -42,8 +42,9 @@ src_prepare() {
 src_configure() {
 	configuration() {
 		sed -e "s/-lboost_python/-lboost_python-${PYTHON_ABI}/" -i Makefile.in
-		LDFLAGS="${LDFLAGS} -L$(boost-utils_get_libdir)" econf \
+		econf \
 			--disable-static \
+			--with-boost-libdir="$(boost-utils_get_libdir)" \
 			--with-boost-python="boost_python-${PYTHON_ABI}"
 	}
 	python_execute_function -s configuration
