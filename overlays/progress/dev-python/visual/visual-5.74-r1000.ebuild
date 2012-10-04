@@ -7,7 +7,7 @@ PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 PYTHON_EXPORT_PHASE_FUNCTIONS="1"
 
-inherit eutils flag-o-matic multilib python versionator
+inherit boost-utils eutils flag-o-matic python versionator
 
 MY_P="${PN}-$(delete_version_separator 2)_release"
 
@@ -62,15 +62,8 @@ src_prepare() {
 }
 
 src_configure() {
-	BOOST_PKG="$(best_version ">=dev-libs/boost-1.48")"
-	BOOST_VER="$(get_version_component_range 1-2 "${BOOST_PKG/*boost-/}")"
-	BOOST_VER="$(replace_all_version_separators _ "${BOOST_VER}")"
-	BOOST_INC="${EPREFIX}/usr/include/boost-${BOOST_VER}"
-	BOOST_LIB="${EPREFIX}/usr/$(get_libdir)/boost-${BOOST_VER}"
-
-	# Specify the include and lib directory for Boost.
-	append-cxxflags -I${BOOST_INC}
-	append-ldflags -L${BOOST_LIB}
+	append-cppflags -I$(boost-utils_get_includedir)
+	append-ldflags -L$(boost-utils_get_libdir)
 
 	python_src_configure \
 		--with-example-dir="${EPREFIX}/usr/share/doc/${PF}/examples" \
