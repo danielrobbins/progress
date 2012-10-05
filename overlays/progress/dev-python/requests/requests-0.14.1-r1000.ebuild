@@ -51,24 +51,19 @@ src_prepare() {
 		-e "/requests.packages.urllib3/d" \
 		-e "/if is_py2:/,/^$/d" \
 		-i setup.py
+
+	# https://github.com/kennethreitz/requests/issues/882
+	sed -e 's/\(if\|assert\) callable(\([^)]*\))/\1 hasattr(\2, "__call__")/' -i requests/models.py tests/test_requests.py
 }
 
 src_test() {
 	testing() {
-		local exit_status="0"
-
-		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" tests/test_cookies.py -v || exit_status="1"
-		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" tests/test_requests.py -v || exit_status="1"
-		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" tests/test_requests_ext.py -v || exit_status="1"
-		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" tests/test_requests_https.py -v || exit_status="1"
+		local exit_status="0" test
+		for test in tests/test_*.py; do
+			python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" "${test}" -v || exit_status="1"
+		done
 
 		return "${exit_status}"
 	}
 	python_execute_function testing
-}
-
-pkg_postinst() {
-	distutils_pkg_postinst
-
-	elog "requests.async module has been deleted in favor of dev-python/grequests."
 }
