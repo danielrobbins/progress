@@ -18,7 +18,7 @@ SLOT="0"
 KEYWORDS="amd64 x86"
 IUSE=""
 
-DEPEND="$(python_abi_depend ">=dev-python/mozinfo-0.3.3")
+DEPEND="$(python_abi_depend ">=dev-python/mozinfo-0.4")
 	$(python_abi_depend ">=dev-python/mozprocess-0.7")
 	$(python_abi_depend ">=dev-python/mozprofile-0.4")
 	$(python_abi_depend dev-python/setuptools)
@@ -29,7 +29,7 @@ src_prepare() {
 	distutils_src_prepare
 
 	sed \
-		-e "s/mozinfo == 0.3.3/mozinfo >= 0.3.3/" \
+		-e "s/mozinfo == 0.4/mozinfo >= 0.4/" \
 		-e "s/mozprocess == 0.7/mozprocess >= 0.7/" \
 		-e "s/mozprofile == 0.4/mozprofile >= 0.4/" \
 		-i setup.py
