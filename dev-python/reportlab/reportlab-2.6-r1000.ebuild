@@ -9,7 +9,7 @@ PYTHON_RESTRICTED_ABIS="3.* *-jython"
 inherit distutils eutils versionator
 
 DESCRIPTION="Tools for generating printable PDF documents from any data source."
-HOMEPAGE="http://www.reportlab.com/ http://pypi.python.org/pypi/reportlab"
+HOMEPAGE="http://www.reportlab.com/software/opensource/rl-toolkit/ http://pypi.python.org/pypi/reportlab"
 SRC_URI="http://www.reportlab.com/ftp/${P}.tar.gz"
 
 LICENSE="BSD"
@@ -48,14 +48,15 @@ src_compile() {
 
 	# One of tests already builds documentation.
 	if use doc && ! use test; then
+		einfo "Generation of documentation"
 		cd docs
-		PYTHONPATH="$(ls -d ../build-$(PYTHON -f --ABI)/lib.*)" "$(PYTHON -f)" genAll.py || die "genAll.py failed"
+		python_execute PYTHONPATH="$(ls -d ../build-$(PYTHON -f --ABI)/lib.*)" "$(PYTHON -f)" genAll.py || die "Generation of documentation failed"
 	fi
 }
 
 src_test() {
 	testing() {
-		"$(PYTHON)" setup.py tests-preinstall
+		python_execute "$(PYTHON)" setup.py tests-preinstall
 	}
 	python_execute_function testing
 }
