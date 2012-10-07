@@ -32,7 +32,7 @@
 # Valid settings are any combination of: 77 90 95 2003
 : ${FORTRAN_STANDARD:=77}
 
-inherit toolchain-funcs
+inherit eutils toolchain-funcs
 
 # @FUNCTION: _write_testsuite
 # @INTERNAL
@@ -145,9 +145,20 @@ fortran-2_pkg_setup() {
 			die "Please install current gcc with USE=openmp or set the FC variable to a compiler that supports OpenMP"
 	fi
 	tc-export F77 FC
+	einfo "Using following Fortran compiler"
+	einfo "  F77: ${F77}"
+	einfo "  FC: ${FC}"
 }
 
 case ${EAPI:-0} in
 	0|1|2|3|4|4-python|5|5-progress) EXPORT_FUNCTIONS pkg_setup ;;
 	*) die "EAPI=${EAPI} is not supported" ;;
 esac
+
+#if in_iuse fortran; then
+#	DEPEND="fortran? ( virtual/fortran )"
+#else
+#	DEPEND="virtual/fortran"
+#fi
+
+#RDEPEND="${DEPEND}"
