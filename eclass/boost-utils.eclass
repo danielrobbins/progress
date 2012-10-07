@@ -44,7 +44,7 @@ boost-utils_get_best_slot() {
 	[[ ${BOOST_MAX_SLOT} ]] && pkg="<=${pkg}-${BOOST_MAX_SLOT}.9999"
 
 	local cpv=$(best_version ${pkg})
-	get_version_component_range 1-2 ${cpv#${pkg}-}
+	get_version_component_range 1-2 ${cpv#dev-libs/boost-}
 }
 
 # @FUNCTION: boost-utils_get_includedir
