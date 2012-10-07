@@ -81,10 +81,10 @@ src_install() {
 	newinitd "${FILESDIR}"/tracd.initd tracd
 
 	if use cgi; then
-		cp cgi-bin/trac.cgi "${ED}${MY_CGIBINDIR}" || die
+		cp contrib/cgi-bin/trac.cgi "${ED}${MY_CGIBINDIR}" || die
 	fi
 	if use fastcgi; then
-		cp cgi-bin/trac.fcgi "${ED}${MY_CGIBINDIR}" || die
+		cp contrib/cgi-bin/trac.fcgi "${ED}${MY_CGIBINDIR}" || die
 	fi
 
 	for lang in en; do
