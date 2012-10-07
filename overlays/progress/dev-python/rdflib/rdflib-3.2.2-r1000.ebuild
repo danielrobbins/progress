@@ -4,13 +4,12 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
 
 DESCRIPTION="RDFLib is a Python library for working with RDF, a simple yet powerful language for representing information."
-HOMEPAGE="http://www.rdflib.net/ http://pypi.python.org/pypi/rdflib"
+HOMEPAGE="https://github.com/RDFLib/rdflib http://pypi.python.org/pypi/rdflib"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD"
