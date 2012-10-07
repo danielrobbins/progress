@@ -41,7 +41,6 @@ pkg_setup() {
 	# Do not disable gnome-pty-helper, bug #401389
 	G2CONF="${G2CONF}
 		--disable-deprecation
-		--disable-maintainer-mode
 		--disable-static
 		$(use_enable debug)
 		$(use_enable glade glade-catalogue)
@@ -66,8 +65,12 @@ pkg_setup() {
 src_prepare() {
 	# https://bugzilla.gnome.org/show_bug.cgi?id=663779
 	epatch "${FILESDIR}/${PN}-0.30.1-alt-meta.patch"
+
 	# https://bugzilla.gnome.org/show_bug.cgi?id=652290
 	epatch "${FILESDIR}"/${PN}-0.28.2-interix.patch
+
+	# Fix CVE-2012-2738, upstream bug #676090
+	epatch "${FILESDIR}"/${PN}-0.28.2-limit-arguments.patch
 
 	# Python bindings are built/installed manually.
 	sed -e "/SUBDIRS += python/d" -i Makefile.am
