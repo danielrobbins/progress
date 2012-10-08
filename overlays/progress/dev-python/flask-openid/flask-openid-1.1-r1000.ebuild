@@ -28,7 +28,17 @@ DEPEND="${RDEPEND}
 
 S="${WORKDIR}/${MY_P}"
 
-PYTHON_MODULES="flaskext/openid.py"
+PYTHON_MODULES="flask_openid.py"
+
+src_prepare() {
+	distutils_src_prepare
+
+	# Fix Sphinx theme.
+	sed \
+		-e "s/html_theme = 'flask_small'/html_theme = 'default'/" \
+		-e "/^html_theme_options = {$/,/^}$/d" \
+		-i docs/conf.py || die "sed failed"
+}
 
 src_compile() {
 	distutils_src_compile
@@ -45,10 +55,7 @@ src_install() {
 	distutils_src_install
 
 	if use doc; then
-		pushd docs/_build/html > /dev/null
-		insinto /usr/share/doc/${PF}/html
-		doins -r [a-z]* _static
-		popd > /dev/null
+		dohtml -r docs/_build/html/
 	fi
 
 	if use examples; then
