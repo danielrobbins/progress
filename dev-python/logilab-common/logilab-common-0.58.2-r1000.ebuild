@@ -11,7 +11,7 @@ inherit distutils eutils python-namespaces
 
 DESCRIPTION="Useful miscellaneous modules used by Logilab projects"
 HOMEPAGE="http://www.logilab.org/project/logilab-common http://pypi.python.org/pypi/logilab-common"
-SRC_URI="ftp://ftp.logilab.org/pub/common/${P}.tar.gz mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
+SRC_URI="ftp://ftp.logilab.org/pub/common/${P}.tar.gz"
 
 LICENSE="LGPL-2.1"
 SLOT="0"
