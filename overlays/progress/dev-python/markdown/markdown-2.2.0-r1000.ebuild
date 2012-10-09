@@ -7,7 +7,7 @@ PYTHON_DEPEND="<<[xml]>>"
 PYTHON_MULTIPLE_ABIS="1"
 DISTUTILS_SRC_TEST="nosetests"
 
-inherit distutils
+inherit distutils eutils
 
 MY_PN="Markdown"
 MY_P=${MY_PN}-${PV}
@@ -29,12 +29,7 @@ S="${WORKDIR}/${MY_P}"
 DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES="1"
 
 src_prepare() {
-	# Disable failing tests.
-	# https://github.com/waylan/Python-Markdown/issues/112
-	sed \
-		-e "s/testLoadBadExtension/_&/" \
-		-e "s/testLoadExtensionFailure/_&/" \
-		-i- tests/test_apis.py
+	epatch "${FILESDIR}/${P}-tests.patch"
 
 	# Fix support for Python 2.5.
 	# https://github.com/waylan/Python-Markdown/issues/113
