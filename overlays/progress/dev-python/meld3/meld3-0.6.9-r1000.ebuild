@@ -10,7 +10,7 @@ PYTHON_RESTRICTED_ABIS="3.*"
 inherit distutils
 
 DESCRIPTION="meld3 is an HTML/XML templating engine."
-HOMEPAGE="http://pypi.python.org/pypi/meld3"
+HOMEPAGE="https://github.com/Supervisor/meld3 http://pypi.python.org/pypi/meld3"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="ZPL"
