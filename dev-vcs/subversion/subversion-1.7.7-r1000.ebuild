@@ -238,7 +238,6 @@ pkg_setup() {
 
 src_prepare() {
 	epatch "${FILESDIR}/${PN}-1.7.1-perl_CFLAGS.patch"
-	epatch "${FILESDIR}/${PN}-1.7.6-mod_dontdothat.patch"
 	epatch "${FILESDIR}/${PN}-1.7.6-gcc-4.7.patch"
 
 	if ! use test; then
