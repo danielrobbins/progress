@@ -10,7 +10,7 @@ DISTUTILS_SRC_TEST="setup.py"
 inherit distutils
 
 DESCRIPTION="A simple schema-based serialization and deserialization library"
-HOMEPAGE="http://docs.repoze.org/colander http://pypi.python.org/pypi/colander"
+HOMEPAGE="http://docs.repoze.org/colander https://github.com/Pylons/colander http://pypi.python.org/pypi/colander"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT repoze"
@@ -38,8 +38,7 @@ src_compile() {
 	if use doc; then
 		einfo "Generation of documentation"
 		pushd docs > /dev/null
-		# https://github.com/Pylons/colander/issues/38
-		PYTHONPATH=".." emake html SPHINXOPTS=""
+		PYTHONPATH=".." emake html
 		popd > /dev/null
 	fi
 }
@@ -53,9 +52,6 @@ src_install() {
 	python_execute_function -q delete_tests
 
 	if use doc; then
-		pushd docs/_build/html > /dev/null
-		insinto /usr/share/doc/${PF}/html
-		doins -r [a-z]* _static
-		popd > /dev/null
+		dohtml -r docs/_build/html/
 	fi
 }
