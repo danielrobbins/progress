@@ -26,7 +26,12 @@ RDEPEND="$(python_abi_depend dev-python/isodate)
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
-DOCS="CHANGELOG"
+DOCS="CHANGELOG CONTRIBUTORS"
+
+src_prepare() {
+	distutils_src_prepare
+	find -name "*.py[c~]" -delete
+}
 
 src_test() {
 	python_execute_nosetests -e -P '$(ls -d build-${PYTHON_ABI}/lib)' -- -P -w '$([[ "$(python_get_version -l --major)" == "3" ]] && echo build/src || echo .)'
