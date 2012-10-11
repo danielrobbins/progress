@@ -23,8 +23,9 @@ KEYWORDS="amd64 x86 ~x86-fbsd ~amd64-linux ~x86-linux ~ppc-macos ~x86-macos"
 IUSE="redis test"
 
 RDEPEND="$(python_abi_depend virtual/python-json[external])
-	redis? ( $(python_abi_depend dev-python/redis-py) )"
-DEPEND="$(python_abi_depend dev-python/setuptools)
+	redis? ( $(python_abi_depend -e "*-jython" dev-python/redis-py) )"
+DEPEND="${RDEPEND}
+	$(python_abi_depend dev-python/setuptools)
 	test? ( $(python_abi_depend -e "*-jython *-pypy-*" dev-python/lxml) )"
 
 S="${WORKDIR}/${MY_P}"
