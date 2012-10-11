@@ -10,9 +10,12 @@ PYTHON_TESTS_RESTRICTED_ABIS="*-pypy-*"
 # http://code.google.com/p/apsw/issues/detail?id=132
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.3"
 
-inherit distutils eutils versionator
+inherit distutils eutils
 
-MY_PV="$(replace_version_separator 3 -r)"
+eshopts_push -s extglob
+SQLITE_PV="${PV/%.?(0.)*([^.])/}"
+eshopts_pop
+MY_PV="${SQLITE_PV}-r${PV##*.}"
 
 DESCRIPTION="APSW - Another Python SQLite Wrapper"
 HOMEPAGE="http://code.google.com/p/apsw/"
@@ -23,7 +26,7 @@ SLOT="0"
 KEYWORDS="amd64 ~ppc64 x86"
 IUSE="doc"
 
-RDEPEND=">=dev-db/sqlite-$(get_version_component_range 1-3)[extensions]"
+RDEPEND=">=dev-db/sqlite-${SQLITE_PV}[extensions]"
 DEPEND="${RDEPEND}
 	app-arch/unzip"
 
