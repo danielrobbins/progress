@@ -51,9 +51,6 @@ src_install() {
 	python_execute_function -q delete_tests_and_incompatible_modules
 
 	if use doc; then
-		pushd _build/html > /dev/null
-		insinto /usr/share/doc/${PF}/html
-		doins -r [a-z]* _static
-		popd > /dev/null
+		dohtml -r _build/html/
 	fi
 }
