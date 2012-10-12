@@ -15,7 +15,7 @@ MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="WSGI request and response object"
 HOMEPAGE="http://webob.org/ http://pypi.python.org/pypi/WebOb"
-SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.zip"
+SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
@@ -24,7 +24,6 @@ IUSE="doc"
 
 RDEPEND="$(python_abi_depend virtual/python-json[external])"
 DEPEND="${RDEPEND}
-	app-arch/unzip
 	$(python_abi_depend dev-python/setuptools)
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
 
