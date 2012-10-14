@@ -11,13 +11,13 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="0c2bdd2c2032"
+	EHG_REVISION="267a4d4d9d65"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
 fi
 
-PATCHSET_REVISION="20120909"
+PATCHSET_REVISION="20121014"
 
 DESCRIPTION="Python is an interpreted, interactive, object-oriented programming language."
 HOMEPAGE="http://www.python.org/"
@@ -31,7 +31,7 @@ else
 fi
 
 LICENSE="PSF-2"
-SLOT="3.3"
+SLOT="3.4"
 PYTHON_ABI="${SLOT}"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd"
 IUSE="build doc elibc_uclibc examples gdbm ipv6 +ncurses +readline sqlite +ssl +threads tk wininst +xml"
@@ -70,6 +70,10 @@ fi
 
 pkg_setup() {
 	python_pkg_setup
+
+	if tc-is-cross-compiler && ! ROOT="/" has_version "${CATEGORY}/${PN}:${SLOT}"; then
+		die "Cross-compilation requires ${CATEGORY}/${PN}:${SLOT} installed in host system"
+	fi
 }
 
 src_prepare() {
@@ -177,8 +181,8 @@ src_configure() {
 	# Export CXX so it ends up in /usr/lib/python3.X/config/Makefile.
 	tc-export CXX
 
-	# Set LDFLAGS so we link modules with -lpython3.3 correctly.
-	# Needed on FreeBSD unless Python 3.3 is already installed.
+	# Set LDFLAGS so we link modules with -lpython3.4 correctly.
+	# Needed on FreeBSD unless Python 3.4 is already installed.
 	# Please query BSD team before removing this!
 	append-ldflags "-L."
 
@@ -233,9 +237,7 @@ src_test() {
 		mv Lib/test/test_${test}.py "${T}"
 	done
 
-	# Rerun failed tests in verbose mode (regrtest -w).
-	# emake test EXTRATESTOPTS="-w" CPPFLAGS="" CFLAGS="" LDFLAGS="" < /dev/tty
-	CPPFLAGS="" CFLAGS="" LDFLAGS="" LD_LIBRARY_PATH="$(pwd)" _PYTHONNOSITEPACKAGES="1" ./python -Wd -E -bb Lib/test/regrtest.py -w < /dev/tty
+	emake test EXTRATESTOPTS="-j1 -ucpu,decimal,subprocess" CPPFLAGS="" CFLAGS="" LDFLAGS="" < /dev/tty
 	local result="$?"
 
 	for test in ${skipped_tests}; do
@@ -286,12 +288,9 @@ src_install() {
 	dodoc Misc/{ACKS,HISTORY,NEWS} || die "dodoc failed"
 
 	if use doc; then
-		pushd Doc/build/html > /dev/null
-		docinto html
-		cp -R [a-z]* _images _static "${ED}usr/share/doc/${PF}/html" || die "Installation of documentation failed"
+		dohtml -A xml -r Doc/build/html/
 		echo "PYTHONDOCS_${SLOT//./_}=\"${EPREFIX}/usr/share/doc/${PF}/html/library\"" > "60python-docs-${SLOT}"
 		doenvd "60python-docs-${SLOT}"
-		popd > /dev/null
 	fi
 
 	if use examples; then
