@@ -29,15 +29,12 @@ CDEPEND="$(python_abi_depend dev-python/numpy)
 	virtual/cblas
 	virtual/lapack
 	umfpack? ( sci-libs/umfpack )"
-
 DEPEND="${CDEPEND}
 	virtual/pkgconfig
 	doc? ( app-arch/unzip )
 	test? ( $(python_abi_depend dev-python/nose) )
 	umfpack? ( dev-lang/swig )"
-
-RDEPEND="virtual/fortran
-	${CDEPEND}
+RDEPEND="${CDEPEND}
 	$(python_abi_depend -i "2.*" dev-python/imaging)"
 
 DOCS="THANKS.txt LATEST.txt TOCHANGE.txt"
@@ -103,8 +100,7 @@ src_compile() {
 
 src_test() {
 	testing() {
-		python_execute "$(PYTHON)" setup.py build -b "build-${PYTHON_ABI}" install \
-			--home="${S}/test-${PYTHON_ABI}" --no-compile ${SCIPY_FCONFIG} || return
+		python_execute "$(PYTHON)" setup.py build -b "build-${PYTHON_ABI}" install --home="${S}/test-${PYTHON_ABI}" --no-compile ${SCIPY_FCONFIG} || die "Installation for tests failed with $(python_get_implementation_and_version)"
 		pushd "${S}/test-${PYTHON_ABI}/"lib*/python > /dev/null
 		python_execute PYTHONPATH="." "$(PYTHON)" -c "import scipy; scipy.test('full')" 2>&1 | tee test.log
 		grep -Eq "^(ERROR|FAIL):" test.log && return 1
