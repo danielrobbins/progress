@@ -10,13 +10,23 @@
 # Test functions provided by Sebastien Fabbro and Kacper Kowalik
 # @BLURB: Simplify fortran compiler management
 # @DESCRIPTION:
-# If you need a fortran compiler, then you should be inheriting this eclass and
-# adding virtual/fortran to your dependencies.
+# If you need a fortran compiler, then you should be inheriting this eclass.
+# In case you only need optional support, please export FORTRAN_NEEDED before
+# inheriting the eclass.
+#
 # The eclass tests for working fortran compilers
 # and exports the variables FC and F77.
 # Optionally, it checks for extended capabilities based on
 # the variable options selected in the ebuild
 # The only phase function exported is fortran-2_pkg_setup.
+#
+# Example:
+#
+# FORTRAN_NEEDED="lapack fortran"
+#
+# inherit fortran-2
+#
+# FORTRAN_NEED_OPENMP=1
 
 # @ECLASS-VARIABLE: FORTRAN_NEED_OPENMP
 # @DESCRIPTION:
@@ -32,7 +42,36 @@
 # Valid settings are any combination of: 77 90 95 2003
 : ${FORTRAN_STANDARD:=77}
 
+# @ECLASS-VARIABLE: FORTRAN_NEEDED
+# @DESCRIPTION:
+# If your package has an optional fortran support, set this variable
+# to the space seperated list of USE triggering the fortran
+# dependence.
+#
+# e.g. FORTRAN_NEEDED=lapack would result in
+#
+# DEPEND="lapack? ( virtual/fortran )"
+#
+# If unset, we always depend on virtual/fortran.
+: ${FORTRAN_NEEDED:=always}
+
 inherit eutils toolchain-funcs
+
+for _f_use in ${FORTRAN_NEEDED}; do
+	case ${_f_use} in
+		always)
+			DEPEND+=" virtual/fortran"
+			break
+			;;
+		no)
+			break
+			;;
+		*)
+			DEPEND+=" ${_f_use}? ( virtual/fortran )"
+			;;
+	esac
+done
+RDEPEND="${DEPEND}"
 
 # @FUNCTION: _write_testsuite
 # @INTERNAL
@@ -125,6 +164,32 @@ _die_msg() {
 # @DESCRIPTION:
 # Setup functionallity, checks for a valid fortran compiler and optionally for its openmp support.
 fortran-2_pkg_setup() {
+for _f_use in ${FORTRAN_NEEDED}; do
+   case ${_f_use} in
+      always)
+			_fortran_test_function && break
+         ;;
+      no)
+			einfo "Forcing fortran support off"
+			break
+         ;;
+      *)
+			if use ${_f_use}; then
+				_fortran_test_function && break
+			else
+				unset FC
+				unset F77
+			fi
+         ;;
+   esac
+done
+}
+
+# @FUNCTION: _fortran_test_function
+# @INTERNAL
+# @DESCRIPTION:
+# Internal testfunction for working fortran compiler. It is called in fortran-2_pkg_setup
+_fortran_test_function() {
 	local dialect
 
 	: ${F77:=$(tc-getFC)}
@@ -140,25 +205,21 @@ fortran-2_pkg_setup() {
 		esac
 	done
 
-	if [[ ${FORTRAN_NEED_OPENMP} == 1 ]]; then
-		_fortran-has-openmp || \
-			die "Please install current gcc with USE=openmp or set the FC variable to a compiler that supports OpenMP"
-	fi
 	tc-export F77 FC
-	einfo "Using following Fortran compiler"
+	einfo "Using following Fortran compiler:"
 	einfo "  F77: ${F77}"
 	einfo "  FC: ${FC}"
+
+	if [[ ${FORTRAN_NEED_OPENMP} == 1 ]]; then
+		if _fortran-has-openmp; then
+			einfo "${FC} has OPENMP support"
+		else
+			die "Please install current gcc with USE=openmp or set the FC variable to a compiler that supports OpenMP"
+		fi
+	fi
 }
 
 case ${EAPI:-0} in
 	0|1|2|3|4|4-python|5|5-progress) EXPORT_FUNCTIONS pkg_setup ;;
 	*) die "EAPI=${EAPI} is not supported" ;;
 esac
-
-#if in_iuse fortran; then
-#	DEPEND="fortran? ( virtual/fortran )"
-#else
-#	DEPEND="virtual/fortran"
-#fi
-
-#RDEPEND="${DEPEND}"
