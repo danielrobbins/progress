@@ -30,15 +30,12 @@ CDEPEND="$(python_abi_depend dev-python/numpy)
 	virtual/cblas
 	virtual/lapack
 	umfpack? ( sci-libs/umfpack )"
-
 DEPEND="${CDEPEND}
 	virtual/pkgconfig
 	doc? ( app-arch/unzip )
 	test? ( $(python_abi_depend dev-python/nose) )
 	umfpack? ( dev-lang/swig )"
-
-RDEPEND="virtual/fortran
-	${CDEPEND}
+RDEPEND="${CDEPEND}
 	$(python_abi_depend -i "2.*" dev-python/imaging)"
 
 S="${WORKDIR}/${MY_P}"
