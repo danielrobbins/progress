@@ -6,6 +6,8 @@ EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.3 3.4 *-jython *-pypy-*"
 
+FORTRAN_NEEDED="lapack"
+
 inherit distutils eutils flag-o-matic fortran-2 toolchain-funcs versionator
 
 DOC_P="${PN}-1.6.0"
@@ -14,9 +16,9 @@ DESCRIPTION="Fast array and numerical python library"
 HOMEPAGE="http://numpy.scipy.org/ http://pypi.python.org/pypi/numpy"
 SRC_URI="mirror://sourceforge/numpy/${P}.tar.gz
 	doc? (
-		http://docs.scipy.org/doc/${DOC_P}/numpy-html.zip -> ${DOC_P}-html.zip
-		http://docs.scipy.org/doc/${DOC_P}/numpy-ref.pdf -> ${DOC_P}-ref.pdf
-		http://docs.scipy.org/doc/${DOC_P}/numpy-user.pdf -> ${DOC_P}-user.pdf
+		http://docs.scipy.org/doc/${DOC_P}/${PN}-html.zip -> ${DOC_P}-html.zip
+		http://docs.scipy.org/doc/${DOC_P}/${PN}-ref.pdf -> ${DOC_P}-ref.pdf
+		http://docs.scipy.org/doc/${DOC_P}/${PN}-user.pdf -> ${DOC_P}-user.pdf
 	)"
 
 LICENSE="BSD"
@@ -26,11 +28,11 @@ IUSE="doc lapack test"
 
 RDEPEND="
 	$(python_abi_depend dev-python/setuptools)
-	lapack? ( virtual/cblas virtual/lapack virtual/fortran )"
+	lapack? ( virtual/cblas virtual/lapack )"
 DEPEND="${RDEPEND}
 	doc? ( app-arch/unzip )
 	lapack? ( virtual/pkgconfig )
-	test? ( $(python_abi_depend ">=dev-python/nose-0.10") )"
+	test? ( $(python_abi_depend dev-python/nose) )"
 
 PYTHON_CFLAGS=("* + -fno-strict-aliasing")
 
@@ -40,7 +42,7 @@ PYTHON_NONVERSIONED_EXECUTABLES=("/usr/bin/f2py[[:digit:]]+\.[[:digit:]]+")
 DOCS="COMPATIBILITY DEV_README.txt THANKS.txt"
 
 pkg_setup() {
-	use lapack && fortran-2_pkg_setup
+	fortran-2_pkg_setup
 	python_pkg_setup
 
 	# See progress in http://projects.scipy.org/scipy/numpy/ticket/573
@@ -114,10 +116,9 @@ src_compile() {
 
 src_test() {
 	testing() {
-		"$(PYTHON)" setup.py ${NUMPY_FCONFIG} build -b "build-${PYTHON_ABI}" install \
-			--home="${S}/test-${PYTHON_ABI}" --no-compile || die "install test failed"
+		python_execute "$(PYTHON)" setup.py ${NUMPY_FCONFIG} build -b "build-${PYTHON_ABI}" install --home="${S}/test-${PYTHON_ABI}" --no-compile || die "Installation for tests failed with $(python_get_implementation_and_version)"
 		pushd "${S}/test-${PYTHON_ABI}/"lib* > /dev/null
-		PYTHONPATH=python "$(PYTHON)" -c "import numpy; numpy.test()" 2>&1 | tee test.log
+		python_execute PYTHONPATH="python" "$(PYTHON)" -c "import numpy; numpy.test()" 2>&1 | tee test.log
 		grep -Eq "^(ERROR|FAIL):" test.log && return 1
 		popd > /dev/null
 		rm -fr test-${PYTHON_ABI}

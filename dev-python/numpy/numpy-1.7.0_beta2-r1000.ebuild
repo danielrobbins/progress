@@ -6,6 +6,8 @@ EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 
+FORTRAN_NEEDED="lapack"
+
 inherit distutils eutils flag-o-matic fortran-2 toolchain-funcs versionator
 
 MY_P="${PN}-${PV/_beta/b}"
@@ -27,7 +29,7 @@ IUSE="doc lapack test"
 
 RDEPEND="
 	$(python_abi_depend dev-python/setuptools)
-	lapack? ( virtual/cblas virtual/lapack virtual/fortran )"
+	lapack? ( virtual/cblas virtual/lapack )"
 DEPEND="${RDEPEND}
 	doc? ( app-arch/unzip )
 	lapack? ( virtual/pkgconfig )
@@ -43,7 +45,7 @@ PYTHON_NONVERSIONED_EXECUTABLES=("/usr/bin/f2py[[:digit:]]+\.[[:digit:]]+")
 DOCS="COMPATIBILITY DEV_README.txt THANKS.txt"
 
 pkg_setup() {
-	use lapack && fortran-2_pkg_setup
+	fortran-2_pkg_setup
 	python_pkg_setup
 
 	# See progress in http://projects.scipy.org/scipy/numpy/ticket/573
