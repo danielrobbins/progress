@@ -208,7 +208,7 @@ _fortran_test_function() {
 	tc-export F77 FC
 	einfo "Using following Fortran compiler:"
 	einfo "  F77: ${F77}"
-	einfo "  FC: ${FC}"
+	einfo "  FC:  ${FC}"
 
 	if [[ ${FORTRAN_NEED_OPENMP} == 1 ]]; then
 		if _fortran-has-openmp; then
