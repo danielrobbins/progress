@@ -51,6 +51,9 @@ src_prepare() {
 		-e "s/test_urlfield_4/_&/" \
 		-e "s/test_urlfield_10/_&/" \
 		-i tests/regressiontests/forms/tests/fields.py
+
+	# https://code.djangoproject.com/ticket/19148
+	sed -e "s/(2, 6, 8)/(2, 7)/" -i django/utils/html_parser.py
 }
 
 src_compile() {
