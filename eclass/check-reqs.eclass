@@ -90,6 +90,8 @@ check_reqs() {
 check-reqs_pkg_setup() {
 	debug-print-function ${FUNCNAME} "$@"
 
+	[[ ${MERGE_TYPE} == binary ]] && return
+
 	check-reqs_prepare
 	check-reqs_run
 	check-reqs_output
