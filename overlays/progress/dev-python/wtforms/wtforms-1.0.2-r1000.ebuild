@@ -35,6 +35,10 @@ src_prepare() {
 	distutils_src_prepare
 	epatch "${FILESDIR}/${P}-tests.patch"
 
+	# https://bitbucket.org/simplecodes/wtforms/issue/117
+	# https://bitbucket.org/simplecodes/wtforms/changeset/a5d05f5e615a
+	sed -e "/quantized = self.data.quantize/s/rounding=self.rounding/**{'rounding': self.rounding} if self.rounding is not None else {}/" -i wtforms/fields/core.py
+
 	preparation() {
 		cp -r tests tests-${PYTHON_ABI} || return
 		if [[ "$(python_get_version -l --major)" == "3" ]]; then
