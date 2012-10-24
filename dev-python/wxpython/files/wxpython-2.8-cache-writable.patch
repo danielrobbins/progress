@@ -1,8 +1,8 @@
 Use /tmp for cache files since the user won't have
 write permissions on ${DOCDIR}.
 
---- viewdocs.py
-+++ viewdocs.py
+--- docs/viewdocs.py
++++ docs/viewdocs.py
 @@ -16,11 +16,11 @@ if not basePath:
  
  
