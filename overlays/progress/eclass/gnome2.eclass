@@ -93,6 +93,9 @@ gnome2_src_prepare() {
 	# Prevent scrollkeeper access violations
 	gnome2_omf_fix
 
+	# Disable all deprecation warnings
+	gnome2_disable_deprecation_warning
+
 	# Run libtoolize
 	if has ${EAPI:-0} 0 1 2 3; then
 		elibtoolize ${ELTCONF}
