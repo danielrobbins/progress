@@ -25,10 +25,3 @@ DEPEND="app-arch/unzip
 RDEPEND=""
 
 DOCS="CHANGELOG README.txt"
-
-src_prepare() {
-	distutils_src_prepare
-
-	# https://bitbucket.org/hpk42/py/changeset/1060ea1c96dd9dfb031bd1987ceb2bf4
-	sed -e "s/^class pytest_funcarg__setup:$/def pytest_funcarg__setup(request):\n    return Setup(request)\n\nclass Setup:/" -i testing/path/test_svnauth.py
-}
