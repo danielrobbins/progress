@@ -10,7 +10,8 @@ inherit distutils
 
 DESCRIPTION="HTTP library for human beings"
 HOMEPAGE="http://python-requests.org/ https://github.com/kennethreitz/requests http://pypi.python.org/pypi/requests"
-SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
+# SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
+SRC_URI="https://github.com/kennethreitz/${PN}/tarball/v${PV} -> ${P}.tar.gz"
 
 LICENSE="ISC"
 SLOT="0"
@@ -26,6 +27,11 @@ DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
 DOCS="HISTORY.rst README.rst"
+
+src_unpack() {
+	default
+	mv kennethreitz-requests-* ${P}
+}
 
 src_prepare() {
 	distutils_src_prepare
@@ -53,7 +59,7 @@ src_prepare() {
 		-i setup.py
 
 	# https://github.com/kennethreitz/requests/issues/882
-	sed -e 's/\(if\|assert\) callable(\([^)]*\))/\1 hasattr(\2, "__call__")/' -i requests/models.py tests/test_requests.py
+	sed -e 's/\(if \|(\)callable(\([^)]*\))/\1hasattr(\2, "__call__")/' -i requests/models.py tests/test_requests.py
 }
 
 src_test() {
