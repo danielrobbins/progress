@@ -453,8 +453,10 @@ gnome2_disable_deprecation_warning() {
 		fi
 	done < <(find "${S}" -name "Makefile.in" \
 		-o -name "Makefile.am" -o -name "Makefile.decl" \
-		-o -name "configure.ac" -o -name "configure.in" \
 		| sort; echo configure)
+# TODO: sedding configure.ac can trigger maintainer mode; bug #439602
+#		-o -name "configure.ac" -o -name "configure.in" \
+#		| sort; echo configure)
 	eend ${retval}
 
 	for makefile in "${fails[@]}" ; do
