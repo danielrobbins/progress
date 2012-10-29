@@ -5,6 +5,7 @@
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 3.1 *-jython *-pypy-*"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 
 inherit cmake-utils multilib python
 
@@ -27,6 +28,7 @@ RDEPEND="
 "
 DEPEND="${RDEPEND}
 	test? (
+		$(python_abi_depend dev-python/numpy)
 		>=x11-libs/qt-gui-4.7.0:4
 		>=x11-libs/qt-test-4.7.0:4
 	)"
@@ -51,7 +53,7 @@ src_configure() {
 	configuration() {
 		local mycmakeargs=(
 			-DPYTHON_EXECUTABLE="$(PYTHON -a)"
-			-DPYTHON_SITE_PACKAGES="$(python_get_sitedir)"
+			-DPYTHON_SITE_PACKAGES="${EPREFIX}$(python_get_sitedir)"
 			-DPYTHON_SUFFIX="-python${PYTHON_ABI}"
 			$(cmake-utils_use_build test TESTS)
 		)
@@ -59,8 +61,9 @@ src_configure() {
 		if [[ $(python_get_version -l --major) == 3 ]]; then
 			mycmakeargs+=(
 				-DUSE_PYTHON3=ON
-				-DPYTHON3_INCLUDE_DIR="$(python_get_includedir)"
-				-DPYTHON3_LIBRARY="$(python_get_library)"
+				-DPYTHON3_EXECUTABLE="$(PYTHON -a)"
+				-DPYTHON3_INCLUDE_DIR="${EPREFIX}$(python_get_includedir)"
+				-DPYTHON3_LIBRARY="${EPREFIX}$(python_get_library)"
 			)
 		fi
 
