@@ -55,7 +55,7 @@ PYTHON_MODULES="IPython"
 src_prepare() {
 	distutils_src_prepare
 	epatch "${FILESDIR}/${PN}-0.12-global_path.patch"
-	epatch "${FILESDIR}/${P}-python3-scripts_versioning.patch"
+	epatch "${FILESDIR}/${PN}-0.13-python3-scripts_versioning.patch"
 
 	# Disable failing tests.
 	sed \
