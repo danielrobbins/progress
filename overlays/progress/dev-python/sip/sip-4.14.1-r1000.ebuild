@@ -11,7 +11,20 @@ inherit eutils python toolchain-funcs
 
 DESCRIPTION="Python extension module generator for C and C++ libraries"
 HOMEPAGE="http://www.riverbankcomputing.co.uk/software/sip/intro http://pypi.python.org/pypi/SIP"
-SRC_URI="mirror://sourceforge/pyqt/${P}.tar.gz"
+if [[ ${PV} == *9999* ]]; then
+	# Live version from mercurial repository
+	EHG_REPO_URI="http://www.riverbankcomputing.com/hg/sip"
+	inherit mercurial
+elif [[ ${PV} == *_pre* ]]; then
+	# Development snapshot
+	HG_REVISION=
+	MY_P=${PN}-${PV%_pre*}-snapshot-${HG_REVISION}
+	SRC_URI="http://dev.gentoo.org/~hwoarang/distfiles/${MY_P}.tar.gz"
+	S=${WORKDIR}/${MY_P}
+else
+	# Official release
+	SRC_URI="mirror://sourceforge/pyqt/${P}.tar.gz"
+fi
 
 LICENSE="|| ( GPL-2 GPL-3 sip )"
 # Subslot based on SIP_API_MAJOR_NR from siplib/sip.h.in
@@ -21,8 +34,23 @@ IUSE="debug doc"
 
 DEPEND=""
 RDEPEND=""
+[[ ${PV} == *9999* ]] && DEPEND+="
+	sys-devel/bison
+	sys-devel/flex
+	doc? (
+		=dev-lang/python-2*
+		dev-python/sphinx
+	)
+"
 
 src_prepare() {
+	if [[ ${PV} == *9999* ]]; then
+		$(PYTHON -2) build.py prepare || die
+		if use doc; then
+			$(PYTHON -2) build.py doc || die
+		fi
+	fi
+
 	epatch "${FILESDIR}/${PN}-4.9.3-darwin.patch"
 	sed -e "s/ -O2//g" -i specs/* || die "sed failed"
 	python_src_prepare
