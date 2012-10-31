@@ -593,29 +593,25 @@ pkg_postinst() {
 		[[ -e "${ROOT}/etc/eselect/boost/active" ]] && die -q "\"${ROOT}/etc/eselect/boost/active\" exists and isn't a symlink"
 	fi
 
-	if use python; then
-		if use mpi; then
-			create_mpi.py() {
-				echo "from boost_${MAJOR_PV}.mpi import *" > "${EROOT}$(python_get_sitedir -b)/mpi.py"
-			}
-			python_execute_function -q create_mpi.py
-		fi
+	if use mpi && use python; then
+		create_mpi.py() {
+			echo "from boost_${MAJOR_PV}.mpi import *" > "${EROOT}$(python_get_sitedir -b)/mpi.py"
+		}
+		python_execute_function -q create_mpi.py
 
-		python_mod_optimize boost_${MAJOR_PV} $(use mpi && echo mpi.py)
+		python_mod_optimize boost_${MAJOR_PV} mpi.py
 	fi
 }
 
 pkg_postrm() {
-	if use python; then
-		if use mpi; then
-			delete_mpi.py() {
-				if [[ "$(<"${EROOT}$(python_get_sitedir -b)/mpi.py")" == "from boost_${MAJOR_PV}.mpi import *" ]]; then
-					rm -f "${EROOT}$(python_get_sitedir -b)/mpi.py"
-				fi
-			}
-			python_execute_function -q delete_mpi.py
-		fi
+	if use mpi && use python; then
+		delete_mpi.py() {
+			if [[ "$(<"${EROOT}$(python_get_sitedir -b)/mpi.py")" == "from boost_${MAJOR_PV}.mpi import *" ]]; then
+				rm -f "${EROOT}$(python_get_sitedir -b)/mpi.py"
+			fi
+		}
+		python_execute_function -q delete_mpi.py
 
-		python_mod_cleanup boost_${MAJOR_PV} $(use mpi && echo mpi.py)
+		python_mod_cleanup boost_${MAJOR_PV} mpi.py
 	fi
 }
