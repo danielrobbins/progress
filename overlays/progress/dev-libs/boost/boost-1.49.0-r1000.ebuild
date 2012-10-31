@@ -611,13 +611,13 @@ pkg_postinst() {
 		eselect boost update || ewarn "eselect boost update failed."
 	fi
 
-	if use python; then
+	if use mpi && use python; then
 		python_mod_optimize boost_${MAJOR_PV}
 	fi
 }
 
 pkg_postrm() {
-	if use python; then
+	if use mpi && use python; then
 		python_mod_cleanup boost_${MAJOR_PV}
 	fi
 }
