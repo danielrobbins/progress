@@ -7,7 +7,7 @@ PYTHON_DEPEND="python? ( <<>> )"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 
-inherit check-reqs flag-o-matic multilib python toolchain-funcs versionator
+inherit flag-o-matic multilib python toolchain-funcs versionator
 
 MY_P=${PN}_$(replace_all_version_separators _)
 
@@ -16,40 +16,23 @@ HOMEPAGE="http://www.boost.org/"
 SRC_URI="mirror://sourceforge/boost/${MY_P}.tar.bz2"
 
 LICENSE="Boost-1.0"
-SLOT="$(get_version_component_range 1-2)"
+MAJOR_V="$(get_version_component_range 1-2)"
+SLOT="0"
 KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc x86 ~amd64-fbsd ~x86-fbsd"
-IUSE="debug doc +eselect icu mpi python static-libs test tools"
+IUSE="debug doc elibc_glibc icu mpi python static-libs tools"
 
-RDEPEND="icu? ( >=dev-libs/icu-3.3 )
+RDEPEND="elibc_glibc? ( <sys-libs/glibc-2.16 )
+	icu? ( >=dev-libs/icu-3.6 )
 	mpi? ( || ( sys-cluster/openmpi[cxx] sys-cluster/mpich2[cxx,threads] ) )
 	sys-libs/zlib
-	!!<=dev-libs/boost-1.35.0-r2
-	>=app-admin/eselect-boost-0.4"
+	!app-admin/eselect-boost"
 DEPEND="${RDEPEND}
-	dev-util/boost-build:${SLOT}"
+	=dev-util/boost-build-${MAJOR_V}*"
 
 S=${WORKDIR}/${MY_P}
 
-MAJOR_PV=$(replace_all_version_separators _ ${SLOT})
+MAJOR_PV=$(replace_all_version_separators _ ${MAJOR_V})
 BJAM="b2-${MAJOR_PV}"
-
-# Usage:
-# _add_line <line-to-add> <profile>
-# ... to add to specific profile
-# or
-# _add_line <line-to-add>
-# ... to add to all profiles for which the use flag set
-
-_add_line() {
-	if [[ -z "$2" ]]; then
-		echo "${1}" >> "${D}usr/share/boost-eselect/profiles/${SLOT}/default"
-		if use debug; then
-			echo "${1}" >> "${D}usr/share/boost-eselect/profiles/${SLOT}/debug"
-		fi
-	else
-		echo "${1}" >> "${D}usr/share/boost-eselect/profiles/${SLOT}/${2}"
-	fi
-}
 
 create_user-config.jam() {
 	local compiler compiler_version compiler_executable
@@ -87,32 +70,9 @@ ${python_configuration}
 __EOF__
 }
 
-pkg_pretend() {
-	if use test; then
-		CHECKREQS_DISK_BUILD="15G" check-reqs_pkg_pretend
-
-		ewarn "The tests may take several hours on a recent machine"
-		ewarn "but they will not fail (unless something weird happens ;-)"
-		ewarn "This is because the tests depend on the used compiler version"
-		ewarn "and the platform and upstream says that this is normal."
-		ewarn "If you are interested in the results, please take a look at the"
-		ewarn "generated results page:"
-		ewarn "  ${ROOT}usr/share/doc/${PF}/status/cs-$(uname).html"
-	fi
-}
-
 pkg_setup() {
 	if use python; then
 		python_pkg_setup
-	fi
-
-	if use debug; then
-		ewarn "The debug USE flag means that a second set of the boost libraries"
-		ewarn "will be built containing debug symbols. You'll be able to select them"
-		ewarn "using the boost-eselect module. But even though the optimization flags"
-		ewarn "you might have set are not stripped, there will be a performance"
-		ewarn "penalty and linking other packages against the debug version"
-		ewarn "of boost is _not_ recommended."
 	fi
 }
 
@@ -256,16 +216,6 @@ src_compile() {
 }
 
 src_install () {
-	dodir /usr/share/boost-eselect/profiles/${SLOT}
-	touch "${D}usr/share/boost-eselect/profiles/${SLOT}/default" || die
-	if use debug; then
-		 touch "${D}usr/share/boost-eselect/profiles/${SLOT}/debug" || die
-	fi
-
-	if use mpi && use python; then
-		_add_line "python_modules=\""
-	fi
-
 	installation() {
 		create_user-config.jam
 
@@ -313,24 +263,25 @@ src_install () {
 		if use python; then
 			rm -r ${PYTHON_DIRS} || die
 
-			# Move mpi.so Python module to Python site-packages directory and make sure it is slotted.
+			# Move mpi.so Python module to Python site-packages directory.
 			if use mpi; then
-				mkdir -p "${D}$(python_get_sitedir)/boost_${MAJOR_PV}" || die
-				mv "${D}usr/$(get_libdir)/mpi.so" "${D}$(python_get_sitedir)/boost_${MAJOR_PV}" || die
-				cat << EOF > "${D}$(python_get_sitedir)/boost_${MAJOR_PV}/__init__.py" || die
+				dodir $(python_get_sitedir)/mpi
+				mv "${D}usr/$(get_libdir)/mpi.so" "${D}$(python_get_sitedir)/mpi" || die
+				cat << EOF > "${D}$(python_get_sitedir)/mpi/__init__.py" || die
 import sys
 if sys.platform.startswith('linux'):
 	import DLFCN
 	flags = sys.getdlopenflags()
 	sys.setdlopenflags(DLFCN.RTLD_NOW | DLFCN.RTLD_GLOBAL)
-	from . import mpi
+	from .mpi import *
+	from .mpi import __author__, __copyright__, __date__, __license__, __version__
 	sys.setdlopenflags(flags)
 	del DLFCN, flags
 else:
-	from . import mpi
+	from .mpi import *
+	from .mpi import __author__, __copyright__, __date__, __license__, __version__
 del sys
 EOF
-				_add_line "$(python_get_sitedir)/mpi.py:boost_${MAJOR_PV}.mpi"
 			fi
 		fi
 	}
@@ -338,10 +289,6 @@ EOF
 		python_execute_function installation
 	else
 		installation
-	fi
-
-	if use mpi && use python; then
-		_add_line "\""
 	fi
 
 	use python || rm -rf "${D}usr/include/boost-${MAJOR_PV}/boost"/python* || die
@@ -363,22 +310,12 @@ EOF
 		insinto /usr/share/doc/${PF}/html
 		doins LICENSE_1_0.txt
 
-		dosym /usr/include/boost-${MAJOR_PV}/boost /usr/share/doc/${PF}/html/boost
+		dosym /usr/include/boost /usr/share/doc/${PF}/html/boost
 	fi
 
-	pushd "${D}usr/$(get_libdir)" > /dev/null || die
+	dosym boost-${MAJOR_PV}/boost /usr/include/boost
 
-	# Remove (unversioned) symlinks
-	# And check for what we remove to catch bugs
-	# got a better idea how to do it? tell me!
-	local f
-	for f in $(ls -1 ${LIBRARY_TARGETS} | grep -v "${MAJOR_PV}"); do
-		if [[ ! -h "${f}" ]]; then
-			eerror "Tried to remove '${f}' which is a regular file instead of a symlink"
-			die "Slotting/naming of the libraries broken!"
-		fi
-		rm "${f}" || die
-	done
+	pushd "${D}usr/$(get_libdir)" > /dev/null || die
 
 	# The threading libs obviously always gets the "-mt" (multithreading) tag
 	# some packages seem to have a problem with it. Creating symlinks...
@@ -390,7 +327,7 @@ EOF
 	fi
 	local lib
 	for lib in ${THREAD_LIBS}; do
-		dosym ${lib} "/usr/$(get_libdir)/$(sed -e 's/-mt//' <<< ${lib})"
+		dosym ${lib} "/usr/$(get_libdir)/${lib/-mt/}"
 	done
 
 	# The same goes for the mpi libs
@@ -402,7 +339,7 @@ EOF
 		fi
 		local lib
 		for lib in ${MPI_LIBS}; do
-			dosym ${lib} "/usr/$(get_libdir)/$(sed -e 's/-mt//' <<< ${lib})"
+			dosym ${lib} "/usr/$(get_libdir)/${lib/-mt/}"
 		done
 	fi
 
@@ -415,7 +352,7 @@ EOF
 
 		local lib
 		for lib in ${THREAD_DEBUG_LIBS}; do
-			dosym ${lib} "/usr/$(get_libdir)/$(sed -e 's/-mt//' <<< ${lib})"
+			dosym ${lib} "/usr/$(get_libdir)/${lib/-mt/}"
 		done
 
 		if use mpi; then
@@ -427,51 +364,33 @@ EOF
 
 			local lib
 			for lib in ${MPI_DEBUG_LIBS}; do
-				dosym ${lib} "/usr/$(get_libdir)/$(sed -e 's/-mt//' <<< ${lib})"
+				dosym ${lib} "/usr/$(get_libdir)/${lib/-mt/}"
 			done
 		fi
 	fi
 
-	# Create a subdirectory with completely unversioned symlinks
-	# and store the names in the profiles-file for eselect
-	dodir /usr/$(get_libdir)/boost-${MAJOR_PV}
-
-	_add_line "libs=\"" default
 	local f
 	for f in $(ls -1 ${LIBRARY_TARGETS} | grep -v debug); do
-		dosym ../${f} /usr/$(get_libdir)/boost-${MAJOR_PV}/${f/-${MAJOR_PV}}
-		_add_line "/usr/$(get_libdir)/${f}" default
+		dosym ${f} /usr/$(get_libdir)/${f/-${MAJOR_PV}}
 	done
-	_add_line "\"" default
 
 	if use debug; then
-		_add_line "libs=\"" debug
-		dodir /usr/$(get_libdir)/boost-${MAJOR_PV}-debug
+		dodir /usr/$(get_libdir)/boost-debug
 		local f
 		for f in $(ls -1 ${LIBRARY_TARGETS} | grep debug); do
-			dosym ../${f} /usr/$(get_libdir)/boost-${MAJOR_PV}-debug/${f/-${MAJOR_PV}-debug}
-			_add_line "/usr/$(get_libdir)/${f}" debug
+			dosym ../${f} /usr/$(get_libdir)/boost-debug/${f/-${MAJOR_PV}-debug}
 		done
-		_add_line "\"" debug
-
-		_add_line "includes=\"/usr/include/boost-${MAJOR_PV}/boost\"" debug
-		_add_line "suffix=\"-debug\"" debug
 	fi
-
-	_add_line "includes=\"/usr/include/boost-${MAJOR_PV}/boost\"" default
 
 	popd > /dev/null || die
 
 	if use tools; then
 		pushd dist/bin > /dev/null || die
 		# Append version postfix to binaries for slotting
-		_add_line "bins=\""
 		local b
 		for b in *; do
 			newbin "${b}" "${b}-${MAJOR_PV}"
-			_add_line "/usr/bin/${b}-${MAJOR_PV}"
 		done
-		_add_line "\""
 		popd > /dev/null || die
 
 		pushd dist > /dev/null || die
@@ -479,7 +398,6 @@ EOF
 		doins -r share/boostbook
 		# Append version postfix for slotting
 		mv "${D}usr/share/boostbook" "${D}usr/share/boostbook-${MAJOR_PV}" || die
-		_add_line "dirs=\"/usr/share/boostbook-${MAJOR_PV}\""
 		popd > /dev/null || die
 	fi
 
@@ -524,100 +442,21 @@ EOF
 	fi
 }
 
-src_test() {
-	testing() {
-		if use python; then
-			local dir
-			for dir in ${PYTHON_DIRS}; do
-				cp -pr ${dir}-${PYTHON_ABI} ${dir} || die "Copying of '${dir}-${PYTHON_ABI}' to '${dir}' failed"
-			done
-
-			if use mpi; then
-				cp -p stage/lib/mpi.so-${PYTHON_ABI} "${MPI_PYTHON_MODULE}" || die "Copying of 'stage/lib/mpi.so-${PYTHON_ABI}' to '${MPI_PYTHON_MODULE}' failed"
-				cp -p stage/lib/mpi.so-${PYTHON_ABI} stage/lib/mpi.so || die "Copying of 'stage/lib/mpi.so-${PYTHON_ABI}' to 'stage/lib/mpi.so' failed"
-			fi
-		fi
-
-		pushd tools/regression/build > /dev/null || die
-		einfo "Using the following command to build test helpers:"
-		einfo "${BJAM} -q -d+2 gentoorelease --user-config=../../../user-config.jam ${OPTIONS} process_jam_log compiler_status"
-
-		${BJAM} -q -d+2 \
-			gentoorelease \
-			--user-config=../../../user-config.jam \
-			${OPTIONS} \
-			process_jam_log compiler_status \
-			|| die "Building of regression test helpers failed"
-
-		popd > /dev/null || die
-		pushd status > /dev/null || die
-
-		# Some of the test-checks seem to rely on regexps
-		export LC_ALL="C"
-
-		# The following is largely taken from tools/regression/run_tests.sh,
-		# but adapted to our needs.
-
-		# Run the tests & write them into a file for postprocessing
-		einfo "Using the following command to test:"
-		einfo "${BJAM} --user-config=../user-config.jam ${OPTIONS} --dump-tests"
-
-		${BJAM} \
-			--user-config=../user-config.jam \
-			${OPTIONS} \
-			--dump-tests 2>&1 | tee regress.log || die
-
-		# Postprocessing
-		cat regress.log | "$(find ../tools/regression/build/bin/gcc-$(gcc-version)/gentoorelease -name process_jam_log)" --v2
-		if test $? != 0; then
-			die "Postprocessing the build log failed"
-		fi
-
-		cat > comment.html <<- __EOF__
-		<p>Tests are run on a <a href="http://www.gentoo.org">Gentoo</a> system.</p>
-__EOF__
-
-		# Generate the build log html summary page
-		"$(find ../tools/regression/build/bin/gcc-$(gcc-version)/gentoorelease -name compiler_status)" --v2 \
-			--comment comment.html "${S}" \
-			cs-$(uname).html cs-$(uname)-links.html
-		if test $? != 0; then
-			die "Generating the build log html summary page failed"
-		fi
-
-		# And do some cosmetic fixes :)
-		sed -i -e 's|http://www.boost.org/boost.png|boost.png|' *.html || die
-
-		popd > /dev/null || die
-
-		if use python; then
-			rm -r ${PYTHON_DIRS} || die
-		fi
-	}
-	if use python; then
-		python_execute_function -f -q testing
-	else
-		testing
-	fi
-}
-
 pkg_postinst() {
-	if use eselect; then
-		eselect boost update || ewarn "eselect boost update failed."
-	fi
-
-	if [[ ! -h "${ROOT}etc/eselect/boost/active" ]]; then
-		elog "No active boost version found. Calling eselect to select one..."
-		eselect boost update || ewarn "eselect boost update failed."
-	fi
-
 	if use mpi && use python; then
-		python_mod_optimize boost_${MAJOR_PV}
+		python_mod_optimize mpi
 	fi
 }
 
 pkg_postrm() {
 	if use mpi && use python; then
-		python_mod_cleanup boost_${MAJOR_PV}
+		python_mod_cleanup mpi
 	fi
 }
+
+# the tests will never fail because these are not intended as sanity
+# tests at all. They are more a way for upstream to check their own code
+# on new compilers. Since they would either be completely unreliable
+# (failing for no good reason) or completely useless (never failing)
+# there is no point in having them in the ebuild to begin with.
+src_test() { :; }
