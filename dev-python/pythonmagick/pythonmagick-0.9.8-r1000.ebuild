@@ -7,7 +7,7 @@ PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 *-jython *-pypy-*"
 PYTHON_EXPORT_PHASE_FUNCTIONS="1"
 
-inherit autotools boost-utils eutils python
+inherit autotools eutils python
 
 MY_PN="PythonMagick"
 MY_P="${MY_PN}-${PV}"
@@ -44,7 +44,6 @@ src_configure() {
 		sed -e "s/-lboost_python/-lboost_python-${PYTHON_ABI}/" -i Makefile.in
 		econf \
 			--disable-static \
-			--with-boost-libdir="$(boost-utils_get_libdir)" \
 			--with-boost-python="boost_python-${PYTHON_ABI}"
 	}
 	python_execute_function -s configuration
