@@ -7,7 +7,7 @@ PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 PYTHON_EXPORT_PHASE_FUNCTIONS="1"
 
-inherit boost-utils eutils flag-o-matic python versionator
+inherit eutils python versionator
 
 MY_P="${PN}-$(delete_version_separator 2)_release"
 
@@ -62,9 +62,6 @@ src_prepare() {
 }
 
 src_configure() {
-	append-cppflags -I$(boost-utils_get_includedir)
-	append-ldflags -L$(boost-utils_get_libdir)
-
 	python_src_configure \
 		--with-example-dir="${EPREFIX}/usr/share/doc/${PF}/examples" \
 		--with-html-dir="${EPREFIX}/usr/share/doc/${PF}/html" \
