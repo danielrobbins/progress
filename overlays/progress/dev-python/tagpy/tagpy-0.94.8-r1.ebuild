@@ -6,7 +6,7 @@ EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 
-inherit boost-utils distutils
+inherit distutils
 
 DESCRIPTION="Python Bindings for TagLib"
 HOMEPAGE="http://mathema.tician.de//software/tagpy http://pypi.python.org/pypi/tagpy"
@@ -34,8 +34,6 @@ src_prepare() {
 src_configure() {
 	configuration() {
 		python_execute "$(PYTHON)" configure.py \
-			--boost-inc-dir="$(boost-utils_get_includedir)" \
-			--boost-lib-dir="$(boost-utils_get_libdir)" \
 			--boost-python-libname="boost_python-${PYTHON_ABI}-mt" \
 			--taglib-inc-dir="${EPREFIX}/usr/include/taglib"
 	}
