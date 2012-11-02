@@ -7,7 +7,7 @@ PYTHON_DEPEND="python? ( <<>> )"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 
-inherit flag-o-matic multilib python toolchain-funcs versionator
+inherit flag-o-matic multilib multiprocessing python toolchain-funcs versionator
 
 MY_P=${PN}_$(replace_all_version_separators _)
 
@@ -18,7 +18,7 @@ SRC_URI="mirror://sourceforge/boost/${MY_P}.tar.bz2"
 LICENSE="Boost-1.0"
 MAJOR_V="$(get_version_component_range 1-2)"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc x86 ~amd64-fbsd ~x86-fbsd"
+KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh sparc x86 ~amd64-fbsd ~x86-fbsd"
 IUSE="debug doc elibc_glibc icu mpi python static-libs tools"
 
 RDEPEND="elibc_glibc? ( <sys-libs/glibc-2.16 )
@@ -124,17 +124,10 @@ src_configure() {
 }
 
 src_compile() {
-	local jobs
-	jobs=$( echo " ${MAKEOPTS} " | \
-		sed -e 's/ --jobs[= ]/ -j /g' \
-			-e 's/ -j \([1-9][0-9]*\)/ -j\1/g' \
-			-e 's/ -j\>/ -j1/g' | \
-			( while read -d ' ' j; do if [[ "${j#-j}" = "$j" ]]; then continue; fi; jobs="${j#-j}"; done; echo ${jobs} ) )
-	if [[ "${jobs}" != "" ]]; then NUMJOBS="-j"${jobs}; fi
-
 	export BOOST_ROOT="${S}"
 	PYTHON_DIRS=""
 	MPI_PYTHON_MODULE=""
+	NUMJOBS="-j$(makeopts_jobs)"
 
 	building() {
 		create_user-config.jam
