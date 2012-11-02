@@ -21,7 +21,7 @@ SRC_URI=""
 
 LICENSE="GPL-2"
 SLOT="0"
-IUSE="minimal"
+IUSE=""
 
 KEYWORDS=""
 
@@ -31,22 +31,10 @@ RDEPEND="${DEPEND}
 	|| ( >=sys-apps/coreutils-8.15 sys-freebsd/freebsd-bin )
 	sys-apps/gawk
 	sys-apps/grep
-	$(python_abi_depend virtual/python-argparse)
-	!minimal? (
-		app-admin/eclean-kernel
-		app-portage/diffmask
-		app-portage/flaggie
-		app-portage/install-mask
-		app-portage/smart-live-rebuild
-	)"
+	$(python_abi_depend virtual/python-argparse)"
 
 distutils_src_compile_pre_hook() {
 	python_execute VERSION="9999-${EGIT_VERSION}" "$(PYTHON)" setup.py set_version || die "setup.py set_version failed"
-}
-
-src_prepare() {
-	distutils_src_prepare
-	sed -e "/^_pkg_re =/s/a-zA-Z0-9+_/a-zA-Z0-9+._/" -i pym/gentoolkit/cpv.py
 }
 
 src_install() {
@@ -82,4 +70,12 @@ pkg_postinst() {
 	einfo "guide: http://www.gentoo.org/doc/en/gentoolkit.xml"
 	einfo
 	einfo "Another alternative to equery is app-portage/portage-utils"
+	einfo
+	einfo "Additional tools that may be of interest:"
+	einfo
+	einfo "    app-admin/eclean-kernel"
+	einfo "    app-portage/diffmask"
+	einfo "    app-portage/flaggie"
+	einfo "    app-portage/install-mask"
+	einfo "    app-portage/smart-live-rebuild"
 }
