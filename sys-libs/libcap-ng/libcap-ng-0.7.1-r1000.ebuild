@@ -18,10 +18,9 @@ SLOT="0"
 KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh sparc x86"
 IUSE="python static-libs"
 
-RDEPEND="sys-apps/attr"
-DEPEND="${RDEPEND}
-	sys-kernel/linux-headers
+DEPEND="sys-kernel/linux-headers
 	python? ( dev-lang/swig )"
+RDEPEND=""
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 
