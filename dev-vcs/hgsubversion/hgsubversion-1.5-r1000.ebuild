@@ -28,6 +28,13 @@ DEPEND="${RDEPEND}
 
 DOCS="README"
 
+src_prepare() {
+	distutils_src_prepare
+
+	# https://bitbucket.org/durin42/hgsubversion/issue/370
+	sed -e "s/test_invalid_message/_&/" -i tests/test_fetch_command.py
+}
+
 src_test() {
 	cd tests
 
