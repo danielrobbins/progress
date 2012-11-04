@@ -247,22 +247,21 @@ src_install () {
 			rm -r ${PYTHON_DIRS} || die
 
 			# Move mpi.so Python module to Python site-packages directory.
+			# https://svn.boost.org/trac/boost/ticket/2838
 			if use mpi; then
-				dodir $(python_get_sitedir)/mpi
-				mv "${D}usr/$(get_libdir)/mpi.so" "${D}$(python_get_sitedir)/mpi" || die
-				cat << EOF > "${D}$(python_get_sitedir)/mpi/__init__.py" || die
+				dodir $(python_get_sitedir)/boost
+				mv "${D}usr/$(get_libdir)/mpi.so" "${D}$(python_get_sitedir)/boost" || die
+				cat << EOF > "${D}$(python_get_sitedir)/boost/__init__.py" || die
 import sys
 if sys.platform.startswith('linux'):
 	import DLFCN
 	flags = sys.getdlopenflags()
 	sys.setdlopenflags(DLFCN.RTLD_NOW | DLFCN.RTLD_GLOBAL)
-	from .mpi import *
-	from .mpi import __author__, __copyright__, __date__, __license__, __version__
+	from . import mpi
 	sys.setdlopenflags(flags)
 	del DLFCN, flags
 else:
-	from .mpi import *
-	from .mpi import __author__, __copyright__, __date__, __license__, __version__
+	from . import mpi
 del sys
 EOF
 			fi
@@ -427,13 +426,13 @@ EOF
 
 pkg_postinst() {
 	if use mpi && use python; then
-		python_mod_optimize mpi
+		python_mod_optimize boost
 	fi
 }
 
 pkg_postrm() {
 	if use mpi && use python; then
-		python_mod_cleanup mpi
+		python_mod_cleanup boost
 	fi
 }
 
