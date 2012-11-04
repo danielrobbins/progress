@@ -71,6 +71,7 @@ pkg_setup() {
 
 src_prepare() {
 	epatch \
+		"${FILESDIR}/${PN}-1.51.0-mpi_c++11.patch" \
 		"${FILESDIR}/${PN}-1.48.0-mpi_python3.patch" \
 		"${FILESDIR}/${PN}-1.51.0-respect_python-buildid.patch" \
 		"${FILESDIR}/${PN}-1.51.0-support_dots_in_python-buildid.patch" \
@@ -93,6 +94,11 @@ src_configure() {
 	# bug 298489
 	if use ppc || use ppc64; then
 		[[ $(gcc-version) > 4.3 ]] && append-flags -mno-altivec
+	fi
+
+	# https://svn.boost.org/trac/boost/ticket/7636
+	if use icu; then
+		append-cxxflags $(icu-config --cxxflags)
 	fi
 
 	use icu && OPTIONS+=" -sICU_PATH=/usr"
