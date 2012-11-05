@@ -19,7 +19,7 @@ LICENSE="Boost-1.0"
 MAJOR_V="$(get_version_component_range 1-2)"
 SLOT="0/${MAJOR_V}"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd"
-IUSE="debug doc icu mpi python static-libs tools"
+IUSE="c++11 debug doc icu mpi python static-libs tools"
 
 RDEPEND="icu? ( >=dev-libs/icu-3.6:= )
 	!icu? ( virtual/libiconv )
@@ -33,6 +33,40 @@ S=${WORKDIR}/${MY_P}
 
 MAJOR_PV=$(replace_all_version_separators _ ${MAJOR_V})
 BJAM="b2-${MAJOR_PV}"
+
+c++11_checks() {
+	if use c++11; then
+		if [[ $(tc-getCXX) == *g++* ]]; then
+			if test-flag-CXX -std=gnu++11; then
+				append-cxxflags -std=gnu++11
+			else
+				eerror "GCC >=4.7 required for support for C++11"
+				die "C++11 not supported by currently used C++ compiler"
+			fi
+		else
+			if test-flag-CXX -std=c++11; then
+				append-cxxflags -std=c++11
+			else
+				die "C++11 not supported by currently used C++ compiler"
+			fi
+		fi
+	fi
+
+	if use icu; then
+		if use c++11; then
+			if ! $(tc-getCXX) -c -std=c++11 -x c++ - -o /dev/null <<< $'#include <unicode/ustring.h>\nint main(){u_strlen(NULL);}' &> /dev/null; then
+				die "Support for C++11 in Boost enabled, but ICU has been built with support for C++11 disabled"
+			fi
+		else
+			if ! $(tc-getCXX) -c -std=c++98 -x c++ - -o /dev/null <<< $'#include <unicode/ustring.h>\nint main(){u_strlen(NULL);}' &> /dev/null; then
+				die "Support for C++11 in Boost disabled, but ICU has been built with support for C++11 enabled"
+			fi
+		fi
+
+		# https://svn.boost.org/trac/boost/ticket/7636
+		append-cxxflags $(icu-config --cxxflags)
+	fi
+}
 
 create_user-config.jam() {
 	local compiler compiler_version compiler_executable
@@ -63,6 +97,10 @@ ${python_configuration}
 __EOF__
 }
 
+pkg_pretend() {
+	c++11_checks
+}
+
 pkg_setup() {
 	if use python; then
 		python_pkg_setup
@@ -85,6 +123,8 @@ src_prepare() {
 src_configure() {
 	OPTIONS=""
 
+	c++11_checks
+
 	if [[ ${CHOST} == *-darwin* ]]; then
 		# We need to add the prefix, and in two cases this exceeds, so prepare
 		# for the largest possible space allocation.
@@ -94,11 +134,6 @@ src_configure() {
 	# bug 298489
 	if use ppc || use ppc64; then
 		[[ $(gcc-version) > 4.3 ]] && append-flags -mno-altivec
-	fi
-
-	# https://svn.boost.org/trac/boost/ticket/7636
-	if use icu; then
-		append-cxxflags $(icu-config --cxxflags)
 	fi
 
 	use icu && OPTIONS+=" -sICU_PATH=/usr"
