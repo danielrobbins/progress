@@ -450,10 +450,13 @@ EOF
 }
 
 pkg_preinst() {
-	# /usr/include/boost was a symlink in older versions of Boost.
-	if [[ -L ${EROOT}usr/include/boost ]]; then
-		rm -f "${EROOT}usr/include/boost" || die
-	fi
+	# /usr/include/boost and /usr/share/boostbook were symlinks to directories in older versions of Boost.
+	local symlink
+	for symlink in "${EROOT}usr/include/boost" "${EROOT}usr/share/boostbook"; do
+		if [[ -L ${symlink} ]]; then
+			rm -f "${symlink}" || die
+		fi
+	done
 }
 
 pkg_postinst() {
