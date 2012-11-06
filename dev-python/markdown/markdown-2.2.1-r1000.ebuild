@@ -7,7 +7,7 @@ PYTHON_DEPEND="<<[xml]>>"
 PYTHON_MULTIPLE_ABIS="1"
 DISTUTILS_SRC_TEST="nosetests"
 
-inherit distutils eutils
+inherit distutils
 
 MY_PN="Markdown"
 MY_P=${MY_PN}-${PV}
@@ -29,12 +29,6 @@ S="${WORKDIR}/${MY_P}"
 DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES="1"
 
 src_prepare() {
-	epatch "${FILESDIR}/${P}-tests.patch"
-
-	# Fix support for Python 2.5.
-	# https://github.com/waylan/Python-Markdown/issues/113
-	sed -e "s/except Exception as e:/except Exception, e:/" -i markdown/odict.py
-
 	distutils_src_prepare
 
 	prepare_tests() {
