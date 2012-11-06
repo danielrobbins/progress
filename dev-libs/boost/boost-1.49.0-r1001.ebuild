@@ -283,7 +283,10 @@ EOF
 		installation
 	fi
 
-	use python || rm -rf "${D}usr/include/boost-${MAJOR_PV}/boost"/python* || die
+	mv "${D}usr/include/boost-${MAJOR_PV}/boost" "${D}usr/include/boost" || die
+	rmdir "${D}usr/include/boost-${MAJOR_PV}" || die
+
+	use python || rm -rf "${D}usr/include/boost/python"* || die
 
 	if use doc; then
 		find libs/*/* -iname "test" -or -iname "src" | xargs rm -rf
@@ -305,12 +308,10 @@ EOF
 		dosym /usr/include/boost /usr/share/doc/${PF}/html/boost
 	fi
 
-	dosym boost-${MAJOR_PV}/boost /usr/include/boost
-
 	pushd "${D}usr/$(get_libdir)" > /dev/null || die
 
-	# The threading libs obviously always gets the "-mt" (multithreading) tag
-	# some packages seem to have a problem with it. Creating symlinks...
+	# The threading and MPI libraries always have the "-mt" (multithreading) tag.
+	# Create symlinks for packages expecting libraries without the "-mt" tag.
 
 	if use static-libs; then
 		THREAD_LIBS="libboost_thread-mt-${MAJOR_PV}.a libboost_thread-mt-${MAJOR_PV}$(get_libname)"
@@ -322,7 +323,6 @@ EOF
 		dosym ${lib} "/usr/$(get_libdir)/${lib/-mt/}"
 	done
 
-	# The same goes for the mpi libs
 	if use mpi; then
 		if use static-libs; then
 			MPI_LIBS="libboost_mpi-mt-${MAJOR_PV}.a libboost_mpi-mt-${MAJOR_PV}$(get_libname)"
@@ -377,29 +377,13 @@ EOF
 	popd > /dev/null || die
 
 	if use tools; then
-		pushd dist/bin > /dev/null || die
-		# Append version postfix to binaries for slotting
-		local b
-		for b in *; do
-			newbin "${b}" "${b}-${MAJOR_PV}"
-		done
-		popd > /dev/null || die
+		dobin dist/bin/*
 
 		pushd dist > /dev/null || die
 		insinto /usr/share
 		doins -r share/boostbook
-		# Append version postfix for slotting
-		mv "${D}usr/share/boostbook" "${D}usr/share/boostbook-${MAJOR_PV}" || die
 		popd > /dev/null || die
 	fi
-
-	pushd status > /dev/null || die
-	if [[ -f regress.log ]]; then
-		docinto status
-		dohtml *.html ../boost.png
-		dodoc regress.log
-	fi
-	popd > /dev/null || die
 
 	# boost's build system truely sucks for not having a destdir.  Because for
 	# this reason we are forced to build with a prefix that includes the
@@ -431,6 +415,13 @@ EOF
 				done
 			fi
 		done
+	fi
+}
+
+pkg_preinst() {
+	# /usr/include/boost was a symlink in older versions of Boost.
+	if [[ -L ${EROOT}usr/include/boost ]]; then
+		rm -f "${EROOT}usr/include/boost" || die
 	fi
 }
 
