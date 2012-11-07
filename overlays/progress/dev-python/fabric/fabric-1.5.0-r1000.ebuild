@@ -22,7 +22,7 @@ KEYWORDS="amd64 x86"
 IUSE="doc"
 
 RDEPEND="$(python_abi_depend dev-python/pycrypto)
-	$(python_abi_depend ">=dev-python/ssh-1.7.14")"
+	$(python_abi_depend ">=dev-python/paramiko-1.9.0")"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
@@ -54,6 +54,6 @@ src_install() {
 	distutils_src_install
 
 	if use doc; then
-		dohtml -r docs/_build/html/*
+		dohtml -r docs/_build/html/
 	fi
 }
