@@ -8,7 +8,7 @@ PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 *-jython *-pypy-*"
 PYTHON_NONVERSIONED_EXECUTABLES=(".*")
 
-inherit distutils eutils
+inherit distutils
 
 DESCRIPTION="Collection of administration scripts for Gentoo"
 HOMEPAGE="http://www.gentoo.org/proj/en/portage/tools/index.xml"
@@ -30,17 +30,6 @@ RDEPEND="${DEPEND}
 
 distutils_src_compile_pre_hook() {
 	python_execute VERSION="${PVR}" "$(PYTHON)" setup.py set_version || die "setup.py set_version failed"
-}
-
-src_prepare() {
-	distutils_src_prepare
-	epatch "${FILESDIR}/${PV}-eread-413577.patch"
-	epatch "${FILESDIR}/${PV}-eshowkw-414627.patch"
-	epatch "${FILESDIR}/${PV}-gentoolkit-304125.patch"
-	epatch "${FILESDIR}/${PV}-euse-410365.patch"
-	epatch "${FILESDIR}/${PV}-eshowkw-409449.patch"
-	epatch "${FILESDIR}/${PV}-euse-422675.patch"
-	sed -e "/^_pkg_re =/s/a-zA-Z0-9+_/a-zA-Z0-9+._/" -i pym/gentoolkit/cpv.py
 }
 
 src_install() {
@@ -83,9 +72,13 @@ pkg_postinst() {
 	einfo "guide: http://www.gentoo.org/doc/en/gentoolkit.xml"
 	einfo
 	einfo "Another alternative to equery is app-portage/portage-utils"
-	ewarn
-	ewarn "glsa-check since gentoolkit 0.3 has modified some output,"
-	ewarn "options and default behavior. The list of injected GLSAs"
-	ewarn "has moved to /var/lib/portage/glsa_injected, please"
-	ewarn "run 'glsa-check -p affected' before copying the existing checkfile."
+	einfo
+	einfo "Additional tools that may be of interest:"
+	einfo
+	einfo "    app-admin/eclean-kernel"
+	einfo "    app-portage/diffmask"
+	einfo "    app-portage/flaggie"
+	einfo "    app-portage/install-mask"
+	einfo "    app-portage/portpeek"
+	einfo "    app-portage/smart-live-rebuild"
 }
