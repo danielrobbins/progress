@@ -16,12 +16,13 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.zip"
 LICENSE="MIT"
 SLOT="0"
 KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh sparc x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~ia64-linux ~x86-linux ~ppc-macos ~x86-macos"
-IUSE=""
+IUSE="doc"
 
-RDEPEND="$(python_abi_depend ">=dev-python/py-1.4.11")"
+RDEPEND="$(python_abi_depend ">=dev-python/py-1.4.12")"
 DEPEND="${RDEPEND}
 	app-arch/unzip
-	$(python_abi_depend dev-python/setuptools)"
+	$(python_abi_depend dev-python/setuptools)
+	doc? ( $(python_abi_depend dev-python/sphinx) )"
 
 DOCS="CHANGELOG README.txt"
 PYTHON_MODULES="pytest.py _pytest"
@@ -31,6 +32,17 @@ src_prepare() {
 
 	# Disable versioning of py.test script to avoid collision with versioning performed by python_merge_intermediate_installation_images().
 	sed -e "s/return points/return {'py.test': target}/" -i setup.py || die "sed failed"
+}
+
+src_compile() {
+	distutils_src_compile
+
+	if use doc; then
+		einfo "Generation of documentation"
+		pushd doc/en > /dev/null
+		PYTHONPATH="../.." emake html
+		popd > /dev/null
+	fi
 }
 
 src_test() {
@@ -46,4 +58,8 @@ src_test() {
 src_install() {
 	distutils_src_install
 	python_generate_wrapper_scripts -E -f -q "${ED}usr/bin/py.test"
+
+	if use doc; then
+		dohtml -r doc/en/_build/html/
+	fi
 }
