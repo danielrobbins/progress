@@ -17,11 +17,31 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.zip"
 LICENSE="MIT"
 SLOT="0"
 KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh sparc x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~ia64-linux ~x86-linux ~ppc-macos ~x86-macos"
-IUSE=""
+IUSE="doc"
 
 DEPEND="app-arch/unzip
 	$(python_abi_depend dev-python/setuptools)
+	doc? ( $(python_abi_depend dev-python/sphinx) )
 	test? ( $(python_abi_depend ">=dev-python/pytest-2") )"
 RDEPEND=""
 
 DOCS="CHANGELOG README.txt"
+
+src_compile() {
+	distutils_src_compile
+
+	if use doc; then
+		einfo "Generation of documentation"
+		pushd doc > /dev/null
+		PYTHONPATH=".." emake html
+		popd > /dev/null
+	fi
+}
+
+src_install() {
+	distutils_src_install
+
+	if use doc; then
+		dohtml -r doc/_build/html/
+	fi
+}
