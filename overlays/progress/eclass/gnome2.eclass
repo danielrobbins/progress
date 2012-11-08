@@ -132,6 +132,18 @@ gnome2_src_configure() {
 		G2CONF="${G2CONF} --disable-scrollkeeper"
 	fi
 
+	# Pass --disable-silent-rules when possible (not needed for eapi5), bug #429308
+	if has ${EAPI:-0} 0 1 2 3 4 4-python; then
+		if grep -q "disable-silent-rules" configure; then
+			G2CONF="${G2CONF} --disable-silent-rules"
+		fi
+	fi
+
+	# Pass --disable-schemas-install when possible
+	if grep -q "disable-schemas-install" configure; then
+		G2CONF="${G2CONF} --disable-schemas-install"
+	fi
+
 	# Avoid sandbox violations caused by gnome-vfs (bug #128289 and #345659)
 	addwrite "$(unset HOME; echo ~)/.gnome2"
 
