@@ -11,7 +11,7 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/jython"
-	EHG_REVISION="96bc2fa235a0"
+	EHG_REVISION="7ebb51401f54"
 fi
 
 PATCHSET_REVISION="20120610"
@@ -29,7 +29,7 @@ IUSE="+readline +ssl test +threads +xml"
 CDEPEND="dev-java/ant-core:0
 	dev-java/antlr:3
 	dev-java/asm:4
-	dev-java/guava:12
+	dev-java/guava:13
 	dev-java/jffi:1.2
 	dev-java/jline:0
 	dev-java/jnr-constants:0
@@ -46,8 +46,8 @@ RDEPEND=">=virtual/jre-1.6
 	!dev-java/jython:${SLOT}"
 DEPEND=">=virtual/jdk-1.6
 	${CDEPEND}
-	dev-java/junit:0
-	test? ( dev-java/ant-junit:0 )"
+	dev-java/junit:4
+	test? ( dev-java/ant-junit4:0 )"
 
 pkg_setup() {
 	java-pkg-2_pkg_setup
@@ -65,13 +65,13 @@ java_prepare() {
 	java-pkg_jar-from --into extlibs asm-4 asm.jar asm-4.0.jar
 	java-pkg_jar-from --into extlibs asm-4 asm-commons.jar asm-commons-4.0.jar
 	java-pkg_jar-from --into extlibs asm-4 asm-util.jar asm-util-4.0.jar
-	java-pkg_jar-from --into extlibs guava-12 guava.jar guava-11.0.2.jar
+	java-pkg_jar-from --into extlibs guava-13 guava.jar guava-11.0.2.jar
 	java-pkg_jar-from --into extlibs jffi-1.2 jffi.jar jffi-1.2.2-SNAPSHOT.jar
 	java-pkg_jar-from --into extlibs jline jline.jar jline-0.9.95-SNAPSHOT.jar
 	java-pkg_jar-from --into extlibs jnr-constants jnr-constants.jar jnr-constants-0.8.3-SNAPSHOT.jar
 	java-pkg_jar-from --into extlibs jnr-netdb-1.0 jnr-netdb.jar jnr-netdb-1.0.6-SNAPSHOT.jar
 	java-pkg_jar-from --into extlibs jnr-posix-2.1 jnr-posix.jar jnr-posix-2.1-SNAPSHOT.jar
-	java-pkg_jar-from --build-only --into extlibs junit junit.jar junit-3.8.2.jar
+	java-pkg_jar-from --build-only --into extlibs junit-4 junit.jar junit-4.10.jar
 	java-pkg_jar-from --into extlibs libreadline-java libreadline-java.jar libreadline-java-0.8.jar
 	java-pkg_jar-from --into extlibs jsr223 script-api.jar livetribe-jsr223-2.0.5.jar
 	java-pkg_jar-from --into extlibs servlet-api-2.5 servlet-api.jar servlet-api-2.5.jar
@@ -101,7 +101,7 @@ src_compile() {
 }
 
 src_test() {
-	ANT_TASKS="ant-junit" nonfatal eant prepare-test javatest launchertest regrtest-unix
+	ANT_TASKS="ant-junit4" nonfatal eant prepare-test javatest launchertest regrtest-unix
 }
 
 src_install() {
