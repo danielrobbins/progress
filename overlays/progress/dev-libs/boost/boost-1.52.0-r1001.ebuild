@@ -19,9 +19,9 @@ LICENSE="Boost-1.0"
 MAJOR_V="$(get_version_component_range 1-2)"
 SLOT="0/${MAJOR_V}"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd"
-IUSE="c++11 debug doc icu mpi python static-libs tools"
+IUSE="c++11 debug doc icu mpi +nls python static-libs +threads tools"
 
-RDEPEND="icu? ( >=dev-libs/icu-3.6:=::${REPOSITORY} )
+RDEPEND="icu? ( >=dev-libs/icu-3.6:=::${REPOSITORY}[c++11=] )
 	!icu? ( virtual/libiconv )
 	mpi? ( || ( sys-cluster/openmpi[cxx] sys-cluster/mpich2[cxx,threads] ) )
 	sys-libs/zlib
@@ -30,9 +30,6 @@ DEPEND="${RDEPEND}
 	=dev-util/boost-build-${MAJOR_V}*"
 
 S=${WORKDIR}/${MY_P}
-
-MAJOR_PV=$(replace_all_version_separators _ ${MAJOR_V})
-BJAM="b2-${MAJOR_PV}"
 
 c++11_checks() {
 	if use c++11; then
@@ -50,21 +47,6 @@ c++11_checks() {
 				die "C++11 not supported by currently used C++ compiler"
 			fi
 		fi
-	fi
-
-	if use icu; then
-		if use c++11; then
-			if ! $(tc-getCXX) -c -std=c++11 -x c++ - -o /dev/null <<< $'#include <unicode/ustring.h>\nint main(){u_strlen(NULL);}' &> /dev/null; then
-				die "Support for C++11 in Boost enabled, but ICU has been built with support for C++11 disabled"
-			fi
-		else
-			if ! $(tc-getCXX) -c -std=c++98 -x c++ - -o /dev/null <<< $'#include <unicode/ustring.h>\nint main(){u_strlen(NULL);}' &> /dev/null; then
-				die "Support for C++11 in Boost disabled, but ICU has been built with support for C++11 enabled"
-			fi
-		fi
-
-		# https://svn.boost.org/trac/boost/ticket/7636
-		append-cxxflags $(icu-config --cxxflags)
 	fi
 }
 
@@ -118,12 +100,32 @@ src_prepare() {
 		"${FILESDIR}/${PN}-1.48.0-python_linking.patch" \
 		"${FILESDIR}/${PN}-1.48.0-disable_icu_rpath.patch" \
 		"${FILESDIR}/remove-toolset-1.48.0.patch"
+
+	local file
+	for file in libs/context/src/asm/*.S; do
+		cat - >> "${file}" <<EOF
+
+#if defined(__linux__) && defined(__ELF__)
+.section .note.GNU-stack,"",%progbits
+#endif
+EOF
+	done
+}
+
+ejam() {
+	echo b2 "$@"
+	b2 "$@"
 }
 
 src_configure() {
-	OPTIONS=""
+	OPTIONS=($(usex debug gentoodebug gentoorelease) -j$(makeopts_jobs) -q -d+2 --user-config="${S}/user-config.jam")
 
 	c++11_checks
+
+	if use icu; then
+		# https://svn.boost.org/trac/boost/ticket/7636
+		append-cxxflags $(icu-config --cxxflags)
+	fi
 
 	if [[ ${CHOST} == *-darwin* ]]; then
 		# We need to add the prefix, and in two cases this exceeds, so prepare
@@ -136,60 +138,24 @@ src_configure() {
 		[[ $(gcc-version) > 4.3 ]] && append-flags -mno-altivec
 	fi
 
-	use icu && OPTIONS+=" -sICU_PATH=/usr"
-	use icu || OPTIONS+=" --disable-icu boost.locale.icu=off"
-	use mpi || OPTIONS+=" --without-mpi"
-	use python || OPTIONS+=" --without-python"
+	use icu && OPTIONS+=(-sICU_PATH="${EPREFIX}/usr")
+	use icu || OPTIONS+=(--disable-icu boost.locale.icu=off)
+	use mpi || OPTIONS+=(--without-mpi)
+	use nls || OPTIONS+=(--without-locale)
+	use python || OPTIONS+=(--without-python)
 
-	# https://svn.boost.org/trac/boost/attachment/ticket/2597/add-disable-long-double.patch
-	if use sparc || { use mips && [[ ${ABI} = "o32" ]]; } || use hppa || use arm || use x86-fbsd || use sh; then
-		OPTIONS+=" --disable-long-double"
-	fi
-
-	OPTIONS+=" pch=off --boost-build=/usr/share/boost-build-${MAJOR_PV} --prefix=\"${D}usr\" --layout=versioned"
-
-	if use static-libs; then
-		LINK_OPTS="link=shared,static"
-		LIBRARY_TARGETS="*.a *$(get_libname)"
-	else
-		LINK_OPTS="link=shared"
-		# There is no dynamically linked version of libboost_test_exec_monitor and libboost_exception.
-		LIBRARY_TARGETS="libboost_test_exec_monitor*.a libboost_exception*.a *$(get_libname)"
-	fi
+	OPTIONS+=(pch=off --boost-build=/usr/share/boost-build --prefix="${ED}usr" --layout=system threading=$(usex threads multi single) link=$(usex static-libs shared,static shared))
 }
 
 src_compile() {
 	export BOOST_ROOT="${S}"
 	PYTHON_DIRS=""
 	MPI_PYTHON_MODULE=""
-	NUMJOBS="-j$(makeopts_jobs)"
 
 	building() {
 		create_user-config.jam
 
-		einfo "Using the following command to build:"
-		einfo "${BJAM} ${NUMJOBS} -q -d+2 gentoorelease --user-config=user-config.jam ${OPTIONS} threading=single,multi ${LINK_OPTS} $(use python && echo --python-buildid=${PYTHON_ABI})"
-
-		${BJAM} ${NUMJOBS} -q -d+2 \
-			gentoorelease \
-			--user-config=user-config.jam \
-			${OPTIONS} threading=single,multi ${LINK_OPTS} \
-			$(use python && echo --python-buildid=${PYTHON_ABI}) \
-			|| die "Building of Boost libraries failed"
-
-		# ... and do the whole thing one more time to get the debug libs
-		if use debug; then
-			einfo "Using the following command to build:"
-			einfo "${BJAM} ${NUMJOBS} -q -d+2 gentoodebug --user-config=user-config.jam ${OPTIONS} threading=single,multi ${LINK_OPTS} --buildid=debug $(use python && echo --python-buildid=${PYTHON_ABI})"
-
-			${BJAM} ${NUMJOBS} -q -d+2 \
-				gentoodebug \
-				--user-config=user-config.jam \
-				${OPTIONS} threading=single,multi ${LINK_OPTS} \
-				--buildid=debug \
-				$(use python && echo --python-buildid=${PYTHON_ABI}) \
-				|| die "Building of Boost debug libraries failed"
-		fi
+		ejam "${OPTIONS[@]}" $(use python && echo --python-buildid=${PYTHON_ABI}) || die "Building of Boost libraries failed"
 
 		if use python; then
 			if [[ -z "${PYTHON_DIRS}" ]]; then
@@ -207,12 +173,12 @@ src_compile() {
 
 			if use mpi; then
 				if [[ -z "${MPI_PYTHON_MODULE}" ]]; then
-					MPI_PYTHON_MODULE="$(find bin.v2/libs/mpi/build/*/gentoorelease -name mpi.so)"
+					MPI_PYTHON_MODULE="$(find bin.v2/libs/mpi/build/*/gentoo* -name mpi.so)"
 					if [[ "$(echo "${MPI_PYTHON_MODULE}" | wc -l)" -ne 1 ]]; then
 						die "Multiple mpi.so files found"
 					fi
 				else
-					if [[ "${MPI_PYTHON_MODULE}" != "$(find bin.v2/libs/mpi/build/*/gentoorelease -name mpi.so)" ]]; then
+					if [[ "${MPI_PYTHON_MODULE}" != "$(find bin.v2/libs/mpi/build/*/gentoo* -name mpi.so)" ]]; then
 						die "Inconsistent structure of build directories"
 					fi
 				fi
@@ -229,14 +195,7 @@ src_compile() {
 
 	if use tools; then
 		pushd tools > /dev/null || die
-		einfo "Using the following command to build the tools:"
-		einfo "${BJAM} ${NUMJOBS} -q -d+2 gentoorelease --user-config=../user-config.jam ${OPTIONS}"
-
-		${BJAM} ${NUMJOBS} -q -d+2\
-			gentoorelease \
-			--user-config=../user-config.jam \
-			${OPTIONS} \
-			|| die "Building of Boost tools failed"
+		ejam "${OPTIONS[@]}" || die "Building of Boost tools failed"
 		popd > /dev/null || die
 	fi
 }
@@ -257,32 +216,11 @@ src_install () {
 			fi
 		fi
 
-		einfo "Using the following command to install:"
-		einfo "${BJAM} -q -d+2 gentoorelease --user-config=user-config.jam ${OPTIONS} threading=single,multi ${LINK_OPTS} --includedir=\"${D}usr/include\" --libdir=\"${D}usr/$(get_libdir)\" $(use python && echo --python-buildid=${PYTHON_ABI}) install"
-
-		${BJAM} -q -d+2 \
-			gentoorelease \
-			--user-config=user-config.jam \
-			${OPTIONS} threading=single,multi ${LINK_OPTS} \
+		ejam "${OPTIONS[@]}" \
 			--includedir="${D}usr/include" \
 			--libdir="${D}usr/$(get_libdir)" \
 			$(use python && echo --python-buildid=${PYTHON_ABI}) \
 			install || die "Installation of Boost libraries failed"
-
-		if use debug; then
-			einfo "Using the following command to install:"
-			einfo "${BJAM} -q -d+2 gentoodebug --user-config=user-config.jam ${OPTIONS} threading=single,multi ${LINK_OPTS} --includedir=\"${D}usr/include\" --libdir=\"${D}usr/$(get_libdir)\" --buildid=debug $(use python && echo --python-buildid=${PYTHON_ABI})"
-
-			${BJAM} -q -d+2 \
-				gentoodebug \
-				--user-config=user-config.jam \
-				${OPTIONS} threading=single,multi ${LINK_OPTS} \
-				--includedir="${D}usr/include" \
-				--libdir="${D}usr/$(get_libdir)" \
-				--buildid=debug \
-				$(use python && echo --python-buildid=${PYTHON_ABI}) \
-				install || die "Installation of Boost debug libraries failed"
-		fi
 
 		if use python; then
 			rm -r ${PYTHON_DIRS} || die
@@ -314,9 +252,6 @@ EOF
 		installation
 	fi
 
-	mv "${D}usr/include/boost-${MAJOR_PV}/boost" "${D}usr/include/boost" || die
-	rmdir "${D}usr/include/boost-${MAJOR_PV}" || die
-
 	use python || rm -rf "${D}usr/include/boost/python"* || die
 
 	if use doc; then
@@ -325,9 +260,7 @@ EOF
 			-A pdf,txt,cpp,hpp \
 			*.{htm,html,png,css} \
 			-r doc
-		dohtml \
-			-A pdf,txt \
-			-r tools
+		dohtml -A pdf,txt -r tools
 		insinto /usr/share/doc/${PF}/html
 		doins -r libs
 		doins -r more
@@ -341,67 +274,11 @@ EOF
 
 	pushd "${D}usr/$(get_libdir)" > /dev/null || die
 
-	# The threading and MPI libraries always have the "-mt" (multithreading) tag.
-	# Create symlinks for packages expecting libraries without the "-mt" tag.
-
-	if use static-libs; then
-		THREAD_LIBS="libboost_thread-mt-${MAJOR_PV}.a libboost_thread-mt-${MAJOR_PV}$(get_libname)"
-	else
-		THREAD_LIBS="libboost_thread-mt-${MAJOR_PV}$(get_libname)"
-	fi
-	local lib
-	for lib in ${THREAD_LIBS}; do
-		dosym ${lib} "/usr/$(get_libdir)/${lib/-mt/}"
-	done
-
-	if use mpi; then
-		if use static-libs; then
-			MPI_LIBS="libboost_mpi-mt-${MAJOR_PV}.a libboost_mpi-mt-${MAJOR_PV}$(get_libname)"
-		else
-			MPI_LIBS="libboost_mpi-mt-${MAJOR_PV}$(get_libname)"
-		fi
-		local lib
-		for lib in ${MPI_LIBS}; do
-			dosym ${lib} "/usr/$(get_libdir)/${lib/-mt/}"
-		done
-	fi
-
-	if use debug; then
-		if use static-libs; then
-			THREAD_DEBUG_LIBS="libboost_thread-mt-${MAJOR_PV}-debug$(get_libname) libboost_thread-mt-${MAJOR_PV}-debug.a"
-		else
-			THREAD_DEBUG_LIBS="libboost_thread-mt-${MAJOR_PV}-debug$(get_libname)"
-		fi
-
-		local lib
-		for lib in ${THREAD_DEBUG_LIBS}; do
-			dosym ${lib} "/usr/$(get_libdir)/${lib/-mt/}"
-		done
-
-		if use mpi; then
-			if use static-libs; then
-				MPI_DEBUG_LIBS="libboost_mpi-mt-${MAJOR_PV}-debug.a libboost_mpi-mt-${MAJOR_PV}-debug$(get_libname)"
-			else
-				MPI_DEBUG_LIBS="libboost_mpi-mt-${MAJOR_PV}-debug$(get_libname)"
-			fi
-
-			local lib
-			for lib in ${MPI_DEBUG_LIBS}; do
-				dosym ${lib} "/usr/$(get_libdir)/${lib/-mt/}"
-			done
-		fi
-	fi
-
-	local f
-	for f in $(ls -1 ${LIBRARY_TARGETS} | grep -v debug); do
-		dosym ${f} /usr/$(get_libdir)/${f/-${MAJOR_PV}}
-	done
-
-	if use debug; then
-		dodir /usr/$(get_libdir)/boost-debug
+	local ext=$(get_libname)
+	if use threads; then
 		local f
-		for f in $(ls -1 ${LIBRARY_TARGETS} | grep debug); do
-			dosym ../${f} /usr/$(get_libdir)/boost-debug/${f/-${MAJOR_PV}-debug}
+		for f in *${ext}; do
+			dosym ${f} /usr/$(get_libdir)/${f/${ext}/-mt${ext}}
 		done
 	fi
 
@@ -410,10 +287,8 @@ EOF
 	if use tools; then
 		dobin dist/bin/*
 
-		pushd dist > /dev/null || die
 		insinto /usr/share
-		doins -r share/boostbook
-		popd > /dev/null || die
+		doins -r dist/share/boostbook
 	fi
 
 	# boost's build system truely sucks for not having a destdir.  Because for
