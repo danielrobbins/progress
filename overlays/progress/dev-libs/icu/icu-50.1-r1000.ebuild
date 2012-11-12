@@ -4,7 +4,7 @@
 
 EAPI="5"
 
-inherit eutils toolchain-funcs versionator
+inherit eutils flag-o-matic toolchain-funcs versionator
 
 MAJOR_VERSION="$(get_version_component_range 1)"
 if [[ "${PV}" =~ ^[[:digit:]]+_rc[[:digit:]]*$ ]]; then
@@ -26,7 +26,7 @@ SRC_URI="${BASE_URI}/${SRC_ARCHIVE}
 LICENSE="BSD"
 SLOT="0/${MAJOR_VERSION}"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd"
-IUSE="debug doc examples static-libs"
+IUSE="c++11 debug doc examples static-libs"
 
 DEPEND="doc? ( app-arch/unzip )"
 RDEPEND=""
@@ -47,6 +47,10 @@ src_unpack() {
 }
 
 src_prepare() {
+	epatch "${FILESDIR}/${PN}-4.8.1-fix_binformat_fonts.patch"
+	epatch "${FILESDIR}/${PN}-4.8.1.1-fix_ltr.patch"
+	epatch "${FILESDIR}/${PN}-50.1-c++11.patch"
+
 	sed -e "s/#CXXFLAGS =/CXXFLAGS =/" -i config/icu.pc.in || die "sed failed"
 
 	# Do not hardcode flags in icu-config and icu-*.pc files.
@@ -56,32 +60,30 @@ src_prepare() {
 		sed -e "/^${variable} =.*/s: *@${variable}@\( *$\)\?::" -i config/icu.pc.in config/Makefile.inc.in || die "sed failed"
 	done
 
-	local cplusplus_version="1998"
-	if [[ "$(tc-getCXX)" == *clang* ]]; then
-		# Store -std=c++11 flag in CXXFLAGS in icu-config and icu-*.pc files for API consumers, if this flag is supported and required.
-		if $(tc-getCXX) -c -std=c++11 -x c++ - -o /dev/null <<< "char16_t string[] = u\"...\";" &> /dev/null && ! $(tc-getCXX) -c -x c++ - -o /dev/null <<< "char16_t string[] = u\"...\";" &> /dev/null; then
-			cplusplus_version="2011"
-			sed -e "/^CXXFLAGS =/s/ *$/ -std=c++11/" -i config/icu.pc.in config/Makefile.inc.in || die "sed failed"
+	if use c++11; then
+		if [[ "$(tc-getCXX)" == *g++* ]]; then
+			if test-flag-CXX -std=gnu++11; then
+				# Store ABI flags in CXXFLAGS in icu-config and icu-*.pc files for API consumers.
+				sed -e "/^CXXFLAGS =/s/ *$/ -std=gnu++11 -DUCHAR_TYPE=char16_t/" -i config/icu.pc.in config/Makefile.inc.in || die "sed failed"
+			else
+				eerror "GCC >=4.7 required for support for C++11"
+				die "C++11 not supported by currently used C++ compiler"
+			fi
+		else
+			if test-flag-CXX -std=c++11; then
+				# Store ABI flags in CXXFLAGS in icu-config and icu-*.pc files for API consumers.
+				sed -e "/^CXXFLAGS =/s/ *$/ -std=c++11 -DUCHAR_TYPE=char16_t/" -i config/icu.pc.in config/Makefile.inc.in || die "sed failed"
+			else
+				die "C++11 not supported by currently used C++ compiler"
+			fi
 		fi
-	else
-		# Store -std=gnu++11 flag in CXXFLAGS in icu-config and icu-*.pc files for API consumers, if this flag is supported and required.
-		if $(tc-getCXX) -c -std=gnu++11 -x c++ - -o /dev/null <<< "char16_t string[] = u\"...\";" &> /dev/null && ! $(tc-getCXX) -c -x c++ - -o /dev/null <<< "char16_t string[] = u\"...\";" &> /dev/null; then
-			cplusplus_version="2011"
-			sed -e "/^CXXFLAGS =/s/ *$/ -std=gnu++11/" -i config/icu.pc.in config/Makefile.inc.in || die "sed failed"
-		fi
+		# Set type of UChar in C++ mode to char16_t.
+		append-cxxflags -DUCHAR_TYPE=char16_t
+		# Hardcode type of UChar in C++ mode in installed headers.
+		sed -e "/^    typedef UCHAR_TYPE UChar;$/a #elif defined(__cplusplus)\n    typedef char16_t UChar;" -i common/unicode/umachine.h || die "sed failed"
 	fi
 
-	# Hardcode type of UChar in C++ mode in installed headers.
-	if [[ "${cplusplus_version}" == "2011" ]]; then
-		sed -e "s/^\(#   if \)(\(defined(__cplusplus)\) && __cplusplus >= 201103L)$/\1\2/" -i common/unicode/platform.h || die "sed failed"
-	else
-		sed -e "s/^\(#   if \)(defined(__cplusplus) && __cplusplus >= 201103L)$/\10/" -i common/unicode/platform.h || die "sed failed"
-	fi
-
-	sed -e "s/#define U_DISABLE_RENAMING 0/#define U_DISABLE_RENAMING 1/" -i common/unicode/uconfig.h
-
-	epatch "${FILESDIR}/${PN}-4.8.1-fix_binformat_fonts.patch"
-	epatch "${FILESDIR}/${PN}-4.8.1.1-fix_ltr.patch"
+	sed -e "s/#define U_DISABLE_RENAMING 0/#define U_DISABLE_RENAMING 1/" -i common/unicode/uconfig.h || die "sed failed"
 
 	# https://ssl.icu-project.org/trac/ticket/9718
 	sed -e "/#include \"locmap.h\"/i #include \"uposixdefs.h\"" -i io/ufile.c || die "sed failed"
