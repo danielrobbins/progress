@@ -17,9 +17,9 @@ SRC_URI="mirror://sourceforge/boost/${MY_P}.tar.bz2"
 
 LICENSE="Boost-1.0"
 MAJOR_V="$(get_version_component_range 1-2)"
-SLOT="0/${MAJOR_V}"
+SLOT="0/$(get_version_component_range 1-3)"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd"
-IUSE="c++11 debug doc icu mpi +nls python static-libs +threads tools"
+IUSE="c++11 +context debug doc icu mpi +nls python static-libs +threads tools"
 
 RDEPEND="icu? ( >=dev-libs/icu-3.6:=::${REPOSITORY}[c++11=] )
 	!icu? ( virtual/libiconv )
@@ -138,6 +138,7 @@ src_configure() {
 		[[ $(gcc-version) > 4.3 ]] && append-flags -mno-altivec
 	fi
 
+	use context || OPTIONS+=(--without-context)
 	use icu && OPTIONS+=(-sICU_PATH="${EPREFIX}/usr")
 	use icu || OPTIONS+=(--disable-icu boost.locale.icu=off)
 	use mpi || OPTIONS+=(--without-mpi)
