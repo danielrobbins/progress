@@ -26,6 +26,13 @@ DEPEND="${RDEPEND}
 
 DOCS="CHANGES.txt README.txt"
 
+src_prepare() {
+	distutils_src_prepare
+
+	# https://bitbucket.org/olauzanne/pyquery/issue/65
+	sed -e "496s/test_post/_&/" -i pyquery/test.py
+}
+
 src_install() {
 	distutils_src_install
 
