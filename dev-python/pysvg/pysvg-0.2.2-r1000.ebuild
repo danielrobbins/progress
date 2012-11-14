@@ -8,14 +8,23 @@ PYTHON_RESTRICTED_ABIS="3.* *-jython"
 
 inherit distutils
 
-DESCRIPTION="Python SVG document creation library"
+DESCRIPTION="Python SVG Library"
 HOMEPAGE="http://codeboje.de/pysvg/ http://code.google.com/p/pysvg/ http://pypi.python.org/pypi/pysvg"
-SRC_URI="http://pysvg.googlecode.com/files/${P}.zip"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.zip"
 
-LICENSE="BSD"
+LICENSE="BSD-2"
 SLOT="0"
 KEYWORDS="amd64 x86"
-IUSE=""
+IUSE="doc"
 
-DEPEND="app-arch/unzip"
+DEPEND="app-arch/unzip
+	$(python_abi_depend dev-python/setuptools)"
 RDEPEND=""
+
+src_install() {
+	distutils_src_install
+
+	if use doc; then
+		dohtml -r doc/html/
+	fi
+}
