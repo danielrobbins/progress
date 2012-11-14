@@ -3,7 +3,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5 3.*"
+PYTHON_RESTRICTED_ABIS="2.5"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython *-pypy-*"
 DISTUTILS_SRC_TEST="nosetests"
 
@@ -21,7 +21,7 @@ IUSE="test"
 RDEPEND="$(python_abi_depend -e "${PYTHON_TESTS_FAILURES_TOLERANT_ABIS}" dev-python/pycrypto)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
-	test? ( $(python_abi_depend dev-python/unittest2) )"
+	test? ( $(python_abi_depend -i "2.6" dev-python/unittest2) )"
 
 src_prepare() {
 	distutils_src_prepare
