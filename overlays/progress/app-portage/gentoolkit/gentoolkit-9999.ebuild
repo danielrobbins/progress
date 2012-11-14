@@ -77,5 +77,6 @@ pkg_postinst() {
 	einfo "    app-portage/diffmask"
 	einfo "    app-portage/flaggie"
 	einfo "    app-portage/install-mask"
+	einfo "    app-portage/portpeek"
 	einfo "    app-portage/smart-live-rebuild"
 }
