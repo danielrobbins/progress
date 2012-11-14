@@ -21,7 +21,7 @@ RDEPEND="$(python_abi_depend dev-python/apipkg)
 	$(python_abi_depend dev-python/execnet)
 	$(python_abi_depend dev-python/py)
 	git? ( $(python_abi_depend dev-python/dulwich) )
-	mercurial? ( $(python_abi_depend dev-vcs/mercurial) )
+	mercurial? ( $(python_abi_depend -e "*-pypy-*" dev-vcs/mercurial) )
 	subversion? ( $(python_abi_depend dev-python/subvertpy) )"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
