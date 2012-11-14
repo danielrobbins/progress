@@ -5,7 +5,7 @@
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
+PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
 
 inherit distutils
 
@@ -58,9 +58,6 @@ src_prepare() {
 		-e "s/testBroadcast/_&/" \
 		-e "s/testGetIP/_&/" \
 		-i tests/PyroTests/test_socket.py
-
-	# Avoid test failure with Python 2.6.
-	sed -e "s/testPoolGrowth/_&/" -i tests/PyroTests/test_threadpool.py
 }
 
 src_compile() {
@@ -87,10 +84,7 @@ src_install() {
 	distutils_src_install
 
 	if use doc; then
-		pushd build/sphinx/html > /dev/null
-		insinto /usr/share/doc/${PF}/html
-		doins -r [a-z]* _static
-		popd > /dev/null
+		dohtml -r build/sphinx/html/
 	fi
 
 	if use examples; then
