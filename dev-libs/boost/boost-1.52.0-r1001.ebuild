@@ -19,7 +19,7 @@ LICENSE="Boost-1.0"
 MAJOR_V="$(get_version_component_range 1-2)"
 SLOT="0/$(get_version_component_range 1-3)"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd"
-IUSE="c++11 +context debug doc icu mpi +nls python static-libs +threads tools"
+IUSE="c++11 context debug doc icu mpi +nls python static-libs +threads tools"
 
 RDEPEND="icu? ( >=dev-libs/icu-3.6:=::${REPOSITORY}[c++11(-)=] )
 	!icu? ( virtual/libiconv )
@@ -253,7 +253,17 @@ EOF
 		installation
 	fi
 
-	use python || rm -rf "${D}usr/include/boost/python"* || die
+	if ! use context; then
+		rm -r "${D}usr/include/boost/context" || die
+	fi
+
+	if ! use nls; then
+		rm -r "${D}usr/include/boost/locale"* || die
+	fi
+
+	if ! use python; then
+		rm -r "${D}usr/include/boost/python"* || die
+	fi
 
 	if use doc; then
 		find libs/*/* -iname "test" -or -iname "src" | xargs rm -rf
