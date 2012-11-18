@@ -9,7 +9,7 @@
 # Exports portage base functions used by ebuilds written for packages using the
 # GNOME framework. For additional functions, see gnome2-utils.eclass.
 
-inherit fdo-mime libtool gnome.org gnome2-utils
+inherit eutils fdo-mime libtool gnome.org gnome2-utils
 
 case "${EAPI:-0}" in
 	0|1)
@@ -29,9 +29,13 @@ G2CONF=${G2CONF:-""}
 
 # @ECLASS-VARIABLE: GNOME2_LA_PUNT
 # @DESCRIPTION:
-# Should we delete all the .la files?
+# Should we delete ALL the .la files?
 # NOT to be used without due consideration.
-GNOME2_LA_PUNT=${GNOME2_LA_PUNT:-"no"}
+if has ${EAPI:-0} 0 1 2 3 4 4-python; then
+	GNOME2_LA_PUNT=${GNOME2_LA_PUNT:-"no"}
+else
+	GNOME2_LA_PUNT=${GNOME2_LA_PUNT:-""}
+fi
 
 # @ECLASS-VARIABLE: ELTCONF
 # @DEFAULT-UNSET
@@ -197,22 +201,30 @@ gnome2_src_install() {
 
 	# Do not keep /var/lib/scrollkeeper because:
 	# 1. The scrollkeeper database is regenerated at pkg_postinst()
-	# 2. ${installation_prefix}/var/lib/scrollkeeper contains only indexes for the current pkg
+	# 2. ${installation_prefix}var/lib/scrollkeeper contains only indexes for the current pkg
 	#    thus it makes no sense if pkg_postinst ISN'T run for some reason.
 	rm -rf "${installation_prefix}${sk_tmp_dir}"
 	rmdir "${installation_prefix}var/lib" 2>/dev/null
 	rmdir "${installation_prefix}var" 2>/dev/null
 
 	# Make sure this one doesn't get in the portage db
-	rm -fr "${installation_prefix}/usr/share/applications/mimeinfo.cache"
+	rm -fr "${installation_prefix}usr/share/applications/mimeinfo.cache"
 
 	# Delete all .la files
-	if [[ "${GNOME2_LA_PUNT}" != "no" ]]; then
-		ebegin "Removing .la files"
-		if ! { has static-libs ${IUSE//+} && use static-libs; }; then
-			find "${GNOME2_DESTDIR:-${D}}" -name '*.la' -exec rm -f {} + || die "la file removal failed"
+	if has ${EAPI:-0} 0 1 2 3 4 4-python; then
+		if [[ "${GNOME2_LA_PUNT}" != "no" ]]; then
+			ebegin "Removing .la files"
+			if ! { has static-libs ${IUSE//+} && use static-libs; }; then
+				find "${GNOME2_DESTDIR:-${D}}" -name '*.la' -exec rm -f {} + || die "la file removal failed"
+			fi
+			eend
 		fi
-		eend
+	else
+		case "${GNOME2_LA_PUNT}" in
+			yes)    prune_libtool_files --modules;;
+			no)     ;;
+			*)      prune_libtool_files;;
+		esac
 	fi
 }
 
