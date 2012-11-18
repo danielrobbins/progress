@@ -3,13 +3,13 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5 3.*"
+PYTHON_RESTRICTED_ABIS="2.5 3.1"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 DISTUTILS_SRC_TEST="py.test"
 
 inherit distutils
 
-DESCRIPTION="Flexible static resources for web applications."
+DESCRIPTION="Flexible static resources for web applications"
 HOMEPAGE="http://fanstatic.org https://bitbucket.org/fanstatic/fanstatic http://pypi.python.org/pypi/fanstatic"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
@@ -18,22 +18,8 @@ SLOT="0"
 KEYWORDS="amd64 ~ppc ~ppc64 sparc x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux"
 IUSE=""
 
-RDEPEND="$(python_abi_depend dev-python/paste)
-	$(python_abi_depend dev-python/webob)"
+RDEPEND="$(python_abi_depend dev-python/webob)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
 DOCS="CHANGES.txt CREDITS.txt README.txt"
-
-src_test() {
-	python_execute_py.test -e -P 'build-${PYTHON_ABI}/lib' 'build-${PYTHON_ABI}/lib'
-}
-
-src_install() {
-	distutils_src_install
-
-	delete_tests() {
-		rm -fr "${ED}$(python_get_sitedir)/fanstatic/"{conftest.py,test_*.py,testdata}
-	}
-	python_execute_function -q delete_tests
-}
