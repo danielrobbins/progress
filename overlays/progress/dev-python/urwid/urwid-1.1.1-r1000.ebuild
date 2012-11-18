@@ -18,11 +18,14 @@ SRC_URI="http://excess.org/urwid/${P}.tar.gz"
 LICENSE="LGPL-2.1"
 SLOT="0"
 KEYWORDS="amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 sparc x86 ~x86-interix ~amd64-linux ~ia64-linux ~x86-linux"
-IUSE="doc examples"
+IUSE="doc examples glib test twisted"
+REQUIRED_USE="test? ( glib twisted )"
 
-DEPEND="$(python_abi_depend dev-python/setuptools)
+RDEPEND="glib? ( $(python_abi_depend -i "2.*" dev-python/pygobject:2) )
+	twisted? ( $(python_abi_depend -i "2.*" dev-python/twisted) )"
+DEPEND="${RDEPEND}
+	$(python_abi_depend dev-python/setuptools)
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
-RDEPEND=""
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 
