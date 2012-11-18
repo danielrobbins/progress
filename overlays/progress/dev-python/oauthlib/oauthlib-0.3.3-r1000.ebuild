@@ -25,17 +25,9 @@ DEPEND="${RDEPEND}
 
 src_prepare() {
 	distutils_src_prepare
-	touch tests/__init__.py
+
+	sed -e "s/find_packages(exclude=('docs'))/find_packages(exclude=('docs', 'tests*'))/" -i setup.py
 
 	# multiprocessing module is missing in Jython.
 	sed -e "/^import multiprocessing$/d" -i setup.py
-}
-
-src_install() {
-	distutils_src_install
-
-	delete_tests() {
-		rm -fr "${ED}$(python_get_sitedir)/tests"
-	}
-	python_execute_function -q delete_tests
 }
