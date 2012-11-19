@@ -31,13 +31,12 @@ RDEPEND="$(python_abi_depend net-zope/namespaces-zope[Products])
 	$(python_abi_depend net-zope/zctextindex)
 	$(python_abi_depend net-zope/zexceptions)
 	$(python_abi_depend net-zope/zodb)
-	$(python_abi_depend ">=net-zope/zope-2.12.3")
+	$(python_abi_depend net-zope/zope)
 	$(python_abi_depend net-zope/zope.component)
 	$(python_abi_depend net-zope/zope.configuration)
 	$(python_abi_depend net-zope/zope.event)
 	$(python_abi_depend net-zope/zope.formlib)
 	$(python_abi_depend net-zope/zope.interface)
-	$(python_abi_depend net-zope/zope.location)
 	$(python_abi_depend net-zope/zope.schema)
 	$(python_abi_depend net-zope/zope.testing)"
 DEPEND="${RDEPEND}
@@ -68,9 +67,6 @@ src_install() {
 	distutils_src_install
 
 	if use doc; then
-		pushd build/sphinx/html > /dev/null
-		insinto /usr/share/doc/${PF}/html
-		doins -r [a-z]* _static
-		popd > /dev/null
+		dohtml -r build/sphinx/html/
 	fi
 }
