@@ -11,7 +11,7 @@ inherit distutils
 
 DESCRIPTION="zope.interface extension for defining data schemas"
 HOMEPAGE="http://pypi.python.org/pypi/zope.schema"
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.zip"
 
 LICENSE="ZPL"
 SLOT="0"
@@ -24,6 +24,7 @@ RDEPEND="$(python_abi_depend net-zope/namespaces-zope[zope])
 	$(python_abi_depend ">=net-zope/zope.interface-3.6.0")
 	$(python_abi_depend net-zope/zope.i18nmessageid)"
 DEPEND="${RDEPEND}
+	app-arch/unzip
 	$(python_abi_depend dev-python/setuptools)
 	doc? ( $(python_abi_depend dev-python/sphinx) )
 	test? ( $(python_abi_depend net-zope/zope.testing) )"
