@@ -21,12 +21,13 @@ IUSE="test"
 RDEPEND="$(python_abi_depend -e "${PYTHON_TESTS_FAILURES_TOLERANT_ABIS}" dev-python/pycrypto)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
-	test? ( $(python_abi_depend -i "2.6" dev-python/unittest2) )"
+	test? (
+		$(python_abi_depend dev-python/mock)
+		$(python_abi_depend -i "2.6" dev-python/unittest2)
+	)"
 
 src_prepare() {
 	distutils_src_prepare
-
-	sed -e "s/find_packages(exclude=('docs'))/find_packages(exclude=('docs', 'tests*'))/" -i setup.py
 
 	# multiprocessing module is missing in Jython.
 	sed -e "/^import multiprocessing$/d" -i setup.py
