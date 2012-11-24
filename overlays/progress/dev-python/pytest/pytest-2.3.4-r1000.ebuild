@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 # http://bugs.jython.org/issue1609
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
@@ -20,7 +20,6 @@ IUSE="doc"
 
 RDEPEND="$(python_abi_depend ">=dev-python/py-1.4.12")"
 DEPEND="${RDEPEND}
-	app-arch/unzip
 	$(python_abi_depend dev-python/setuptools)
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
 
