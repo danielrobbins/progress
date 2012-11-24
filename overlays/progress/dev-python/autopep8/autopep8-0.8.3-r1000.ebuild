@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5"
 # http://bugs.jython.org/issue1982
@@ -24,6 +24,13 @@ DEPEND="$(python_abi_depend ">=dev-python/pep8-1.3.2")
 RDEPEND="${DEPEND}"
 
 PYTHON_MODULES="${PN}.py"
+
+src_prepare() {
+	distutils_src_prepare
+
+	# https://github.com/hhatto/autopep8/issues/54
+	sed -e "s/test_fix_file/_&/" -i test/test_autopep8.py
+}
 
 src_test() {
 	testing() {
