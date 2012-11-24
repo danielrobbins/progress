@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 3.* *-jython"
 DISTUTILS_SRC_TEST="trial"
@@ -59,6 +59,13 @@ src_prepare() {
 		-e "s/sqlalchemy-migrate ==0.6.1, ==0.7.0, ==0.7.1, ==0.7.2/sqlalchemy-migrate ==0.6, ==0.7/" \
 		-e "s/python-dateutil==1.5/python-dateutil/" \
 		-i setup.py
+
+	# http://trac.buildbot.net/ticket/2403
+	sed \
+		-e "s/test_start(/_&/" \
+		-e "s/test_start_no_daemon/_&/" \
+		-e "s/test_start_quiet/_&/" \
+		-i buildbot/test/unit/test_scripts_start.py
 }
 
 src_compile() {
