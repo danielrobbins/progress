@@ -11,13 +11,13 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="f6d04f5cff31"
+	EHG_REVISION="c9d205e2dd02"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
 fi
 
-PATCHSET_REVISION="20120916"
+PATCHSET_REVISION="20121021"
 
 DESCRIPTION="Python is an interpreted, interactive, object-oriented programming language."
 HOMEPAGE="http://www.python.org/"
@@ -31,12 +31,13 @@ else
 fi
 
 LICENSE="PSF-2"
-SLOT="3.2"
+SLOT="3.3"
 PYTHON_ABI="${SLOT}"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh sparc x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd"
-IUSE="build doc elibc_uclibc examples gdbm ipv6 +ncurses +readline sqlite +ssl +threads tk +wide-unicode wininst +xml"
+KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd"
+IUSE="build doc elibc_uclibc examples gdbm ipv6 +ncurses +readline sqlite +ssl +threads tk wininst +xml"
 
 RDEPEND="app-arch/bzip2
+		app-arch/xz-utils
 		>=sys-libs/zlib-1.1.3
 		virtual/libffi
 		virtual/libintl
@@ -70,10 +71,8 @@ fi
 pkg_setup() {
 	python_pkg_setup
 
-	if [[ "${PV}" =~ ^3\.2(\.[1234])?(_pre)? ]]; then
-		rm -f "${EROOT}usr/$(get_libdir)/llibpython3.so"
-	else
-		die "Deprecated code not deleted"
+	if tc-is-cross-compiler && ! ROOT="/" has_version "${CATEGORY}/${PN}:${SLOT}"; then
+		die "Cross-compilation requires ${CATEGORY}/${PN}:${SLOT} installed in host system"
 	fi
 }
 
@@ -107,11 +106,6 @@ src_prepare() {
 		fi
 	fi
 
-	local excluded_patches
-	if ! tc-is-cross-compiler; then
-		excluded_patches="*_all_crosscompile.patch"
-	fi
-
 	local patchset_dir
 	if [[ "${PV}" == *_pre* ]]; then
 		patchset_dir="${FILESDIR}/${SLOT}-${PATCHSET_REVISION}"
@@ -121,7 +115,7 @@ src_prepare() {
 		patchset_dir="${WORKDIR}/${MY_PV}"
 	fi
 
-	EPATCH_EXCLUDE="${excluded_patches}" EPATCH_SUFFIX="patch" epatch "${patchset_dir}"
+	EPATCH_SUFFIX="patch" epatch "${patchset_dir}"
 
 	sed -i -e "s:@@GENTOO_LIBDIR@@:$(get_libdir):g" \
 		Lib/distutils/command/install.py \
@@ -133,6 +127,8 @@ src_prepare() {
 		Modules/Setup.dist \
 		Modules/getpath.c \
 		setup.py || die "sed failed to replace @@GENTOO_LIBDIR@@"
+
+	sed -e "s/test_stty_match/_&/" -i Lib/test/test_shutil.py
 
 	# Disable ABI flags.
 	sed -e "s/ABIFLAGS=\"\${ABIFLAGS}.*\"/:/" -i configure.ac || die "sed failed"
@@ -182,24 +178,11 @@ src_configure() {
 		use hardened && replace-flags -O3 -O2
 	fi
 
-	if tc-is-cross-compiler; then
-		OPT="-O1" CFLAGS="" LDFLAGS="" CC="" \
-		./configure --{build,host}=${CBUILD} || die "cross-configure failed"
-		emake python Parser/pgen || die "cross-make failed"
-		mv python hostpython
-		mv Parser/pgen Parser/hostpgen
-		make distclean
-		sed -i \
-			-e "/^HOSTPYTHON/s:=.*:=./hostpython:" \
-			-e "/^HOSTPGEN/s:=.*:=./Parser/hostpgen:" \
-			Makefile.pre.in || die "sed failed"
-	fi
-
 	# Export CXX so it ends up in /usr/lib/python3.X/config/Makefile.
 	tc-export CXX
 
-	# Set LDFLAGS so we link modules with -lpython3.2 correctly.
-	# Needed on FreeBSD unless Python 3.2 is already installed.
+	# Set LDFLAGS so we link modules with -lpython3.3 correctly.
+	# Needed on FreeBSD unless Python 3.3 is already installed.
 	# Please query BSD team before removing this!
 	append-ldflags "-L."
 
@@ -213,7 +196,6 @@ src_configure() {
 		--enable-shared \
 		$(use_enable ipv6) \
 		$(use_with threads) \
-		$(use_with wide-unicode) \
 		--infodir='${prefix}/share/info' \
 		--mandir='${prefix}/share/man' \
 		--with-computed-gotos \
@@ -248,7 +230,7 @@ src_test() {
 		mv Lib/test/test_${test}.py "${T}"
 	done
 
-	emake test EXTRATESTOPTS="-w" CPPFLAGS="" CFLAGS="" LDFLAGS="" < /dev/tty
+	emake test EXTRATESTOPTS="-j1 -ucpu,decimal,subprocess" CPPFLAGS="" CFLAGS="" LDFLAGS="" < /dev/tty
 	local result="$?"
 
 	for test in ${skipped_tests}; do
