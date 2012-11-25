@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_DEPEND="<<[threads]>>"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
@@ -42,6 +42,9 @@ src_prepare() {
 	# fix up logic that won't work in Gentoo Prefix (also won't outside in
 	# certain cases), bug #362891
 	sed -i -e 's:xcodebuild:nocodebuild:' setup.py || die
+
+	# Fix an endless grep search (needed by tortoisehg)
+	epatch "${FILESDIR}"/${P}-dont_grep_indefinitely.patch
 }
 
 src_compile() {
