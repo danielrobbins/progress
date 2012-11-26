@@ -2,9 +2,10 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
+# 2.5: https://bitbucket.org/tarek/distribute/issue/318
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.5 *-jython"
 DISTUTILS_SRC_TEST="setup.py"
 
 inherit distutils eutils mercurial
@@ -13,7 +14,7 @@ MY_PN="distribute"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Distribute (fork of Setuptools) is a collection of extensions to Distutils"
-HOMEPAGE="http://pypi.python.org/pypi/distribute"
+HOMEPAGE="https://bitbucket.org/tarek/distribute http://pypi.python.org/pypi/distribute"
 SRC_URI=""
 EHG_REPO_URI="https://bitbucket.org/tarek/distribute"
 
@@ -28,7 +29,7 @@ RDEPEND=""
 S="${WORKDIR}/${MY_P}"
 
 DOCS="README.txt docs/easy_install.txt docs/pkg_resources.txt docs/setuptools.txt"
-PYTHON_MODULES="easy_install.py pkg_resources.py setuptools site.py"
+PYTHON_MODULES="_markerlib easy_install.py pkg_resources.py setuptools site.py"
 
 src_prepare() {
 	distutils_src_prepare
@@ -49,7 +50,7 @@ src_test() {
 	python_disable_pyc
 
 	find -name "__pycache__" -print0 | xargs -0 rm -fr
-	find "(" -name "*.pyc" -o -name "*\$py.class" ")" -print0 | xargs -0 rm -f
+	find "(" -name "*.pyc" -o -name "*\$py.class" ")" -delete
 }
 
 src_install() {
