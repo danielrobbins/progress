@@ -2,26 +2,27 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.* *-jython"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 PYTHON_NAMESPACES="logilab"
 
-inherit distutils eutils python-namespaces
+inherit distutils python-namespaces
 
 DESCRIPTION="Useful miscellaneous modules used by Logilab projects"
 HOMEPAGE="http://www.logilab.org/project/logilab-common http://pypi.python.org/pypi/logilab-common"
-SRC_URI="ftp://ftp.logilab.org/pub/common/${P}.tar.gz"
+SRC_URI="http://download.logilab.org/pub/common/${P}.tar.gz"
 
 LICENSE="LGPL-2.1"
 SLOT="0"
 KEYWORDS="amd64 ~ia64 ~ppc ~ppc64 ~s390 sparc x86 ~amd64-linux ~ia64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos"
-IUSE="test"
+IUSE="doc test"
 
 RDEPEND="$(python_abi_depend dev-python/setuptools)
 	$(python_abi_depend -i "2.5 2.6 3.1" dev-python/unittest2)"
 # Tests using dev-python/psycopg:2 are skipped when dev-python/psycopg:2 is not installed.
 DEPEND="${RDEPEND}
+	doc? ( dev-python/epydoc )
 	test? (
 		$(python_abi_depend -e "3.* *-jython *-pypy-*" dev-python/egenix-mx-base)
 		!dev-python/psycopg:2[-mxdatetime]
@@ -31,9 +32,16 @@ S="${WORKDIR}/${P}"
 
 PYTHON_MODULES="logilab"
 
-src_prepare() {
-	distutils_src_prepare
-	epatch "${FILESDIR}/${PN}-date.patch"
+src_compile() {
+	distutils_src_compile
+
+	if use doc; then
+		einfo "Generation of documentation"
+		pushd doc > /dev/null
+		mkdir -p apidoc
+		python_execute epydoc --parse-only -o apidoc --html -v --no-private --exclude=__pkginfo__ --exclude=setup --exclude=test -n "Logilab's common library" "$(ls -d ../build-$(PYTHON -f --ABI)/lib/logilab/common)" || die "Generation of documentation failed"
+		popd > /dev/null
+	fi
 }
 
 src_test() {
@@ -63,6 +71,10 @@ src_install() {
 		rm -fr "${ED}$(python_get_sitedir)/${PN/-//}/test"
 	}
 	python_execute_function -q delete_tests
+
+	if use doc; then
+		dohtml -r doc/apidoc/
+	fi
 }
 
 pkg_postinst() {
