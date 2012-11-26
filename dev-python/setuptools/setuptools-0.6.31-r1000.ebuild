@@ -2,12 +2,10 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 # 2.5: https://bitbucket.org/tarek/distribute/issue/318
-# 3.1: https://bitbucket.org/tarek/distribute/issue/303
-# *-jython: https://bitbucket.org/tarek/distribute/issue/329
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.5 3.1 *-jython"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.5 *-jython"
 DISTUTILS_SRC_TEST="setup.py"
 
 inherit distutils eutils
@@ -16,7 +14,7 @@ MY_PN="distribute"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Distribute (fork of Setuptools) is a collection of extensions to Distutils"
-HOMEPAGE="http://pypi.python.org/pypi/distribute"
+HOMEPAGE="https://bitbucket.org/tarek/distribute http://pypi.python.org/pypi/distribute"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="PSF-2"
@@ -40,6 +38,9 @@ src_prepare() {
 
 	# Disable tests requiring network connection.
 	rm -f setuptools/tests/test_packageindex.py
+
+	# https://bitbucket.org/tarek/distribute/changeset/407c03760f4acc1ab5aa73243b5c3a64f620350e
+	sed -e "s/assertGreater(len(lines), 0)/assertTrue(len(lines) > 0)/" -i setuptools/tests/test_easy_install.py
 }
 
 src_test() {
