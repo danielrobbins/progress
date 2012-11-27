@@ -38,9 +38,6 @@ src_prepare() {
 
 	# Disable tests requiring network connection.
 	rm -f setuptools/tests/test_packageindex.py
-
-	# https://bitbucket.org/tarek/distribute/changeset/407c03760f4acc1ab5aa73243b5c3a64f620350e
-	sed -e "s/assertGreater(len(lines), 0)/assertTrue(len(lines) > 0)/" -i setuptools/tests/test_easy_install.py
 }
 
 src_test() {
