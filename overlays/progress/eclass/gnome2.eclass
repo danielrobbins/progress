@@ -207,8 +207,7 @@ gnome2_src_install() {
 					FAQ CREDITS CHANGELOG ; do
 				[[ -s "${d}" ]] && dodoc "${d}"
 			done
-		# TODO: wrong "declare -a" command..., should be fixed in PMS at first
-		elif declare -p DOCS | grep -q `^declare -a` ; then
+		elif declare -p DOCS | grep -q '^declare -a' ; then
 			dodoc "${DOCS[@]}"
 		else
 			dodoc ${DOCS}
