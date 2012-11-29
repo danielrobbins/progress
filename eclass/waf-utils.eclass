@@ -28,6 +28,12 @@ DEPEND="${DEPEND}
 	dev-lang/python
 	!dev-lang/python[-threads]"
 
+# @ECLASS-VARIABLE: WAF_VERBOSE
+# @DESCRIPTION:
+# Set to OFF to disable verbose messages during compilation
+# this is _not_ meant to be set in ebuilds
+: ${WAF_VERBOSE:=ON}
+
 # @FUNCTION: waf-utils_src_configure
 # @DESCRIPTION:
 # General function for configuring with waf.
@@ -54,10 +60,12 @@ waf-utils_src_configure() {
 # General function for compiling with waf.
 waf-utils_src_compile() {
 	debug-print-function ${FUNCNAME} "$@"
+	local _mywafconfig
+	[[ "${WAF_VERBOSE}" ]] && _mywafconfig="--verbose"
 
 	local jobs="--jobs=$(makeopts_jobs)"
-	echo "\"${WAF_BINARY}\" build ${jobs}"
-	"${WAF_BINARY}" ${jobs} || die "build failed"
+	echo "\"${WAF_BINARY}\" build ${_mywafconfig} ${jobs}"
+	"${WAF_BINARY}" ${_mywafconfig} ${jobs} || die "build failed"
 }
 
 # @FUNCTION: waf-utils_src_install
