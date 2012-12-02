@@ -25,11 +25,12 @@ IUSE="doc examples X"
 
 DEPEND="$(python_abi_depend dev-python/numpy)
 	media-libs/freetype:2
-	media-libs/libsdl[X?]
 	media-libs/sdl-image[png,jpeg]
 	media-libs/sdl-mixer
 	media-libs/sdl-ttf
-	media-libs/smpeg"
+	media-libs/smpeg
+	X? ( media-libs/libsdl[X,video] )
+	!X? ( media-libs/libsdl )"
 RDEPEND="${DEPEND}"
 
 if [[ "${PV}" != *_pre* ]]; then
