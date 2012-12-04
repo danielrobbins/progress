@@ -187,10 +187,25 @@ _check_build_dir() {
 	if [[ -n ${AUTOTOOLS_IN_SOURCE_BUILD} ]]; then
 		BUILD_DIR="${ECONF_SOURCE}"
 	else
-		: ${BUILD_DIR:=${AUTOTOOLS_BUILD_DIR:-${WORKDIR}/${P}_build}}
+		# Respect both the old variable and the new one, depending
+		# on which one was set by the ebuild.
+		if [[ ! ${BUILD_DIR} && ${AUTOTOOLS_BUILD_DIR} ]]; then
+			eqawarn "The AUTOTOOLS_BUILD_DIR variable has been renamed to BUILD_DIR."
+			eqawarn "Please migrate the ebuild to use the new one."
+
+			# In the next call, both variables will be set already
+			# and we'd have to know which one takes precedence.
+			_RESPECT_AUTOTOOLS_BUILD_DIR=1
+		fi
+
+		if [[ ${_RESPECT_AUTOTOOLS_BUILD_DIR} ]]; then
+			BUILD_DIR=${AUTOTOOLS_BUILD_DIR:-${WORKDIR}/${P}_build}
+		else
+			: ${BUILD_DIR:=${WORKDIR}/${P}_build}
+		fi
 	fi
 
-	# Backwards compatibility.
+	# Backwards compatibility for getting the value.
 	AUTOTOOLS_BUILD_DIR=${BUILD_DIR}
 	echo ">>> Working in BUILD_DIR: \"${BUILD_DIR}\""
 }

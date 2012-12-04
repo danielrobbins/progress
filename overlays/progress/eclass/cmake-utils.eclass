@@ -167,8 +167,25 @@ _check_build_dir() {
 		# we build in source dir
 		BUILD_DIR="${CMAKE_USE_DIR}"
 	else
-		: ${BUILD_DIR:=${CMAKE_BUILD_DIR:-${WORKDIR}/${P}_build}}
+		# Respect both the old variable and the new one, depending
+		# on which one was set by the ebuild.
+		if [[ ! ${BUILD_DIR} && ${CMAKE_BUILD_DIR} ]]; then
+			eqawarn "The CMAKE_BUILD_DIR variable has been renamed to BUILD_DIR."
+			eqawarn "Please migrate the ebuild to use the new one."
+
+			# In the next call, both variables will be set already
+			# and we'd have to know which one takes precedence.
+			_RESPECT_CMAKE_BUILD_DIR=1
+		fi
+
+		if [[ ${_RESPECT_CMAKE_BUILD_DIR} ]]; then
+			BUILD_DIR=${CMAKE_BUILD_DIR:-${WORKDIR}/${P}_build}
+		else
+			: ${BUILD_DIR:=${WORKDIR}/${P}_build}
+		fi
 	fi
+
+	# Backwards compatibility for getting the value.
 	CMAKE_BUILD_DIR=${BUILD_DIR}
 
 	mkdir -p "${BUILD_DIR}"
