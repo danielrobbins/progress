@@ -79,7 +79,7 @@ src_configure() {
 			$(cmake-utils_use_with semantic-desktop KdepimLibs)
 			-DPYTHON_EXECUTABLE=$(PYTHON -a)
 		)
-		local CMAKE_BUILD_DIR=${S}_build-${PYTHON_ABI}
+		local BUILD_DIR=${S}_build-${PYTHON_ABI}
 		kde4-base_src_configure
 	}
 
@@ -88,7 +88,7 @@ src_configure() {
 
 src_compile() {
 	compilation() {
-		local CMAKE_BUILD_DIR=${S}_build-${PYTHON_ABI}
+		local BUILD_DIR=${S}_build-${PYTHON_ABI}
 		kde4-base_src_compile
 	}
 	python_execute_function compilation

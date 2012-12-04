@@ -29,28 +29,28 @@ src_prepare() {
 
 src_configure() {
 	configuration() {
-		AUTOTOOLS_BUILD_DIR="${S}-${PYTHON_ABI}" xorg-2_src_configure
+		BUILD_DIR="${S}-${PYTHON_ABI}" xorg-2_src_configure
 	}
 	python_execute_function configuration
 }
 
 src_compile() {
 	building() {
-		AUTOTOOLS_BUILD_DIR="${S}-${PYTHON_ABI}" xorg-2_src_compile
+		BUILD_DIR="${S}-${PYTHON_ABI}" xorg-2_src_compile
 	}
 	python_execute_function building
 }
 
 src_test() {
 	testing() {
-		AUTOTOOLS_BUILD_DIR="${S}-${PYTHON_ABI}" autotools-utils_src_test
+		BUILD_DIR="${S}-${PYTHON_ABI}" autotools-utils_src_test
 	}
 	python_execute_function testing
 }
 
 src_install() {
 	installation() {
-		AUTOTOOLS_BUILD_DIR="${S}-${PYTHON_ABI}" xorg-2_src_install
+		BUILD_DIR="${S}-${PYTHON_ABI}" xorg-2_src_install
 	}
 	python_execute_function installation
 }

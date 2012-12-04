@@ -67,28 +67,28 @@ src_configure() {
 			)
 		fi
 
-		CMAKE_BUILD_DIR="${S}_${PYTHON_ABI}" cmake-utils_src_configure
+		BUILD_DIR="${S}_${PYTHON_ABI}" cmake-utils_src_configure
 	}
 	python_execute_function configuration
 }
 
 src_compile() {
 	compilation() {
-		CMAKE_BUILD_DIR="${S}_${PYTHON_ABI}" cmake-utils_src_make
+		BUILD_DIR="${S}_${PYTHON_ABI}" cmake-utils_src_make
 	}
 	python_execute_function compilation
 }
 
 src_test() {
 	testing() {
-		CMAKE_BUILD_DIR="${S}_${PYTHON_ABI}" cmake-utils_src_test
+		BUILD_DIR="${S}_${PYTHON_ABI}" cmake-utils_src_test
 	}
 	python_execute_function testing
 }
 
 src_install() {
 	installation() {
-		CMAKE_BUILD_DIR="${S}_${PYTHON_ABI}" cmake-utils_src_install
+		BUILD_DIR="${S}_${PYTHON_ABI}" cmake-utils_src_install
 		mv "${ED}"usr/$(get_libdir)/pkgconfig/${PN}{,-python${PYTHON_ABI}}.pc
 	}
 	python_execute_function installation
