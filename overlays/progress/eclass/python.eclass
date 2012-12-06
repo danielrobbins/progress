@@ -1418,7 +1418,7 @@ _python_calculate_PYTHON_ABIS() {
 		fi
 	fi
 
-	if [[ "$(declare -p PYTHON_ABIS 2> /dev/null)" != "declare -x PYTHON_ABIS="* ]] && has "${EAPI:-0}" 0 1 2 3 4 5; then
+	if has "${EAPI:-0}" 0 1 2 3 4 5 && [[ "$(declare -p PYTHON_ABIS 2> /dev/null)" != "declare -x PYTHON_ABIS="* ]]; then
 		local PYTHON_ABI
 
 		if [[ "$(declare -p USE_PYTHON 2> /dev/null)" == "declare -x USE_PYTHON="* ]]; then
@@ -2371,6 +2371,67 @@ for file in sorted(files):
 
 		python_generate_wrapper_scripts $([[ "${quiet}" == "1" ]] && echo --quiet) "${wrapper_scripts_set[@]}"
 	fi
+}
+
+# @FUNCTION: python_install_executables
+# @USAGE: [-q|--quiet] [--] <file> [files]
+# @DESCRIPTION:
+# Install versioned executables (including Python scripts).
+#
+# This function can be used only in src_install() phase.
+python_install_executables() {
+	if [[ "${EBUILD_PHASE}" != "install" ]]; then
+		die "${FUNCNAME}() can be used only in src_install() phase"
+	fi
+
+	if ! _python_package_supporting_installation_for_multiple_python_abis; then
+		die "${FUNCNAME}() cannot be used in ebuilds of packages not supporting installation for multiple Python ABIs"
+	fi
+
+	_python_check_python_pkg_setup_execution
+	_python_initialize_prefix_variables
+
+	local file files=() intermediate_installation_images_directory PYTHON_VERSIONED_EXECUTABLES=() quiet="0"
+
+	while (($#)); do
+		case "$1" in
+			-q|--quiet)
+				quiet="1"
+				;;
+			--)
+				shift
+				break
+				;;
+			-*)
+				die "${FUNCNAME}(): Unrecognized option '$1'"
+				;;
+			*)
+				break
+				;;
+		esac
+		shift
+	done
+
+	for file in "$@"; do
+		if [[ -f "${file}" ]]; then
+			files+=("${file}")
+		elif [[ -e "${file}" ]]; then
+			die "${FUNCNAME}(): '${file}' is not a regular file"
+		else
+			die "${FUNCNAME}(): '${file}' does not exist"
+		fi
+	done
+
+	intermediate_installation_images_directory="$(mktemp -d "${T}/images.XXXXXXXXXXXX")" || die "${FUNCNAME}(): Creation of intermediate installation images directory failed"
+
+	python_install_files() {
+		mkdir -p "${intermediate_installation_images_directory}/${PYTHON_ABI}${EPREFIX}/usr/bin"
+		install -m 0755 "${files[@]}" "${intermediate_installation_images_directory}/${PYTHON_ABI}${EPREFIX}/usr/bin"
+	}
+	python_execute_function -q python_install_files
+
+	PYTHON_VERSIONED_EXECUTABLES=(".*")
+	python_merge_intermediate_installation_images $([[ "${quiet}" == "1" ]] && echo --quiet) "${intermediate_installation_images_directory}"
 }
 
 # ================================================================================================
