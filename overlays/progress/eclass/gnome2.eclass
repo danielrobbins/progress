@@ -128,7 +128,7 @@ gnome2_src_configure() {
 	# Remember to drop 'doc' USE flag from your package if it was only used to
 	# rebuild docs.
 	# Preserve old behavior for older EAPI.
-	if grep -q "enable-gtk-doc" configure ; then
+	if grep -q "enable-gtk-doc" ${ECONF_SOURCE:-.}/configure ; then
 		if has ${EAPI-0} 0 1 2 3 4 4-python && in_iuse doc ; then
 			G2CONF="${G2CONF} $(use_enable doc gtk-doc)"
 		else
@@ -137,24 +137,25 @@ gnome2_src_configure() {
 	fi
 
 	# Pass --disable-maintainer-mode when needed
-	if grep -q "^[[:space:]]*AM_MAINTAINER_MODE(\[enable\])" configure.*; then
+	if grep -q "^[[:space:]]*AM_MAINTAINER_MODE(\[enable\])" \
+		${ECONF_SOURCE:-.}/configure.*; then
 		G2CONF="${G2CONF} --disable-maintainer-mode"
 	fi
 
 	# Pass --disable-scrollkeeper when possible
-	if grep -q "disable-scrollkeeper" configure; then
+	if grep -q "disable-scrollkeeper" ${ECONF_SOURCE:-.}/configure; then
 		G2CONF="${G2CONF} --disable-scrollkeeper"
 	fi
 
 	# Pass --disable-silent-rules when possible (not needed for eapi5), bug #429308
 	if has ${EAPI:-0} 0 1 2 3 4 4-python; then
-		if grep -q "disable-silent-rules" configure; then
+		if grep -q "disable-silent-rules" ${ECONF_SOURCE:-.}/configure; then
 			G2CONF="${G2CONF} --disable-silent-rules"
 		fi
 	fi
 
 	# Pass --disable-schemas-install when possible
-	if grep -q "disable-schemas-install" configure; then
+	if grep -q "disable-schemas-install" ${ECONF_SOURCE:-.}/configure; then
 		G2CONF="${G2CONF} --disable-schemas-install"
 	fi
 
