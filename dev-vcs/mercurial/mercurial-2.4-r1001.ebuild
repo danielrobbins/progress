@@ -74,7 +74,7 @@ src_install() {
 
 	dobin hgeditor
 	dobin contrib/hgk
-	dobin contrib/hg-ssh
+	python_install_executables contrib/hg-ssh
 
 	rm -f contrib/hgk contrib/hg-ssh || die
 
