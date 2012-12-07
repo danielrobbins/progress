@@ -2,9 +2,8 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
@@ -31,13 +30,8 @@ src_prepare() {
 	sed -e "/^sys.path\[0:0\] =/d" -i doc/conf.py
 	rm -f setup.cfg
 
-	# Disable failing tests.
+	# Disable failing test.
 	sed -e "s/test_system_js(/_&/" -i test/test_database.py
-	sed -e "s/TestMaxPoolSizeThreads/_&/" -i test/test_pooling.py
-
-	# Disable tests, which cause segmentation fault of mongod.
-	sed -e "s/TestPoolSocketSharingThreads/_&/" -i test/test_pooling.py
-	sed -e "s/TestPoolSocketSharingGevent/_&/" -i test/test_pooling_gevent.py
 
 	preparation() {
 		mkdir build-${PYTHON_ABI} || return
