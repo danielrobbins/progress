@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 
@@ -27,9 +27,6 @@ src_prepare() {
 
 	# Don't install documentation in site-packages directories.
 	sed -e "/\/Doc\//d" -i egenix_mx_base.py || die "sed failed"
-
-	# Avoid unnecessary overriding of settings. Distutils in Gentoo is patched in better way.
-	sed -e 's/if compiler.compiler_type == "unix":/if False:/' -i mxSetup.py || die "sed failed"
 
 	# Disable failing tests.
 	rm -f mx/BeeBase/mxBeeBase/testernesto.py
