@@ -1,7 +1,7 @@
 # Copyright owners: Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 DISTUTILS_SRC_TEST="setup.py"
@@ -35,7 +35,7 @@ DOCS="CHANGES.txt"
 PYTHON_MODULES="${PN/.//}"
 
 src_prepare() {
-	epatch "${FILESDIR}/${P}-python-3.1.patch"
+	epatch "${FILESDIR}/${PN}-4.0.1-python-3.1.patch"
 
 	preparation() {
 		if [[ "$(python_get_version -l)" == "2.5" ]]; then
@@ -63,9 +63,6 @@ src_install() {
 	python_clean_installation_image
 
 	if use doc; then
-		pushd docs/_build/html > /dev/null
-		insinto /usr/share/doc/${PF}/html
-		doins -r [a-z]* _modules _static
-		popd > /dev/null
+		dohtml -r docs/_build/html/
 	fi
 }
