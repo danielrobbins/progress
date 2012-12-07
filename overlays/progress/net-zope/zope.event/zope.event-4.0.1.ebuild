@@ -1,7 +1,7 @@
 # Copyright owners: Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 DISTUTILS_SRC_TEST="nosetests"
 
@@ -39,9 +39,6 @@ src_install() {
 	distutils_src_install
 
 	if use doc; then
-		pushd docs/_build/html > /dev/null
-		insinto /usr/share/doc/${PF}/html
-		doins -r [a-z]* _static
-		popd > /dev/null
+		dohtml -r docs/_build/html/
 	fi
 }
