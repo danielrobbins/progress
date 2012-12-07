@@ -42,9 +42,6 @@ src_prepare() {
 	# fix up logic that won't work in Gentoo Prefix (also won't outside in
 	# certain cases), bug #362891
 	sed -i -e 's:xcodebuild:nocodebuild:' setup.py || die
-
-	# Fix an endless grep search (needed by tortoisehg)
-	epatch "${FILESDIR}"/${P}-dont_grep_indefinitely.patch
 }
 
 src_compile() {
