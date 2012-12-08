@@ -352,6 +352,7 @@ enable_cmake-utils_src_configure() {
 	local build_rules=${BUILD_DIR}/gentoo_rules.cmake
 	cat > "${build_rules}" <<- _EOF_
 		SET (CMAKE_AR $(type -P $(tc-getAR)) CACHE FILEPATH "Archive manager" FORCE)
+		SET (CMAKE_ASM_COMPILE_OBJECT "<CMAKE_C_COMPILER> <DEFINES> ${CFLAGS} <FLAGS> -o <OBJECT> -c <SOURCE>" CACHE STRING "ASM compile command" FORCE)
 		SET (CMAKE_C_COMPILER $(type -P $(tc-getCC)) CACHE FILEPATH "C compiler" FORCE)
 		SET (CMAKE_C_COMPILE_OBJECT "<CMAKE_C_COMPILER> <DEFINES> ${CPPFLAGS} <FLAGS> -o <OBJECT> -c <SOURCE>" CACHE STRING "C compile command" FORCE)
 		SET (CMAKE_CXX_COMPILER $(type -P $(tc-getCXX)) CACHE FILEPATH "C++ compiler" FORCE)
@@ -485,15 +486,14 @@ enable_cmake-utils_src_install() {
 
 enable_cmake-utils_src_test() {
 	debug-print-function ${FUNCNAME} "$@"
-	local ctestargs
 
 	_check_build_dir
 	pushd "${BUILD_DIR}" > /dev/null
 	[[ -e CTestTestfile.cmake ]] || { echo "No tests found. Skipping."; return 0 ; }
 
-	[[ -n ${TEST_VERBOSE} ]] && ctestargs="--extra-verbose --output-on-failure"
+	[[ -n ${TEST_VERBOSE} ]] && myctestargs+=( --extra-verbose --output-on-failure )
 
-	if ctest ${ctestargs} "$@" ; then
+	if ctest "${myctestargs[@]}" "$@" ; then
 		einfo "Tests succeeded."
 		popd > /dev/null
 		return 0
