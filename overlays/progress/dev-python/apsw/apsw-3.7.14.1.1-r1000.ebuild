@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython"
 # http://code.google.com/p/apsw/issues/detail?id=129
@@ -12,23 +12,20 @@ PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.3"
 
 inherit distutils eutils
 
-eshopts_push -s extglob
-SQLITE_PV="${PV/%.?(0.)*([^.])/}"
-eshopts_pop
+SQLITE_PV="$(shopt -s extglob; echo "${PV/%.?(0.)*([^.])/}")"
 MY_PV="${SQLITE_PV}-r${PV##*.}"
 
 DESCRIPTION="APSW - Another Python SQLite Wrapper"
 HOMEPAGE="http://code.google.com/p/apsw/"
 SRC_URI="http://apsw.googlecode.com/files/${PN}-${MY_PV}.zip"
 
-LICENSE="as-is"
+LICENSE="ZLIB"
 SLOT="0"
 KEYWORDS="amd64 ~ppc64 x86"
 IUSE="doc"
 
-RDEPEND=">=dev-db/sqlite-${SQLITE_PV}[extensions]"
-DEPEND="${RDEPEND}
-	app-arch/unzip"
+DEPEND=">=dev-db/sqlite-${SQLITE_PV}[extensions]"
+RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/${PN}-${MY_PV}"
 
