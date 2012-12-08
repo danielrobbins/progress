@@ -1,7 +1,7 @@
 # Copyright owners: Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5"
 PYTHON_TESTS_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
@@ -24,7 +24,7 @@ RDEPEND="$(python_abi_depend net-zope/namespaces-zope[zope])
 	$(python_abi_depend net-zope/zope.event)
 	$(python_abi_depend net-zope/zope.hookable)
 	$(python_abi_depend net-zope/zope.i18nmessageid)
-	$(python_abi_depend ">=net-zope/zope.interface-3.8.0")
+	$(python_abi_depend net-zope/zope.interface)
 	$(python_abi_depend net-zope/zope.proxy)
 	$(python_abi_depend net-zope/zope.schema)"
 DEPEND="${RDEPEND}
