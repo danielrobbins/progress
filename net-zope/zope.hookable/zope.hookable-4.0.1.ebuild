@@ -1,7 +1,7 @@
 # Copyright owners: Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 DISTUTILS_SRC_TEST="nosetests"
 
@@ -24,13 +24,6 @@ DEPEND="${RDEPEND}
 DISTUTILS_GLOBAL_OPTIONS=("*-jython --without-Cwrapper")
 DOCS="CHANGES.txt README.txt"
 PYTHON_MODULES="${PN/.//}"
-
-src_prepare() {
-	distutils_src_prepare
-
-	# https://bugs.launchpad.net/zope.hookable/+bug/1025470
-	sed -e "75,79d" -i setup.py
-}
 
 src_compile() {
 	distutils_src_compile
