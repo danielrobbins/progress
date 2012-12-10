@@ -13,7 +13,7 @@ MY_P="QScintilla-gpl-${PV}"
 
 DESCRIPTION="Python bindings for QScintilla"
 HOMEPAGE="http://www.riverbankcomputing.co.uk/software/qscintilla/intro"
-SRC_URI="http://www.riverbankcomputing.co.uk/static/Downloads/QScintilla2/${MY_P}.tar.gz"
+SRC_URI="mirror://sourceforge/pyqt/${MY_P}.tar.gz"
 
 LICENSE="|| ( GPL-2 GPL-3 )"
 SLOT="0"
