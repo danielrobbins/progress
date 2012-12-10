@@ -1,7 +1,7 @@
 # Copyright owners: Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 
 inherit qt4-r2
 
@@ -9,10 +9,11 @@ MY_P="QScintilla-gpl-${PV}"
 
 DESCRIPTION="A Qt port of Neil Hodgson's Scintilla C++ editor class"
 HOMEPAGE="http://www.riverbankcomputing.co.uk/software/qscintilla/intro"
-SRC_URI="http://www.riverbankcomputing.co.uk/static/Downloads/QScintilla2/${MY_P}.tar.gz"
+SRC_URI="mirror://sourceforge/pyqt/${MY_P}.tar.gz"
 
 LICENSE="|| ( GPL-2 GPL-3 )"
-SLOT="0"
+# Subslot based on first component of VERSION from Qt4Qt5/qscintilla.pro
+SLOT="0/9"
 KEYWORDS="~alpha amd64 ~ia64 ~ppc ~ppc64 sparc x86"
 IUSE="doc python"
 
@@ -37,7 +38,8 @@ src_configure() {
 
 	pushd designer-Qt4 > /dev/null
 	einfo "Configuration of designer plugin"
-	eqmake4 designer.pro
+	# Avoid linking of libqscintillaplugin.so against system libqscintilla2.so.
+	LDFLAGS="${LDFLAGS}${LDFLAGS:+ }-L../Qt4Qt5" eqmake4 designer.pro
 	popd > /dev/null
 }
 
