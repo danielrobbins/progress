@@ -52,27 +52,32 @@ src_prepare() {
 	fi
 
 	epatch "${FILESDIR}/${PN}-4.9.3-darwin.patch"
-	sed -e "s/ -O2//g" -i specs/* || die "sed failed"
 	python_src_prepare
 }
 
 src_configure() {
 	configuration() {
-		local myconf=("$(PYTHON)"
-			configure.py
+		local myconf=(
+			"$(PYTHON)" configure.py
 			--bindir="${EPREFIX}/usr/bin"
 			--incdir="${EPREFIX}$(python_get_includedir)"
 			--destdir="${EPREFIX}$(python_get_sitedir)"
 			--sipdir="${EPREFIX}/usr/share/sip"
 			$(use debug && echo --debug)
+			AR="$(tc-getAR) cqs"
 			CC="$(tc-getCC)"
+			CFLAGS="${CFLAGS}"
+			CFLAGS_RELEASE=
 			CXX="$(tc-getCXX)"
+			CXXFLAGS="${CXXFLAGS}"
+			CXXFLAGS_RELEASE=
 			LINK="$(tc-getCXX)"
 			LINK_SHLIB="$(tc-getCXX)"
-			CFLAGS="${CFLAGS}"
-			CXXFLAGS="${CXXFLAGS}"
 			LFLAGS="${LDFLAGS}"
-			STRIP=":")
+			LFLAGS_RELEASE=
+			RANLIB=
+			STRIP=
+		)
 		python_execute "${myconf[@]}"
 	}
 	python_execute_function -s configuration
