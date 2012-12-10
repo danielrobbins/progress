@@ -4,7 +4,7 @@
 
 EAPI="4-python"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.* *-jython"
+PYTHON_RESTRICTED_ABIS="2.5 3.* *-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
@@ -15,13 +15,12 @@ SRC_URI="http://www.samba.org/~jelmer/${PN}/${P}.tar.gz"
 
 LICENSE="|| ( LGPL-2.1 LGPL-3 )"
 SLOT="0"
-KEYWORDS="~alpha amd64 x86"
+KEYWORDS="amd64 x86"
 IUSE="test"
 
 RDEPEND=">=dev-vcs/subversion-1.4"
 DEPEND="${RDEPEND}
 	test? (
-		$(python_abi_depend -i "2.5" dev-python/unittest2)
 		|| (
 			$(python_abi_depend -i "2.6" dev-python/unittest2)
 			$(python_abi_depend -i "2.6" dev-python/testtools)
