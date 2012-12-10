@@ -33,8 +33,7 @@ src_prepare() {
 	sed -e "s:\"/usr/local\":\"${EPREFIX}/usr\":" \
 		-i config.py || die "sed config.py failed"
 
-	mv gdbus-codegen.in gdbus-codegen || die "mv failed"
-	sed -e "s:@PYTHON@:${EPREFIX}/usr/bin/python:" -i gdbus-codegen || die "sed gdbus-codegen failed"
+	sed -e "s:^#!@PYTHON@:#!${EPREFIX}/usr/bin/python:" gdbus-codegen.in > gdbus-codegen || die "sed gdbus-codegen failed"
 	cp "${FILESDIR}/setup.py-2.32.4" setup.py || die "cp failed"
 	sed -e "s/@PV@/${PV}/" -i setup.py || die "sed setup.py failed"
 }
