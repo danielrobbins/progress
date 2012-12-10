@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 
@@ -18,9 +18,10 @@ KEYWORDS="amd64 x86 ~ppc-macos ~x64-macos ~x86-solaris"
 IUSE="test"
 
 RDEPEND="$(python_abi_depend ">=dev-vcs/mercurial-1.4")
+	$(python_abi_depend -i "2.5" ">=dev-vcs/subversion-1.5[python]")
 	|| (
-		$(python_abi_depend dev-python/subvertpy)
-		$(python_abi_depend ">=dev-vcs/subversion-1.5[python]")
+		$(python_abi_depend -e "2.5" dev-python/subvertpy)
+		$(python_abi_depend -e "2.5" ">=dev-vcs/subversion-1.5[python]")
 	)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
