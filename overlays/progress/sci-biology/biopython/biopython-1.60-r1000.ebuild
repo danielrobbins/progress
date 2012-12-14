@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 
 inherit distutils
@@ -11,9 +11,9 @@ DESCRIPTION="Python modules for computational molecular biology"
 HOMEPAGE="http://biopython.org http://pypi.python.org/pypi/biopython"
 SRC_URI="http://www.biopython.org/DIST/${P}.tar.gz"
 
-LICENSE="as-is"
+LICENSE="HPND"
 SLOT="0"
-KEYWORDS="amd64 ~ppc x86"
+KEYWORDS="*"
 IUSE="mysql postgres reportlab"
 
 RDEPEND="$(python_abi_depend -e "*-jython *-pypy-*" dev-python/numpy)
