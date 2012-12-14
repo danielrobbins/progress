@@ -156,6 +156,8 @@ EXPORT_FUNCTIONS src_prepare src_configure src_compile src_install src_test
 # @DESCRIPTION:
 # Array containing documents passed to dodoc command.
 #
+# In EAPIs 4+, can list directories as well.
+#
 # Example:
 # @CODE
 # DOCS=( NEWS README )
@@ -484,7 +486,12 @@ autotools-utils_src_install() {
 
 	# XXX: support installing them from builddir as well?
 	if [[ ${DOCS} ]]; then
-		dodoc "${DOCS[@]}" || die "dodoc failed"
+		if [[ ${EAPI} == [23] ]]; then
+			dodoc "${DOCS[@]}" || die
+		else
+			# dies by itself
+			dodoc -r "${DOCS[@]}"
+		fi
 	else
 		local f
 		# same list as in PMS
