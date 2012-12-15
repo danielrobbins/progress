@@ -2,9 +2,9 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5 3.*"
+PYTHON_RESTRICTED_ABIS="2.5 3.1"
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
 
 inherit bash-completion-r1 distutils git-2 webapp
@@ -12,6 +12,7 @@ inherit bash-completion-r1 distutils git-2 webapp
 DESCRIPTION="High-level Python web framework"
 HOMEPAGE="http://www.djangoproject.com/ http://pypi.python.org/pypi/Django"
 SRC_URI=""
+EGIT_REPO_URI="https://github.com/django/django"
 
 LICENSE="BSD"
 SLOT="0"
@@ -20,16 +21,12 @@ IUSE="doc mysql postgres sqlite test"
 
 RDEPEND="$(python_abi_depend -e "*-jython" dev-python/imaging)
 	$(python_abi_depend virtual/python-json[external])
-	mysql? ( $(python_abi_depend -e "*-jython" ">=dev-python/mysql-python-1.2.1_p2") )
+	mysql? ( $(python_abi_depend -e "*-jython" dev-python/mysql-python) )
 	postgres? ( $(python_abi_depend -e "*-jython *-pypy-*" dev-python/psycopg:2) )
 	sqlite? ( $(python_abi_depend -e "*-jython" virtual/python-sqlite[external]) )"
 DEPEND="${RDEPEND}
 	doc? ( $(python_abi_depend dev-python/sphinx) )
 	test? ( $(python_abi_depend -e "*-jython" virtual/python-sqlite[external]) )"
-
-S="${WORKDIR}"
-
-EGIT_REPO_URI="https://github.com/django/django.git"
 
 WEBAPP_MANUAL_SLOT="yes"
 
