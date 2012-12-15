@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.*"
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
@@ -17,12 +17,12 @@ SRC_URI="https://www.djangoproject.com/m/releases/$(get_version_component_range 
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="amd64 ~ia64 ~ppc ~ppc64 sparc x86 ~x86-fbsd ~amd64-linux ~x86-linux ~ppc-macos ~x86-macos"
+KEYWORDS="*"
 IUSE="doc mysql postgres sqlite test"
 
 RDEPEND="$(python_abi_depend -e "*-jython" dev-python/imaging)
 	$(python_abi_depend virtual/python-json[external])
-	mysql? ( $(python_abi_depend -e "*-jython" ">=dev-python/mysql-python-1.2.1_p2") )
+	mysql? ( $(python_abi_depend -e "*-jython" dev-python/mysql-python) )
 	postgres? ( $(python_abi_depend -e "*-jython *-pypy-*" dev-python/psycopg:2) )
 	sqlite? ( $(python_abi_depend -e "*-jython" virtual/python-sqlite[external]) )"
 DEPEND="${RDEPEND}
@@ -51,9 +51,6 @@ src_prepare() {
 		-e "s/test_urlfield_4/_&/" \
 		-e "s/test_urlfield_10/_&/" \
 		-i tests/regressiontests/forms/tests/fields.py
-
-	# https://code.djangoproject.com/ticket/19148
-	sed -e "s/(2, 6, 8)/(2, 7)/" -i django/utils/html_parser.py
 }
 
 src_compile() {
