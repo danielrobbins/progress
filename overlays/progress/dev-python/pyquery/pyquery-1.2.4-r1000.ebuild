@@ -15,18 +15,19 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ppc ~ppc64 sparc x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux"
-IUSE="beautifulsoup3 paste test"
-REQUIRED_USE="test? ( beautifulsoup3 paste )"
+KEYWORDS="*"
+IUSE="beautifulsoup3 requests restkit test"
+REQUIRED_USE="test? ( beautifulsoup3 )"
 
 RDEPEND="$(python_abi_depend dev-python/cssselect)
 	$(python_abi_depend ">=dev-python/lxml-2.1[beautifulsoup3?]")
 	$(python_abi_depend dev-python/webob)
-	paste? ( $(python_abi_depend -i "2.*" dev-python/paste) )"
+	requests? ( $(python_abi_depend dev-python/requests) )
+	restkit? ( $(python_abi_depend -i "2.*" dev-python/restkit) )"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
-DOCS="CHANGES.txt README.txt"
+DOCS="CHANGES.rst README.rst"
 
 src_prepare() {
 	distutils_src_prepare
