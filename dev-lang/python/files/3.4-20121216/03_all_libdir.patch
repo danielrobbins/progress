@@ -24,10 +24,10 @@
          else:
 --- Lib/site.py
 +++ Lib/site.py
-@@ -303,10 +303,10 @@
-         if sys.platform == 'riscos':
-             sitepackages.append(os.path.join(prefix, "Lib", "site-packages"))
-         elif os.sep == '/':
+@@ -301,10 +301,10 @@
+         seen.add(prefix)
+ 
+         if os.sep == '/':
 -            sitepackages.append(os.path.join(prefix, "lib",
 +            sitepackages.append(os.path.join(prefix, "@@GENTOO_LIBDIR@@",
                                          "python" + sys.version[:3],
@@ -71,7 +71,7 @@
          'data': '{userbase}',
 --- Lib/test/test_site.py
 +++ Lib/test/test_site.py
-@@ -240,10 +240,10 @@
+@@ -236,10 +236,10 @@
          elif os.sep == '/':
              # OS X non-framwework builds, Linux, FreeBSD, etc
              self.assertEqual(len(dirs), 2)
@@ -157,8 +157,8 @@
 +                '/@@GENTOO_LIBDIR@@', '/usr/@@GENTOO_LIBDIR@@',
                  ]
              inc_dirs = self.compiler.include_dirs + ['/usr/include']
-         exts = []
-@@ -726,11 +725,11 @@
+         else:
+@@ -731,11 +730,11 @@
              elif curses_library:
                  readline_libs.append(curses_library)
              elif self.compiler.find_library_file(lib_dirs +

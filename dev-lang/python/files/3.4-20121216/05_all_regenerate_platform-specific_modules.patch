@@ -46,7 +46,7 @@ http://bugs.python.org/issue12619
  
  # Compile a binary with gcc profile guided optimization.
  profile-opt:
-@@ -488,6 +488,26 @@
+@@ -489,6 +489,26 @@
  	$(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' \
  		$(PYTHON_FOR_BUILD) $(srcdir)/setup.py $$quiet build
  
@@ -73,7 +73,7 @@ http://bugs.python.org/issue12619
  # Build static library
  # avoid long command lines, same as LIBRARY_OBJS
  $(LIBRARY): $(LIBRARY_OBJS)
-@@ -1041,7 +1061,7 @@
+@@ -1042,7 +1062,7 @@
  		unittest unittest/test unittest/test/testmock \
  		venv venv/scripts venv/scripts/posix \
  		curses pydoc_data $(MACHDEPS)
@@ -82,7 +82,7 @@ http://bugs.python.org/issue12619
  	@for i in $(SCRIPTDIR) $(LIBDEST); \
  	do \
  		if test ! -d $(DESTDIR)$$i; then \
-@@ -1124,16 +1144,6 @@
+@@ -1125,16 +1145,6 @@
  	-PYTHONPATH=$(DESTDIR)$(LIBDEST) $(RUNSHARED) \
  		$(PYTHON_FOR_BUILD) -m lib2to3.pgen2.driver $(DESTDIR)$(LIBDEST)/lib2to3/PatternGrammar.txt
  
@@ -99,7 +99,7 @@ http://bugs.python.org/issue12619
  python-config: $(srcdir)/Misc/python-config.in
  	# Substitution happens here, as the completely-expanded BINDIR
  	# is not available in configure
-@@ -1436,7 +1446,7 @@
+@@ -1437,7 +1447,7 @@
  Python/thread.o: @THREADHEADERS@
  
  # Declare targets that aren't real files

@@ -17,7 +17,7 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
  
      cf.cf_flags = 0;
  
-@@ -545,7 +546,17 @@
+@@ -546,7 +547,17 @@
              filename = argv[_PyOS_optind];
  
  #else
@@ -66,7 +66,7 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
  #ifdef MS_WINDOWS
  int
  wmain(int argc, wchar_t **argv)
-@@ -22,6 +30,11 @@
+@@ -18,6 +26,11 @@
  int
  main(int argc, char **argv)
  {
@@ -78,7 +78,7 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
      wchar_t **argv_copy = (wchar_t **)PyMem_Malloc(sizeof(wchar_t*)*(argc+1));
      /* We need a second copies, as Python might modify the first one. */
      wchar_t **argv_copy2 = (wchar_t **)PyMem_Malloc(sizeof(wchar_t*)*(argc+1));
-@@ -63,6 +76,16 @@
+@@ -55,6 +68,16 @@
  
      setlocale(LC_ALL, oldloc);
      free(oldloc);
@@ -97,7 +97,7 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
          PyMem_Free(argv_copy2[i]);
 --- Python/sysmodule.c
 +++ Python/sysmodule.c
-@@ -1767,6 +1767,10 @@
+@@ -1772,6 +1772,10 @@
  makeargvobject(int argc, wchar_t **argv)
  {
      PyObject *av;
@@ -108,7 +108,7 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
      if (argc <= 0 || argv == NULL) {
          /* Ensure at least one (empty) argument is seen */
          static wchar_t *empty_argv[1] = {L""};
-@@ -1791,7 +1795,16 @@
+@@ -1796,7 +1800,16 @@
              } else
                  v = PyUnicode_FromString(argv[i]);
  #else
@@ -126,7 +126,7 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
  #endif
              if (v == NULL) {
                  Py_DECREF(av);
-@@ -1811,7 +1824,12 @@
+@@ -1816,7 +1829,12 @@
  static void
  sys_update_path(int argc, wchar_t **argv)
  {
@@ -140,7 +140,7 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
      wchar_t *p = NULL;
      Py_ssize_t n = 0;
      PyObject *a;
-@@ -1831,7 +1849,14 @@
+@@ -1836,7 +1854,14 @@
      if (path == NULL)
          return;
  
@@ -156,7 +156,7 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
  
  #ifdef HAVE_READLINK
      if (_HAVE_SCRIPT_ARGUMENT(argc, argv))
-@@ -1907,6 +1932,7 @@
+@@ -1912,6 +1937,7 @@
      if (PyList_Insert(path, 0, a) < 0)
          Py_FatalError("sys.path.insert(0) failed");
      Py_DECREF(a);
