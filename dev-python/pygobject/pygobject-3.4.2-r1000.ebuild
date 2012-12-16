@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes"
 PYTHON_MULTIPLE_ABIS="1"
@@ -16,13 +16,13 @@ HOMEPAGE="http://www.pygtk.org/"
 
 LICENSE="LGPL-2.1+"
 SLOT="3"
-KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~x86-interix ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~sparc-solaris ~x64-solaris ~x86-solaris"
-IUSE="+cairo examples test +threads" # doc
+KEYWORDS="~*"
+IUSE="+cairo examples test +threads"
 REQUIRED_USE="test? ( cairo )"
 
 COMMON_DEPEND=">=dev-libs/glib-2.31.0:2
 	>=dev-libs/gobject-introspection-1.34.1.1
-	virtual/libffi
+	virtual/libffi:=
 	cairo? ( $(python_abi_depend ">=dev-python/pycairo-1.10.0") )"
 DEPEND="${COMMON_DEPEND}
 	x11-libs/cairo[glib]
@@ -34,11 +34,6 @@ DEPEND="${COMMON_DEPEND}
 		x11-libs/gdk-pixbuf:2[introspection]
 		x11-libs/gtk+:3[introspection]
 		x11-libs/pango[introspection] )"
-# docs disabled for now per upstream default since they are very out of date
-#	doc? (
-#		app-text/docbook-xml-dtd:4.1.2
-#		dev-libs/libxslt
-#		>=app-text/docbook-xsl-stylesheets-1.70.1 )
 
 # We now disable introspection support in slot 2 per upstream recommendation
 # (see https://bugzilla.gnome.org/show_bug.cgi?id=642048#c9); however,
@@ -56,6 +51,7 @@ src_prepare() {
 	DOCS="AUTHORS ChangeLog* NEWS README"
 	# Hard-enable libffi support since both gobject-introspection and
 	# glib-2.29.x rdepend on it anyway
+	# docs disabled by upstream default since they are very out of date
 	G2CONF="${G2CONF}
 		--disable-dependency-tracking
 		--with-ffi
