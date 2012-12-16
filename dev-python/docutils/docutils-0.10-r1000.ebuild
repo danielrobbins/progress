@@ -2,11 +2,12 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_DEPEND="<<[xml]>>"
 PYTHON_MULTIPLE_ABIS="1"
-# http://sourceforge.net/tracker/index.php?func=detail&aid=3555164&group_id=38414&atid=422030
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.3 *-jython"
+# 2.7, 3.2, 3.3: http://sourceforge.net/tracker/?func=detail&aid=3596641&group_id=38414&atid=422030
+# 3.3: http://sourceforge.net/tracker/?func=detail&aid=3555164&group_id=38414&atid=422030
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.7 3.2 3.3 *-jython"
 
 inherit distutils
 
@@ -21,7 +22,7 @@ SRC_URI+=" glep? ( mirror://gentoo/glep-0.4-r1.tbz2 )"
 
 LICENSE="BSD-2 GPL-3 public-domain"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh sparc x86 ~ppc-aix ~amd64-fbsd ~sparc-fbsd ~x86-fbsd ~x86-freebsd ~hppa-hpux ~ia64-hpux ~x86-interix ~amd64-linux ~ia64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~m68k-mint ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
+KEYWORDS="*"
 IUSE="glep"
 
 DEPEND="$(python_abi_depend dev-python/pygments)
@@ -71,15 +72,8 @@ install_txt_doc() {
 src_install() {
 	distutils_src_install
 
-	postinstallational_preparation() {
-		# Install tools.
-		mkdir -p "${T}/images/${PYTHON_ABI}${EPREFIX}/usr/bin"
-		pushd tools > /dev/null
-		cp buildhtml.py quicktest.py "${T}/images/${PYTHON_ABI}${EPREFIX}/usr/bin"
-		popd > /dev/null
-	}
-	python_execute_function -q postinstallational_preparation
-	python_merge_intermediate_installation_images "${T}/images"
+	# Install tools.
+	python_install_executables tools/{buildhtml.py,quicktest.py}
 
 	# Install documentation.
 	dohtml -r docs tools
