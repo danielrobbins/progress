@@ -220,8 +220,8 @@ http://bugs.python.org/issue1222585
  _INITPRE = '_OSX_SUPPORT_INITIAL_'
 --- Makefile.pre.in
 +++ Makefile.pre.in
-@@ -485,7 +485,7 @@
- 	    s*) quiet="-q";; \
+@@ -486,7 +486,7 @@
+ 	    *\ -s*|s*) quiet="-q";; \
  	    *) quiet="";; \
  	esac; \
 -	$(RUNSHARED) CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' \

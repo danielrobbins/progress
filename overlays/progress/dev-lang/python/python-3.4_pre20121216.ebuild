@@ -11,13 +11,13 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="27cb1a3d57c8"
+	EHG_REVISION="7c9327ff5de6"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
 fi
 
-PATCHSET_REVISION="20121021"
+PATCHSET_REVISION="20121216"
 
 DESCRIPTION="Python is an interpreted, interactive, object-oriented programming language."
 HOMEPAGE="http://www.python.org/"
@@ -31,7 +31,7 @@ else
 fi
 
 LICENSE="PSF-2"
-SLOT="3.3"
+SLOT="3.4"
 PYTHON_ABI="${SLOT}"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd"
 IUSE="build doc elibc_uclibc examples gdbm ipv6 +ncurses +readline sqlite +ssl +threads tk wininst +xml"
@@ -181,8 +181,8 @@ src_configure() {
 	# Export CXX so it ends up in /usr/lib/python3.X/config/Makefile.
 	tc-export CXX
 
-	# Set LDFLAGS so we link modules with -lpython3.3 correctly.
-	# Needed on FreeBSD unless Python 3.3 is already installed.
+	# Set LDFLAGS so we link modules with -lpython3.4 correctly.
+	# Needed on FreeBSD unless Python 3.4 is already installed.
 	# Please query BSD team before removing this!
 	append-ldflags "-L."
 
@@ -210,6 +210,13 @@ src_compile() {
 	emake CPPFLAGS="" CFLAGS="" LDFLAGS="" || die "emake failed"
 
 	pax-mark m python
+
+	if use doc; then
+		einfo "Generation of documentation"
+		cd Doc
+		mkdir -p build/{doctrees,html}
+		sphinx-build -b html -d build/doctrees . build/html || die "Generation of documentation failed"
+	fi
 }
 
 src_test() {
@@ -279,6 +286,12 @@ src_install() {
 	use wininst || rm -f "${ED}$(python_get_libdir)/distutils/command/"wininst-*.exe
 
 	dodoc Misc/{ACKS,HISTORY,NEWS} || die "dodoc failed"
+
+	if use doc; then
+		dohtml -A xml -r Doc/build/html/
+		echo "PYTHONDOCS_${SLOT//./_}=\"${EPREFIX}/usr/share/doc/${PF}/html/library\"" > "60python-docs-${SLOT}"
+		doenvd "60python-docs-${SLOT}"
+	fi
 
 	if use examples; then
 		insinto /usr/share/doc/${PF}/examples
