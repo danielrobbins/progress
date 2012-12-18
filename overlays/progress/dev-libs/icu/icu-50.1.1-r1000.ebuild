@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="5"
+EAPI="5-progress"
 
 inherit eutils flag-o-matic toolchain-funcs versionator
 
@@ -25,10 +25,10 @@ SRC_URI="${BASE_URI}/${SRC_ARCHIVE}
 
 LICENSE="BSD"
 SLOT="0/${MAJOR_VERSION}"
-KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd"
+KEYWORDS="*"
 IUSE="c++11 debug doc examples static-libs"
 
-DEPEND="doc? ( app-arch/unzip )"
+DEPEND=""
 RDEPEND=""
 
 S="${WORKDIR}/${PN}/source"
@@ -49,7 +49,6 @@ src_unpack() {
 src_prepare() {
 	epatch "${FILESDIR}/${PN}-4.8.1-fix_binformat_fonts.patch"
 	epatch "${FILESDIR}/${PN}-4.8.1.1-fix_ltr.patch"
-	epatch "${FILESDIR}/${PN}-50.1-c++11.patch"
 
 	sed -e "s/#CXXFLAGS =/CXXFLAGS =/" -i config/icu.pc.in || die "sed failed"
 
