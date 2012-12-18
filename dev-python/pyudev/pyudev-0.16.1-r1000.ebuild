@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 *-jython"
 # https://github.com/lunaryorn/pyudev/issues/52
@@ -18,10 +18,10 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="LGPL-2.1"
 SLOT="0"
-KEYWORDS="amd64 x86"
+KEYWORDS="*"
 IUSE="pygobject pyqt4 pyside test wxwidgets"
 
-RDEPEND=">=sys-fs/udev-151
+RDEPEND="virtual/udev
 	pygobject? ( $(python_abi_depend -e "*-pypy-*" dev-python/pygobject:2) )
 	pyqt4? ( $(python_abi_depend -e "*-pypy-*" dev-python/PyQt4) )
 	pyside? ( dev-python/pyside )
