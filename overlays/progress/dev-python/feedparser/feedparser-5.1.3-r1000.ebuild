@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
@@ -16,7 +16,7 @@ SRC_URI="http://${PN}.googlecode.com/files/${P}.tar.bz2"
 # sgmllib is licensed under PSF-2.
 LICENSE="BSD-2 PSF-2"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~ia64 ~ppc ~ppc64 sparc x86 ~amd64-fbsd ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux ~x86-solaris"
+KEYWORDS="*"
 IUSE=""
 
 DEPEND="$(python_abi_depend dev-python/setuptools)"
@@ -28,6 +28,7 @@ DOCS="NEWS"
 src_prepare() {
 	mv feedparser/sgmllib3.py feedparser/_feedparser_sgmllib.py || die "Renaming sgmllib3.py failed"
 	epatch "${FILESDIR}/${PN}-5.1.1-sgmllib.patch"
+	epatch "${FILESDIR}/${P}-chardet.patch"
 
 	sed -e "/import feedparser/isys.path.insert(0, '../build/lib')" -i feedparser/feedparsertest.py
 
