@@ -15,14 +15,13 @@ SRC_URI="ftp://xmlsoft.org/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh sparc x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd"
+KEYWORDS="*"
 IUSE="crypt debug python static-libs"
 
-RDEPEND=">=dev-libs/libxml2-2.8.0
-	crypt?  ( >=dev-libs/libgcrypt-1.1.42 )"
+RDEPEND=">=dev-libs/libxml2-2.8.0:2
+	crypt?  ( >=dev-libs/libgcrypt-1.1.42:= )
+	python? ( $(python_abi_depend ">=dev-libs/libxml2-2.8.0:2[python]") )"
 DEPEND="${RDEPEND}"
-
-DOCS="AUTHORS ChangeLog FEATURES NEWS README TODO"
 
 pkg_setup() {
 	use python && python_pkg_setup
@@ -87,6 +86,7 @@ src_test() {
 
 src_install() {
 	default
+	dodoc FEATURES
 
 	if use python; then
 		installation() {
@@ -100,7 +100,7 @@ src_install() {
 		mv "${ED}"/usr/share/doc/${PN}-python-${PV} "${ED}"/usr/share/doc/${PF}/python
 	fi
 
-	prune_libtool_files
+	prune_libtool_files --modules
 }
 
 pkg_postinst() {
