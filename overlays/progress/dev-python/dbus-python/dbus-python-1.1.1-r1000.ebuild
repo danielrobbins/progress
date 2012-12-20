@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 *-jython *-pypy-*"
 PYTHON_EXPORT_PHASE_FUNCTIONS="1"
@@ -15,18 +15,15 @@ SRC_URI="http://dbus.freedesktop.org/releases/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh sparc x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux"
+KEYWORDS="*"
 IUSE="doc examples test"
 
-RDEPEND=">=dev-libs/dbus-glib-0.70
-	>=sys-apps/dbus-1.4"
+RDEPEND=">=dev-libs/dbus-glib-0.70:=
+	>=sys-apps/dbus-1.4:="
 DEPEND="${RDEPEND}
 	virtual/pkgconfig
 	doc? ( =dev-python/epydoc-3* )
-	test? (
-		$(python_abi_depend dev-python/pygobject:2)
-		$(python_abi_depend dev-python/pygobject:3)
-	)"
+	test? ( $(python_abi_depend dev-python/pygobject:3) )"
 
 src_prepare() {
 	# Fix tests with Python 3.1.
