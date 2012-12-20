@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_DEPEND="ctypes-python? ( <<>> ) python? ( <<>> )"
 if [[ "${PV}" == *_pre* ]]; then
 	# autogen.sh calls gen-make.py.
@@ -28,7 +28,7 @@ fi
 
 LICENSE="Apache-2.0"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh sparc x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux"
+KEYWORDS="*"
 IUSE="apache2 berkdb ctypes-python debug doc +dso extras gnome-keyring java kde kerberos +magic nls perl python ruby sasl static-libs test +webdav-neon webdav-serf"
 REQUIRED_USE="extras? ( python ) kde? ( nls ) kerberos? ( webdav-serf ) test? ( webdav-neon? ( apache2 ) webdav-serf? ( apache2 ) )"
 
@@ -238,7 +238,6 @@ pkg_setup() {
 
 src_prepare() {
 	epatch "${FILESDIR}/${PN}-1.7.1-perl_CFLAGS.patch"
-	epatch "${FILESDIR}/${PN}-1.7.6-gcc-4.7.patch"
 
 	if ! use test; then
 		sed -i \
