@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.*"
 
@@ -14,7 +14,7 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~ia64 ~ppc ~ppc64 ~s390 ~sh sparc x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos"
+KEYWORDS="*"
 IUSE="doc examples"
 
 DEPEND=""
@@ -25,10 +25,12 @@ PYTHON_MODULES="ANSI.py fdpexpect.py FSM.py pexpect.py pxssh.py screen.py"
 src_install() {
 	distutils_src_install
 
-	use doc && dohtml -r doc/*
+	if use doc; then
+		dohtml -r doc/
+	fi
 
 	if use examples; then
-		insinto /usr/share/doc/${PF}
-		doins -r examples
+		insinto /usr/share/doc/${PF}/examples
+		doins -r examples/*
 	fi
 }
