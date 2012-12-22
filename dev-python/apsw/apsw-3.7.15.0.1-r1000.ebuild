@@ -7,8 +7,6 @@ PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython"
 # http://code.google.com/p/apsw/issues/detail?id=129
 PYTHON_TESTS_RESTRICTED_ABIS="*-pypy-*"
-# http://code.google.com/p/apsw/issues/detail?id=132
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.3"
 
 inherit distutils eutils
 
@@ -21,7 +19,7 @@ SRC_URI="http://apsw.googlecode.com/files/${PN}-${MY_PV}.zip"
 
 LICENSE="ZLIB"
 SLOT="0"
-KEYWORDS="amd64 ~ppc64 x86"
+KEYWORDS="*"
 IUSE="doc"
 
 DEPEND=">=dev-db/sqlite-${SQLITE_PV}[extensions]"
