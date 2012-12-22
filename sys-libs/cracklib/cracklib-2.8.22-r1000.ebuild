@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_DEPEND="python? ( <<>> )"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
@@ -16,7 +16,7 @@ SRC_URI="mirror://sourceforge/cracklib/${MY_P}.tar.gz"
 
 LICENSE="LGPL-2.1"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh sparc x86 ~x86-fbsd ~x86-interix ~amd64-linux ~ia64-linux ~x86-linux ~ppc-macos ~x86-macos ~m68k-mint"
+KEYWORDS="*"
 IUSE="nls python static-libs zlib"
 
 RDEPEND="zlib? ( sys-libs/zlib )"
@@ -26,12 +26,6 @@ DEPEND="${RDEPEND}
 S=${WORKDIR}/${MY_P}
 
 PYTHON_MODULES="cracklib.py"
-
-if [[ "${EAPI}" == "4-python" ]]; then
-	usex() { use "$1" && echo "${2-yes}$4" || echo "${3-no}$5" ; }
-else
-	die "Compatibility code not deleted"
-fi
 
 do_python() {
 	use python || return 0
@@ -79,17 +73,24 @@ src_compile() {
 }
 
 src_install() {
-	emake DESTDIR="${D}" install || die
+	emake DESTDIR="${D}" install
 	use static-libs || find "${ED}"/usr -name libcrack.la -delete
 	rm -r "${ED}"/usr/share/cracklib
 
 	do_python
 
+	if use python; then
+		delete_tests() {
+			rm -f "${ED}$(python_get_sitedir)/test_cracklib.py"
+		}
+		python_execute_function -q delete_tests
+	fi
+
 	# move shared libs to /
 	gen_usr_ldscript -a crack
 
 	insinto /usr/share/dict
-	doins dicts/cracklib-small || die
+	doins dicts/cracklib-small
 
 	dodoc AUTHORS ChangeLog NEWS README*
 }
