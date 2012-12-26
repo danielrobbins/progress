@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 3.1 *-jython *-pypy-*"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
@@ -19,8 +19,8 @@ SRC_URI="http://www.pyside.org/files/${MY_P}.tar.bz2"
 
 LICENSE="LGPL-2.1"
 SLOT="0"
-KEYWORDS="amd64 ~arm x86 ~amd64-linux ~x86-linux"
-IUSE="X declarative help multimedia kde opengl phonon script scripttools sql svg test webkit xmlpatterns"
+KEYWORDS="*"
+IUSE="X declarative help kde multimedia opengl phonon script scripttools sql svg test webkit xmlpatterns"
 
 REQUIRED_USE="
 	declarative? ( X )
@@ -35,6 +35,7 @@ REQUIRED_USE="
 	webkit? ( X )
 "
 
+# Minimal supported version of Qt.
 QT_PV="4.7.0:4"
 
 RDEPEND="
@@ -50,10 +51,7 @@ RDEPEND="
 	opengl? ( >=x11-libs/qt-opengl-${QT_PV} )
 	phonon? (
 		kde? ( media-libs/phonon )
-		!kde? ( || (
-			>=x11-libs/qt-phonon-${QT_PV}
-			media-libs/phonon
-		) )
+		!kde? ( || ( >=x11-libs/qt-phonon-${QT_PV} media-libs/phonon ) )
 	)
 	script? ( >=x11-libs/qt-script-${QT_PV} )
 	sql? ( >=x11-libs/qt-sql-${QT_PV} )
