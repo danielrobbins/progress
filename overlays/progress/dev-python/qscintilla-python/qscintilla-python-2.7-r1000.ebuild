@@ -37,10 +37,10 @@ src_prepare() {
 src_configure() {
 	configuration() {
 		local myconf=(
-			"$(PYTHON)"
-			configure.py
-			-p 4
+			"$(PYTHON)" configure.py
 			--destdir="${EPREFIX}$(python_get_sitedir)/PyQt4"
+			-p 4
+			--no-timestamp
 			$(use debug && echo --debug)
 		)
 		python_execute "${myconf[@]}"
