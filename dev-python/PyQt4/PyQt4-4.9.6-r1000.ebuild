@@ -9,9 +9,6 @@ PYTHON_EXPORT_PHASE_FUNCTIONS="1"
 
 inherit eutils python qt4-r2 toolchain-funcs
 
-# Minimal supported version of Qt.
-QT_VER="4.7.2"
-
 DESCRIPTION="Python bindings for the Qt toolkit"
 HOMEPAGE="http://www.riverbankcomputing.co.uk/software/pyqt/intro/ http://pypi.python.org/pypi/PyQt"
 
@@ -42,32 +39,32 @@ REQUIRED_USE="
 	svg? ( X )
 	webkit? ( X )"
 
+# Minimal supported version of Qt.
+QT_PV="4.8.0:4"
+
 RDEPEND="$(python_abi_depend ">=dev-python/sip-4.14.2:0=")
-	>=x11-libs/qt-core-${QT_VER}:4
+	>=x11-libs/qt-core-${QT_PV}
 	X? (
-		>=x11-libs/qt-gui-${QT_VER}:4[dbus?]
-		>=x11-libs/qt-test-${QT_VER}:4
+		>=x11-libs/qt-gui-${QT_PV}[dbus?]
+		>=x11-libs/qt-test-${QT_PV}
 	)
 	dbus? (
 		$(python_abi_depend -e "2.5" ">=dev-python/dbus-python-0.80")
-		>=x11-libs/qt-dbus-${QT_VER}:4
+		>=x11-libs/qt-dbus-${QT_PV}
 	)
-	declarative? ( >=x11-libs/qt-declarative-${QT_VER}:4 )
-	help? ( >=x11-libs/qt-assistant-${QT_VER}:4 )
-	multimedia? ( >=x11-libs/qt-multimedia-${QT_VER}:4 )
-	opengl? (
-		>=x11-libs/qt-opengl-${QT_VER}:4
-		|| ( >=x11-libs/qt-opengl-4.8.0:4 <x11-libs/qt-opengl-4.8.0:4[-egl] )
-	)
+	declarative? ( >=x11-libs/qt-declarative-${QT_PV} )
+	help? ( >=x11-libs/qt-assistant-${QT_PV} )
+	multimedia? ( >=x11-libs/qt-multimedia-${QT_PV} )
+	opengl? ( >=x11-libs/qt-opengl-${QT_PV} )
 	phonon? (
-		!kde? ( || ( >=x11-libs/qt-phonon-${QT_VER}:4 media-libs/phonon ) )
 		kde? ( media-libs/phonon )
+		!kde? ( || ( >=x11-libs/qt-phonon-${QT_PV} media-libs/phonon ) )
 	)
-	script? ( >=x11-libs/qt-script-${QT_VER}:4 )
-	sql? ( >=x11-libs/qt-sql-${QT_VER}:4 )
-	svg? ( >=x11-libs/qt-svg-${QT_VER}:4 )
-	webkit? ( >=x11-libs/qt-webkit-${QT_VER}:4 )
-	xmlpatterns? ( >=x11-libs/qt-xmlpatterns-${QT_VER}:4 )"
+	script? ( >=x11-libs/qt-script-${QT_PV} )
+	sql? ( >=x11-libs/qt-sql-${QT_PV} )
+	svg? ( >=x11-libs/qt-svg-${QT_PV} )
+	webkit? ( >=x11-libs/qt-webkit-${QT_PV} )
+	xmlpatterns? ( >=x11-libs/qt-xmlpatterns-${QT_PV} )"
 DEPEND="${RDEPEND}
 	dbus? ( virtual/pkgconfig )"
 
@@ -101,7 +98,7 @@ src_prepare() {
 }
 
 pyqt4_use_enable() {
-	use $1 && echo "--enable=${2:-$1}"
+	use $1 && echo --enable=${2:-Qt$(LC_ALL="C"; echo ${1^})}
 }
 
 src_configure() {
@@ -123,15 +120,15 @@ src_configure() {
 			$(pyqt4_use_enable X QtGui)
 			$(pyqt4_use_enable X QtTest)
 			$(pyqt4_use_enable dbus QtDBus)
-			$(pyqt4_use_enable declarative QtDeclarative)
-			$(pyqt4_use_enable help QtHelp)
-			$(pyqt4_use_enable multimedia QtMultimedia)
+			$(pyqt4_use_enable declarative)
+			$(pyqt4_use_enable help)
+			$(pyqt4_use_enable multimedia)
 			$(pyqt4_use_enable opengl QtOpenGL)
-			$(pyqt4_use_enable phonon)
-			$(pyqt4_use_enable script QtScript)
+			$(pyqt4_use_enable phonon phonon)
+			$(pyqt4_use_enable script)
 			$(pyqt4_use_enable scripttools QtScriptTools)
-			$(pyqt4_use_enable sql QtSql)
-			$(pyqt4_use_enable svg QtSvg)
+			$(pyqt4_use_enable sql)
+			$(pyqt4_use_enable svg)
 			$(pyqt4_use_enable webkit QtWebKit)
 			$(pyqt4_use_enable xmlpatterns QtXmlPatterns)
 			AR="$(tc-getAR) cqs"
@@ -158,7 +155,7 @@ src_configure() {
 			popd > /dev/null || return
 
 			# Fix insecure runpaths.
-			sed -e "/^LFLAGS[[:space:]]*=/s:-Wl,-rpath,${BUILDDIR}/qpy/${mod}::" -i ${mod}/Makefile || die "Fixing of runpaths failed"
+			sed -e "/^LFLAGS\s*=/s:-Wl,-rpath,${BUILDDIR}/qpy/${mod}::" -i ${mod}/Makefile || die "Fixing of runpaths failed"
 		done
 
 		# Avoid stripping of libpythonplugin.so.
