@@ -29,8 +29,6 @@ DEPEND="emacs? ( virtual/emacs )
 	)
 	app-text/asciidoc"
 
-S="${WORKDIR}/hg"
-
 PYTHON_CFLAGS=(
 	"2.* + -fno-strict-aliasing"
 	"* - -ftracer -ftree-vectorize"
