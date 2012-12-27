@@ -33,6 +33,16 @@ DOCS="*.txt"
 
 GLEP_SRC="${WORKDIR}/glep-0.4-r1"
 
+src_prepare() {
+	distutils_src_prepare
+
+	# http://docutils.svn.sourceforge.net/viewvc/docutils?view=revision&revision=7578
+	sed \
+		-e "s/from docutils.io import FileOutput/import docutils.io/" \
+		-e "s/FileOutput/docutils.io.FileOutput/" \
+		-i docutils/utils/__init__.py
+}
+
 src_compile() {
 	distutils_src_compile
 
