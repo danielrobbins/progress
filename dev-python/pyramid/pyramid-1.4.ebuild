@@ -1,7 +1,7 @@
 # Copyright owners: Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 3.1 *-jython"
 DISTUTILS_SRC_TEST="setup.py"
@@ -14,7 +14,7 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD repoze ZPL doc? ( CCPL-Attribution-ShareAlike-NonCommercial-3.0 )"
 SLOT="0"
-KEYWORDS="amd64 x86"
+KEYWORDS="*"
 IUSE="doc test"
 
 RDEPEND="$(python_abi_depend dev-python/chameleon)
@@ -34,9 +34,8 @@ DEPEND="${RDEPEND}
 		$(python_abi_depend dev-python/sphinx)
 	)
 	test? (
-		$(python_abi_depend dev-python/virtualenv)
 		$(python_abi_depend dev-python/webtest)
-		$(python_abi_depend -i "2.*-cpython" net-zope/zope.component)
+		$(python_abi_depend net-zope/zope.component)
 	)"
 
 DOCS="BFG_HISTORY.txt CHANGES.txt HISTORY.txt README.rst TODO.txt"
@@ -45,7 +44,7 @@ src_prepare() {
 	distutils_src_prepare
 
 	# Fix Sphinx theme.
-	sed -e "/# Add and use Pylons theme/,+31d" -i docs/conf.py || die "sed failed"
+	sed -e "/# Add and use Pylons theme/,+33d" -i docs/conf.py || die "sed failed"
 }
 
 src_compile() {
