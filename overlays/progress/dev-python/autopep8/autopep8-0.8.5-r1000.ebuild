@@ -16,7 +16,7 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="amd64 x86 ~amd64-linux ~x86-linux"
+KEYWORDS="*"
 IUSE=""
 
 DEPEND="$(python_abi_depend ">=dev-python/pep8-1.3.2")
@@ -24,13 +24,6 @@ DEPEND="$(python_abi_depend ">=dev-python/pep8-1.3.2")
 RDEPEND="${DEPEND}"
 
 PYTHON_MODULES="${PN}.py"
-
-src_prepare() {
-	distutils_src_prepare
-
-	# https://github.com/hhatto/autopep8/issues/54
-	sed -e "s/test_fix_file/_&/" -i test/test_autopep8.py
-}
 
 src_test() {
 	testing() {
