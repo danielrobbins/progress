@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5 3.* *-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
@@ -15,7 +15,7 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~s390 ~sh sparc x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux"
+KEYWORDS="*"
 IUSE="doc examples"
 
 RDEPEND="$(python_abi_depend dev-python/greenlet)"
@@ -36,12 +36,6 @@ src_prepare() {
 		-e "s/test_incomplete_headers_76/_&/" \
 		-e "s/test_incorrect_headers/_&/" \
 		-i tests/websocket_test.py
-
-	# Skip test requiring Python >=2.7.
-	sed \
-		-e "1i\\import sys" \
-		-e "/test_errors/i\\    @skip_unless(sys.version_info >= (2, 7))" \
-		-i tests/zmq_test.py
 }
 
 src_compile() {
