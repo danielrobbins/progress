@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_DEPEND="<<[xml]>>"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.* *-jython *-pypy-*"
@@ -20,12 +20,12 @@ SRC_URI="${BASE_URI}/${MY_P}.tar.gz"
 
 LICENSE="GPL-3"
 SLOT="5"
-KEYWORDS="amd64 ~ppc ~ppc64 x86"
+KEYWORDS="*"
 IUSE="spell"
 
 DEPEND="$(python_abi_depend ">=dev-python/sip-4.12.4")
-	$(python_abi_depend ">=dev-python/PyQt4-4.7[X,help,svg,webkit]")
-	$(python_abi_depend ">=dev-python/qscintilla-python-2.4")"
+	$(python_abi_depend ">=dev-python/PyQt4-4.8[X,help,svg,webkit]")
+	$(python_abi_depend ">=dev-python/qscintilla-python-2.6")"
 RDEPEND="${DEPEND}
 	$(python_abi_depend ">=dev-python/chardet-2.0.1")
 	$(python_abi_depend ">=dev-python/coverage-3.2")
