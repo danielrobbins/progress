@@ -15,18 +15,20 @@ SRC_URI="http://mercurial.selenic.com/release/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 sparc x86 ~amd64-fbsd ~x86-fbsd ~x64-freebsd ~x86-interix ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
+KEYWORDS="*"
 IUSE="bugzilla emacs gpg test tk zsh-completion"
 
 RDEPEND="bugzilla? ( $(python_abi_depend dev-python/mysql-python) )
 	gpg? ( app-crypt/gnupg )
 	tk? ( dev-lang/tk )
-	zsh-completion? ( app-shells/zsh )"
+	zsh-completion? ( app-shells/zsh )
+	app-misc/ca-certificates"
 DEPEND="emacs? ( virtual/emacs )
 	test? (
 		app-arch/unzip
 		$(python_abi_depend dev-python/pygments)
-	)"
+	)
+	app-text/asciidoc"
 
 PYTHON_CFLAGS=(
 	"2.* + -fno-strict-aliasing"
@@ -53,6 +55,7 @@ src_compile() {
 	fi
 
 	rm -rf contrib/{win32,macosx} || die
+	emake doc
 }
 
 src_install() {
@@ -88,25 +91,28 @@ EOF
 		elisp-install ${PN} contrib/mercurial.el* || die "elisp-install failed!"
 		elisp-site-file-install "${FILESDIR}"/${SITEFILE}
 	fi
+
+	insinto /etc/mercurial/hgrc.d
+	doins "${FILESDIR}/cacerts.rc"
 }
 
 src_test() {
 	cd "${S}/tests/" || die
-	rm -rf *svn* || die			# Subversion tests fail with 1.5
-	rm -f test-archive || die		# Fails due to verbose tar output changes
+	rm -rf *svn* || die					# Subversion tests fail with 1.5
+	rm -f test-archive || die			# Fails due to verbose tar output changes
 	rm -f test-convert-baz* || die		# GNU Arch baz
-	rm -f test-convert-cvs*	|| die		# CVS
+	rm -f test-convert-cvs* || die		# CVS
 	rm -f test-convert-darcs* || die	# Darcs
 	rm -f test-convert-git* || die		# git
-	rm -f test-convert-mtn*	|| die		# monotone
-	rm -f test-convert-tla*	|| die		# GNU Arch tla
-	rm -f test-doctest* || die		# doctest always fails with python 2.5.x
+	rm -f test-convert-mtn* || die		# monotone
+	rm -f test-convert-tla* || die		# GNU Arch tla
+	rm -f test-doctest* || die			# doctest always fails with python 2.5.x
 	if [[ ${EUID} -eq 0 ]]; then
 		einfo "Removing tests which require user privileges to succeed"
 		rm -f test-command-template || die	# Test is broken when run as root
-		rm -f test-convert || die		# Test is broken when run as root
-		rm -f test-lock-badness	|| die		# Test is broken when run as root
-		rm -f test-permissions	|| die		# Test is broken when run as root
+		rm -f test-convert || die			# Test is broken when run as root
+		rm -f test-lock-badness || die		# Test is broken when run as root
+		rm -f test-permissions || die		# Test is broken when run as root
 		rm -f test-pull-permission || die	# Test is broken when run as root
 		rm -f test-clone-failure || die
 		rm -f test-journal-exists || die
