@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 JAVA_PKG_IUSE="doc examples oracle source"
 
 inherit java-pkg-2 java-ant-2 python
@@ -11,7 +11,7 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/jython"
-	EHG_REVISION="d56c4119fed1"
+	EHG_REVISION="4c3155645812"
 fi
 
 PATCHSET_REVISION="20120610"
@@ -23,7 +23,7 @@ SRC_URI=""
 LICENSE="PSF-2"
 SLOT="2.5"
 PYTHON_ABI="${SLOT}-jython"
-KEYWORDS="~amd64 ~x86"
+KEYWORDS="~*"
 IUSE="+readline +ssl test +threads +xml"
 
 CDEPEND="dev-java/ant-core:0
@@ -110,7 +110,7 @@ src_install() {
 	java-pkg_newjar "${PN}-dev.jar"
 
 	local java_args="-Dpython.home=${EPREFIX}/usr/share/${PN}-${SLOT}"
-	java_args+=" -Dpython.cachedir=\$([[ -n \"\${JYTHON_SYSTEM_CACHEDIR}\" ]] && echo ${EPREFIX}/var/cache/${PN}/${SLOT}-\${EUID} || echo \${HOME}/.jython${SLOT}-cachedir)"
+	java_args+=" -Dpython.cachedir=\$([[ -n \"\${JYTHON_SYSTEM_CACHEDIR}\" ]] && echo ${EPREFIX}/var/cache/${PN}/${SLOT}-\$(id -un) || echo \${HOME}/.jython${SLOT}-cachedir)"
 	java_args+=" -Dpython.executable=${EPREFIX}/usr/bin/jython${SLOT}"
 	java-pkg_dolauncher jython${SLOT} --main "org.python.util.jython" --pkg_args "${java_args}"
 
@@ -135,9 +135,23 @@ src_install() {
 	fi
 }
 
+pkg_preinst() {
+	java-pkg-2_pkg_preinst
+
+	if has_version "<${CATEGORY}/${PN}-2.5.4_pre20121230:${SLOT}"; then
+		# Clean Jython system cache.
+		rm -fr "${EROOT}var/cache/jython/"${SLOT}-*
+		JYTHON_PREPARE_SYSTEM_CACHE_DIRECTORIES="1"
+	fi
+}
+
 pkg_postinst() {
 	# Clean Jython system cache.
 	rm -fr "${EROOT}var/cache/jython/"${SLOT}-*/*
+
+	if [[ -n "${JYTHON_PREPARE_SYSTEM_CACHE_DIRECTORIES}" ]]; then
+		_python_prepare_jython
+	fi
 
 	python_mod_optimize -f -x "/(site-packages|test|tests)/" $(python_get_libdir)
 
@@ -154,4 +168,9 @@ pkg_postinst() {
 
 pkg_postrm() {
 	python_mod_cleanup $(python_get_libdir)
+
+	if ! has_version "${CATEGORY}/${PN}:${SLOT}"; then
+		# Clean Jython system cache.
+		rm -fr "${EROOT}var/cache/jython/"${SLOT}-*	
+	fi
 }
