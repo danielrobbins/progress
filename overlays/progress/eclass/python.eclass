@@ -1723,19 +1723,17 @@ python_execute_function() {
 		die "${FUNCNAME}(): Invalid call stack"
 	fi
 
-	if [[ "${_python[quiet]}" == "0" ]]; then
-		[[ "${EBUILD_PHASE}" == "setup" ]] && _python[action]="Setting up"
-		[[ "${EBUILD_PHASE}" == "unpack" ]] && _python[action]="Unpacking"
-		[[ "${EBUILD_PHASE}" == "prepare" ]] && _python[action]="Preparation"
-		[[ "${EBUILD_PHASE}" == "configure" ]] && _python[action]="Configuration"
-		[[ "${EBUILD_PHASE}" == "compile" ]] && _python[action]="Building"
-		[[ "${EBUILD_PHASE}" == "test" ]] && _python[action]="Testing"
-		[[ "${EBUILD_PHASE}" == "install" ]] && _python[action]="Installation"
-		[[ "${EBUILD_PHASE}" == "preinst" ]] && _python[action]="Preinstallation"
-		[[ "${EBUILD_PHASE}" == "postinst" ]] && _python[action]="Postinstallation"
-		[[ "${EBUILD_PHASE}" == "prerm" ]] && _python[action]="Preuninstallation"
-		[[ "${EBUILD_PHASE}" == "postrm" ]] && _python[action]="Postuninstallation"
-	fi
+	[[ "${EBUILD_PHASE}" == "setup" ]] && _python[action]="Setting up"
+	[[ "${EBUILD_PHASE}" == "unpack" ]] && _python[action]="Unpacking"
+	[[ "${EBUILD_PHASE}" == "prepare" ]] && _python[action]="Preparation"
+	[[ "${EBUILD_PHASE}" == "configure" ]] && _python[action]="Configuration"
+	[[ "${EBUILD_PHASE}" == "compile" ]] && _python[action]="Building"
+	[[ "${EBUILD_PHASE}" == "test" ]] && _python[action]="Testing"
+	[[ "${EBUILD_PHASE}" == "install" ]] && _python[action]="Installation"
+	[[ "${EBUILD_PHASE}" == "preinst" ]] && _python[action]="Preinstallation"
+	[[ "${EBUILD_PHASE}" == "postinst" ]] && _python[action]="Postinstallation"
+	[[ "${EBUILD_PHASE}" == "prerm" ]] && _python[action]="Preuninstallation"
+	[[ "${EBUILD_PHASE}" == "postrm" ]] && _python[action]="Postuninstallation"
 
 	_python_calculate_PYTHON_ABIS
 	if [[ "${_python[final_ABI]}" == "1" ]]; then
