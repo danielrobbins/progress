@@ -858,6 +858,38 @@ _python_check_run-time_dependency() {
 	fi
 }
 
+_python_prepare_jython() {
+	local build_group build_user current_group current_user iterated_PYTHON_ABIS jython_version PYTHON_ABI="${PYTHON_ABI}"
+
+	export JYTHON_SYSTEM_CACHEDIR="1"
+	addwrite "${EPREFIX}/var/cache/jython"
+
+	current_user="$(id -un)" || die "${FUNCNAME}(): Extraction of current user failed"
+	current_group="$(id -gn)" || die "${FUNCNAME}(): Extraction of current group failed"
+	if has "${EAPI:-0}" 5-progress && declare -f package_manager_build_user > /dev/null; then
+		build_user="$(package_manager_build_user)" || die "${FUNCNAME}(): Extraction of build user failed"
+		build_group="$(package_manager_build_group)" || die "${FUNCNAME}(): Extraction of build group failed"
+	fi
+
+	if _python_package_supporting_installation_for_multiple_python_abis; then
+		iterated_PYTHON_ABIS="${PYTHON_ABIS}"
+	else
+		iterated_PYTHON_ABIS="${PYTHON_ABI}"
+	fi
+
+	for PYTHON_ABI in ${iterated_PYTHON_ABIS}; do
+		if has "${PYTHON_ABI}" "${_JYTHON_GLOBALLY_SUPPORTED_ABIS[@]}"; then
+			jython_version="${PYTHON_ABI%-jython}"
+			mkdir -p "${EPREFIX}/var/cache/jython/${jython_version}-${current_user}" || die "${FUNCNAME}(): Creation of '${EPREFIX}/var/cache/jython/${jython_version}-${current_user}' directory failed"
+			chown -R "${current_user}:${current_group}" "${EPREFIX}/var/cache/jython/${jython_version}-${current_user}" || die "${FUNCNAME}(): Changing of owner and group of '${EPREFIX}/var/cache/jython/${jython_version}-${current_user}' directory to ${current_user}:${current_group} failed"
+			if has "${EAPI:-0}" 5-progress && declare -f package_manager_build_user > /dev/null && [[ "${current_user}" != "${build_user}" ]]; then
+				mkdir -p "${EPREFIX}/var/cache/jython/${jython_version}-${build_user}" || die "${FUNCNAME}(): Creation of '${EPREFIX}/var/cache/jython/${jython_version}-${build_user}' directory failed"
+				chown -R "${build_user}:${build_group}" "${EPREFIX}/var/cache/jython/${jython_version}-${build_user}" || die "${FUNCNAME}(): Changing of owner and group of '${EPREFIX}/var/cache/jython/${jython_version}-${build_user}' directory to ${build_user}:${build_group} failed"
+			fi
+		fi
+	done
+}
+
 _python_abi-specific_local_scope() {
 	[[ " ${FUNCNAME[@]:2} " =~ " "(_python_final_sanity_checks|python_execute_function|python_mod_optimize|python_mod_cleanup)" " ]]
 }
@@ -981,8 +1013,7 @@ python_pkg_setup() {
 		die "${FUNCNAME}() does not accept arguments"
 	fi
 
-	export JYTHON_SYSTEM_CACHEDIR="1"
-	addwrite "${EPREFIX}/var/cache/jython"
+	_python_prepare_jython
 
 	if _python_package_supporting_installation_for_multiple_python_abis; then
 		_python_calculate_PYTHON_ABIS
