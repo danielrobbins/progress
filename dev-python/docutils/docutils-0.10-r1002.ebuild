@@ -5,9 +5,9 @@
 EAPI="5-progress"
 PYTHON_DEPEND="<<[xml]>>"
 PYTHON_MULTIPLE_ABIS="1"
-# 2.7, 3.2, 3.3: http://sourceforge.net/tracker/?func=detail&aid=3596641&group_id=38414&atid=422030
-# 3.3: http://sourceforge.net/tracker/?func=detail&aid=3555164&group_id=38414&atid=422030
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.7 3.2 3.3 *-jython"
+# 2.7, 3.2, 3.3, 3.4: http://sourceforge.net/tracker/?func=detail&aid=3596641&group_id=38414&atid=422030
+# 3.3, 3.4: http://sourceforge.net/tracker/?func=detail&aid=3555164&group_id=38414&atid=422030
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.7 3.2 3.3 3.4 *-jython"
 
 inherit distutils
 
@@ -18,20 +18,17 @@ if [[ "${PV}" == *_pre* ]]; then
 else
 	SRC_URI="mirror://sourceforge/${PN}/${P}.tar.gz"
 fi
-SRC_URI+=" glep? ( mirror://gentoo/glep-0.4-r1.tbz2 )"
 
 LICENSE="BSD-2 GPL-3 public-domain"
 SLOT="0"
 KEYWORDS="*"
-IUSE="glep"
+IUSE=""
 
 DEPEND="$(python_abi_depend dev-python/pygments)
 	$(python_abi_depend dev-python/roman)"
 RDEPEND="${DEPEND}"
 
 DOCS="*.txt"
-
-GLEP_SRC="${WORKDIR}/glep-0.4-r1"
 
 src_prepare() {
 	distutils_src_prepare
@@ -41,6 +38,9 @@ src_prepare() {
 		-e "s/from docutils.io import FileOutput/import docutils.io/" \
 		-e "s/FileOutput/docutils.io.FileOutput/" \
 		-i docutils/utils/__init__.py
+
+	# http://sourceforge.net/tracker/?func=detail&aid=3598893&group_id=38414&atid=422030
+	sed -e "s/isinstance(value, unicode)/not isinstance(value, list)/" -i docutils/frontend.py
 }
 
 src_compile() {
@@ -95,19 +95,4 @@ src_install() {
 	for doc in {docs,tools}/**/*.txt; do
 		install_txt_doc "${doc}"
 	done
-
-	# Install Gentoo GLEP tools.
-	if use glep; then
-		dobin "${GLEP_SRC}/glep.py"
-
-		installation_of_glep_tools() {
-			insinto $(python_get_sitedir)/docutils/readers
-			newins "${GLEP_SRC}/glepread.py" glep.py
-			insinto $(python_get_sitedir)/docutils/transforms
-			newins "${GLEP_SRC}/glepstrans.py" gleps.py
-			insinto $(python_get_sitedir)/docutils/writers
-			doins -r "${GLEP_SRC}/glep_html"
-		}
-		python_execute_function --action-message 'Installation of GLEP tools with $(python_get_implementation_and_version)' installation_of_glep_tools
-	fi
 }
