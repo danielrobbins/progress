@@ -18,17 +18,18 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="bugzilla emacs gpg test tk zsh-completion"
 
-RDEPEND="bugzilla? ( $(python_abi_depend dev-python/mysql-python) )
+RDEPEND="app-misc/ca-certificates
+	bugzilla? ( $(python_abi_depend dev-python/mysql-python) )
 	gpg? ( app-crypt/gnupg )
 	tk? ( dev-lang/tk )
-	zsh-completion? ( app-shells/zsh )
-	app-misc/ca-certificates"
+	zsh-completion? ( app-shells/zsh )"
 DEPEND="emacs? ( virtual/emacs )
+	$([[ ${PV} == 9999 ]] && echo app-text/asciidoc)
+	$([[ ${PV} == 9999 ]] && python_abi_depend dev-python/docutils)
 	test? (
 		app-arch/unzip
 		$(python_abi_depend dev-python/pygments)
-	)
-	app-text/asciidoc"
+	)"
 
 PYTHON_CFLAGS=(
 	"2.* + -fno-strict-aliasing"
@@ -40,7 +41,6 @@ SITEFILE="70${PN}-gentoo.el"
 
 src_prepare() {
 	distutils_src_prepare
-
 	# fix up logic that won't work in Gentoo Prefix (also won't outside in
 	# certain cases), bug #362891
 	sed -i -e 's:xcodebuild:nocodebuild:' setup.py || die
@@ -49,13 +49,17 @@ src_prepare() {
 src_compile() {
 	distutils_src_compile
 
+	if [[ ${PV} == 9999 ]]; then
+		emake doc
+	fi
+
 	if use emacs; then
-		cd "${S}"/contrib || die
+		pushd contrib > /dev/null || die
 		elisp-compile mercurial.el || die "elisp-compile failed!"
+		popd > /dev/null || die
 	fi
 
 	rm -rf contrib/{win32,macosx} || die
-	emake doc
 }
 
 src_install() {
@@ -63,12 +67,12 @@ src_install() {
 
 	newbashcomp contrib/bash_completion ${PN} || die
 
-	if use zsh-completion ; then
+	if use zsh-completion; then
 		insinto /usr/share/zsh/site-functions
 		newins contrib/zsh_completion _hg
 	fi
 
-	rm -f doc/*.?.txt || die
+	rm -f doc/*.[[:digit:]]{,.*}.txt || die
 	dodoc CONTRIBUTORS README doc/*.txt
 	cp hgweb*.cgi "${ED}"/usr/share/doc/${PF}/ || die
 
@@ -99,7 +103,7 @@ EOF
 src_test() {
 	cd "${S}/tests/" || die
 	rm -rf *svn* || die					# Subversion tests fail with 1.5
-	rm -f test-archive || die			# Fails due to verbose tar output changes
+	rm -f test-archive* || die			# Fails due to verbose tar output changes
 	rm -f test-convert-baz* || die		# GNU Arch baz
 	rm -f test-convert-cvs* || die		# CVS
 	rm -f test-convert-darcs* || die	# Darcs
@@ -107,16 +111,17 @@ src_test() {
 	rm -f test-convert-mtn* || die		# monotone
 	rm -f test-convert-tla* || die		# GNU Arch tla
 	rm -f test-doctest* || die			# doctest always fails with python 2.5.x
+	rm -f test-largefiles* || die		# tends to time out
 	if [[ ${EUID} -eq 0 ]]; then
 		einfo "Removing tests which require user privileges to succeed"
-		rm -f test-command-template || die	# Test is broken when run as root
-		rm -f test-convert || die			# Test is broken when run as root
-		rm -f test-lock-badness || die		# Test is broken when run as root
-		rm -f test-permissions || die		# Test is broken when run as root
-		rm -f test-pull-permission || die	# Test is broken when run as root
-		rm -f test-clone-failure || die
-		rm -f test-journal-exists || die
-		rm -f test-repair-strip || die
+		rm -f test-command-template* || die	# Test is broken when run as root
+		rm -f test-convert* || die			# Test is broken when run as root
+		rm -f test-lock-badness* || die		# Test is broken when run as root
+		rm -f test-permissions* || die		# Test is broken when run as root
+		rm -f test-pull-permission* || die	# Test is broken when run as root
+		rm -f test-clone-failure* || die
+		rm -f test-journal-exists* || die
+		rm -f test-repair-strip* || die
 	fi
 
 	testing() {
