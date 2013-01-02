@@ -1,19 +1,19 @@
 # Copyright owners: Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 DISTUTILS_SRC_TEST="py.test"
 
 inherit distutils
 
 DESCRIPTION="Python 2 and 3 compatibility utilities"
-HOMEPAGE="http://pypi.python.org/pypi/six"
+HOMEPAGE="https://bitbucket.org/gutworth/six http://pypi.python.org/pypi/six"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh sparc x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd ~amd64-linux ~x86-linux"
+KEYWORDS="*"
 IUSE="doc"
 
 DEPEND="doc? ( $(python_abi_depend dev-python/sphinx) )"
