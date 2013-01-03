@@ -22,16 +22,6 @@ RDEPEND=""
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 
-src_prepare() {
-	distutils_src_prepare
-
-	# https://github.com/simplejson/simplejson/issues/49
-	sed \
-		-e "s/except ValueError, e:/except ValueError:/" \
-		-e "s/raise SystemExit(e)/raise SystemExit(sys.exc_info()[1])/" \
-		-i simplejson/tool.py
-}
-
 src_test() {
 	testing() {
 		if [[ "$(python_get_implementation)" != "Jython" ]]; then
