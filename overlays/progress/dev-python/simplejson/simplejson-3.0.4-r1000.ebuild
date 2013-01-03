@@ -2,26 +2,35 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.*"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
+PYTHON_RESTRICTED_ABIS="3.1 3.2"
 
 inherit distutils
 
 DESCRIPTION="Simple, fast, extensible JSON encoder/decoder for Python"
-HOMEPAGE="http://undefined.org/python/#simplejson http://pypi.python.org/pypi/simplejson"
+HOMEPAGE="https://github.com/simplejson/simplejson http://pypi.python.org/pypi/simplejson"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="amd64 ~arm ~ppc ~ppc64 sparc x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos"
+KEYWORDS="*"
 IUSE=""
 
 DEPEND=""
 RDEPEND=""
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
+
+src_prepare() {
+	distutils_src_prepare
+
+	# https://github.com/simplejson/simplejson/issues/49
+	sed \
+		-e "s/except ValueError, e:/except ValueError:/" \
+		-e "s/raise SystemExit(e)/raise SystemExit(sys.exc_info()[1])/" \
+		-i simplejson/tool.py
+}
 
 src_test() {
 	testing() {
