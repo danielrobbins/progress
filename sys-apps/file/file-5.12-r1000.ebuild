@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_DEPEND="python? ( <<>> )"
 PYTHON_MULTIPLE_ABIS="1"
 # http://bugs.jython.org/issue1916
@@ -17,19 +17,13 @@ SRC_URI="ftp://ftp.astron.com/pub/file/${P}.tar.gz
 
 LICENSE="BSD-2"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh sparc x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd"
+KEYWORDS="*"
 IUSE="python static-libs zlib"
 
 RDEPEND="zlib? ( sys-libs/zlib )"
 DEPEND="${RDEPEND}"
 
 PYTHON_MODULES="magic.py"
-
-if [[ "${EAPI}" == "4-python" ]]; then
-	usex() { use "$1" && echo "${2-yes}$4" || echo "${3-no}$5" ; }
-else
-	die "Compatibility code not deleted"
-fi
 
 pkg_setup() {
 	use python && python_pkg_setup
