@@ -27,7 +27,7 @@ S="${WORKDIR}/${MY_P}"
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 
-DOCS="README.txt ToDo.txt USAGE.txt"
+DOCS="CHANGES.rst README.txt ToDo.txt USAGE.txt"
 PYTHON_MODULES="Cython cython.py pyximport"
 
 src_test() {
