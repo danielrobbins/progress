@@ -4,15 +4,15 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 
-inherit distutils eutils
+inherit distutils
 
 DESCRIPTION="Python Bindings for TagLib"
-HOMEPAGE="http://mathema.tician.de//software/tagpy http://git.tiker.net/?p=tagpy.git http://pypi.python.org/pypi/tagpy"
+HOMEPAGE="http://mathema.tician.de/software/tagpy http://git.tiker.net/?p=tagpy.git http://pypi.python.org/pypi/tagpy"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
-LICENSE="BSD"
+LICENSE="MIT"
 SLOT="0"
 KEYWORDS="*"
 IUSE="examples"
@@ -23,15 +23,6 @@ DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
 DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES="1"
-
-src_prepare() {
-	# Disable broken check for Distribute.
-	sed -e "s/if 'distribute' not in setuptools.__file__:/if False:/" -i aksetup_helper.py
-
-	epatch "${FILESDIR}/${P}-taglib-1.8.patch"
-
-	distutils_src_prepare
-}
 
 src_configure() {
 	configuration() {
