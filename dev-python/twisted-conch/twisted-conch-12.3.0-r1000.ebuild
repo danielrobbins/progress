@@ -29,8 +29,4 @@ src_prepare() {
 		sed -e "s/test_checkKeyAsRoot/_&/" -i twisted/conch/test/test_checkers.py
 		sed -e "s/test_getPrivateKeysAsRoot/_&/" -i twisted/conch/test/test_openssh_compat.py
 	fi
-
-	# Disable failing test.
-	# https://twistedmatrix.com/trac/ticket/6243
-	sed -e "s/test_toOpenSSH/_&/" -i twisted/conch/test/test_keys.py
 }
