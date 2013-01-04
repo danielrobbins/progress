@@ -22,6 +22,11 @@ RDEPEND="sys-apps/attr"
 DEPEND="${DEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
+src_prepare() {
+	distutils_src_prepare
+	sed -e "/extra_compile_args=/d" -i setup.py
+}
+
 src_test() {
 	touch "${T}/test_file"
 	if ! setfattr -n user.attr -v value "${T}/test_file" &> /dev/null; then
