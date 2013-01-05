@@ -15,7 +15,7 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz
 
 LICENSE="ZPL"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh sparc x86 ~amd64-fbsd ~x86-fbsd ~x86-interix ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
+KEYWORDS="*"
 IUSE="doc test"
 
 RDEPEND="$(python_abi_depend net-zope/namespaces-zope[zope])
@@ -39,9 +39,9 @@ src_prepare() {
 
 	preparation() {
 		if [[ "$(python_get_version -l)" == "2.5" ]]; then
-			cp -fr "${WORKDIR}/${PN}-3.8.0" "${WORKDIR}/${P}-${PYTHON_ABI}"
+			cp -fr "${WORKDIR}/${PN}-3.8.0" "${S}-${PYTHON_ABI}"
 		else
-			cp -fr "${WORKDIR}/${P}" "${WORKDIR}/${P}-${PYTHON_ABI}"
+			cp -fr "${WORKDIR}/${P}" "${S}-${PYTHON_ABI}"
 		fi
 	}
 	python_execute_function preparation
