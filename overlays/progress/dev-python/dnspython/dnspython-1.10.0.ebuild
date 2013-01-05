@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 
@@ -12,9 +12,9 @@ DESCRIPTION="DNS toolkit for Python"
 HOMEPAGE="http://www.dnspython.org/ http://pypi.python.org/pypi/dnspython http://pypi.python.org/pypi/dnspython3"
 SRC_URI="http://www.dnspython.org/kits/${PV}/${P}.tar.gz http://www.dnspython.org/kits3/${PV}/${PN}3-${PV}.tar.gz"
 
-LICENSE="as-is"
+LICENSE="ISC"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~s390 ~sh sparc x86 ~x86-fbsd ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-solaris"
+KEYWORDS="*"
 IUSE="examples pycrypto"
 
 DEPEND="pycrypto? ( $(python_abi_depend -e "*-jython *-pypy-*" dev-python/pycrypto) )"
@@ -31,9 +31,9 @@ src_prepare() {
 
 	preparation() {
 		if [[ "$(python_get_version -l --major)" == "2" ]]; then
-			cp -r "${WORKDIR}/${P}" "${WORKDIR}/${P}-${PYTHON_ABI}"
+			cp -r "${WORKDIR}/${P}" "${S}-${PYTHON_ABI}"
 		else
-			cp -r "${WORKDIR}/${PN}3-${PV}" "${WORKDIR}/${P}-${PYTHON_ABI}"
+			cp -r "${WORKDIR}/${PN}3-${PV}" "${S}-${PYTHON_ABI}"
 		fi
 	}
 	python_execute_function preparation
