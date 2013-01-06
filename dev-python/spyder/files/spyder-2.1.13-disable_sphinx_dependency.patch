@@ -43,16 +43,16 @@
  NAME = 'spyder'
  LIBNAME = 'spyderlib'
  from spyderlib import __version__, __project_url__
-@@ -110,7 +81,7 @@
+@@ -116,7 +87,7 @@
                      'spyderplugins':
                      get_package_data('spyderplugins',
                                       ('.mo', '.svg', '.png'))},
 -      requires=["rope (>=0.9.2)", "sphinx (>=0.6.0)", "PyQt4 (>=4.4)"],
 +      requires=["rope (>=0.9.2)", "PyQt4 (>=4.4)"],
-       scripts=[osp.join('scripts', fname) for fname in 
-                (['spyder', 'spyder.bat', "%s_win_post_install.py" % NAME,
-                  'spyder.ico', 'spyder_light.ico']
-@@ -132,5 +103,4 @@
+       scripts=[osp.join('scripts', fname) for fname in SCRIPTS],
+       options={"bdist_wininst":
+                {"install_script": "%s_win_post_install.py" % NAME,
+@@ -135,5 +106,4 @@
                     'Programming Language :: Python :: 2.7',
                     'Development Status :: 5 - Production/Stable',
                     'Topic :: Scientific/Engineering',

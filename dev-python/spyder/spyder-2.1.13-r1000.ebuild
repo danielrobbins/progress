@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 
@@ -14,28 +14,27 @@ SRC_URI="http://spyderlib.googlecode.com/files/${P}.zip"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="amd64 x86 ~amd64-linux ~x86-linux"
+KEYWORDS="*"
 IUSE="doc ipython matplotlib numpy pep8 +pyflakes pylint +rope scipy sphinx"
 
-RDEPEND="$(python_abi_depend ">=dev-python/PyQt4-4.4[webkit]")
+RDEPEND="$(python_abi_depend dev-python/PyQt4[webkit])
 	ipython? ( $(python_abi_depend -e "2.5" dev-python/ipython) )
 	matplotlib? ( $(python_abi_depend -e "2.5" dev-python/matplotlib) )
 	numpy? ( $(python_abi_depend dev-python/numpy) )
 	pep8? ( $(python_abi_depend dev-python/pep8) )
-	pyflakes? ( $(python_abi_depend ">=dev-python/pyflakes-0.3") )
+	pyflakes? ( $(python_abi_depend dev-python/pyflakes) )
 	pylint? ( $(python_abi_depend dev-python/pylint) )
-	rope? ( $(python_abi_depend ">=dev-python/rope-0.9.3") )
+	rope? ( $(python_abi_depend dev-python/rope) )
 	scipy? ( $(python_abi_depend sci-libs/scipy) )
 	sphinx? ( $(python_abi_depend dev-python/sphinx) )"
 DEPEND="${RDEPEND}
-	app-arch/unzip
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
 
 PYTHON_MODULES="spyderlib spyderplugins"
 
 src_prepare() {
 	distutils_src_prepare
-	epatch "${FILESDIR}/${PN}-2.1.11-disable_sphinx_dependency.patch"
+	epatch "${FILESDIR}/${PN}-2.1.13-disable_sphinx_dependency.patch"
 }
 
 src_compile() {
