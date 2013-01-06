@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 
 inherit distutils
@@ -13,10 +13,20 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh sparc x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos"
+KEYWORDS="*"
 IUSE=""
 
 DEPEND="$(python_abi_depend dev-python/setuptools)"
 RDEPEND="${DEPEND}"
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
+
+src_prepare() {
+	distutils_src_prepare
+
+	# Disable versioning of coverage script to avoid collision with versioning performed by python_merge_intermediate_installation_images().
+	sed \
+		-e "/'coverage%d = coverage:main'/d" \
+		-e "/'coverage-%d.%d = coverage:main'/d" \
+		-i setup.py
+}
