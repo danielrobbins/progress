@@ -2,12 +2,14 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_DEPEND="python? ( <<[threads]>> )"
 PYTHON_MULTIPLE_ABIS="1"
 # Support for Python 3 is incomplete. 'import xapian' fails with TypeError.
 # http://trac.xapian.org/ticket/346
 PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
+
+USE_PHP="php5-3 php5-4"
 
 PHP_EXT_NAME="xapian"
 PHP_EXT_INI="yes"
@@ -21,7 +23,7 @@ SRC_URI="http://oligarchy.co.uk/xapian/${PV}/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="amd64 ~arm ~mips ~ppc ~ppc64 x86"
+KEYWORDS="*"
 IUSE="java lua mono perl php python ruby tcl"
 REQUIRED_USE="|| ( java lua mono perl php python ruby tcl )"
 
@@ -166,6 +168,10 @@ src_install () {
 pkg_postinst() {
 	if use python; then
 		python_mod_optimize xapian
+	fi
+
+	if use php_targets_php5-4; then
+		ewarn "Note: subclassing Xapian classes in PHP currently doesn't work with PHP 5.4"
 	fi
 }
 
