@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_BDEPEND="<<>>"
 PYTHON_DEPEND="python? ( <<>> )"
 PYTHON_MULTIPLE_ABIS="1"
@@ -19,13 +19,13 @@ SRC_URI="http://files.randombit.net/botan/${MY_P}.tbz"
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="amd64 ~ia64 ~ppc sparc x86 ~ppc-macos"
-IUSE="bzip2 doc gmp python ssl threads zlib"
+KEYWORDS="*"
+IUSE="bindist bzip2 doc gmp python ssl threads zlib"
 
 RDEPEND="bzip2? ( >=app-arch/bzip2-1.0.5 )
 	gmp? ( >=dev-libs/gmp-4.2.2 )
 	python? ( $(python_abi_depend ">=dev-libs/boost-1.48[python]") )
-	ssl? ( >=dev-libs/openssl-0.9.8g )
+	ssl? ( >=dev-libs/openssl-0.9.8g[bindist=] )
 	zlib? ( >=sys-libs/zlib-1.2.3 )"
 DEPEND="${RDEPEND}
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
@@ -49,7 +49,11 @@ src_configure() {
 	local disable_modules="proc_walk,unix_procs,cpu_counter"
 
 	if ! use threads; then
-		disable_modules="${disable_modules},pthreads"
+		disable_modules+=",pthreads"
+	fi
+
+	if use bindist; then
+		disable_modules+=",ecdsa"
 	fi
 
 	# Enable v9 instructions for sparc64
