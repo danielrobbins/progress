@@ -12,7 +12,7 @@ DESCRIPTION="Simple, fast, extensible JSON encoder/decoder for Python"
 HOMEPAGE="https://github.com/simplejson/simplejson http://pypi.python.org/pypi/simplejson"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
-LICENSE="MIT"
+LICENSE="|| ( AFL-2.1 MIT )"
 SLOT="0"
 KEYWORDS="*"
 IUSE=""
