@@ -2,19 +2,19 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 
 FORTRAN_NEEDED="lapack"
 
-inherit distutils eutils flag-o-matic fortran-2 toolchain-funcs versionator
+inherit distutils eutils flag-o-matic fortran-2 toolchain-funcs
 
-MY_P="${PN}-${PV/_beta/b}"
+MY_P="${PN}-${PV/_rc/rc}"
 DOC_P="${PN}-1.6.0"
 
 DESCRIPTION="Fast array and numerical python library"
-HOMEPAGE="http://numpy.scipy.org/ http://pypi.python.org/pypi/numpy"
+HOMEPAGE="http://numpy.scipy.org/ https://github.com/numpy/numpy http://pypi.python.org/pypi/numpy"
 SRC_URI="mirror://sourceforge/numpy/${MY_P}.tar.gz
 	doc? (
 		http://docs.scipy.org/doc/${DOC_P}/${PN}-html.zip -> ${DOC_P}-html.zip
@@ -24,14 +24,13 @@ SRC_URI="mirror://sourceforge/numpy/${MY_P}.tar.gz
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~sparc-solaris ~x64-solaris ~x86-solaris"
+KEYWORDS="~*"
 IUSE="doc lapack test"
 
 RDEPEND="
 	$(python_abi_depend dev-python/setuptools)
 	lapack? ( virtual/cblas virtual/lapack )"
 DEPEND="${RDEPEND}
-	doc? ( app-arch/unzip )
 	lapack? ( virtual/pkgconfig )
 	test? ( $(python_abi_depend dev-python/nose) )"
 
