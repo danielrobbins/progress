@@ -1,6 +1,6 @@
 --- numpy/distutils/system_info.py
 +++ numpy/distutils/system_info.py
-@@ -269,13 +269,7 @@
+@@ -282,13 +282,7 @@
        1 - display warning message
        2 - raise error
      """
