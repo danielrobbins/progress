@@ -36,7 +36,10 @@ src_prepare() {
 	sed -e "/'nose',/d" -i setup.py
 
 	# Do not install useless files.
-	sed -e "/data_files = DATA_FILES,/d" -i setup.py
+	sed \
+		-e "/packages = find_packages(),/s/()/(exclude=('tests',))/" \
+		-e "/data_files = DATA_FILES,/d" \
+		-i setup.py
 
 	if ! use cli; then
 		# Do not install script requiring IPython.
