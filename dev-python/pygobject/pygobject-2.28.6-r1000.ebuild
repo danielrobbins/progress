@@ -8,8 +8,7 @@ GNOME2_LA_PUNT="yes"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 *-jython *-pypy-*"
 
-# XXX: Is the alternatives stuff needed anymore?
-inherit alternatives autotools eutils gnome2 multilib python virtualx
+inherit autotools eutils gnome2 multilib python virtualx
 
 DESCRIPTION="GLib's GObject library bindings for Python"
 HOMEPAGE="http://www.pygtk.org/"
@@ -18,12 +17,9 @@ LICENSE="LGPL-2.1+"
 SLOT="2"
 KEYWORDS="*"
 IUSE="examples libffi test"
-# FIXME: tests require introspection support, but we can't enable introspection,
-# or we get file collisions with slot 3 :/
-RESTRICT="test"
 
 COMMON_DEPEND=">=dev-libs/glib-2.24.0:2
-	libffi? ( virtual/libffi )"
+	libffi? ( virtual/libffi:= )"
 DEPEND="${COMMON_DEPEND}
 	dev-util/gtk-doc-am
 	test? (
@@ -31,18 +27,18 @@ DEPEND="${COMMON_DEPEND}
 		media-fonts/font-misc-misc )
 	virtual/pkgconfig"
 RDEPEND="${COMMON_DEPEND}
-	!<dev-python/pygtk-2.13"
+	!<dev-python/pygtk-2.23"
 
 pkg_setup() {
-	DOCS="AUTHORS ChangeLog* NEWS README"
-	# --disable-introspection and --disable-cairo because we use pygobject:3
-	# for introspection support
-	G2CONF="${G2CONF}
-		--disable-dependency-tracking
-		--disable-introspection
-		--disable-cairo
-		$(use_with libffi ffi)"
 	python_pkg_setup
+
+	if [[ "${MERGE_TYPE}" != "buildonly" ]] && has_version "<dev-python/pygobject-2.28.6-r1000"; then
+		delete_old_symlinks() {
+			rm -f "${EROOT}$(python_get_sitedir)/pygtk.pth" || return
+			rm -f "${EROOT}$(python_get_sitedir)/pygtk.py" || return
+		}
+		python_execute_function -q delete_old_symlinks
+	fi
 }
 
 src_prepare() {
@@ -52,11 +48,11 @@ src_prepare() {
 	# Do not build tests if unneeded, bug #226345
 	epatch "${FILESDIR}/${PN}-2.28.3-make_check.patch"
 
-	# Use Python 2 in pygobject-codegen-2.0.
-	epatch "${FILESDIR}/${PN}-2.28.3-support_multiple_python_versions.patch"
-
 	# Disable tests that fail
-	epatch "${FILESDIR}/${PN}-2.28.3-disable-failing-tests.patch"
+	epatch "${FILESDIR}/${P}-disable-failing-tests.patch"
+
+	# Disable introspection tests when we build with --disable-introspection
+	epatch "${FILESDIR}/${P}-tests-no-introspection.patch"
 
 	# Fix warning spam
 	epatch "${FILESDIR}/${P}-set_qdata.patch"
@@ -76,6 +72,15 @@ src_prepare() {
 }
 
 src_configure() {
+	DOCS="AUTHORS ChangeLog* NEWS README"
+	# --disable-introspection and --disable-cairo because we use pygobject:3
+	# for introspection support
+	G2CONF="${G2CONF}
+		--disable-dependency-tracking
+		--disable-introspection
+		--disable-cairo
+		$(use_with libffi ffi)"
+
 	configuration() {
 		PYTHON="$(PYTHON)" gnome2_src_configure
 	}
@@ -88,10 +93,10 @@ src_compile() {
 
 src_test() {
 	unset DBUS_SESSION_BUS_ADDRESS
+	local -x GIO_USE_VFS="local" # prevents odd issues with deleting ${T}/.gvfs
 
 	testing() {
-		XDG_CACHE_HOME="${T}/${PYTHON_ABI}"
-		Xemake check PYTHON=$(PYTHON -a)
+		Xemake -j1 check PYTHON="$(PYTHON -a)" XDG_CACHE_HOME="${T}/${PYTHON_ABI}"
 	}
 	python_execute_function -s testing
 }
@@ -99,10 +104,9 @@ src_test() {
 src_install() {
 	installation() {
 		GNOME2_DESTDIR="${T}/images/${PYTHON_ABI}/" gnome2_src_install
-		mv "${T}/images/${PYTHON_ABI}${EPREFIX}$(python_get_sitedir)/pygtk.py"{,-2.0}
-		mv "${T}/images/${PYTHON_ABI}${EPREFIX}$(python_get_sitedir)/pygtk.pth"{,-2.0}
+		ln -fs $(python_get_sitedir)/gtk-2.0/codegen/codegen.py "${T}/images/${PYTHON_ABI}${EPREFIX}/usr/bin/pygobject-codegen-2.0"
 
-		if [[ "${PYTHON_ABI}" == 3.* ]]; then
+		if [[ "$(python_get_version -l --major)" == "3" ]]; then
 			rm -f "${T}/images/${PYTHON_ABI}${EPREFIX}/usr/$(get_libdir)/pkgconfig/pygobject-2.0.pc"
 		fi
 	}
@@ -118,21 +122,9 @@ src_install() {
 }
 
 pkg_postinst() {
-	create_symlinks() {
-		alternatives_auto_makesym "$(python_get_sitedir)/pygtk.py" pygtk.py-[0-9].[0-9]
-		alternatives_auto_makesym "$(python_get_sitedir)/pygtk.pth" pygtk.pth-[0-9].[0-9]
-	}
-	python_execute_function create_symlinks
-
 	python_mod_optimize glib gobject gtk-2.0 pygtk.py
 }
 
 pkg_postrm() {
 	python_mod_cleanup glib gobject gtk-2.0 pygtk.py
-
-	create_symlinks() {
-		alternatives_auto_makesym "$(python_get_sitedir)/pygtk.py" pygtk.py-[0-9].[0-9]
-		alternatives_auto_makesym "$(python_get_sitedir)/pygtk.pth" pygtk.pth-[0-9].[0-9]
-	}
-	python_execute_function create_symlinks
 }
