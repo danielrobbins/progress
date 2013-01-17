@@ -7,7 +7,6 @@ GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 *-jython *-pypy-*"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.6 3.1"
 
 inherit autotools eutils gnome2 python virtualx
 
@@ -29,6 +28,7 @@ DEPEND="${COMMON_DEPEND}
 	virtual/pkgconfig
 	test? (
 		dev-libs/atk[introspection]
+		$(python_abi_depend -i "2.6 3.1" dev-python/unittest2)
 		media-fonts/font-cursor-misc
 		media-fonts/font-misc-misc
 		x11-libs/gdk-pixbuf:2[introspection]
@@ -61,18 +61,18 @@ src_prepare() {
 	# Do not build tests if unneeded, bug #226345
 	epatch "${FILESDIR}/${PN}-3.4.1.1-make_check.patch"
 
+	# Fix tests with Python 2.6 and 3.1.
+	sed -e "s/if sys.version_info\[:2\] == (2, 6):/if False:/" -i tests/runtests.py || die
+	sed -e "s/import unittest/if __import__('sys').version_info\[:2\] in ((2, 6), (3, 1)):\n    unittest = __import__('unittest2')\nelse:\n    unittest = __import__('unittest')/" -i tests/*.py || die
+	sed -e "s/\(assertAlmostEqual([^,]\+,[[:space:]]*[^,]\+,[[:space:]]*\)\([[:digit:]]\+\)/\1places=\2/" -i tests/*.py || die
+	sed -e "s/callable(\([^)]\+\))/hasattr(\1, '__call__') if __import__('sys').version_info\[:2\] == (3, 1) else &/" -i tests/test_gi.py || die
+	sed -e "s/\([[:space:]]*\)def test_help(self):/\1@unittest.skipIf(__import__('sys').version_info\[:2\] in ((2, 6), (3, 1)), 'Python 2.6 or 3.1')\n&/" -i tests/test_gi.py || die
+
 	eautoreconf
 	gnome2_src_prepare
 	python_clean_py-compile_files
 
 	python_copy_sources
-
-	preparation() {
-		if has "$(python_get_version -l)" 3.1; then
-			sed -e "/self.assertIsInstance/d" -i tests/test_gi.py
-		fi
-	}
-	python_execute_function -q -s preparation
 }
 
 src_configure() {
