@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 GCONF_DEBUG="no"
 GNOME_TARBALL_SUFFIX="bz2"
 
@@ -10,14 +10,14 @@ PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 3.* *-jython *-pypy-*"
 PYTHON_EXPORT_PHASE_FUNCTIONS="1"
 
-inherit alternatives autotools eutils flag-o-matic gnome.org python virtualx gnome2-utils
+inherit autotools eutils flag-o-matic gnome.org python virtualx gnome2-utils
 
 DESCRIPTION="GTK+2 bindings for Python"
 HOMEPAGE="http://www.pygtk.org/"
 
 LICENSE="LGPL-2.1"
 SLOT="2"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh sparc x86 ~amd64-fbsd ~x86-fbsd ~x86-interix ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~sparc-solaris ~x64-solaris ~x86-solaris"
+KEYWORDS="*"
 IUSE="doc examples test"
 
 RDEPEND=">=dev-libs/glib-2.8:2
@@ -85,20 +85,8 @@ src_install() {
 
 pkg_postinst() {
 	python_mod_optimize gtk-2.0
-
-	create_symlinks() {
-		alternatives_auto_makesym $(python_get_sitedir)/pygtk.py pygtk.py-[0-9].[0-9]
-		alternatives_auto_makesym $(python_get_sitedir)/pygtk.pth pygtk.pth-[0-9].[0-9]
-	}
-	python_execute_function create_symlinks
 }
 
 pkg_postrm() {
 	python_mod_cleanup gtk-2.0
-
-	create_symlinks() {
-		alternatives_auto_makesym $(python_get_sitedir)/pygtk.py pygtk.py-[0-9].[0-9]
-		alternatives_auto_makesym $(python_get_sitedir)/pygtk.pth pygtk.pth-[0-9].[0-9]
-	}
-	python_execute_function create_symlinks
 }
