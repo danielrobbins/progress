@@ -15,7 +15,7 @@ SRC_URI="http://people.redhat.com/sgrubb/${PN}/${P}.tar.gz"
 
 LICENSE="LGPL-2.1"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh sparc x86"
+KEYWORDS="*"
 IUSE="python static-libs"
 
 DEPEND="sys-kernel/linux-headers
@@ -30,6 +30,8 @@ pkg_setup() {
 
 src_prepare() {
 	use python && python_clean_py-compile_files
+
+	sed -e "s/AM_CONFIG_HEADER/AC_CONFIG_HEADERS/" -i configure.ac || die "sed failed"
 
 	# Python bindings are built/tested/installed manually.
 	sed -e "/^SUBDIRS/s/ python//" -i bindings/Makefile.am || die "sed failed"
