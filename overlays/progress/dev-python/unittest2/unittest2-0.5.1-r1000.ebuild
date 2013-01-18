@@ -2,8 +2,10 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
+# 3.3, 3.4: http://code.google.com/p/unittest-ext/issues/detail?id=65
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.3 3.4 *-jython"
 
 inherit distutils
 
@@ -14,7 +16,7 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~s390 ~sh sparc x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~ia64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos"
+KEYWORDS="*"
 IUSE=""
 
 DEPEND="$(python_abi_depend dev-python/setuptools)"
@@ -26,14 +28,14 @@ DOCS="README.txt"
 
 src_prepare() {
 	preparation() {
-		if [[ "${PYTHON_ABI}" == 3.* ]]; then
-			cp -pr "${WORKDIR}/${PN}py3k-${PV}" "${S}-${PYTHON_ABI}" || return 1
+		if [[ "$(python_get_version -l --major)" == "3" ]]; then
+			cp -pr "${WORKDIR}/${PN}py3k-${PV}" "${S}-${PYTHON_ABI}" || return
 		else
-			cp -pr "${S}" "${S}-${PYTHON_ABI}" || return 1
+			cp -pr "${S}" "${S}-${PYTHON_ABI}" || return
 		fi
 
 		# Disable versioning of unit2 script to avoid collision with versioning performed by python_merge_intermediate_installation_images().
-		sed -e "/'%s = unittest2:main_' % SCRIPT2,/d" -i "${S}-${PYTHON_ABI}/setup.py" || return 1
+		sed -e "/'%s = unittest2:main_' % SCRIPT2,/d" -i "${S}-${PYTHON_ABI}/setup.py" || return
 	}
 	python_execute_function -q preparation
 }
