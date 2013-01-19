@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 DISTUTILS_SRC_TEST="setup.py"
@@ -18,12 +18,12 @@ SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh sparc x86 ~amd64-fbsd ~x86-fbsd ~x86-interix ~amd64-linux ~x86-linux ~x64-macos ~x86-macos ~sparc-solaris ~sparc64-solaris"
+KEYWORDS="*"
 IUSE="doc examples i18n vim-syntax"
 
 RDEPEND="$(python_abi_depend dev-python/markupsafe)
 	$(python_abi_depend dev-python/setuptools)
-	i18n? ( $(python_abi_depend -i "2.*" ">=dev-python/Babel-0.9.3") )"
+	i18n? ( $(python_abi_depend -i "2.*" dev-python/Babel) )"
 DEPEND="${RDEPEND}
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
 
@@ -64,7 +64,7 @@ src_install(){
 	python_execute_function -q delete_tests
 
 	if use doc; then
-		dohtml -r docs/_build/html/*
+		dohtml -r docs/_build/html/
 	fi
 
 	if use examples; then
