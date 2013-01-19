@@ -19,3 +19,5 @@ IUSE=""
 
 DEPEND="$(python_abi_depend dev-python/setuptools)"
 RDEPEND=""
+
+DOCS="HISTORY.rst README.rst"
