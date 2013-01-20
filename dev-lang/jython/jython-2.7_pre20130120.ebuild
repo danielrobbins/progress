@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 JAVA_PKG_IUSE="doc examples oracle source"
 
 inherit java-pkg-2 java-ant-2 python
@@ -11,10 +11,10 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/jython"
-	EHG_REVISION="ae51dbe75e27"
+	EHG_REVISION="7854826b4699"
 fi
 
-PATCHSET_REVISION="20120610"
+PATCHSET_REVISION="20121230"
 
 DESCRIPTION="Implementation of Python written in Java"
 HOMEPAGE="http://www.jython.org"
@@ -23,7 +23,7 @@ SRC_URI=""
 LICENSE="PSF-2"
 SLOT="2.7"
 PYTHON_ABI="${SLOT}-jython"
-KEYWORDS="~amd64 ~x86"
+KEYWORDS="~*"
 IUSE="+readline +ssl test +threads +xml"
 
 CDEPEND="dev-java/ant-core:0
@@ -46,8 +46,8 @@ RDEPEND=">=virtual/jre-1.6
 	!dev-java/jython:${SLOT}"
 DEPEND=">=virtual/jdk-1.6
 	${CDEPEND}
-	dev-java/junit:0
-	test? ( dev-java/ant-junit:0 )"
+	dev-java/junit:4
+	test? ( dev-java/ant-junit4:0 )"
 
 pkg_setup() {
 	java-pkg-2_pkg_setup
@@ -71,7 +71,7 @@ java_prepare() {
 	java-pkg_jar-from --into extlibs jnr-constants jnr-constants.jar jnr-constants-0.8.3-SNAPSHOT.jar
 	java-pkg_jar-from --into extlibs jnr-netdb-1.0 jnr-netdb.jar jnr-netdb-1.0.6-SNAPSHOT.jar
 	java-pkg_jar-from --into extlibs jnr-posix-2.1 jnr-posix.jar jnr-posix-2.1-SNAPSHOT.jar
-	java-pkg_jar-from --build-only --into extlibs junit junit.jar junit-3.8.2.jar
+	java-pkg_jar-from --build-only --into extlibs junit-4 junit.jar junit-4.10.jar
 	java-pkg_jar-from --into extlibs libreadline-java libreadline-java.jar libreadline-java-0.8.jar
 	java-pkg_jar-from --into extlibs jsr223 script-api.jar livetribe-jsr223-2.0.5.jar
 	java-pkg_jar-from --into extlibs servlet-api-2.5 servlet-api.jar servlet-api-2.5.jar
@@ -83,6 +83,9 @@ java_prepare() {
 
 	# Dependency of dev-java/jnr-posix:2.1.
 	java-pkg_jar-from --build-only --into extlibs jnr-ffi-0.7 jnr-ffi.jar jnr-ffi-0.7.4-SNAPSHOT.jar
+
+	# Dependency of dev-java/junit:4.
+	java-pkg_jar-from --build-only --into extlibs hamcrest-core hamcrest-core.jar
 
 	echo "has.repositories.connection=false" > ant.properties
 	echo "templates.lazy=false" >> ant.properties
@@ -101,7 +104,7 @@ src_compile() {
 }
 
 src_test() {
-	ANT_TASKS="ant-junit" nonfatal eant prepare-test javatest launchertest regrtest-unix
+	ANT_TASKS="ant-junit4" nonfatal eant prepare-test javatest launchertest regrtest-unix
 }
 
 src_install() {
@@ -111,7 +114,7 @@ src_install() {
 	java-pkg_newjar "${PN}-dev.jar"
 
 	local java_args="-Dpython.home=${EPREFIX}/usr/share/${PN}-${SLOT}"
-	java_args+=" -Dpython.cachedir=\$([[ -n \"\${JYTHON_SYSTEM_CACHEDIR}\" ]] && echo ${EPREFIX}/var/cache/${PN}/${SLOT}-\${EUID} || echo \${HOME}/.jython${SLOT}-cachedir)"
+	java_args+=" -Dpython.cachedir=\$([[ -n \"\${JYTHON_SYSTEM_CACHEDIR}\" ]] && echo ${EPREFIX}/var/cache/${PN}/${SLOT}-\$(id -un) || echo \${HOME}/.jython${SLOT}-cachedir)"
 	java_args+=" -Dpython.executable=${EPREFIX}/usr/bin/jython${SLOT}"
 	java-pkg_dolauncher jython${SLOT} --main "org.python.util.jython" --pkg_args "${java_args}"
 
@@ -136,9 +139,23 @@ src_install() {
 	fi
 }
 
+pkg_preinst() {
+	java-pkg-2_pkg_preinst
+
+	if has_version "<${CATEGORY}/${PN}-2.7_pre20121230:${SLOT}"; then
+		# Clean Jython system cache.
+		rm -fr "${EROOT}var/cache/jython/"${SLOT}-*
+		JYTHON_PREPARE_SYSTEM_CACHE_DIRECTORIES="1"
+	fi
+}
+
 pkg_postinst() {
 	# Clean Jython system cache.
 	rm -fr "${EROOT}var/cache/jython/"${SLOT}-*/*
+
+	if [[ -n "${JYTHON_PREPARE_SYSTEM_CACHE_DIRECTORIES}" ]]; then
+		_python_prepare_jython
+	fi
 
 	python_mod_optimize -f -x "/(site-packages|test|tests)/" $(python_get_libdir)
 
@@ -155,4 +172,9 @@ pkg_postinst() {
 
 pkg_postrm() {
 	python_mod_cleanup $(python_get_libdir)
+
+	if ! has_version "${CATEGORY}/${PN}:${SLOT}"; then
+		# Clean Jython system cache.
+		rm -fr "${EROOT}var/cache/jython/"${SLOT}-*	
+	fi
 }
