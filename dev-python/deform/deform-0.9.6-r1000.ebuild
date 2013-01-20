@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 *-jython"
 DISTUTILS_SRC_TEST="setup.py"
@@ -15,13 +15,14 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="repoze"
 SLOT="0"
-KEYWORDS="amd64 x86"
+KEYWORDS="*"
 IUSE="doc test"
 
-RDEPEND="$(python_abi_depend ">=dev-python/chameleon-1.2.3")
-	$(python_abi_depend ">=dev-python/colander-0.8")
+RDEPEND="$(python_abi_depend ">=dev-python/chameleon-2.5.1")
+	$(python_abi_depend ">=dev-python/colander-1.0_alpha1")
 	$(python_abi_depend ">=dev-python/peppercorn-0.3")
-	$(python_abi_depend dev-python/translationstring)"
+	$(python_abi_depend ">=dev-python/translationstring-1.0")
+	$(python_abi_depend net-zope/zope.deprecation)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	doc? ( $(python_abi_depend dev-python/sphinx) )
@@ -60,9 +61,6 @@ src_install() {
 	python_execute_function -q delete_tests
 
 	if use doc; then
-		pushd docs/_build/html > /dev/null
-		insinto /usr/share/doc/${PF}/html
-		doins -r [a-z]* _static
-		popd > /dev/null
+		dohtml -r docs/_build/html/
 	fi
 }
