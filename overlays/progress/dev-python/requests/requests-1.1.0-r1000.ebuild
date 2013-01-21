@@ -17,9 +17,9 @@ SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
+# $(python_abi_depend dev-python/urllib3)
 RDEPEND="app-misc/ca-certificates
 	$(python_abi_depend dev-python/charade)
-	$(python_abi_depend dev-python/urllib3)
 	$(python_abi_depend virtual/python-json[external])"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
@@ -29,21 +29,22 @@ DOCS="HISTORY.rst README.rst"
 src_prepare() {
 	distutils_src_prepare
 
+	# Use app-misc/ca-certificates.
+	sed -e "/if certifi:/i\\    if os.path.exists('/etc/ssl/certs/ca-certificates.crt'):\n        return '/etc/ssl/certs/ca-certificates.crt'\n" -i requests/certs.py
+
 	# Use system version of dev-python/charade.
 	sed -e "s/from .packages import charade/import charade/" -i requests/compat.py
 	rm -fr requests/packages/charade
 
 	# Use system version of dev-python/urllib3.
-	sed -e "s/from . import urllib3/import urllib3/" -i requests/packages/__init__.py
-	sed -e "s/\(from \).packages.\(urllib3.* import\)/\1\2/" -i requests/*.py
-	rm -fr requests/packages/urllib3
+	# sed -e "s/from . import urllib3/import urllib3/" -i requests/packages/__init__.py
+	# sed -e "s/\(from \).packages.\(urllib3.* import\)/\1\2/" -i requests/*.py
+	# rm -fr requests/packages/urllib3
 
 	# Disable installation of deleted internal copies of dev-python/charade and dev-python/urllib3.
-	sed -e "/requests\.packages\./d" -i setup.py
-
-	# Disable failing test.
-	# https://github.com/kennethreitz/requests/issues/1068
-	sed -e "s/test_HTTP_302_ALLOW_REDIRECT_POST/_&/" -i test_requests.py
+	# sed -e "/requests\.packages\./d" -i setup.py
+	# Disable installation of deleted internal copy of dev-python/charade.
+	sed -e "/requests\.packages\.charade/d" -i setup.py
 }
 
 src_test() {
