@@ -92,14 +92,10 @@ pkg_preinst() {
 pkg_postinst() {
 	distutils_pkg_postinst
 
-	einfo "Now, Django has the best of both worlds with Gentoo,"
-	einfo "ease of deployment for production and development."
-	echo
 	elog "A copy of the admin media is available to"
 	elog "webapp-config for installation in a webroot,"
 	elog "as well as the traditional location in python's"
 	elog "site-packages dir for easy development"
-	echo
 	ewarn "If you build Django ${PV} without USE=\"vhosts\""
 	ewarn "webapp-config will automatically install the"
 	ewarn "admin media into the localhost webroot."
