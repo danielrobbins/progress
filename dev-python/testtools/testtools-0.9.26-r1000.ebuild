@@ -7,21 +7,20 @@ PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5"
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
 
-inherit distutils versionator
-
-SERIES="$(get_version_component_range 1-2)"
+inherit distutils
 
 DESCRIPTION="Extensions to the Python standard library unit testing framework"
 HOMEPAGE="https://launchpad.net/testtools http://pypi.python.org/pypi/testtools"
-SRC_URI="http://launchpad.net/${PN}/${SERIES}/${PV}/+download/${P}.tar.gz"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
-DEPEND=""
-RDEPEND=""
+RDEPEND="$(python_abi_depend dev-python/extras)"
+DEPEND="${RDEPEND}
+	$(python_abi_depend dev-python/setuptools)"
 
 src_prepare() {
 	distutils_src_prepare
@@ -51,7 +50,7 @@ src_install() {
 
 	delete_tests() {
 		# dev-python/subunit imports some objects from testtools.tests.helpers.
-		rm -f "${ED}$(python_get_sitedir)/testtools/tests/test_"*
+		rm -fr "${ED}$(python_get_sitedir)/testtools/tests/"{matchers,test_*}
 	}
 	python_execute_function -q delete_tests
 }
