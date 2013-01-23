@@ -1,7 +1,7 @@
 # Copyright owners: Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 3.* *-jython *-pypy-*"
 
@@ -16,7 +16,7 @@ SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="ZPL"
 SLOT="0"
-KEYWORDS="amd64 ~ppc ~ppc64 sparc x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux"
+KEYWORDS="*"
 IUSE=""
 
 RDEPEND="$(python_abi_depend net-zope/namespaces-zope[Products])
@@ -34,7 +34,7 @@ RDEPEND="$(python_abi_depend net-zope/namespaces-zope[Products])
 	$(python_abi_depend net-zope/zcatalog)
 	$(python_abi_depend net-zope/zexceptions)
 	$(python_abi_depend net-zope/zodb)
-	$(python_abi_depend ">=net-zope/zope-2.12.8")
+	$(python_abi_depend net-zope/zope)
 	$(python_abi_depend net-zope/zope.component)
 	$(python_abi_depend net-zope/zope.configuration)
 	$(python_abi_depend net-zope/zope.container)
