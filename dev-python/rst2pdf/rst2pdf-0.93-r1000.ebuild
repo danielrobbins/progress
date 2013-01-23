@@ -31,4 +31,9 @@ DEPEND="$(python_abi_depend dev-python/docutils)
 	xhtml2pdf? ( $(python_abi_depend dev-python/xhtml2pdf) )"
 RDEPEND="${DEPEND}"
 
-DOCS="Contributors.txt CHANGES.txt README.txt doc/*"
+DOCS="Contributors.txt CHANGES.txt README.txt doc/*.pdf"
+
+src_install() {
+	distutils_src_install
+	doman doc/rst2pdf.1
+}
