@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 PYTHON_EXPORT_PHASE_FUNCTIONS="1"
@@ -15,9 +15,9 @@ DESCRIPTION="Real-time 3D graphics library for Python"
 HOMEPAGE="http://www.vpython.org/ https://github.com/vpython/visual"
 SRC_URI="http://www.vpython.org/contents/download/${MY_P}.tar.bz2"
 
-LICENSE="visual"
+LICENSE="Boost-1.0 HPND"
 SLOT="0"
-KEYWORDS="amd64 x86"
+KEYWORDS="*"
 IUSE="doc examples"
 
 RDEPEND=">=dev-cpp/gtkglextmm-1.2
@@ -56,7 +56,7 @@ src_prepare() {
 		sed \
 			-e "s/-lboost_python/-lboost_python-${PYTHON_ABI}/" \
 			-e "s/libboost_python/libboost_python-${PYTHON_ABI}/" \
-			-i src/Makefile.in src/gtk2/makefile
+			-i src/Makefile.in
 	}
 	python_execute_function -s preparation
 }
