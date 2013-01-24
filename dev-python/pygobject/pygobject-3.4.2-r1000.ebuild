@@ -43,17 +43,12 @@ RDEPEND="${COMMON_DEPEND}
 	!<dev-python/pygtk-2.13
 	!<dev-python/pygobject-2.28.6-r50:2[introspection]"
 
-pkg_setup() {
-	python_pkg_setup
-}
-
 src_prepare() {
 	DOCS="AUTHORS ChangeLog* NEWS README"
 	# Hard-enable libffi support since both gobject-introspection and
 	# glib-2.29.x rdepend on it anyway
 	# docs disabled by upstream default since they are very out of date
 	G2CONF="${G2CONF}
-		--disable-dependency-tracking
 		--with-ffi
 		$(use_enable cairo)
 		$(use_enable threads thread)"

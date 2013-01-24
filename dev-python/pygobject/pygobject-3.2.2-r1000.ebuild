@@ -48,7 +48,6 @@ pkg_setup() {
 	# glib-2.29.x rdepend on it anyway
 	# docs disabled by upstream default since they are very out of date
 	G2CONF="${G2CONF}
-		--disable-dependency-tracking
 		--with-ffi
 		$(use_enable cairo)
 		$(use_enable threads thread)"

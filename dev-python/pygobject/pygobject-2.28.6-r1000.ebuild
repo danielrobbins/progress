@@ -22,10 +22,10 @@ COMMON_DEPEND=">=dev-libs/glib-2.24.0:2
 	libffi? ( virtual/libffi:= )"
 DEPEND="${COMMON_DEPEND}
 	dev-util/gtk-doc-am
+	virtual/pkgconfig
 	test? (
 		media-fonts/font-cursor-misc
-		media-fonts/font-misc-misc )
-	virtual/pkgconfig"
+		media-fonts/font-misc-misc )"
 RDEPEND="${COMMON_DEPEND}
 	!<dev-python/pygtk-2.23"
 
@@ -76,7 +76,6 @@ src_configure() {
 	# --disable-introspection and --disable-cairo because we use pygobject:3
 	# for introspection support
 	G2CONF="${G2CONF}
-		--disable-dependency-tracking
 		--disable-introspection
 		--disable-cairo
 		$(use_with libffi ffi)"
