@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.3 3.4 *-jython"
 PYTHON_NAMESPACES="logilab"
 
 inherit distutils python-namespaces
@@ -15,7 +15,7 @@ SRC_URI="http://download.logilab.org/pub/common/${P}.tar.gz"
 
 LICENSE="LGPL-2.1"
 SLOT="0"
-KEYWORDS="amd64 ~ia64 ~ppc ~ppc64 ~s390 sparc x86 ~amd64-linux ~ia64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos"
+KEYWORDS="*"
 IUSE="doc test"
 
 RDEPEND="$(python_abi_depend dev-python/setuptools)
@@ -31,6 +31,13 @@ DEPEND="${RDEPEND}
 S="${WORKDIR}/${P}"
 
 PYTHON_MODULES="logilab"
+
+src_prepare() {
+	distutils_src_prepare
+
+	# https://www.logilab.org/ticket/117580
+	sed -e "806s/\t\t/               /" -i registry.py
+}
 
 src_compile() {
 	distutils_src_compile
