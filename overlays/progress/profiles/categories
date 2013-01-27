@@ -9,6 +9,7 @@ dev-vcs
 kde-base
 mail-filter
 media-gfx
+net-firewall
 net-zope
 sci-biology
 sci-libs
