@@ -73,11 +73,11 @@ PYTHON_CXXFLAGS=("2.* + -fno-strict-aliasing")
 PYTHON_MODULES="matplotlib mpl_toolkits pylab.py"
 
 use_setup() {
-	local options="${2:-${1}}"
+	local option="${2:-${1}}"
 	if use ${1}; then
-		echo "${options} = True"
+		echo "${option} = True"
 	else
-		echo "${options} = False"
+		echo "${option} = False"
 	fi
 }
 

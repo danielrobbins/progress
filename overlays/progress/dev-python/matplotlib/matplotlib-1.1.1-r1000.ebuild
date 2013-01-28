@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_DEPEND="<<[tk?]>>"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 3.* *-jython *-pypy-*"
@@ -12,7 +12,7 @@ WX_GTK_VER="2.8"
 inherit distutils eutils
 
 DESCRIPTION="Python plotting package"
-HOMEPAGE="http://matplotlib.sourceforge.net/ http://pypi.python.org/pypi/matplotlib"
+HOMEPAGE="http://matplotlib.org/ https://github.com/matplotlib/matplotlib http://pypi.python.org/pypi/matplotlib"
 SRC_URI="mirror://sourceforge/${PN}/${P}.tar.gz"
 
 # Main license: matplotlib
@@ -21,7 +21,7 @@ SRC_URI="mirror://sourceforge/${PN}/${P}.tar.gz"
 # Fonts: BitstreamVera, OFL-1.1
 LICENSE="BitstreamVera BSD matplotlib MIT OFL-1.1"
 SLOT="0"
-KEYWORDS="amd64 ~ppc ~ppc64 x86 ~x86-freebsd ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos"
+KEYWORDS="*"
 IUSE="cairo doc examples excel fltk gtk latex qt4 test tk wxwidgets"
 
 CDEPEND="$(python_abi_depend dev-python/numpy)
@@ -67,13 +67,11 @@ PYTHON_CXXFLAGS=("2.* + -fno-strict-aliasing")
 PYTHON_MODULES="matplotlib mpl_toolkits pylab.py"
 
 use_setup() {
-	local uword="${2:-${1}}"
+	local option="${2:-${1}}"
 	if use ${1}; then
-		echo "${uword} = True"
-		echo "${uword}agg = True"
+		echo "${option} = True"
 	else
-		echo "${uword} = False"
-		echo "${uword}agg = False"
+		echo "${option} = False"
 	fi
 }
 
@@ -81,18 +79,15 @@ src_prepare() {
 	distutils_src_prepare
 	epatch "${FILESDIR}/${P}-ft-refcount.patch"
 
-	# Create setup.cfg. (See setup.cfg.template for any changes.)
+	# Create setup.cfg. (See setup.cfg.template and setupext.py for any changes.)
 	cat > setup.cfg <<-EOF
 		[provide_packages]
 		pytz = False
 		dateutil = False
 		[gui_support]
-		$(use_setup cairo)
-		$(use_setup fltk)
 		$(use_setup gtk)
-		$(use_setup qt4)
-		$(use_setup tk)
-		$(use_setup wxwidgets wx)
+		$(use_setup gtk gtkagg)
+		$(use_setup tk tkagg)
 	EOF
 
 	# Avoid checks needing a X display.
