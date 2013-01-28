@@ -27,7 +27,7 @@ DEPEND="dbus? (
 		sys-auth/polkit
 	)
 	gtk? ( $(python_abi_depend dev-python/pygtk:2) )
-	selinux? ( $(python_abi_depend dev-python/python-selinux) )"
+	selinux? ( $(python_abi_depend sys-libs/libselinux[python]) )"
 RDEPEND="${DEPEND}"
 
 PYTHON_MODULES="slip"
