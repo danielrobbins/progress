@@ -9,7 +9,7 @@ PYTHON_RESTRICTED_ABIS="*-jython"
 inherit distutils
 
 MY_PN="Cython"
-MY_P="${MY_PN}-${PV/_beta/b}"
+MY_P="${MY_PN}-${PV/_rc/rc}"
 
 DESCRIPTION="The Cython compiler for writing C extensions for the Python language"
 HOMEPAGE="http://www.cython.org/ http://pypi.python.org/pypi/Cython"
