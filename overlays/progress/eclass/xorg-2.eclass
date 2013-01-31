@@ -269,6 +269,28 @@ case ${XORG_DOC} in
 esac
 unset DOC_DEPEND
 
+# @ECLASS-VARIABLE: XORG_MODULE_REBUILD
+# @DESCRIPTION:
+# Describes whether a package contains modules that need to be rebuilt on
+# xorg-server upgrade. This has an effect only since EAPI=5.
+# Possible values are "yes" or "no". Default value is "yes" for packages which
+# are recognized as DRIVER by this eclass and "no" for all other packages.
+if [[ "${DRIVER}" == yes ]]; then
+	: ${XORG_MODULE_REBUILD:="yes"}
+else
+	: ${XORG_MODULE_REBUILD:="no"}
+fi
+
+if [[ ${XORG_MODULE_REBUILD} == yes ]]; then
+	case ${EAPI} in
+		3|4|4-python)
+			;;
+		*)
+			RDEPEND+=" x11-base/xorg-server:="
+			;;
+	esac
+fi
+
 DEPEND+=" ${COMMON_DEPEND}"
 RDEPEND+=" ${COMMON_DEPEND}"
 unset COMMON_DEPEND
