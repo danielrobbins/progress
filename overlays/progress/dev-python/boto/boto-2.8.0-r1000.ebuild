@@ -17,8 +17,7 @@ SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
-RDEPEND="$(python_abi_depend dev-python/m2crypto)
-	$(python_abi_depend virtual/python-argparse)
+RDEPEND="$(python_abi_depend virtual/python-argparse)
 	$(python_abi_depend virtual/python-json[external])"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
