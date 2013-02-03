@@ -10,7 +10,7 @@ PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 3.* *-jython *-pypy-*"
 PYTHON_EXPORT_PHASE_FUNCTIONS="1"
 
-inherit autotools eutils flag-o-matic gnome.org python virtualx gnome2-utils
+inherit autotools eutils flag-o-matic gnome2 python virtualx
 
 DESCRIPTION="GTK+2 bindings for Python"
 HOMEPAGE="http://www.pygtk.org/"
@@ -20,7 +20,8 @@ SLOT="2"
 KEYWORDS="*"
 IUSE="doc examples test"
 
-RDEPEND=">=dev-libs/glib-2.8:2
+RDEPEND="
+	>=dev-libs/glib-2.8:2
 	>=x11-libs/pango-1.16
 	>=dev-libs/atk-1.12
 	>=x11-libs/gtk+-2.24:2
@@ -30,21 +31,22 @@ RDEPEND=">=dev-libs/glib-2.8:2
 	>=gnome-base/libglade-2.5:2.0
 "
 DEPEND="${RDEPEND}
+	virtual/pkgconfig
 	doc? (
 		dev-libs/libxslt
 		>=app-text/docbook-xsl-stylesheets-1.70.1 )
-	virtual/pkgconfig"
+"
 
 src_prepare() {
-	# Let tests pass without permissions problems, bug #245103
-	gnome2_environment_reset
-
 	# Fix declaration of codegen in .pc
 	epatch "${FILESDIR}/${PN}-2.13.0-fix-codegen-location.patch"
 	epatch "${FILESDIR}/${PN}-2.14.1-libdir-pc.patch"
 
 	# Fix exit status of tests.
 	epatch "${FILESDIR}/${P}-tests_result.patch"
+
+	# Disable installation of examples in wrong directory.
+	sed -e "/^SUBDIRS =/s/ examples//" -i Makefile.am
 
 	python_clean_py-compile_files
 
@@ -62,6 +64,8 @@ src_configure() {
 }
 
 src_test() {
+	# Let tests pass without permissions problems, bug #245103
+	gnome2_environment_reset
 	unset DBUS_SESSION_BUS_ADDRESS
 
 	testing() {
@@ -74,10 +78,11 @@ src_test() {
 src_install() {
 	python_src_install
 	python_clean_installation_image
+
 	dodoc AUTHORS ChangeLog INSTALL MAPPING NEWS README THREADS TODO
 
 	if use examples; then
-		rm examples/Makefile*
+		rm examples/Makefile* examples/pygtk-demo/pygtk-demo.in
 		insinto /usr/share/doc/${PF}
 		doins -r examples
 	fi
