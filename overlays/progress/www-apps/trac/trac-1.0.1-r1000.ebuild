@@ -2,11 +2,11 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.* *-jython"
 
-inherit distutils user webapp
+inherit distutils eutils user webapp
 
 MY_PV="${PV/_beta/b}"
 MY_P="Trac-${MY_PV}"
@@ -17,7 +17,7 @@ SRC_URI="http://ftp.edgewall.com/pub/trac/${MY_P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="amd64 ~ppc ~ppc64 sparc x86 ~x86-fbsd"
+KEYWORDS="*"
 IUSE="cgi fastcgi i18n mysql postgres +sqlite subversion"
 REQUIRED_USE="|| ( mysql postgres sqlite )"
 
@@ -28,7 +28,7 @@ DEPEND="$(python_abi_depend dev-python/docutils)
 	$(python_abi_depend dev-python/setuptools)
 	cgi? ( virtual/httpd-cgi )
 	fastcgi? ( virtual/httpd-fastcgi )
-	i18n? ( $(python_abi_depend ">=dev-python/Babel-0.9.5") )
+	i18n? ( $(python_abi_depend dev-python/Babel) )
 	mysql? ( $(python_abi_depend dev-python/mysql-python) )
 	postgres? ( $(python_abi_depend -e "*-pypy-*" dev-python/psycopg:2) )
 	sqlite? ( $(python_abi_depend virtual/python-sqlite[external]) )
@@ -45,6 +45,11 @@ pkg_setup() {
 
 	enewgroup tracd
 	enewuser tracd -1 -1 -1 tracd
+}
+
+src_prepare() {
+	distutils_src_prepare
+	epatch "${FILESDIR}/${P}-tests.patch"
 }
 
 src_test() {
