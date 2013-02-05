@@ -7,7 +7,7 @@ PYTHON_DEPEND="python? ( <<>> )"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 
-inherit flag-o-matic multilib multiprocessing python toolchain-funcs versionator
+inherit eutils flag-o-matic multilib multiprocessing python toolchain-funcs versionator
 
 MY_P=${PN}_$(replace_all_version_separators _)
 
@@ -18,7 +18,7 @@ SRC_URI="mirror://sourceforge/boost/${MY_P}.tar.bz2"
 LICENSE="Boost-1.0"
 MAJOR_V="$(get_version_component_range 1-2)"
 SLOT="0/$(get_version_component_range 1-3)"
-KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd"
+KEYWORDS="~*"
 IUSE="c++11 context debug doc icu mpi +nls python static-libs +threads tools"
 
 RDEPEND="icu? ( >=dev-libs/icu-3.6:=::${REPOSITORY}[c++11(-)=] )
