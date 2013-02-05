@@ -2,12 +2,12 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_DEPEND="python? ( <<>> )"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 
-inherit flag-o-matic multilib multiprocessing python toolchain-funcs versionator
+inherit eutils flag-o-matic multilib multiprocessing python toolchain-funcs versionator
 
 MY_P=${PN}_$(replace_all_version_separators _)
 
@@ -18,7 +18,7 @@ SRC_URI="mirror://sourceforge/boost/${MY_P}.tar.bz2"
 LICENSE="Boost-1.0"
 MAJOR_V="$(get_version_component_range 1-2)"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh sparc x86 ~amd64-fbsd ~x86-fbsd"
+KEYWORDS="*"
 IUSE="debug doc elibc_glibc icu mpi python static-libs tools"
 
 RDEPEND="elibc_glibc? ( <sys-libs/glibc-2.16 )
