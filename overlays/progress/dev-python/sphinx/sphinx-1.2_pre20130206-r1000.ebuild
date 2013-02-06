@@ -2,28 +2,32 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
-inherit distutils eutils
+inherit distutils
 
 MY_PN="Sphinx"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Python documentation generator"
-HOMEPAGE="http://sphinx.pocoo.org/ http://pypi.python.org/pypi/Sphinx"
-SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
+HOMEPAGE="http://sphinx.pocoo.org/ https://bitbucket.org/birkenfeld/sphinx http://pypi.python.org/pypi/Sphinx"
+if [[ "${PV}" == *_pre* ]]; then
+	SRC_URI="http://people.apache.org/~Arfrever/gentoo/${MY_P}.tar.xz"
+else
+	SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
+fi
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh sparc x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~ia64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos"
+KEYWORDS="*"
 IUSE="doc latex"
 
-DEPEND="$(python_abi_depend ">=dev-python/docutils-0.7")
-	$(python_abi_depend ">=dev-python/jinja-2.3")
-	$(python_abi_depend ">=dev-python/pygments-1.2")
+DEPEND="$(python_abi_depend dev-python/docutils)
+	$(python_abi_depend dev-python/jinja)
+	$(python_abi_depend dev-python/pygments)
 	$(python_abi_depend dev-python/setuptools)
 	latex? (
 		app-text/dvipng
@@ -37,7 +41,6 @@ DOCS="CHANGES"
 
 src_prepare() {
 	distutils_src_prepare
-	epatch "${FILESDIR}/${P}-python3.patch"
 
 	prepare_tests() {
 		cp -r tests tests-${PYTHON_ABI}
@@ -75,7 +78,7 @@ src_install() {
 	python_execute_function -q delete_grammar_pickle
 
 	if use doc; then
-		dohtml -A txt -r doc/_build/html/*
+		dohtml -A txt -r doc/_build/html/
 	fi
 }
 
@@ -96,7 +99,7 @@ pkg_postrm() {
 	distutils_pkg_postrm
 
 	delete_grammar_pickle() {
-		rm -f "${EROOT}$(python_get_sitedir -b)/sphinx/pycode/Grammar$(python_get_version -l).pickle" || return 1
+		rm -f "${EROOT}$(python_get_sitedir -b)/sphinx/pycode/Grammar$(python_get_version -l).pickle" || return
 
 		# Delete empty parent directories.
 		local dir="${EROOT}$(python_get_sitedir -b)/sphinx/pycode"
