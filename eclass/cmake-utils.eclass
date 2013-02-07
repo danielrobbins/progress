@@ -27,7 +27,7 @@ WANT_CMAKE="${WANT_CMAKE:-always}"
 
 # @ECLASS-VARIABLE: CMAKE_MIN_VERSION
 # @DESCRIPTION:
-# Specify the minimum required CMake version.  Default is 2.8.8
+# Specify the minimum required CMake version.
 CMAKE_MIN_VERSION="${CMAKE_MIN_VERSION:-2.8.8}"
 
 # @ECLASS-VARIABLE: CMAKE_REMOVE_MODULES_LIST
@@ -43,9 +43,9 @@ CMAKE_REMOVE_MODULES="${CMAKE_REMOVE_MODULES:-yes}"
 
 # @ECLASS-VARIABLE: CMAKE_MAKEFILE_GENERATOR
 # @DESCRIPTION:
-# Specify a makefile generator to be used by cmake. At this point only "make"
-# and "ninja" is supported.
-CMAKE_MAKEFILE_GENERATOR="${CMAKE_MAKEFILE_GENERATOR:-make}"
+# Specify a makefile generator to be used by cmake.
+# At this point only "emake" and "ninja" are supported.
+CMAKE_MAKEFILE_GENERATOR="${CMAKE_MAKEFILE_GENERATOR:-emake}"
 
 CMAKEDEPEND=""
 case ${WANT_CMAKE} in
@@ -60,11 +60,24 @@ inherit toolchain-funcs multilib flag-o-matic base
 
 CMAKE_EXPF="src_compile src_test src_install"
 case ${EAPI:-0} in
-	2|3|4|4-python|5|5-progress) CMAKE_EXPF+=" src_configure" ;;
+	2|3|4|4-python|5|5-progress) CMAKE_EXPF+=" src_prepare src_configure" ;;
 	1|0) ;;
 	*) die "Unknown EAPI, Bug eclass maintainers." ;;
 esac
 EXPORT_FUNCTIONS ${CMAKE_EXPF}
+
+case ${CMAKE_MAKEFILE_GENERATOR} in
+	emake)
+		CMAKEDEPEND+=" sys-devel/make"
+		;;
+	ninja)
+		CMAKEDEPEND+=" dev-util/ninja"
+		;;
+	*)
+		eerror "Unknown value for \${CMAKE_MAKEFILE_GENERATOR}"
+		die "Value ${CMAKE_MAKEFILE_GENERATOR} is not supported"
+		;;
+esac
 
 if [[ ${PN} != cmake ]]; then
 	CMAKEDEPEND+=" >=dev-util/cmake-${CMAKE_MIN_VERSION}"
@@ -194,10 +207,22 @@ _check_build_dir() {
 
 # Determine which generator to use
 _generator_to_use() {
-	if [[ ${CMAKE_MAKEFILE_GENERATOR} = "ninja" ]]; then
-		has_version dev-util/ninja && echo "Ninja" && return
-	fi
-	echo "Unix Makefiles"
+	local generator_name
+
+	case ${CMAKE_MAKEFILE_GENERATOR} in
+		ninja)
+			generator_name="Ninja"
+			;;
+		emake)
+			generator_name="Unix Makefiles"
+			;;
+		*)
+			eerror "Unknown value for \${CMAKE_MAKEFILE_GENERATOR}"
+			die "Value ${CMAKE_MAKEFILE_GENERATOR} is not supported"
+			;;
+	esac
+
+	echo ${generator_name}
 }
 
 # @FUNCTION: cmake-utils_use_with
@@ -217,6 +242,16 @@ cmake-utils_use_with() { _use_me_now WITH_ "$@" ; }
 # `cmake-utils_use_enable foo FOO` echoes -DENABLE_FOO=ON if foo is enabled
 # and -DENABLE_FOO=OFF if it is disabled.
 cmake-utils_use_enable() { _use_me_now ENABLE_ "$@" ; }
+
+# @FUNCTION: cmake-utils_use_find_package
+# @USAGE: <USE flag> [flag name]
+# @DESCRIPTION:
+# Based on use_enable. See ebuild(5).
+#
+# `cmake-utils_use_find_package foo FOO` echoes -DCMAKE_DISABLE_FIND_PACKAGE=OFF
+# if foo is enabled and -DCMAKE_DISABLE_FIND_PACKAGE=ON if it is disabled.
+# This can be used to make find_package optional (since cmake-2.8.6).
+cmake-utils_use_find_package() { _use_me_now_inverted CMAKE_DISABLE_FIND_PACKAGE_ "$@" ; }
 
 # @FUNCTION: cmake-utils_use_disable
 # @USAGE: <USE flag> [flag name]
@@ -312,6 +347,12 @@ _modify-cmakelists() {
 		Module          \${CMAKE_MODULE_LINKER_FLAGS}
 		Shared          \${CMAKE_SHARED_LINKER_FLAGS}\n")
 	_EOF_
+}
+
+enable_cmake-utils_src_prepare() {
+	debug-print-function ${FUNCNAME} "$@"
+
+	base_src_prepare
 }
 
 enable_cmake-utils_src_configure() {
@@ -432,6 +473,40 @@ enable_cmake-utils_src_compile() {
 	cmake-utils_src_make "$@"
 }
 
+# @FUNCTION: ninja_src_make
+# @INTERNAL
+# @DESCRIPTION:
+# Build the package using ninja generator
+ninja_src_make() {
+	debug-print-function ${FUNCNAME} "$@"
+
+		[[ -e build.ninja ]] || die "Makefile not found. Error during configure stage."
+
+		if [[ "${CMAKE_VERBOSE}" != "OFF" ]]; then
+		# TODO: get load average from portage (-l option)
+		ninja ${MAKEOPTS} -v "$@" || die
+	else
+		ninja "$@" || die
+	fi
+}
+
+# @FUNCTION: make_src_make
+# @INTERNAL
+# @DESCRIPTION:
+# Build the package using make generator
+emake_src_make() {
+	debug-print-function ${FUNCNAME} "$@"
+
+		[[ -e Makefile ]] || die "Makefile not found. Error during configure stage."
+
+		if [[ "${CMAKE_VERBOSE}" != "OFF" ]]; then
+		emake VERBOSE=1 "$@" || die
+		else
+		emake "$@" || die
+	fi
+
+}
+
 # @FUNCTION: cmake-utils_src_make
 # @DESCRIPTION:
 # Function for building the package. Automatically detects the build type.
@@ -441,24 +516,9 @@ cmake-utils_src_make() {
 
 	_check_build_dir
 	pushd "${BUILD_DIR}" > /dev/null
-	if [[ $(_generator_to_use) = Ninja ]]; then
-		# first check if Makefile exist otherwise die
-		[[ -e build.ninja ]] || die "Makefile not found. Error during configure stage."
-		if [[ "${CMAKE_VERBOSE}" != "OFF" ]]; then
-			#TODO get load average from portage (-l option)
-			ninja ${MAKEOPTS} -v "$@"
-		else
-			ninja "$@"
-		fi || die "ninja failed!"
-	else
-		# first check if Makefile exist otherwise die
-		[[ -e Makefile ]] || die "Makefile not found. Error during configure stage."
-		if [[ "${CMAKE_VERBOSE}" != "OFF" ]]; then
-			emake VERBOSE=1 "$@" || die "Make failed!"
-		else
-			emake "$@" || die "Make failed!"
-		fi
-	fi
+
+	${CMAKE_MAKEFILE_GENERATOR}_src_make $@
+
 	popd > /dev/null
 }
 
@@ -467,12 +527,10 @@ enable_cmake-utils_src_install() {
 
 	_check_build_dir
 	pushd "${BUILD_DIR}" > /dev/null
-	if [[ $(_generator_to_use) = Ninja ]]; then
-		DESTDIR=${D} ninja install "$@" || die "died running ninja install"
-		base_src_install_docs
-	else
-		base_src_install "$@"
-	fi
+
+	DESTDIR="${D}" ${CMAKE_MAKEFILE_GENERATOR} install "$@" || die "died running ${CMAKE_MAKEFILE_GENERATOR} install"
+	base_src_install_docs
+
 	popd > /dev/null
 
 	# Backward compatibility, for non-array variables
@@ -513,6 +571,13 @@ enable_cmake-utils_src_test() {
 		popd > /dev/null
 		return 1
 	fi
+}
+
+# @FUNCTION: cmake-utils_src_prepare
+# @DESCRIPTION:
+# Wrapper function around base_src_prepare, just to expand the eclass API.
+cmake-utils_src_prepare() {
+	_execute_optionaly "src_prepare" "$@"
 }
 
 # @FUNCTION: cmake-utils_src_configure
