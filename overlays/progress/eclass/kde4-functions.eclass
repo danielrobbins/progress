@@ -53,19 +53,13 @@ export KDE_BUILD_TYPE
 if [[ ${KDE_BUILD_TYPE} == live ]]; then
 	case "${KMNAME}" in
 		kdebase-workspace)
-			KDE_SCM="git"
 			EGIT_REPONAME=${EGIT_REPONAME:=kde-workspace}
 		;;
 		kdebase-runtime)
-			KDE_SCM="git"
 			EGIT_REPONAME=${EGIT_REPONAME:=kde-runtime}
 		;;
 		kdebase-apps)
-			KDE_SCM="git"
 			EGIT_REPONAME=${EGIT_REPONAME:=kde-baseapps}
-		;;
-		kde-workspace|kde-runtime|kde-baseapps)
-			KDE_SCM="git"
 		;;
 	esac
 fi
@@ -73,8 +67,8 @@ fi
 # @ECLASS-VARIABLE: KDE_SCM
 # @DESCRIPTION:
 # If this is a live package which scm does it use
-# Everything else uses svn by default
-KDE_SCM="${KDE_SCM:-svn}"
+# Everything else uses git by default
+KDE_SCM="${KDE_SCM:-git}"
 case ${KDE_SCM} in
 	svn|git) ;;
 	*) die "KDE_SCM: ${KDE_SCM} is not supported" ;;
