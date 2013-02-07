@@ -32,7 +32,3 @@ src_prepare() {
 	# multiprocessing module is missing in Jython.
 	sed -e "/^import multiprocessing$/d" -i setup.py
 }
-
-src_test() {
-	distutils_src_test -w tests
-}
