@@ -8,13 +8,13 @@ PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 
 FORTRAN_NEEDED="lapack"
 
-inherit distutils eutils flag-o-matic fortran-2 toolchain-funcs
+inherit distutils eutils flag-o-matic fortran-2 multilib toolchain-funcs
 
 MY_P="${PN}-${PV/_rc/rc}"
 DOC_P="${PN}-1.6.0"
 
 DESCRIPTION="Fast array and numerical python library"
-HOMEPAGE="http://numpy.scipy.org/ https://github.com/numpy/numpy http://pypi.python.org/pypi/numpy"
+HOMEPAGE="http://www.numpy.org/ https://github.com/numpy/numpy http://pypi.python.org/pypi/numpy"
 SRC_URI="mirror://sourceforge/numpy/${MY_P}.tar.gz
 	doc? (
 		http://docs.scipy.org/doc/${DOC_P}/${PN}-html.zip -> ${DOC_P}-html.zip
@@ -46,23 +46,6 @@ DOCS="COMPATIBILITY DEV_README.txt THANKS.txt"
 pkg_setup() {
 	fortran-2_pkg_setup
 	python_pkg_setup
-
-	# See progress in http://projects.scipy.org/scipy/numpy/ticket/573
-	# with the subtle difference that we don't want to break Darwin where
-	# -shared is not a valid linker argument
-	if [[ ${CHOST} != *-darwin* ]]; then
-		append-ldflags -shared
-	fi
-
-	# only one fortran to link with:
-	# linking with cblas and lapack library will force
-	# autodetecting and linking to all available fortran compilers
-	if use lapack; then
-		append-fflags -fPIC
-		NUMPY_FCONFIG="config_fc --noopt --noarch"
-		# workaround bug 335908
-		[[ $(tc-getFC) == *gfortran* ]] && NUMPY_FCONFIG+=" --fcompiler=gnu95"
-	fi
 }
 
 src_unpack() {
@@ -110,6 +93,23 @@ src_prepare() {
 	fi
 
 	export CC="$(tc-getCC) ${CFLAGS}"
+
+	# See progress in http://projects.scipy.org/scipy/numpy/ticket/573
+	# with the subtle difference that we don't want to break Darwin where
+	# -shared is not a valid linker argument
+	if [[ ${CHOST} != *-darwin* ]]; then
+		append-ldflags -shared
+	fi
+
+	# only one fortran to link with:
+	# linking with cblas and lapack library will force
+	# autodetecting and linking to all available fortran compilers
+	if use lapack; then
+		append-fflags -fPIC
+		NUMPY_FCONFIG="config_fc --noopt --noarch"
+		# workaround bug 335908
+		[[ $(tc-getFC) == *gfortran* ]] && NUMPY_FCONFIG+=" --fcompiler=gnu95"
+	fi
 }
 
 src_compile() {
@@ -120,8 +120,7 @@ src_test() {
 	testing() {
 		python_execute "$(PYTHON)" setup.py ${NUMPY_FCONFIG} build -b "build-${PYTHON_ABI}" install --home="${S}/test-${PYTHON_ABI}" --no-compile || die "Installation for tests failed with $(python_get_implementation_and_version)"
 		pushd "${S}/test-${PYTHON_ABI}/"lib* > /dev/null
-		python_execute PYTHONPATH="python" "$(PYTHON)" -c "import numpy; numpy.test()" 2>&1 | tee test.log
-		grep -Eq "^(ERROR|FAIL):" test.log && return 1
+		python_execute PYTHONPATH="python" "$(PYTHON)" -c "import numpy, sys; sys.exit(not numpy.test().wasSuccessful())" || return
 		popd > /dev/null
 		rm -fr test-${PYTHON_ABI}
 	}
