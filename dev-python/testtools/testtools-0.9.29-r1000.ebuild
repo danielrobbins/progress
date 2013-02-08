@@ -10,7 +10,7 @@ PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
 inherit distutils
 
 DESCRIPTION="Extensions to the Python standard library unit testing framework"
-HOMEPAGE="https://launchpad.net/testtools http://pypi.python.org/pypi/testtools"
+HOMEPAGE="https://github.com/testing-cabal/testtools https://launchpad.net/testtools http://pypi.python.org/pypi/testtools"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
