@@ -26,13 +26,6 @@ DEPEND="${RDEPEND}
 DOCS="CHANGES.txt README.txt"
 PYTHON_MODULES="${PN/.//}"
 
-src_prepare() {
-	distutils_src_prepare
-
-	# https://bugs.launchpad.net/zope.testrunner/+bug/1118877
-	sed -e "/zope.fixers/d" -i setup.py
-}
-
 src_install() {
 	distutils_src_install
 
