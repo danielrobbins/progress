@@ -90,7 +90,7 @@ src_compile() {
 	python_execute_function compilation
 
 	if ${have_python2}; then
-		cd "${WORKDIR}/wrapper"
+		pushd "${WORKDIR}/wrapper" > /dev/null
 		python_execute libtool --tag=CC --mode=compile $(tc-getCC) \
 			-shared \
 			${CFLAGS} ${CPPFLAGS} \
@@ -105,6 +105,7 @@ src_compile() {
 			-rpath "${EPREFIX}/usr/$(get_libdir)/kde4" \
 			kpythonpluginfactorywrapper.lo \
 			$(dlopen_lib)
+		popd > /dev/null
 	fi
 }
 
@@ -118,7 +119,6 @@ src_install() {
 		emake DESTDIR="${T}/images/${PYTHON_ABI}" install
 	}
 	python_execute_function installation
-
 	python_merge_intermediate_installation_images "${T}/images"
 
 	# As we don't call the eclass's src_install, we have to install the docs manually
@@ -127,9 +127,10 @@ src_install() {
 	base_src_install_docs
 
 	if ${have_python2}; then
-		cd "${WORKDIR}/wrapper"
+		pushd "${WORKDIR}/wrapper" > /dev/null
 		python_execute libtool --mode=install install kpythonpluginfactory.la "${ED}/usr/$(get_libdir)/kde4/kpythonpluginfactory.la"
 		rm "${ED}/usr/$(get_libdir)/kde4/kpythonpluginfactory.la"
+		popd > /dev/null
 	fi
 }
 
