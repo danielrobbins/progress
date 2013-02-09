@@ -13,7 +13,8 @@ inherit distutils eutils libtool toolchain-funcs
 DESCRIPTION="identify a file's format by scanning binary data for patterns"
 HOMEPAGE="ftp://ftp.astron.com/pub/file/"
 SRC_URI="ftp://ftp.astron.com/pub/file/${P}.tar.gz
-	ftp://ftp.gw.com/mirrors/pub/unix/file/${P}.tar.gz"
+	ftp://ftp.gw.com/mirrors/pub/unix/file/${P}.tar.gz
+	mirror://gentoo/${P}-magic-updates-4d53f0549fb40b179eaee53c63c42e1685e4ebab.patch.bz2"
 
 LICENSE="BSD-2"
 SLOT="0"
@@ -30,6 +31,8 @@ pkg_setup() {
 }
 
 src_prepare() {
+	epatch "${WORKDIR}"/${P}-magic-updates-4d53f0549fb40b179eaee53c63c42e1685e4ebab.patch
+
 	elibtoolize
 
 	# dont let python README kill main README #60043
