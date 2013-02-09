@@ -63,6 +63,9 @@ src_prepare() {
 		mkdir -p "${WORKDIR}/wrapper" || die "failed to copy wrapper"
 		cp "${FILESDIR}/kpythonpluginfactorywrapper.c-r1" "${WORKDIR}/wrapper/kpythonpluginfactorywrapper.c" || die "failed to copy wrapper"
 	fi
+
+	# Disable versioning of pykdeuic4 symlink to avoid collision with versioning performed by python_merge_intermediate_installation_images().
+	sed -e 's/^set(_uic_name "pykdeuic4-${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}")$/set(_uic_name "pykdeuic4")/' -i tools/pykdeuic4/CMakeLists.txt
 }
 
 src_configure() {
@@ -121,7 +124,6 @@ src_install() {
 	}
 	python_execute_function installation
 	python_merge_intermediate_installation_images "${T}/images"
-	python_generate_wrapper_scripts "${ED}usr/bin/pykdeuic4"
 
 	# As we don't call the eclass's src_install, we have to install the docs manually
 	DOCS=("${S}"/{AUTHORS,NEWS,README})
