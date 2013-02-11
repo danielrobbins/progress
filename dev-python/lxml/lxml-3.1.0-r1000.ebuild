@@ -5,7 +5,7 @@
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.5 3.1"
 
 inherit distutils
 [[ "${PV}" == "9999" ]] && inherit git-2
@@ -35,7 +35,6 @@ RDEPEND=">=dev-libs/libxml2-2.7.2
 		$(python_abi_depend -i "3.*" dev-python/beautifulsoup:python-3)
 	)"
 DEPEND="${RDEPEND}
-	$(python_abi_depend dev-python/setuptools)
 	$([[ "${PV}" == "9999" ]] && python_abi_depend dev-python/cython)"
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
