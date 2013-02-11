@@ -485,12 +485,15 @@ autotools-utils_src_install() {
 	fi
 
 	# XXX: support installing them from builddir as well?
-	if [[ ${DOCS} ]]; then
-		if [[ ${EAPI} == [23] ]]; then
-			dodoc "${DOCS[@]}" || die
-		else
-			# dies by itself
-			dodoc -r "${DOCS[@]}"
+	if declare -p DOCS &>/dev/null; then
+		# an empty list == don't install anything
+		if [[ ${DOCS[@]} ]]; then
+			if [[ ${EAPI} == [23] ]]; then
+				dodoc "${DOCS[@]}" || die
+			else
+				# dies by itself
+				dodoc -r "${DOCS[@]}"
+			fi
 		fi
 	else
 		local f
