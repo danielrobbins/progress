@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_DEPEND="<<[{*-cpython}tk?]>>"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.* *-jython"
@@ -15,9 +15,9 @@ DESCRIPTION="Python Imaging Library (PIL)"
 HOMEPAGE="http://www.pythonware.com/products/pil/index.htm"
 SRC_URI="http://www.effbot.org/downloads/${MY_P}.tar.gz"
 
-LICENSE="as-is"
+LICENSE="HPND"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 sparc x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~x86-solaris"
+KEYWORDS="*"
 IUSE="doc examples lcms scanner tk X"
 
 DEPEND="media-libs/freetype:2
@@ -50,16 +50,14 @@ src_prepare() {
 	# Add shebang.
 	sed -e "1i#!/usr/bin/python" -i Scripts/pilfont.py || die "sed failed"
 
-	sed -i \
+	sed \
 		-e "s:/usr/lib\":/usr/$(get_libdir)\":" \
 		-e "s:\"lib\":\"$(get_libdir)\":g" \
-		setup.py || die "sed failed"
+		-i setup.py || die "sed failed"
 
 	if ! use tk; then
 		# Make the test always fail.
-		sed -i \
-			-e 's/import _tkinter/raise ImportError/' \
-			setup.py || die "sed failed"
+		sed -e "s/import _tkinter/raise ImportError/" -i setup.py || die "sed failed"
 	fi
 }
 
@@ -83,6 +81,13 @@ src_test() {
 src_install() {
 	distutils_src_install
 
+	install_headers() {
+		insinto "$(python_get_includedir)"
+		doins libImaging/Imaging.h
+		doins libImaging/ImPlatform.h
+	}
+	python_execute_function install_headers
+
 	if use doc; then
 		dohtml Docs/*
 	fi
@@ -93,14 +98,6 @@ src_install() {
 		DOCS="CHANGES sanedoc.txt" distutils_src_install
 		popd > /dev/null
 	fi
-
-	# Install headers required by media-gfx/sketch.
-	install_headers() {
-		insinto "$(python_get_includedir)"
-		doins libImaging/Imaging.h
-		doins libImaging/ImPlatform.h
-	}
-	python_execute_function install_headers
 
 	if use examples; then
 		insinto /usr/share/doc/${PF}/examples
