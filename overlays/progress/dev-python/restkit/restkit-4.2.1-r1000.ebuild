@@ -5,6 +5,7 @@
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 3.* *-jython"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.6"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
@@ -15,10 +16,10 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~s390 ~sh sparc x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux"
+KEYWORDS="*"
 IUSE="+cli doc examples"
 
-RDEPEND="$(python_abi_depend dev-python/http-parser)
+RDEPEND="$(python_abi_depend ">=dev-python/http-parser-0.8.1")
 	$(python_abi_depend dev-python/socketpool)
 	$(python_abi_depend dev-python/webob)
 	cli? ( $(python_abi_depend dev-python/ipython) )"
@@ -31,9 +32,6 @@ DEPEND="${RDEPEND}
 
 src_prepare() {
 	distutils_src_prepare
-
-	# Delete nose from install_requires.
-	sed -e "/'nose',/d" -i setup.py
 
 	# Do not install useless files.
 	sed \
@@ -52,6 +50,13 @@ src_prepare() {
 		-e "s/test_008/_&/" \
 		-i tests/004-test-client.py
 	rm -f tests/009-test-oauth_filter.py
+
+	# Fix compatibility with Sphinx 1.2.
+	# https://github.com/benoitc/restkit/issues/117
+	sed \
+		-e 's/text = self.opener(self.name).read()/&.decode("utf-8")/' \
+		-e '/self.opener(self.name, "w").write(text)/s/text/&.encode("utf-8")/' \
+		-i doc/sphinxtogithub.py
 }
 
 src_compile() {
