@@ -289,6 +289,22 @@ _python_parse_versions_range() {
 				python_maximal_version="${maximal_version}"
 			fi
 
+			if [[ -n "${minimal_version}" && "${minimal_version%.*}" -eq "${python_versions[0]%.*}" && "${minimal_version#*.}" -le "${python_versions[0]#*.}" ]]; then
+				minimal_version=""
+				python_minimal_version=""
+				python2_minimal_version=""
+				python3_minimal_version=""
+			fi
+
+			# Bash >=4.2:
+			# if [[ -n "${maximal_version}" && "${maximal_version%.*}" -eq "${python_versions[-1]%.*}" && "${maximal_version#*.}" -ge "${python_versions[-1]#*.}" ]]; then
+			if [[ -n "${maximal_version}" && "${maximal_version%.*}" -eq "${python_versions[${#python_versions[@]}-1]%.*}" && "${maximal_version#*.}" -ge "${python_versions[${#python_versions[@]}-1]#*.}" ]]; then
+				maximal_version=""
+				python_maximal_version=""
+				python2_maximal_version=""
+				python3_maximal_version=""
+			fi
+
 			if [[ -n "${minimal_version}" ]] && ! has "${minimal_version}" "${python_versions[@]}"; then
 				die "Invalid syntax of ${input_variable}: Unrecognized minimal version '${minimal_version}'"
 			fi
@@ -322,6 +338,8 @@ _python_parse_versions_range() {
 			else
 				python_versions=("${_CPYTHON2_GLOBALLY_SUPPORTED_ABIS[@]}" "${_CPYTHON3_GLOBALLY_SUPPORTED_ABIS[@]}")
 				python_minimal_version="${python_minimal_version:-${python_versions[0]}}"
+				# Bash >=4.2:
+				# python_maximal_version="${python_maximal_version:-${python_versions[-1]}}"
 				python_maximal_version="${python_maximal_version:-${python_versions[${#python_versions[@]}-1]}}"
 				_append_accepted_versions_range
 			fi
@@ -332,6 +350,8 @@ _python_parse_versions_range() {
 				else
 					python_versions=("${_CPYTHON3_GLOBALLY_SUPPORTED_ABIS[@]}")
 					python_minimal_version="${python3_minimal_version:-${python_versions[0]}}"
+					# Bash >=4.2:
+					# python_maximal_version="${python3_maximal_version:-${python_versions[-1]}}"
 					python_maximal_version="${python3_maximal_version:-${python_versions[${#python_versions[@]}-1]}}"
 					_append_accepted_versions_range
 				fi
@@ -342,6 +362,8 @@ _python_parse_versions_range() {
 				else
 					python_versions=("${_CPYTHON2_GLOBALLY_SUPPORTED_ABIS[@]}")
 					python_minimal_version="${python2_minimal_version:-${python_versions[0]}}"
+					# Bash >=4.2:
+					# python_maximal_version="${python2_maximal_version:-${python_versions[-1]}}"
 					python_maximal_version="${python2_maximal_version:-${python_versions[${#python_versions[@]}-1]}}"
 					_append_accepted_versions_range
 				fi
