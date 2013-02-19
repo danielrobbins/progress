@@ -24,7 +24,7 @@ KEYWORDS="*"
 IUSE="kde spell"
 
 DEPEND="$(python_abi_depend ">=dev-python/sip-4.12.4")
-	$(python_abi_depend ">=dev-python/PyQt4-4.6[X,help,svg,webkit]")
+	$(python_abi_depend ">=dev-python/PyQt4-4.6[X,help,sql,svg,webkit]")
 	$(python_abi_depend ">=dev-python/qscintilla-python-2.3")
 	kde? ( $(python_abi_depend kde-base/pykde4) )"
 RDEPEND="${DEPEND}
