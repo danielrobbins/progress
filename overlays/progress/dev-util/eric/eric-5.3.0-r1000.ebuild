@@ -24,7 +24,7 @@ KEYWORDS="*"
 IUSE="spell"
 
 DEPEND="$(python_abi_depend ">=dev-python/sip-4.12.4")
-	$(python_abi_depend ">=dev-python/PyQt4-4.8[X,help,svg,webkit]")
+	$(python_abi_depend ">=dev-python/PyQt4-4.8[X,help,sql,svg,webkit]")
 	$(python_abi_depend ">=dev-python/qscintilla-python-2.6")"
 RDEPEND="${DEPEND}
 	$(python_abi_depend ">=dev-python/chardet-2.0.1")
@@ -57,6 +57,9 @@ src_prepare() {
 	# Delete internal copies of dev-python/chardet, dev-python/coverage and dev-python/pygments.
 	rm -fr eric/ThirdParty
 	rm -fr eric/DebugClients/Python{,3}/coverage
+
+	# Fix desktop files.
+	sed -e "/^Categories=/s:Python:X-&:" -i eric/eric5{,_webbrowser}.desktop || die
 }
 
 src_install() {
