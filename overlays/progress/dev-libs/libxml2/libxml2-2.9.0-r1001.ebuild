@@ -67,7 +67,7 @@ src_prepare() {
 
 	eprefixify catalog.c xmlcatalog.c runtest.c xmllint.c
 
-	epunt_cxx
+	# epunt_cxx
 
 	epatch "${FILESDIR}/${PN}-2.9.0-disable_static_modules.patch"
 
@@ -81,6 +81,9 @@ src_prepare() {
 
 	# Buffer underflow in xmlParseAttValueComplex, bug #444836; fixed in 2.9.1
 	epatch "${FILESDIR}/${PN}-2.8.0-xmlParseAttValueComplex-underflow.patch"
+
+	# Entity expansion DoS, bug #458430; fixed in 2.9.1
+	epatch "${FILESDIR}/${PN}-2.9.0-excessive-entity-expansion.patch"
 
 	# Python bindings are built/tested/installed manually.
 	sed -e 's/$(PYTHON_SUBDIR)//' -i Makefile.am || die "sed failed"
