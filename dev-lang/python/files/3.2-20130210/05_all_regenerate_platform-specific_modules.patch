@@ -68,7 +68,7 @@ http://bugs.python.org/issue12619
 +	cd $(srcdir)/Lib/$(PLATDIR); \
 +	$(RUNSHARED) ./regen || exit 1; \
 +	for module in *.py; do \
-+		$(RUNSHARED) $(BUILDPYTHON) -c "import py_compile; py_compile.compile('$$module', cfile='/dev/null', doraise=True)" || exit 1; \
++		$(RUNSHARED) $(BUILDPYTHON) -c "with open('$$module', 'rb') as module: compile(module.read(), '$$module', 'exec')" || exit 1; \
 +	done
 +
  # Build static library
