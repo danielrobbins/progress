@@ -10,7 +10,7 @@ inherit distutils
 
 DESCRIPTION="Pluggable object copying mechanism"
 HOMEPAGE="http://pypi.python.org/pypi/zope.copy"
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.zip"
 
 LICENSE="ZPL"
 SLOT="0"
