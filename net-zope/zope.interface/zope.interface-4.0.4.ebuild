@@ -10,7 +10,7 @@ inherit distutils eutils
 
 DESCRIPTION="Interfaces for Python"
 HOMEPAGE="http://pypi.python.org/pypi/zope.interface"
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.zip
 	mirror://pypi/${PN:0:1}/${PN}/${PN}-3.8.0.tar.gz"
 
 LICENSE="ZPL"
@@ -31,7 +31,7 @@ DEPEND="${RDEPEND}
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 
 DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES="1"
-DOCS="CHANGES.txt"
+DOCS="CHANGES.rst"
 PYTHON_MODULES="${PN/.//}"
 
 src_prepare() {
