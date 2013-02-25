@@ -7,13 +7,13 @@ PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 
-inherit distutils eutils flag-o-matic fortran-2 toolchain-funcs
+inherit distutils eutils flag-o-matic fortran-2 multilib toolchain-funcs
 
 MY_P="${PN}-${PV/_/}"
 DOC_P="${PN}-0.11.0"
 
 DESCRIPTION="Scientific algorithms library for Python"
-HOMEPAGE="http://www.scipy.org/ http://pypi.python.org/pypi/scipy"
+HOMEPAGE="http://www.scipy.org/ https://github.com/scipy/scipy http://pypi.python.org/pypi/scipy"
 SRC_URI="mirror://sourceforge/${PN}/${MY_P}.tar.gz
 	doc? (
 		http://docs.scipy.org/doc/${DOC_P}/${PN}-html.zip -> ${DOC_P}-html.zip
@@ -25,7 +25,7 @@ SLOT="0"
 IUSE="doc test umfpack"
 KEYWORDS="*"
 
-CDEPEND="$(python_abi_depend dev-python/numpy)
+CDEPEND="$(python_abi_depend dev-python/numpy[lapack])
 	sci-libs/arpack
 	virtual/cblas
 	virtual/lapack
@@ -54,17 +54,17 @@ src_unpack() {
 }
 
 pc_incdir() {
-	pkg-config --cflags-only-I $@ | \
+	$(tc-getPKG_CONFIG) --cflags-only-I $@ | \
 		sed -e 's/^-I//' -e 's/[ ]*-I/:/g'
 }
 
 pc_libdir() {
-	pkg-config --libs-only-L $@ | \
+	$(tc-getPKG_CONFIG) --libs-only-L $@ | \
 		sed -e 's/^-L//' -e 's/[ ]*-L/:/g'
 }
 
 pc_libs() {
-	pkg-config --libs-only-l $@ | \
+	$(tc-getPKG_CONFIG) --libs-only-l $@ | \
 		sed -e 's/[ ]-l*\(pthread\|m\)[ ]*//g' \
 		-e 's/^-l//' -e 's/[ ]*-l/,/g'
 }
@@ -106,8 +106,7 @@ src_test() {
 	testing() {
 		python_execute "$(PYTHON)" setup.py build -b "build-${PYTHON_ABI}" install --home="${S}/test-${PYTHON_ABI}" --no-compile ${SCIPY_FCONFIG} || die "Installation for tests failed with $(python_get_implementation_and_version)"
 		pushd "${S}/test-${PYTHON_ABI}/"lib*/python > /dev/null
-		python_execute PYTHONPATH="." "$(PYTHON)" -c "import scipy; scipy.test('full', verbose=10)" 2>&1 | tee test.log
-		grep -Eq "^(ERROR|FAIL):" test.log && return 1
+		python_execute PYTHONPATH="." "$(PYTHON)" -c "import scipy, sys; sys.exit(not scipy.test('full', verbose=5).wasSuccessful())" || return
 		popd > /dev/null
 		rm -fr test-${PYTHON_ABI}
 	}
