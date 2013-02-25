@@ -306,7 +306,7 @@ RDEPEND+=" ${COMMON_DEPEND}"
 unset COMMON_DEPEND
 
 if [[ ${XORG_MULTILIB} == yes ]]; then
-	RDEPEND+=" abi_x86_32? ( !<=app-emulation/emul-linux-x86-xlibs-20121202 )"
+	RDEPEND+=" abi_x86_32? ( !<=app-emulation/emul-linux-x86-xlibs-20130224 )"
 fi
 
 debug-print "${LINENO} ${ECLASS} ${FUNCNAME}: DEPEND=${DEPEND}"
