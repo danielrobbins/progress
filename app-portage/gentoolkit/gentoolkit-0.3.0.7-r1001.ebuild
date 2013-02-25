@@ -8,7 +8,7 @@ PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 *-jython *-pypy-*"
 PYTHON_NONVERSIONED_EXECUTABLES=(".*")
 
-inherit distutils
+inherit distutils eutils
 
 DESCRIPTION="Collection of administration scripts for Gentoo"
 HOMEPAGE="http://www.gentoo.org/proj/en/portage/tools/index.xml"
@@ -27,6 +27,10 @@ RDEPEND="${DEPEND}
 	sys-apps/gawk
 	sys-apps/grep
 	$(python_abi_depend virtual/python-argparse)"
+
+src_prepare() {
+	epatch "${FILESDIR}/${PV}-root.patch"
+}
 
 distutils_src_compile_pre_hook() {
 	python_execute VERSION="${PVR}" "$(PYTHON)" setup.py set_version || die "setup.py set_version failed"
