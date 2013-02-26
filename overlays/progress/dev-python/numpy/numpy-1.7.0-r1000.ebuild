@@ -10,21 +10,22 @@ FORTRAN_NEEDED="lapack"
 
 inherit distutils eutils flag-o-matic fortran-2 multilib toolchain-funcs
 
-MY_P="${PN}-${PV/_rc/rc}"
-DOC_P="${PN}-1.6.0"
+MY_P="${PN}-${PV/_/}"
+DOC_PV="1.7.0"
+DOC_P="${PN}-${DOC_PV}"
 
 DESCRIPTION="Fast array and numerical python library"
 HOMEPAGE="http://www.numpy.org/ https://github.com/numpy/numpy http://pypi.python.org/pypi/numpy"
 SRC_URI="mirror://sourceforge/numpy/${MY_P}.tar.gz
 	doc? (
-		http://docs.scipy.org/doc/${DOC_P}/${PN}-html.zip -> ${DOC_P}-html.zip
-		http://docs.scipy.org/doc/${DOC_P}/${PN}-ref.pdf -> ${DOC_P}-ref.pdf
-		http://docs.scipy.org/doc/${DOC_P}/${PN}-user.pdf -> ${DOC_P}-user.pdf
+		http://docs.scipy.org/doc/${DOC_P}/${PN}-html-${DOC_PV}.zip
+		http://docs.scipy.org/doc/${DOC_P}/${PN}-ref-${DOC_PV}.pdf
+		http://docs.scipy.org/doc/${DOC_P}/${PN}-user-${DOC_PV}.pdf
 	)"
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="~*"
+KEYWORDS="*"
 IUSE="doc lapack test"
 
 RDEPEND="
@@ -38,9 +39,6 @@ S="${WORKDIR}/${MY_P}"
 
 PYTHON_CFLAGS=("* + -fno-strict-aliasing")
 
-# Build system installs f2py${Python_version} scripts.
-PYTHON_NONVERSIONED_EXECUTABLES=("/usr/bin/f2py[[:digit:]]+\.[[:digit:]]+")
-
 DOCS="COMPATIBILITY DEV_README.txt THANKS.txt"
 
 pkg_setup() {
@@ -51,22 +49,22 @@ pkg_setup() {
 src_unpack() {
 	unpack ${MY_P}.tar.gz
 	if use doc; then
-		unzip -qo "${DISTDIR}/${DOC_P}-html.zip" -d html || die
+		unzip -qo "${DISTDIR}/${PN}-html-${DOC_PV}.zip" -d html || die
 	fi
 }
 
 pc_incdir() {
-	pkg-config --cflags-only-I $@ | \
+	$(tc-getPKG_CONFIG) --cflags-only-I $@ | \
 		sed -e 's/^-I//' -e 's/[ ]*-I/:/g'
 }
 
 pc_libdir() {
-	pkg-config --libs-only-L $@ | \
+	$(tc-getPKG_CONFIG) --libs-only-L $@ | \
 		sed -e 's/^-L//' -e 's/[ ]*-L/:/g'
 }
 
 pc_libs() {
-	pkg-config --libs-only-l $@ | \
+	$(tc-getPKG_CONFIG) --libs-only-l $@ | \
 		sed -e 's/[ ]-l*\(pthread\|m\)[ ]*//g' \
 		-e 's/^-l//' -e 's/[ ]*-l/,/g'
 }
@@ -75,7 +73,7 @@ src_prepare() {
 	epatch "${FILESDIR}/${PN}-1.7.0-atlas.patch"
 
 	if use lapack; then
-		append-ldflags "$(pkg-config --libs-only-other cblas lapack)"
+		append-ldflags "$($(tc-getPKG_CONFIG) --libs-only-other cblas lapack)"
 		local libdir="${EPREFIX}"/usr/$(get_libdir)
 		# make sure _dotblas.so gets built
 		sed -i -e '/NO_ATLAS_INFO/,+1d' numpy/core/setup.py || die
@@ -110,6 +108,9 @@ src_prepare() {
 		# workaround bug 335908
 		[[ $(tc-getFC) == *gfortran* ]] && NUMPY_FCONFIG+=" --fcompiler=gnu95"
 	fi
+
+	# Disable versioning of f2py script.
+	sed -e "s/f2py_exe = 'f2py'+os.path.basename(sys.executable)\[6:\]$/f2py_exe = 'f2py'/" -i numpy/f2py/setup.py || die
 }
 
 src_compile() {
@@ -120,7 +121,7 @@ src_test() {
 	testing() {
 		python_execute "$(PYTHON)" setup.py ${NUMPY_FCONFIG} build -b "build-${PYTHON_ABI}" install --home="${S}/test-${PYTHON_ABI}" --no-compile || die "Installation for tests failed with $(python_get_implementation_and_version)"
 		pushd "${S}/test-${PYTHON_ABI}/"lib* > /dev/null
-		python_execute PYTHONPATH="python" "$(PYTHON)" -c "import numpy, sys; sys.exit(not numpy.test().wasSuccessful())" || return
+		python_execute PYTHONPATH="python" "$(PYTHON)" -c "import numpy, sys; sys.exit(not numpy.test(label='full', verbose=3).wasSuccessful())" || return
 		popd > /dev/null
 		rm -fr test-${PYTHON_ABI}
 	}
@@ -142,6 +143,6 @@ src_install() {
 	if use doc; then
 		insinto /usr/share/doc/${PF}
 		doins -r "${WORKDIR}/html"
-		doins "${DISTDIR}/${DOC_P}"-{ref,user}.pdf
+		doins "${DISTDIR}/${PN}"-{ref,user}-${DOC_PV}.pdf
 	fi
 }
