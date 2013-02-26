@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 *-jython"
 DISTUTILS_SRC_TEST="nosetests"
@@ -15,10 +15,10 @@ SRC_URI="http://python-bitstring.googlecode.com/files/${P}.zip"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="amd64 x86"
+KEYWORDS="*"
 IUSE=""
 
-DEPEND="app-arch/unzip"
+DEPEND=""
 RDEPEND=""
 
 DOCS="README.txt release_notes.txt"
