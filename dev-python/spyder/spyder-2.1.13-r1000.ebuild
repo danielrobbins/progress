@@ -25,7 +25,7 @@ RDEPEND="$(python_abi_depend dev-python/PyQt4[webkit])
 	pyflakes? ( $(python_abi_depend dev-python/pyflakes) )
 	pylint? ( $(python_abi_depend dev-python/pylint) )
 	rope? ( $(python_abi_depend dev-python/rope) )
-	scipy? ( $(python_abi_depend sci-libs/scipy) )
+	scipy? ( $(python_abi_depend -e "2.5" sci-libs/scipy) )
 	sphinx? ( $(python_abi_depend dev-python/sphinx) )"
 DEPEND="${RDEPEND}
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
@@ -42,7 +42,7 @@ src_compile() {
 
 	if use doc; then
 		einfo "Generation of documentation"
-		python_execute PYTHONPATH="build-$(PYTHON -f --ABI)/lib" sphinx-build doc doc_output || die "Generation of documentation failed"
+		python_execute PYTHONPATH="build-$(PYTHON -f --ABI)/lib" sphinx-build doc html || die "Generation of documentation failed"
 	fi
 }
 
@@ -53,6 +53,6 @@ src_install() {
 	make_desktop_entry spyder Spyder spyder "Development;IDE"
 
 	if use doc; then
-		dohtml -r doc_output/
+		dohtml -r html/
 	fi
 }
