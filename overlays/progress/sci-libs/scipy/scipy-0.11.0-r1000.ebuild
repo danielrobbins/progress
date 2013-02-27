@@ -106,7 +106,7 @@ src_test() {
 	testing() {
 		python_execute "$(PYTHON)" setup.py build -b "build-${PYTHON_ABI}" install --home="${S}/test-${PYTHON_ABI}" --no-compile ${SCIPY_FCONFIG} || die "Installation for tests failed with $(python_get_implementation_and_version)"
 		pushd "${S}/test-${PYTHON_ABI}/"lib*/python > /dev/null
-		python_execute PYTHONPATH="." "$(PYTHON)" -c "import scipy, sys; sys.exit(not scipy.test('full', verbose=5).wasSuccessful())" || return
+		python_execute PYTHONPATH="." "$(PYTHON)" -c "import scipy, sys; sys.exit(not scipy.test('full', verbose=3).wasSuccessful())" || return
 		popd > /dev/null
 		rm -fr test-${PYTHON_ABI}
 	}
@@ -115,6 +115,14 @@ src_test() {
 
 src_install() {
 	distutils_src_install ${SCIPY_FCONFIG}
+
+	delete_incompatible_modules() {
+		if [[ "$(python_get_version -l --major)" == "3" ]]; then
+			# scipy.weave supports only Python 2.
+			rm -fr "${ED}$(python_get_sitedir)/scipy/weave"
+		fi
+	}
+	python_execute_function -q delete_incompatible_modules
 
 	if use doc; then
 		dohtml -r "${WORKDIR}/html/"*
