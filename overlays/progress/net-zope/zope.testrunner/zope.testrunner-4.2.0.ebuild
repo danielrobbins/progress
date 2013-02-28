@@ -17,13 +17,14 @@ KEYWORDS="*"
 IUSE="examples"
 
 RDEPEND="$(python_abi_depend net-zope/namespaces-zope[zope])
+	$(python_abi_depend dev-python/six)
 	$(python_abi_depend net-zope/zope.exceptions)
 	$(python_abi_depend net-zope/zope.interface)
 	!<net-zope/zope.testing-3.10.0"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
-DOCS="CHANGES.txt README.txt"
+DOCS="CHANGES.rst README.rst"
 PYTHON_MODULES="${PN/.//}"
 
 src_install() {
