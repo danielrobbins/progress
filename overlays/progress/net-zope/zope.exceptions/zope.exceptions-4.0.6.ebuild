@@ -5,18 +5,17 @@ EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
-DISTUTILS_SRC_TEST="setup.py"
 
 inherit distutils
 
 DESCRIPTION="Zope Exceptions"
 HOMEPAGE="http://pypi.python.org/pypi/zope.exceptions"
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.zip"
 
 LICENSE="ZPL"
 SLOT="0"
 KEYWORDS="*"
-IUSE="doc"
+IUSE="doc test"
 
 RDEPEND="$(python_abi_depend net-zope/namespaces-zope[zope])
 	$(python_abi_depend net-zope/zope.interface)"
@@ -25,9 +24,10 @@ DEPEND="${RDEPEND}
 	doc? (
 		$(python_abi_depend dev-python/repoze.sphinx.autointerface)
 		$(python_abi_depend dev-python/sphinx)
-	)"
+	)
+	test? ( $(python_abi_depend net-zope/zope.testrunner) )"
 
-DOCS="CHANGES.txt README.txt"
+DOCS="CHANGES.rst README.rst"
 PYTHON_MODULES="${PN/.//}"
 
 src_compile() {
@@ -39,6 +39,14 @@ src_compile() {
 		PYTHONPATH="../build-$(PYTHON -f --ABI)/lib" emake html
 		popd > /dev/null
 	fi
+}
+
+src_test() {
+	testing() {
+		# setup.py excessively passes arguments to zope.testrunner.
+		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" setup.py test
+	}
+	python_execute_function testing
 }
 
 src_install() {
