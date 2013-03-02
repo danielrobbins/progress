@@ -10,7 +10,7 @@ PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
 inherit bash-completion-r1 distutils git-2 webapp
 
 DESCRIPTION="High-level Python web framework"
-HOMEPAGE="http://www.djangoproject.com/ http://pypi.python.org/pypi/Django"
+HOMEPAGE="http://www.djangoproject.com/ https://github.com/django/django http://pypi.python.org/pypi/Django"
 SRC_URI=""
 EGIT_REPO_URI="https://github.com/django/django"
 
@@ -19,9 +19,9 @@ SLOT="0"
 KEYWORDS=""
 IUSE="doc mysql postgres sqlite test"
 
-RDEPEND="$(python_abi_depend -e "*-jython" dev-python/imaging)
+RDEPEND="$(python_abi_depend -e "3.* *-jython" dev-python/imaging)
 	$(python_abi_depend virtual/python-json[external])
-	mysql? ( $(python_abi_depend -e "*-jython" dev-python/mysql-python) )
+	mysql? ( $(python_abi_depend -e "3.* *-jython" dev-python/mysql-python) )
 	postgres? ( $(python_abi_depend -e "*-jython *-pypy-*" dev-python/psycopg:2) )
 	sqlite? ( $(python_abi_depend -e "*-jython" virtual/python-sqlite[external]) )"
 DEPEND="${RDEPEND}
@@ -38,16 +38,11 @@ pkg_setup() {
 src_prepare() {
 	distutils_src_prepare
 
-	# Disable tests requiring network connection.
-	sed \
-		-e "s/test_correct_url_value_passes/_&/" \
-		-e "s/test_correct_url_with_redirect/_&/" \
-		-i tests/modeltests/validation/tests.py
-	sed \
-		-e "s/test_urlfield_3/_&/" \
-		-e "s/test_urlfield_4/_&/" \
-		-e "s/test_urlfield_10/_&/" \
-		-i tests/regressiontests/forms/tests/fields.py
+	# Disable invalid warning.
+	sed -e "s/overlay_warning = True/overlay_warning = False/" -i setup.py
+
+	# Avoid test failures with unittest2 and Python 3.
+	sed -e "s/from unittest2 import \*/raise ImportError/" -i django/utils/unittest/__init__.py
 }
 
 src_compile() {
