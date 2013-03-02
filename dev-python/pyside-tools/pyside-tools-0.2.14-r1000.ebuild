@@ -23,8 +23,8 @@ IUSE="test"
 RDEPEND="
 	$(python_abi_depend ">=dev-python/pyside-1.1.0-r1[X]")
 	$(python_abi_depend ">=dev-python/shiboken-1.1.0-r1")
-	>=x11-libs/qt-core-4.7.0:4
-	>=x11-libs/qt-gui-4.7.0:4
+	>=dev-qt/qtcore-4.7.0:4
+	>=dev-qt/qtgui-4.7.0:4
 "
 DEPEND="${RDEPEND}
 	test? ( virtual/pkgconfig )

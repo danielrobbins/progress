@@ -39,7 +39,7 @@ CDEPEND=">=dev-db/sqlite-3.6.18[threadsafe]
 	sys-libs/zlib
 	berkdb? ( >=sys-libs/db-4 )
 	gnome-keyring? ( dev-libs/glib:2 sys-apps/dbus gnome-base/gnome-keyring )
-	kde? ( sys-apps/dbus x11-libs/qt-core:4 x11-libs/qt-dbus:4 x11-libs/qt-gui:4 kde-base/kdelibs:4 )
+	kde? ( dev-qt/qtcore:4 dev-qt/qtdbus:4 dev-qt/qtgui:4 sys-apps/dbus kde-base/kdelibs:4 )
 	magic? ( sys-apps/file )
 	perl? ( dev-lang/perl )
 	ruby? ( >=dev-lang/ruby-1.8.2 )
