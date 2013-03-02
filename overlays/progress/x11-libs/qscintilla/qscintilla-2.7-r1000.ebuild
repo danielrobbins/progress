@@ -18,8 +18,8 @@ KEYWORDS="~alpha amd64 ~ia64 ~ppc ~ppc64 sparc x86"
 IUSE="doc python"
 
 DEPEND="
-	x11-libs/qt-core:4
-	x11-libs/qt-gui:4
+	dev-qt/qtcore:4
+	dev-qt/qtgui:4
 "
 RDEPEND="${DEPEND}"
 PDEPEND="python? ( ~dev-python/qscintilla-python-${PV} )"

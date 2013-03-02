@@ -21,16 +21,16 @@ IUSE="test"
 RDEPEND="
 	>=dev-libs/libxml2-2.6.32
 	>=dev-libs/libxslt-1.1.19
-	>=x11-libs/qt-core-4.7.0:4
-	>=x11-libs/qt-xmlpatterns-4.7.0:4
+	>=dev-qt/qtcore-4.7.0:4
+	>=dev-qt/qtxmlpatterns-4.7.0:4
 	!dev-python/apiextractor
 	!dev-python/generatorrunner
 "
 DEPEND="${RDEPEND}
 	test? (
 		$(python_abi_depend dev-python/numpy)
-		>=x11-libs/qt-gui-4.7.0:4
-		>=x11-libs/qt-test-4.7.0:4
+		>=dev-qt/qtgui-4.7.0:4
+		>=dev-qt/qttest-4.7.0:4
 	)"
 
 DOCS=(AUTHORS ChangeLog)
