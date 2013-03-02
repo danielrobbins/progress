@@ -16,13 +16,13 @@ DESCRIPTION="Fabric is a simple, Pythonic tool for remote execution and deployme
 HOMEPAGE="http://fabfile.org http://pypi.python.org/pypi/Fabric"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
-LICENSE="GPL-2"
+LICENSE="BSD-2"
 SLOT="0"
 KEYWORDS="*"
 IUSE="doc"
 
 RDEPEND="$(python_abi_depend dev-python/pycrypto)
-	$(python_abi_depend ">=dev-python/paramiko-1.9.0")"
+	$(python_abi_depend ">=dev-python/paramiko-1.10.0")"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
