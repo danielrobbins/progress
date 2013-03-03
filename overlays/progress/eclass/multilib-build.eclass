@@ -80,8 +80,13 @@ multilib_get_enabled_abis() {
 	done
 
 	if [[ ! ${found} ]]; then
-		debug-print "${FUNCNAME}: no ABIs enabled, fallback to ${DEFAULT_ABI}"
-		echo ${DEFAULT_ABI}
+		# ${ABI} can be used to override the fallback (multilib-portage),
+		# ${DEFAULT_ABI} is the safe fallback.
+		local abi=${ABI:-${DEFAULT_ABI}}
+
+		debug-print "${FUNCNAME}: no ABIs enabled, fallback to ${abi}"
+		debug-print "${FUNCNAME}: ABI=${ABI}, DEFAULT_ABI=${DEFAULT_ABI}"
+		echo ${abi}
 	fi
 }
 
@@ -97,8 +102,9 @@ multilib_get_enabled_abis() {
 multilib_foreach_abi() {
 	local initial_dir=${BUILD_DIR:-${S}}
 
+	local abis=( $(multilib_get_enabled_abis) )
 	local ABI
-	for ABI in $(multilib_get_enabled_abis); do
+	for ABI in "${abis[@]}"; do
 		multilib_toolchain_setup "${ABI}"
 		BUILD_DIR=${initial_dir%%/}-${ABI} "${@}"
 	done
@@ -121,8 +127,9 @@ multilib_parallel_foreach_abi() {
 
 	multijob_init
 
+	local abis=( $(multilib_get_enabled_abis) )
 	local ABI
-	for ABI in $(multilib_get_enabled_abis); do
+	for ABI in "${abis[@]}"; do
 		(
 			multijob_child_init
 
