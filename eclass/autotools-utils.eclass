@@ -36,8 +36,8 @@
 # CDEPEND="
 # 	media-libs/libpng:0
 # 	qt4? (
-# 		x11-libs/qt-core:4
-# 		x11-libs/qt-gui:4
+# 		dev-qt/qtcore:4
+# 		dev-qt/qtgui:4
 # 	)
 # 	tiff? ( media-libs/tiff:0 )
 # "
