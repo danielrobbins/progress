@@ -46,7 +46,7 @@ S="${WORKDIR}/${MY_P}"
 PYTHON_VERSIONED_EXECUTABLES=("/usr/bin/.*")
 
 src_prepare() {
-	epatch "${FILESDIR}/eric-4.4-no-interactive.patch"
+	epatch "${FILESDIR}/eric-4.5.9-delete_pyxml_check.patch"
 	epatch "${FILESDIR}/eric-4.5.0-remove_coverage.patch"
 	use kde || epatch "${FILESDIR}/eric-4.4-no-pykde.patch"
 
