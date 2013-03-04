@@ -14,7 +14,7 @@ SRC_URI="mirror://sourceforge/pyqt/${MY_P}.tar.gz"
 LICENSE="|| ( GPL-2 GPL-3 )"
 # Subslot based on first component of VERSION from Qt4Qt5/qscintilla.pro
 SLOT="0/9"
-KEYWORDS="~alpha amd64 ~ia64 ~ppc ~ppc64 sparc x86"
+KEYWORDS="*"
 IUSE="doc python"
 
 DEPEND="
@@ -26,20 +26,16 @@ PDEPEND="python? ( ~dev-python/qscintilla-python-${PV} )"
 
 S="${WORKDIR}/${MY_P}"
 
-PATCHES=(
-	"${FILESDIR}/${PN}-2.6.2-designer.patch"
-)
-
 src_configure() {
 	pushd Qt4Qt5 > /dev/null
 	einfo "Configuration of qscintilla"
 	eqmake4 qscintilla.pro
 	popd > /dev/null
 
-	pushd designer-Qt4 > /dev/null
+	pushd designer-Qt4Qt5 > /dev/null
 	einfo "Configuration of designer plugin"
-	# Avoid linking of libqscintillaplugin.so against system libqscintilla2.so.
-	LDFLAGS="${LDFLAGS}${LDFLAGS:+ }-L../Qt4Qt5" eqmake4 designer.pro
+	# Avoid using of system Qsci/* headers and system libqscintilla2.so during building of libqscintillaplugin.so.
+	CXXFLAGS="${CXXFLAGS}${CXXFLAGS:+ }-I../Qt4Qt5" LDFLAGS="${LDFLAGS}${LDFLAGS:+ }-L../Qt4Qt5" eqmake4 designer.pro
 	popd > /dev/null
 }
 
@@ -49,7 +45,7 @@ src_compile() {
 	emake
 	popd > /dev/null
 
-	pushd designer-Qt4 > /dev/null
+	pushd designer-Qt4Qt5 > /dev/null
 	einfo "Building of designer plugin"
 	emake
 	popd > /dev/null
@@ -61,7 +57,7 @@ src_install() {
 	emake INSTALL_ROOT="${D}" install
 	popd > /dev/null
 
-	pushd designer-Qt4 > /dev/null
+	pushd designer-Qt4Qt5 > /dev/null
 	einfo "Installation of designer plugin"
 	emake INSTALL_ROOT="${D}" install
 	popd > /dev/null
