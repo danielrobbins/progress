@@ -10,7 +10,7 @@ PYTHON_EXPORT_PHASE_FUNCTIONS="1"
 inherit eutils python qt4-r2 toolchain-funcs
 
 DESCRIPTION="Python bindings for the Qt toolkit"
-HOMEPAGE="http://www.riverbankcomputing.co.uk/software/pyqt/intro/ http://pypi.python.org/pypi/PyQt"
+HOMEPAGE="http://www.riverbankcomputing.co.uk/software/pyqt/intro http://pypi.python.org/pypi/PyQt"
 
 if [[ "${PV}" == *_pre* ]]; then
 	MY_P="PyQt-x11-gpl-snapshot-${PV%_pre*}-${REVISION}"
@@ -24,9 +24,9 @@ LICENSE="|| ( GPL-2 GPL-3 )"
 # Subslot is "_"-separated, alphabetically sorted list of "${module_name}-${module_version}" strings
 # for PyQt4 modules with non-negative versions set by "version" argument of %Module directive:
 # $ grep -E "^[[:space:]]*%Module\(" sip/*/*.sip | sort
-# http://www.riverbankcomputing.co.uk/static/Docs/sip4/directives.html#directive-%Module
+# http://pyqt.sourceforge.net/Docs/sip4/directives.html#directive-%Module
 SLOT="0/QtCore-1"
-KEYWORDS="~alpha amd64 ~arm ~ia64 ~ppc ~ppc64 sparc x86 ~amd64-linux ~x86-linux"
+KEYWORDS="*"
 IUSE="X dbus debug declarative doc examples help kde multimedia opengl phonon script scripttools sql svg webkit xmlpatterns"
 REQUIRED_USE="
 	declarative? ( X )
@@ -42,7 +42,7 @@ REQUIRED_USE="
 # Minimal supported version of Qt.
 QT_PV="4.8.0:4"
 
-RDEPEND="$(python_abi_depend ">=dev-python/sip-4.14.2:0=")
+RDEPEND="$(python_abi_depend ">=dev-python/sip-4.14.3:0=")
 	>=dev-qt/qtcore-${QT_PV}
 	X? (
 		>=dev-qt/qtgui-${QT_PV}[dbus?]
