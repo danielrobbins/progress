@@ -7,7 +7,7 @@ PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 PYTHON_EXPORT_PHASE_FUNCTIONS="1"
 
-inherit eutils python toolchain-funcs
+inherit python qt4-r2
 
 MY_P="QScintilla-gpl-${PV}"
 
@@ -17,7 +17,7 @@ SRC_URI="mirror://sourceforge/pyqt/${MY_P}.tar.gz"
 
 LICENSE="|| ( GPL-2 GPL-3 )"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~ia64 ~ppc ~ppc64 sparc x86"
+KEYWORDS="*"
 IUSE="debug"
 
 DEPEND="
@@ -30,7 +30,6 @@ RDEPEND="${DEPEND}"
 S="${WORKDIR}/${MY_P}/Python"
 
 src_prepare() {
-	epatch "${FILESDIR}/${PN}-2.5.1-disable_stripping.patch"
 	python_src_prepare
 }
 
@@ -38,19 +37,27 @@ src_configure() {
 	configuration() {
 		local myconf=(
 			"$(PYTHON)" configure.py
+			--pyqt-sipdir="${EPREFIX}/usr/share/sip"
+			--apidir="${EPREFIX}/usr/share/qt4/qsci"
 			--destdir="${EPREFIX}$(python_get_sitedir)/PyQt4"
-			-p 4
+			--qsci-sipdir="${EPREFIX}/usr/share/sip"
 			--no-timestamp
 			$(use debug && echo --debug)
 		)
-		python_execute "${myconf[@]}"
+		python_execute "${myconf[@]}" || return
+
+		eqmake4 Qsci.pro
 	}
 	python_execute_function -s configuration
 }
 
 src_compile() {
-	building() {
-		emake CC="$(tc-getCC)" CXX="$(tc-getCXX)" LINK="$(tc-getCXX)"
+	python_src_compile
+}
+
+src_install() {
+	installation() {
+		emake INSTALL_ROOT="${D}" install
 	}
-	python_execute_function -s building
+	python_execute_function -s installation
 }
