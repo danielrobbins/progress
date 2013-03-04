@@ -99,7 +99,8 @@ src_prepare() {
 		"${FILESDIR}/${PN}-1.48.0-disable_libboost_python3.patch" \
 		"${FILESDIR}/${PN}-1.48.0-python_linking.patch" \
 		"${FILESDIR}/${PN}-1.48.0-disable_icu_rpath.patch" \
-		"${FILESDIR}/${PN}-1.52.0-tuple.patch"
+		"${FILESDIR}/${PN}-1.52.0-tuple.patch" \
+		"${FILESDIR}/${PN}-1.52.0-locale-utf.patch"
 
 	local file
 	for file in libs/context/src/asm/*.S; do
