@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_DEPEND="<<[{*-cpython}tk?]>>"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_TESTS_RESTRICTED_ABIS="3.*"
@@ -16,7 +16,7 @@ SRC_URI="ftp://ftp.logilab.org/pub/${PN}/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="amd64 ~ia64 ~ppc sparc x86 ~amd64-linux ~x86-linux ~x64-macos ~x86-macos"
+KEYWORDS="*"
 IUSE="examples tk"
 
 # Versions specified in __pkginfo__.py.
