@@ -126,9 +126,9 @@ _distutils_get_build_dir() {
 
 _distutils_get_PYTHONPATH() {
 	if _python_package_supporting_installation_for_multiple_python_abis && [[ -z "${DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES}" ]]; then
-		ls -d build-${PYTHON_ABI}/lib* 2> /dev/null
+		ls -d "$(pwd)/build-${PYTHON_ABI}/lib"* 2> /dev/null
 	else
-		ls -d build/lib* 2> /dev/null
+		ls -d "$(pwd)/build/lib"* 2> /dev/null
 	fi
 }
 
