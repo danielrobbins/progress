@@ -2,14 +2,14 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 *-jython *-pypy-*"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
 
-DESCRIPTION="PyZMQ is a lightweight and super-fast messaging library built on top of the ZeroMQ library"
+DESCRIPTION="Python bindings for ZeroMQ"
 HOMEPAGE="http://www.zeromq.org/bindings:python https://github.com/zeromq/pyzmq http://pypi.python.org/pypi/pyzmq"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
@@ -18,23 +18,17 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 # zmq/ssh/forward.py: LGPL-2.1
 LICENSE="Apache-2.0 BSD LGPL-2.1 LGPL-3"
 SLOT="0"
-KEYWORDS="amd64 x86 ~amd64-linux ~x86-linux"
+KEYWORDS="*"
 IUSE="examples tornado"
 
-# Minimal version of net-libs/zeromq specified in zmq.core.version.__version__.
 DEPEND=">=net-libs/zeromq-2.2.0
 	tornado? ( $(python_abi_depend -e "3.1" www-servers/tornado) )"
 RDEPEND="${DEPEND}"
 
-DOCS="README.rst"
+PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
+
+DOCS="README.md"
 PYTHON_MODULES="zmq"
-
-src_prepare() {
-	distutils_src_prepare
-
-	# https://github.com/zeromq/pyzmq/issues/253
-	sed -e "s/except gevent.Timeout, t:/except gevent.Timeout as t:/" -i zmq/green/core.py
-}
 
 src_test() {
 	python_execute_nosetests -e -P '$(ls -d build-${PYTHON_ABI}/lib.*)' -- -s -w '$(ls -d build-${PYTHON_ABI}/lib.*/zmq/tests)'
