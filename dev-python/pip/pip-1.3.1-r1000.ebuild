@@ -2,18 +2,18 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 
 inherit bash-completion-r1 distutils
 
-DESCRIPTION="Tool for installing and managing Python packages"
+DESCRIPTION="A tool for installing and managing Python packages."
 HOMEPAGE="http://www.pip-installer.org https://github.com/pypa/pip http://pypi.python.org/pypi/pip"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="amd64 x86 ~amd64-linux ~x86-linux"
+KEYWORDS="*"
 IUSE="zsh-completion"
 
 DEPEND="$(python_abi_depend dev-python/setuptools)"
