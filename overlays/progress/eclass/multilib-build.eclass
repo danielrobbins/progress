@@ -22,7 +22,7 @@ case ${EAPI:-0} in
 	*) die "EAPI=${EAPI} is not supported" ;;
 esac
 
-inherit multilib multiprocessing
+inherit multibuild multilib
 
 # @ECLASS-VARIABLE: _MULTILIB_FLAGS
 # @INTERNAL
@@ -90,6 +90,19 @@ multilib_get_enabled_abis() {
 	fi
 }
 
+# @FUNCTION: _multilib_multibuild_wrapper
+# @USAGE: <argv>...
+# @INTERNAL
+# @DESCRIPTION:
+# Initialize the environment for ABI selected for multibuild.
+_multilib_multibuild_wrapper() {
+	debug-print-function ${FUNCNAME} "${@}"
+
+	local ABI=${MULTIBUILD_VARIANT}
+	multilib_toolchain_setup "${ABI}"
+	"${@}"
+}
+
 # @FUNCTION: multilib_foreach_abi
 # @USAGE: <argv>...
 # @DESCRIPTION:
@@ -100,14 +113,10 @@ multilib_get_enabled_abis() {
 # If multilib support is disabled, it just runs the commands. No setup
 # is done.
 multilib_foreach_abi() {
-	local initial_dir=${BUILD_DIR:-${S}}
+	debug-print-function ${FUNCNAME} "${@}"
 
-	local abis=( $(multilib_get_enabled_abis) )
-	local ABI
-	for ABI in "${abis[@]}"; do
-		multilib_toolchain_setup "${ABI}"
-		BUILD_DIR=${initial_dir%%/}-${ABI} "${@}"
-	done
+	local MULTIBUILD_VARIANTS=( $(multilib_get_enabled_abis) )
+	multibuild_foreach_variant _multilib_multibuild_wrapper "${@}"
 }
 
 # @FUNCTION: multilib_parallel_foreach_abi
@@ -123,25 +132,22 @@ multilib_foreach_abi() {
 #
 # Useful for running configure scripts.
 multilib_parallel_foreach_abi() {
-	local initial_dir=${BUILD_DIR:-${S}}
+	debug-print-function ${FUNCNAME} "${@}"
 
-	multijob_init
+	local MULTIBUILD_VARIANTS=( $(multilib_get_enabled_abis) )
+	multibuild_parallel_foreach_variant _multilib_multibuild_wrapper "${@}"
+}
 
-	local abis=( $(multilib_get_enabled_abis) )
-	local ABI
-	for ABI in "${abis[@]}"; do
-		(
-			multijob_child_init
+# @FUNCTION: multilib_for_best_abi
+# @USAGE: <argv>...
+# @DESCRIPTION:
+# Runs the given command with setup for the 'best' (usually native) ABI.
+multilib_for_best_abi() {
+	debug-print-function ${FUNCNAME} "${@}"
 
-			multilib_toolchain_setup "${ABI}"
-			BUILD_DIR=${initial_dir%%/}-${ABI}
-			"${@}"
-		) &
+	local MULTIBUILD_VARIANTS=( $(multilib_get_enabled_abis) )
 
-		multijob_post_fork
-	done
-
-	multijob_finish
+	multibuild_for_best_variant _multilib_multibuild_wrapper "${@}"
 }
 
 # @FUNCTION: multilib_check_headers
@@ -181,6 +187,20 @@ multilib_check_headers() {
 	else
 		echo "${cksum}" > "${cksum_file}"
 	fi
+}
+
+# @FUNCTION: multilib_copy_sources
+# @DESCRIPTION:
+# Create a single copy of the package sources for each enabled ABI.
+#
+# The sources are always copied from initial BUILD_DIR (or S if unset)
+# to ABI-specific build directory matching BUILD_DIR used by
+# multilib_foreach_abi().
+multilib_copy_sources() {
+	debug-print-function ${FUNCNAME} "${@}"
+
+	local MULTIBUILD_VARIANTS=( $(multilib_get_enabled_abis) )
+	multibuild_copy_sources
 }
 
 _MULTILIB_BUILD=1
