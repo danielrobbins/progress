@@ -200,7 +200,10 @@ multibuild_for_best_variant() {
 	[[ ${MULTIBUILD_VARIANTS} ]] \
 		|| die "MULTIBUILD_VARIANTS need to be set"
 
-	local MULTIBUILD_VARIANTS=( "${MULTIBUILD_VARIANTS[-1]}" )
+	# bash-4.1 can't handle negative subscripts
+	local MULTIBUILD_VARIANTS=(
+		"${MULTIBUILD_VARIANTS[$(( ${#MULTIBUILD_VARIANTS[@]} - 1 ))]}"
+	)
 	multibuild_foreach_variant "${@}"
 }
 
@@ -218,7 +221,7 @@ multibuild_copy_sources() {
 	einfo "Will copy sources from ${_MULTIBUILD_INITIAL_BUILD_DIR}"
 
 	_multibuild_create_source_copy() {
-		einfo "${impl}: copying to ${BUILD_DIR}"
+		einfo "${MULTIBUILD_VARIANT}: copying to ${BUILD_DIR}"
 		cp -pr "${_MULTIBUILD_INITIAL_BUILD_DIR}" "${BUILD_DIR}" || die
 	}
 
