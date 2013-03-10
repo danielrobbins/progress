@@ -3,7 +3,7 @@ http://bugs.python.org/issue10268
 
 --- configure.ac
 +++ configure.ac
-@@ -2132,6 +2132,15 @@
+@@ -2289,6 +2289,15 @@
  
  AC_MSG_RESULT($with_system_ffi)
  
@@ -21,7 +21,7 @@ http://bugs.python.org/issue10268
  AC_ARG_WITH(dbmliborder,
 --- setup.py
 +++ setup.py
-@@ -1100,8 +1100,10 @@
+@@ -1176,8 +1176,10 @@
              else:
                  sqlite_defines.append(('MODULE_NAME', '\\"sqlite3\\"'))
  
@@ -32,5 +32,5 @@ http://bugs.python.org/issue10268
 +            if '--enable-loadable-sqlite-extensions' not in sysconfig.get_config_var("CONFIG_ARGS"):
 +                sqlite_defines.append(("SQLITE_OMIT_LOAD_EXTENSION", "1"))
  
-             if sys.platform == 'darwin':
+             if host_platform == 'darwin':
                  # In every directory on the search path search for a dynamic

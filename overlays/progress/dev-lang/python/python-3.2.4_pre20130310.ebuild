@@ -12,13 +12,13 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="930d9e8ecb66"
+	EHG_REVISION="10a82140f36d"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
 fi
 
-PATCHSET_REVISION="20120916"
+PATCHSET_REVISION="20130210"
 
 DESCRIPTION="Python is an interpreted, interactive, object-oriented programming language."
 HOMEPAGE="http://www.python.org/"
@@ -70,12 +70,6 @@ fi
 
 pkg_setup() {
 	python_pkg_setup
-
-	if [[ "${PV}" =~ ^3\.2(\.[1234])?(_pre)? ]]; then
-		rm -f "${EROOT}usr/$(get_libdir)/llibpython3.so"
-	else
-		die "Deprecated code not deleted"
-	fi
 }
 
 src_prepare() {
