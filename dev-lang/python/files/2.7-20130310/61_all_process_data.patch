@@ -17,7 +17,7 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
  
      cf.cf_flags = 0;
  
-@@ -485,7 +486,10 @@
+@@ -486,7 +487,10 @@
              filename = argv[_PyOS_optind];
  
  #else
@@ -31,7 +31,7 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
  
 --- Modules/posixmodule.c
 +++ Modules/posixmodule.c
-@@ -476,6 +476,10 @@
+@@ -608,6 +608,10 @@
          char *p = strchr(*e, '=');
          if (p == NULL)
              continue;

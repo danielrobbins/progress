@@ -12,13 +12,13 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="ee93a89b4e0f"
+	EHG_REVISION="9ee8c00f7e63"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
 fi
 
-PATCHSET_REVISION="20120916"
+PATCHSET_REVISION="20130310"
 
 DESCRIPTION="Python is an interpreted, interactive, object-oriented programming language."
 HOMEPAGE="http://www.python.org/"
@@ -91,6 +91,10 @@ pkg_setup() {
 			ewarn "You might need to migrate your databases."
 		fi
 	fi
+
+	if tc-is-cross-compiler && ! ROOT="/" has_version "${CATEGORY}/${PN}:${SLOT}"; then
+		die "Cross-compilation requires ${CATEGORY}/${PN}:${SLOT} installed in host system"
+	fi
 }
 
 src_prepare() {
@@ -123,11 +127,6 @@ src_prepare() {
 		fi
 	fi
 
-	local excluded_patches
-	if ! tc-is-cross-compiler; then
-		excluded_patches="*_all_crosscompile.patch"
-	fi
-
 	local patchset_dir
 	if [[ "${PV}" == *_pre* ]]; then
 		patchset_dir="${FILESDIR}/${SLOT}-${PATCHSET_REVISION}"
@@ -137,7 +136,7 @@ src_prepare() {
 		patchset_dir="${WORKDIR}/${MY_PV}"
 	fi
 
-	EPATCH_EXCLUDE="${excluded_patches}" EPATCH_SUFFIX="patch" epatch "${patchset_dir}"
+	EPATCH_SUFFIX="patch" epatch "${patchset_dir}"
 
 	sed -i -e "s:@@GENTOO_LIBDIR@@:$(get_libdir):g" \
 		Lib/distutils/command/install.py \
@@ -199,19 +198,6 @@ src_configure() {
 		use hardened && replace-flags -O3 -O2
 	fi
 
-	if tc-is-cross-compiler; then
-		OPT="-O1" CFLAGS="" LDFLAGS="" CC="" \
-		./configure --{build,host}=${CBUILD} || die "cross-configure failed"
-		emake python Parser/pgen || die "cross-make failed"
-		mv python hostpython
-		mv Parser/pgen Parser/hostpgen
-		make distclean
-		sed -i \
-			-e "/^HOSTPYTHON/s:=.*:=./hostpython:" \
-			-e "/^HOSTPGEN/s:=.*:=./Parser/hostpgen:" \
-			Makefile.pre.in || die "sed failed"
-	fi
-
 	# Export CXX so it ends up in /usr/lib/python2.X/config/Makefile.
 	tc-export CXX
 
@@ -244,7 +230,7 @@ src_configure() {
 }
 
 src_compile() {
-	emake EPYTHON="python${PV%%.*}" || die "emake failed"
+	emake -j1 EPYTHON="python${PV%%.*}" || die "emake failed"
 
 	pax-mark m python
 }
@@ -293,7 +279,7 @@ src_test() {
 src_install() {
 	[[ -z "${ED}" ]] && ED="${D%/}${EPREFIX}/"
 
-	emake DESTDIR="${D}" altinstall maninstall || die "emake altinstall maninstall failed"
+	emake DESTDIR="${D}" altinstall || die "emake altinstall failed"
 	python_clean_installation_image -q
 
 	sed -e "s/\(LDFLAGS=\).*/\1/" -i "${ED}$(python_get_libdir)/config/Makefile" || die "sed failed"
