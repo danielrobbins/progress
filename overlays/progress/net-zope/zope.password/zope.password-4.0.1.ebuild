@@ -32,13 +32,6 @@ DEPEND="${RDEPEND}
 DOCS="CHANGES.txt README.txt"
 PYTHON_MODULES="${PN/.//}"
 
-src_prepare() {
-	distutils_src_prepare
-
-	# https://bugs.launchpad.net/zope.password/+bug/1152860
-	sed -e "s/assert_/assertTrue/" -i src/zope/password/tests/test_zpasswd.py
-}
-
 src_test() {
 	testing() {
 		# setup.py excessively passes arguments to zope.testrunner.
