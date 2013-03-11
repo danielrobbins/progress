@@ -9,7 +9,7 @@ DISTUTILS_SRC_TEST="setup.py"
 inherit distutils
 
 DESCRIPTION="Zope Location"
-HOMEPAGE="http://pypi.python.org/pypi/zope.location"
+HOMEPAGE="https://pypi.python.org/pypi/zope.location"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.zip"
 
 LICENSE="ZPL"
