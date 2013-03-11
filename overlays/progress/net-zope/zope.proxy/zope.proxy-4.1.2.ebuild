@@ -10,8 +10,8 @@ DISTUTILS_SRC_TEST="setup.py"
 inherit distutils
 
 DESCRIPTION="Generic Transparent Proxies"
-HOMEPAGE="http://pypi.python.org/pypi/zope.proxy"
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
+HOMEPAGE="https://pypi.python.org/pypi/zope.proxy"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.zip"
 
 LICENSE="ZPL"
 SLOT="0"
@@ -30,7 +30,7 @@ DEPEND="${RDEPEND}
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 
 DISTUTILS_GLOBAL_OPTIONS=("*-jython --without-Cwrapper")
-DOCS="CHANGES.txt README.txt"
+DOCS="CHANGES.rst README.rst"
 PYTHON_MODULES="${PN/.//}"
 
 src_compile() {
