@@ -9,7 +9,7 @@ DISTUTILS_SRC_TEST="setup.py"
 inherit distutils
 
 DESCRIPTION="Password encoding and checking utilities"
-HOMEPAGE="http://pypi.python.org/pypi/zope.password"
+HOMEPAGE="https://pypi.python.org/pypi/zope.password"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.zip"
 
 LICENSE="ZPL"
