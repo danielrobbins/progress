@@ -30,6 +30,7 @@ RDEPEND="${DEPEND}
 
 src_prepare() {
 	epatch "${FILESDIR}/${PV}-root.patch"
+	epatch "${FILESDIR}/${PV}-configroot.patch"
 }
 
 distutils_src_compile_pre_hook() {
