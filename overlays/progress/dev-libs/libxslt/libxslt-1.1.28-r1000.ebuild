@@ -40,7 +40,10 @@ src_prepare() {
 	sed -i -e 's/$(PYTHON_SUBDIR)//' Makefile.am || die
 
 	eautoreconf
-	epunt_cxx
+	# If eautoreconf'd with new autoconf, then epunt_cxx is not necessary
+	# and it is propably otherwise too if upstream generated with new
+	# autoconf
+#	epunt_cxx
 }
 
 src_configure() {
@@ -51,7 +54,7 @@ src_configure() {
 
 	econf \
 		$(use_enable static-libs static) \
-		--with-html-dir=/usr/share/doc/${PF} \
+		--with-html-dir="${EPREFIX}"/usr/share/doc/${PF} \
 		--with-html-subdir=html \
 		$(use_with crypt crypto) \
 		$(use_with python) \
