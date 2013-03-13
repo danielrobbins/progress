@@ -11,12 +11,12 @@ PYTHON_NAMESPACES="mwlib"
 inherit distutils python-namespaces
 
 DESCRIPTION="mediawiki parser and utility library"
-HOMEPAGE="http://pediapress.com/code/ https://github.com/pediapress/mwlib http://pypi.python.org/pypi/mwlib"
+HOMEPAGE="http://pediapress.com/code/ https://github.com/pediapress/mwlib https://pypi.python.org/pypi/mwlib"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.zip"
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="amd64 x86"
+KEYWORDS="*"
 IUSE="doc latex"
 
 RDEPEND="dev-lang/perl
@@ -57,7 +57,9 @@ src_prepare() {
 	# Disable failing tests.
 	rm -f tests/test_nuwiki.py
 	rm -f tests/test_redirect.py
-	rm -f tests/test_render.py
+
+	# https://github.com/pediapress/mwlib/issues/30
+	sed -e "s/test_getTemplate/_&/" -i tests/test_zipwiki.py
 }
 
 src_compile() {
