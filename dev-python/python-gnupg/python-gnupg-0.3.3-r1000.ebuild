@@ -7,7 +7,7 @@ PYTHON_MULTIPLE_ABIS="1"
 inherit distutils
 
 DESCRIPTION="A wrapper for the Gnu Privacy Guard (GPG or GnuPG)"
-HOMEPAGE="http://code.google.com/p/python-gnupg/ http://pypi.python.org/pypi/python-gnupg"
+HOMEPAGE="http://code.google.com/p/python-gnupg/ https://pypi.python.org/pypi/python-gnupg"
 SRC_URI="http://${PN}.googlecode.com/files/${P}.tar.gz"
 
 LICENSE="BSD"
