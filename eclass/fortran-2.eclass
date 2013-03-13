@@ -112,7 +112,7 @@ _fortran_compile_test() {
 
 	[[ -f ${fcode} ]] || _fortran_write_testsuite
 
-	${fcomp} "${fcode}" -o "${fcode}.x" &>> "${T}"/_fortran_compile_test.log
+	${fcomp} "${fcode}" -o "${fcode}.x" >> "${T}"/_fortran_compile_test.log 2>&1
 	ret=$?
 
 	rm -f "${fcode}.x"
