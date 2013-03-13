@@ -7,7 +7,7 @@ PYTHON_MULTIPLE_ABIS="1"
 inherit distutils
 
 DESCRIPTION="Resolver for Python dotted names."
-HOMEPAGE="http://pypi.python.org/pypi/zope.dottedname"
+HOMEPAGE="https://pypi.python.org/pypi/zope.dottedname"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.zip"
 
 LICENSE="ZPL"
