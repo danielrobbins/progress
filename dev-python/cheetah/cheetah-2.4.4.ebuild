@@ -2,9 +2,9 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.*"
+PYTHON_RESTRICTED_ABIS="2.5 3.*"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 
 inherit distutils
@@ -13,12 +13,12 @@ MY_PN="Cheetah"
 MY_P="${MY_PN}-${PV/_}"
 
 DESCRIPTION="Python-powered template engine and code generator."
-HOMEPAGE="http://www.cheetahtemplate.org/ http://rtyler.github.com/cheetah/ http://pypi.python.org/pypi/Cheetah"
+HOMEPAGE="http://www.cheetahtemplate.org/ http://rtyler.github.com/cheetah/ https://pypi.python.org/pypi/Cheetah"
 SRC_URI="mirror://pypi/${MY_P:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="MIT"
 IUSE=""
-KEYWORDS="~alpha amd64 ~ia64 ~ppc ~ppc64 sparc x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux ~ppc-macos ~x86-macos"
+KEYWORDS="*"
 SLOT="0"
 
 RDEPEND="$(python_abi_depend dev-python/markdown)"
