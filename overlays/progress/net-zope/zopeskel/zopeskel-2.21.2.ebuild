@@ -1,9 +1,9 @@
 # Copyright owners: Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.*"
+PYTHON_RESTRICTED_ABIS="2.5 3.*"
 
 inherit distutils
 
@@ -11,17 +11,16 @@ MY_PN="ZopeSkel"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Templates and code generator for quickstarting Plone / Zope projects."
-HOMEPAGE="http://pypi.python.org/pypi/ZopeSkel"
+HOMEPAGE="https://pypi.python.org/pypi/ZopeSkel"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.zip"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="amd64 ~ppc ~ppc64 sparc x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux"
+KEYWORDS="*"
 IUSE=""
 
-RDEPEND="$(python_abi_depend ">=dev-python/pastescript-1.7.2")"
+RDEPEND="$(python_abi_depend dev-python/pastescript)"
 DEPEND="${RDEPEND}
-	app-arch/unzip
 	$(python_abi_depend dev-python/setuptools)"
 
 S="${WORKDIR}/${MY_P}"
