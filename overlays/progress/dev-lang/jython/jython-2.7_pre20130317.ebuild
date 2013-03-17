@@ -11,7 +11,7 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/jython"
-	EHG_REVISION="7854826b4699"
+	EHG_REVISION="039dba919d92"
 fi
 
 PATCHSET_REVISION="20121230"
@@ -29,6 +29,7 @@ IUSE="+readline +ssl test +threads +xml"
 CDEPEND="dev-java/ant-core:0
 	dev-java/antlr:3
 	dev-java/asm:4
+	dev-java/commons-compress:0
 	dev-java/guava:13
 	dev-java/jffi:1.2
 	dev-java/jline:0
@@ -65,24 +66,25 @@ java_prepare() {
 	java-pkg_jar-from --into extlibs asm-4 asm.jar asm-4.0.jar
 	java-pkg_jar-from --into extlibs asm-4 asm-commons.jar asm-commons-4.0.jar
 	java-pkg_jar-from --into extlibs asm-4 asm-util.jar asm-util-4.0.jar
-	java-pkg_jar-from --into extlibs guava-13 guava.jar guava-11.0.2.jar
-	java-pkg_jar-from --into extlibs jffi-1.2 jffi.jar jffi-1.2.2-SNAPSHOT.jar
-	java-pkg_jar-from --into extlibs jline jline.jar jline-0.9.95-SNAPSHOT.jar
-	java-pkg_jar-from --into extlibs jnr-constants jnr-constants.jar jnr-constants-0.8.3-SNAPSHOT.jar
-	java-pkg_jar-from --into extlibs jnr-netdb-1.0 jnr-netdb.jar jnr-netdb-1.0.6-SNAPSHOT.jar
-	java-pkg_jar-from --into extlibs jnr-posix-2.1 jnr-posix.jar jnr-posix-2.1-SNAPSHOT.jar
+	java-pkg_jar-from --into extlibs commons-compress commons-compress.jar commons-compress-1.4.1.jar
+	java-pkg_jar-from --into extlibs guava-13 guava.jar guava-13.0.1.jar
+	java-pkg_jar-from --into extlibs jffi-1.2 jffi.jar jffi-1.2.6.jar
+	java-pkg_jar-from --into extlibs jline jline.jar jline-1.0.jar
+	java-pkg_jar-from --into extlibs jnr-constants jnr-constants.jar jnr-constants-0.8.4.jar
+	java-pkg_jar-from --into extlibs jnr-netdb-1.0 jnr-netdb.jar jnr-netdb-1.1.1.jar
+	java-pkg_jar-from --into extlibs jnr-posix-2.1 jnr-posix.jar jnr-posix-2.4.0.jar
 	java-pkg_jar-from --build-only --into extlibs junit-4 junit.jar junit-4.10.jar
 	java-pkg_jar-from --into extlibs libreadline-java libreadline-java.jar libreadline-java-0.8.jar
-	java-pkg_jar-from --into extlibs jsr223 script-api.jar livetribe-jsr223-2.0.5.jar
+	java-pkg_jar-from --into extlibs jsr223 script-api.jar livetribe-jsr223-2.0.6.jar
 	java-pkg_jar-from --into extlibs servlet-api-2.5 servlet-api.jar servlet-api-2.5.jar
-	java-pkg_jar-from --into extlibs xerces-2 xercesImpl.jar xercesImpl-2.9.1.jar
+	java-pkg_jar-from --into extlibs xerces-2 xercesImpl.jar xercesImpl-2.11.0.jar
 
 	# Dependencies of dev-java/antlr:3.
 	java-pkg_jar-from --build-only --into extlibs antlr antlr.jar antlr-2.7.7.jar
-	java-pkg_jar-from --build-only --into extlibs stringtemplate stringtemplate.jar stringtemplate-3.2.jar
+	java-pkg_jar-from --build-only --into extlibs stringtemplate stringtemplate.jar stringtemplate-3.2.1.jar
 
 	# Dependency of dev-java/jnr-posix:2.1.
-	java-pkg_jar-from --build-only --into extlibs jnr-ffi-0.7 jnr-ffi.jar jnr-ffi-0.7.4-SNAPSHOT.jar
+	java-pkg_jar-from --build-only --into extlibs jnr-ffi-0.7 jnr-ffi.jar jnr-ffi-0.7.10.jar
 
 	# Dependency of dev-java/junit:4.
 	java-pkg_jar-from --build-only --into extlibs hamcrest-core hamcrest-core.jar
