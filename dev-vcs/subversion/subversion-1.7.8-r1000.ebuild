@@ -32,7 +32,7 @@ KEYWORDS="*"
 IUSE="apache2 berkdb ctypes-python debug doc +dso extras gnome-keyring java kde kerberos +magic nls perl python ruby sasl static-libs test +webdav-neon webdav-serf"
 REQUIRED_USE="extras? ( python ) kde? ( nls ) kerberos? ( webdav-serf ) test? ( webdav-neon? ( apache2 ) webdav-serf? ( apache2 ) )"
 
-CDEPEND=">=dev-db/sqlite-3.6.18[threadsafe]
+CDEPEND=">=dev-db/sqlite-3.6.18
 	>=dev-libs/apr-1.3:1
 	>=dev-libs/apr-util-1.3:1
 	dev-libs/expat
