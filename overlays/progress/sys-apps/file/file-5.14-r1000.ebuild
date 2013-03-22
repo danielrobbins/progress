@@ -11,10 +11,9 @@ PYTHON_RESTRICTED_ABIS="*-jython"
 inherit distutils eutils libtool toolchain-funcs
 
 DESCRIPTION="identify a file's format by scanning binary data for patterns"
-HOMEPAGE="ftp://ftp.astron.com/pub/file/"
+HOMEPAGE="http://www.darwinsys.com/file/"
 SRC_URI="ftp://ftp.astron.com/pub/file/${P}.tar.gz
-	ftp://ftp.gw.com/mirrors/pub/unix/file/${P}.tar.gz
-	mirror://gentoo/${P}-magic-updates-4d53f0549fb40b179eaee53c63c42e1685e4ebab.patch.bz2"
+	ftp://ftp.gw.com/mirrors/pub/unix/file/${P}.tar.gz"
 
 LICENSE="BSD-2"
 SLOT="0"
@@ -31,11 +30,9 @@ pkg_setup() {
 }
 
 src_prepare() {
-	epatch "${WORKDIR}"/${P}-magic-updates-4d53f0549fb40b179eaee53c63c42e1685e4ebab.patch
-
 	elibtoolize
 
-	# dont let python README kill main README #60043
+	# don't let python README kill main README #60043
 	mv python/README{,.python}
 }
 
@@ -90,7 +87,7 @@ src_install() {
 	dodoc ChangeLog MAINT README
 
 	use python && cd python && distutils_src_install
-	use static-libs || rm -f "${ED}"/usr/lib*/libmagic.la
+	prune_libtool_files
 }
 
 pkg_postinst() {
