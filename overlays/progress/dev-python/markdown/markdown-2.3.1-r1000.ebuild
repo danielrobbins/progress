@@ -8,7 +8,7 @@ PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5"
 DISTUTILS_SRC_TEST="nosetests"
 
-inherit distutils eutils
+inherit distutils
 
 MY_PN="Markdown"
 MY_P=${MY_PN}-${PV}
@@ -26,11 +26,6 @@ DEPEND=""
 RDEPEND="pygments? ( $(python_abi_depend dev-python/pygments) )"
 
 S="${WORKDIR}/${MY_P}"
-
-src_prepare() {
-	distutils_src_prepare
-	epatch "${FILESDIR}/${P}-syntax.patch"
-}
 
 src_install() {
 	distutils_src_install
