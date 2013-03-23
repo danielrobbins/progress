@@ -9,7 +9,7 @@ PYTHON_RESTRICTED_ABIS="3.1 3.2"
 inherit distutils
 
 DESCRIPTION="Simple, fast, extensible JSON encoder/decoder for Python"
-HOMEPAGE="https://github.com/simplejson/simplejson http://pypi.python.org/pypi/simplejson"
+HOMEPAGE="https://github.com/simplejson/simplejson https://pypi.python.org/pypi/simplejson"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="|| ( AFL-2.1 MIT )"
