@@ -8,7 +8,7 @@ DISTUTILS_SRC_TEST="py.test"
 inherit distutils mercurial
 
 DESCRIPTION="Python 2 and 3 compatibility utilities"
-HOMEPAGE="https://bitbucket.org/gutworth/six http://pypi.python.org/pypi/six"
+HOMEPAGE="https://bitbucket.org/gutworth/six https://pypi.python.org/pypi/six"
 SRC_URI=""
 EHG_REPO_URI="https://bitbucket.org/gutworth/six"
 
@@ -20,14 +20,8 @@ IUSE="doc"
 DEPEND="doc? ( $(python_abi_depend dev-python/sphinx) )"
 RDEPEND=""
 
+DOCS="CHANGES README"
 PYTHON_MODULES="six.py"
-
-src_prepare() {
-	distutils_src_prepare
-
-	# Disable tests requiring Tkinter.
-	sed -e "s/test_move_items/_&/" -i test_six.py
-}
 
 src_compile() {
 	distutils_src_compile
