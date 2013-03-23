@@ -10,7 +10,7 @@ DISTUTILS_SRC_TEST="nosetests"
 inherit distutils
 
 DESCRIPTION="Simple construction, analysis and modification of binary data."
-HOMEPAGE="http://code.google.com/p/python-bitstring/ http://pypi.python.org/pypi/bitstring"
+HOMEPAGE="http://code.google.com/p/python-bitstring/ https://pypi.python.org/pypi/bitstring"
 SRC_URI="http://python-bitstring.googlecode.com/files/${P}.zip"
 
 LICENSE="MIT"
