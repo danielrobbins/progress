@@ -12,7 +12,7 @@ MY_PV="${PV/_beta/b}"
 MY_P="Trac-${MY_PV}"
 
 DESCRIPTION="Integrated SCM, wiki, issue tracker and project environment"
-HOMEPAGE="http://trac.edgewall.com/ http://pypi.python.org/pypi/Trac"
+HOMEPAGE="http://trac.edgewall.com/ https://pypi.python.org/pypi/Trac"
 SRC_URI="http://ftp.edgewall.com/pub/trac/${MY_P}.tar.gz"
 
 LICENSE="BSD"
@@ -22,7 +22,7 @@ IUSE="cgi fastcgi i18n mysql postgres +sqlite subversion"
 REQUIRED_USE="|| ( mysql postgres sqlite )"
 
 DEPEND="$(python_abi_depend dev-python/docutils)
-	$(python_abi_depend "=dev-python/genshi-0.6*")
+	$(python_abi_depend ">=dev-python/genshi-0.6")
 	$(python_abi_depend dev-python/pygments)
 	$(python_abi_depend dev-python/pytz)
 	$(python_abi_depend dev-python/setuptools)
