@@ -10,7 +10,7 @@ PYTHON_NAMESPACES="virtualenvwrapper"
 inherit distutils python-namespaces
 
 DESCRIPTION="Enhancements to virtualenv"
-HOMEPAGE="http://www.doughellmann.com/projects/virtualenvwrapper/ http://pypi.python.org/pypi/virtualenvwrapper"
+HOMEPAGE="http://www.doughellmann.com/projects/virtualenvwrapper/ https://pypi.python.org/pypi/virtualenvwrapper"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
