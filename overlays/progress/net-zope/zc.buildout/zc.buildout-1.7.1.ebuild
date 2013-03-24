@@ -8,7 +8,7 @@ PYTHON_RESTRICTED_ABIS="3.*"
 inherit distutils
 
 DESCRIPTION="System for managing development buildouts"
-HOMEPAGE="http://pypi.python.org/pypi/zc.buildout"
+HOMEPAGE="https://pypi.python.org/pypi/zc.buildout"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="ZPL"
