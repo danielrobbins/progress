@@ -10,13 +10,13 @@ DISTUTILS_SRC_TEST="setup.py"
 inherit distutils
 
 DESCRIPTION="Manuel lets you build tested documentation."
-HOMEPAGE="http://packages.python.org/manuel/ http://pypi.python.org/pypi/manuel"
+HOMEPAGE="http://pythonhosted.org/manuel/ https://github.com/benji-york/manuel https://pypi.python.org/pypi/manuel"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
-LICENSE="ZPL"
+LICENSE="Apache-2.0"
 SLOT="0"
 KEYWORDS="*"
-IUSE="test"
+IUSE="doc test"
 
 RDEPEND="$(python_abi_depend dev-python/six)"
 DEPEND="${RDEPEND}
@@ -24,3 +24,11 @@ DEPEND="${RDEPEND}
 	test? ( $(python_abi_depend net-zope/zope.testing) )"
 
 DOCS="CHANGES.txt"
+
+src_install() {
+	distutils_src_install
+
+	if use doc; then
+		dohtml -r docs/
+	fi
+}
