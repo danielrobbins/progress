@@ -11,7 +11,7 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/jython"
-	EHG_REVISION="01a1add2ad8e"
+	EHG_REVISION="11776cd9765b"
 fi
 
 PATCHSET_REVISION="20121230"
@@ -57,6 +57,9 @@ pkg_setup() {
 
 java_prepare() {
 	EPATCH_SUFFIX="patch" epatch "${FILESDIR}/${SLOT}-${PATCHSET_REVISION}"
+	
+	# http://bugs.jython.org/issue2032
+	sed -e "s/SC_GLOBAL_EXPLICT/SC_GLOBAL_EXPLICIT/" -i Lib/compiler/pycodegen.py
 
 	find extlibs -name "*.jar" -delete
 	find -name "*.py[co]" -delete
