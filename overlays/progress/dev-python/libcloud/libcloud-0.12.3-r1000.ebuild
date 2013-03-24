@@ -12,15 +12,17 @@ DISTUTILS_SRC_TEST="setup.py"
 inherit distutils
 
 DESCRIPTION="A standard Python library that abstracts away differences among multiple cloud provider APIs"
-HOMEPAGE="http://libcloud.apache.org/ http://pypi.python.org/pypi/apache-libcloud"
+HOMEPAGE="http://libcloud.apache.org/ https://pypi.python.org/pypi/apache-libcloud"
 SRC_URI="mirror://apache/${PN}/apache-${P}.tar.bz2"
 
 LICENSE="Apache-2.0"
 SLOT="0"
-KEYWORDS="amd64 x86"
-IUSE="examples test"
+KEYWORDS="*"
+IUSE="examples ssh test"
 
-RDEPEND="$(python_abi_depend virtual/python-json[external])"
+RDEPEND="$(python_abi_depend -i "2.*" dev-python/lockfile)
+	$(python_abi_depend virtual/python-json[external])
+	ssh? ( $(python_abi_depend -i "2.*-cpython" dev-python/paramiko) )"
 DEPEND="${RDEPEND}
 	test? ( $(python_abi_depend dev-python/mock) )"
 
