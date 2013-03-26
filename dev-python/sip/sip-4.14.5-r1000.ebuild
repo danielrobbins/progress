@@ -10,7 +10,7 @@ PYTHON_EXPORT_PHASE_FUNCTIONS="1"
 inherit eutils python toolchain-funcs
 
 DESCRIPTION="Python extension module generator for C and C++ libraries"
-HOMEPAGE="http://www.riverbankcomputing.co.uk/software/sip/intro http://pypi.python.org/pypi/SIP"
+HOMEPAGE="http://www.riverbankcomputing.co.uk/software/sip/intro https://pypi.python.org/pypi/SIP"
 if [[ ${PV} == *9999* ]]; then
 	# Live version from mercurial repository
 	EHG_REPO_URI="http://www.riverbankcomputing.com/hg/sip"
