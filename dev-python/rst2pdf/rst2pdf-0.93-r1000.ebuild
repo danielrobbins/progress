@@ -4,12 +4,12 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.* *-jython"
+PYTHON_RESTRICTED_ABIS="2.5 3.* *-jython"
 
 inherit distutils
 
 DESCRIPTION="Tool for transforming reStructuredText to PDF using ReportLab"
-HOMEPAGE="http://rst2pdf.ralsina.com.ar/ http://code.google.com/p/rst2pdf/ http://pypi.python.org/pypi/rst2pdf"
+HOMEPAGE="http://rst2pdf.ralsina.com.ar/ http://code.google.com/p/rst2pdf/ https://pypi.python.org/pypi/rst2pdf"
 SRC_URI="http://rst2pdf.googlecode.com/files/${P}.tar.gz"
 
 LICENSE="MIT"
