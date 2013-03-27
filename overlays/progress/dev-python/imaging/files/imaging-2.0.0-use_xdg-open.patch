@@ -1,9 +1,11 @@
 --- PIL/ImageShow.py
 +++ PIL/ImageShow.py
-@@ -149,13 +149,10 @@
+@@ -150,15 +150,10 @@
+ 
+     class XVViewer(UnixViewer):
          def get_command_ex(self, file, title=None, **options):
-             # note: xv is pretty outdated.  most modern systems have
-             # imagemagick's display command instead.
+-            # note: xv is pretty outdated.  most modern systems have
+-            # imagemagick's display command instead.
 -            command = executable = "xv"
 -            if title:
 -                # FIXME: do full escaping
