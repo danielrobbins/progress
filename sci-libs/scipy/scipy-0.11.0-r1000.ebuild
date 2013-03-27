@@ -13,7 +13,7 @@ MY_P="${PN}-${PV/_/}"
 DOC_P="${PN}-0.11.0"
 
 DESCRIPTION="Scientific algorithms library for Python"
-HOMEPAGE="http://www.scipy.org/ https://github.com/scipy/scipy http://pypi.python.org/pypi/scipy"
+HOMEPAGE="http://www.scipy.org/ https://github.com/scipy/scipy https://pypi.python.org/pypi/scipy"
 SRC_URI="mirror://sourceforge/${PN}/${MY_P}.tar.gz
 	doc? (
 		http://docs.scipy.org/doc/${DOC_P}/${PN}-html.zip -> ${DOC_P}-html.zip
@@ -35,7 +35,7 @@ DEPEND="${CDEPEND}
 	test? ( $(python_abi_depend dev-python/nose) )
 	umfpack? ( dev-lang/swig )"
 RDEPEND="${CDEPEND}
-	$(python_abi_depend -i "2.*" dev-python/imaging)"
+	$(python_abi_depend -i "2.[67]" dev-python/imaging)"
 
 S="${WORKDIR}/${MY_P}"
 
