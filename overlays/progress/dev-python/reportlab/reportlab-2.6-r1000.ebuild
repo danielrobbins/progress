@@ -2,22 +2,22 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.* *-jython"
 
 inherit distutils eutils versionator
 
 DESCRIPTION="Tools for generating printable PDF documents from any data source."
-HOMEPAGE="http://www.reportlab.com/software/opensource/rl-toolkit/ http://pypi.python.org/pypi/reportlab"
+HOMEPAGE="http://www.reportlab.com/software/opensource/rl-toolkit/ https://pypi.python.org/pypi/reportlab"
 SRC_URI="http://www.reportlab.com/ftp/${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 sparc x86 ~x86-fbsd"
+KEYWORDS="*"
 IUSE="doc examples test"
 
-DEPEND="$(python_abi_depend dev-python/imaging)
+DEPEND="$(python_abi_depend -e "2.5" dev-python/imaging)
 	media-fonts/ttf-bitstream-vera
 	media-libs/libart_lgpl
 	sys-libs/zlib"
