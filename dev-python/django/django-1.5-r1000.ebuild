@@ -12,7 +12,7 @@ inherit bash-completion-r1 distutils versionator webapp
 MY_P="Django-${PV}"
 
 DESCRIPTION="High-level Python web framework"
-HOMEPAGE="http://www.djangoproject.com/ https://github.com/django/django http://pypi.python.org/pypi/Django"
+HOMEPAGE="http://www.djangoproject.com/ https://github.com/django/django https://pypi.python.org/pypi/Django"
 SRC_URI="https://www.djangoproject.com/m/releases/$(get_version_component_range 1-2)/${MY_P}.tar.gz"
 
 LICENSE="BSD"
@@ -20,7 +20,7 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="doc mysql postgres sqlite test"
 
-RDEPEND="$(python_abi_depend -e "3.* *-jython" dev-python/imaging)
+RDEPEND="$(python_abi_depend -e "*-jython" dev-python/imaging)
 	$(python_abi_depend virtual/python-json[external])
 	mysql? ( $(python_abi_depend -e "3.* *-jython" dev-python/mysql-python) )
 	postgres? ( $(python_abi_depend -e "*-jython *-pypy-*" dev-python/psycopg:2) )
