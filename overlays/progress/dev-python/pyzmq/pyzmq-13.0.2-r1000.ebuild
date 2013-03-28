@@ -10,7 +10,7 @@ DISTUTILS_SRC_TEST="nosetests"
 inherit distutils
 
 DESCRIPTION="Python bindings for ZeroMQ"
-HOMEPAGE="http://www.zeromq.org/bindings:python https://github.com/zeromq/pyzmq http://pypi.python.org/pypi/pyzmq"
+HOMEPAGE="http://www.zeromq.org/bindings:python https://github.com/zeromq/pyzmq https://pypi.python.org/pypi/pyzmq"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 # Main licenses: BSD LGPL-3
