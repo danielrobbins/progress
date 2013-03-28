@@ -6,7 +6,7 @@ EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 
-inherit distutils eutils
+inherit distutils
 
 DESCRIPTION="push and pull from a Git server using Mercurial"
 HOMEPAGE="http://hg-git.github.com/ https://pypi.python.org/pypi/hg-git"
@@ -18,13 +18,9 @@ KEYWORDS="*"
 IUSE=""
 
 RDEPEND="$(python_abi_depend ">=dev-vcs/mercurial-1.9")
-	$(python_abi_depend ">=dev-python/dulwich-0.8")"
+	$(python_abi_depend ">=dev-python/dulwich-0.8")
+	$(python_abi_depend -i "2.5 2.6" dev-python/ordereddict)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
 PYTHON_MODULES="hggit"
-
-src_prepare() {
-	distutils_src_prepare
-	epatch "${FILESDIR}/${P}-git_handler-bookmarks-hg25.patch"
-}
