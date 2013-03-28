@@ -13,7 +13,7 @@ inherit distutils eutils
 
 DESCRIPTION="Python plotting package"
 HOMEPAGE="http://matplotlib.org/ https://github.com/matplotlib/matplotlib https://pypi.python.org/pypi/matplotlib"
-SRC_URI="mirror://github/${PN}/${PN}/${P}.tar.gz"
+SRC_URI="mirror://sourceforge/${PN}/${P}.tar.gz"
 
 # Main license: matplotlib
 # Some modules: BSD
@@ -83,7 +83,6 @@ use_setup() {
 
 src_prepare() {
 	distutils_src_prepare
-	epatch "${FILESDIR}/${P}-ft-refcount.patch"
 
 	# Create setup.cfg. (See setup.cfg.template and setupext.py for any changes.)
 	cat > setup.cfg <<-EOF
