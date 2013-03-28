@@ -12,7 +12,7 @@ inherit distutils
 MY_PN="CherryPy"
 MY_P="${MY_PN}-${PV}"
 
-DESCRIPTION="CherryPy is a pythonic, object-oriented HTTP framework"
+DESCRIPTION="Object-Oriented HTTP framework"
 HOMEPAGE="http://www.cherrypy.org/ https://bitbucket.org/cherrypy/cherrypy https://pypi.python.org/pypi/CherryPy"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
@@ -48,14 +48,10 @@ src_test() {
 src_install() {
 	distutils_src_install
 
-	delete_tests_and_version-specific_modules() {
+	delete_tests() {
 		rm -fr "${ED}$(python_get_sitedir)/cherrypy/test"
-
-		if [[ "$(python_get_version -l)" > "2.6" ]]; then
-			rm -f "${ED}$(python_get_sitedir)/cherrypy/_cpcompat_subprocess.py"
-		fi
 	}
-	python_execute_function -q delete_tests_and_version-specific_modules
+	python_execute_function -q delete_tests
 
 	if use doc; then
 		insinto /usr/share/doc/${PF}
