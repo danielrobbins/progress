@@ -12,7 +12,7 @@ WX_GTK_VER="2.8"
 inherit distutils eutils
 
 DESCRIPTION="Python plotting package"
-HOMEPAGE="http://matplotlib.org/ https://github.com/matplotlib/matplotlib http://pypi.python.org/pypi/matplotlib"
+HOMEPAGE="http://matplotlib.org/ https://github.com/matplotlib/matplotlib https://pypi.python.org/pypi/matplotlib"
 SRC_URI="mirror://github/${PN}/${PN}/${P}.tar.gz"
 
 # Main license: matplotlib
