@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 3.1"
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
@@ -15,24 +15,35 @@ MY_PN="WebTest"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Helper to test WSGI applications"
-HOMEPAGE="http://webtest.pythonpaste.org/ https://github.com/Pylons/webtest http://pypi.python.org/pypi/WebTest"
+HOMEPAGE="http://webtest.pythonpaste.org/ https://github.com/Pylons/webtest https://pypi.python.org/pypi/WebTest"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.zip"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~s390 ~sh sparc x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux"
+KEYWORDS="*"
 IUSE="doc test"
 
-RDEPEND="$(python_abi_depend -e "*-jython *-pypy-*" dev-python/pyquery)
-	$(python_abi_depend dev-python/webob)
+RDEPEND="$(python_abi_depend dev-python/beautifulsoup:4)
+	$(python_abi_depend -i "2.6" dev-python/ordereddict)
+	$(python_abi_depend dev-python/pastedeploy)
+	$(python_abi_depend -e "*-jython *-pypy-*" dev-python/pyquery)
+	$(python_abi_depend dev-python/six)
+	$(python_abi_depend dev-python/waitress)
+	$(python_abi_depend ">=dev-python/webob-1.2")
+	$(python_abi_depend dev-python/wsgiproxy2)
 	$(python_abi_depend virtual/python-json)"
 DEPEND="${RDEPEND}
-	app-arch/unzip
 	$(python_abi_depend dev-python/setuptools)
 	doc? ( $(python_abi_depend dev-python/sphinx) )
-	test? ( $(python_abi_depend -i "2.6" dev-python/unittest2) )"
+	test? (
+		$(python_abi_depend dev-python/coverage)
+		$(python_abi_depend dev-python/mock)
+		$(python_abi_depend -i "2.6" dev-python/unittest2)
+	)"
 
 S="${WORKDIR}/${MY_P}"
+
+DOCS="CHANGELOG.rst README.rst"
 
 src_compile() {
 	distutils_src_compile
@@ -45,15 +56,6 @@ src_compile() {
 
 src_install() {
 	distutils_src_install
-
-	delete_version-specific_modules() {
-		if [[ "$(python_get_version -l --major)" == "3" ]]; then
-			rm -f "${ED}$(python_get_sitedir)/webtest/lint.py"
-		else
-			rm -f "${ED}$(python_get_sitedir)/webtest/lint3.py"
-		fi
-	}
-	python_execute_function -q delete_version-specific_modules
 
 	if use doc; then
 		dohtml -r html/
