@@ -16,7 +16,7 @@ SEPOL_VER="2.1.8"
 DESCRIPTION="SELinux userland library"
 HOMEPAGE="http://userspace.selinuxproject.org"
 SRC_URI="http://userspace.selinuxproject.org/releases/20120924/${P}.tar.gz
-	http://dev.gentoo.org/~swift/patches/${PN}/patchbundle-${P}-r2.tar.gz"
+	http://dev.gentoo.org/~swift/patches/${PN}/patchbundle-${P}-r3.tar.gz"
 
 LICENSE="public-domain"
 SLOT="0"
@@ -28,8 +28,8 @@ RDEPEND=">=sys-libs/libsepol-${SEPOL_VER}
 	ruby? ( $(ruby_implementations_depend) )"
 DEPEND="${RDEPEND}
 	virtual/pkgconfig
-	ruby? ( dev-lang/swig )
-	python? ( dev-lang/swig )"
+	ruby? ( >=dev-lang/swig-2.0.9 )
+	python? ( >=dev-lang/swig-2.0.9 )"
 
 S="${WORKDIR}/${P}"
 
