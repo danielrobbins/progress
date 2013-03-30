@@ -11,7 +11,7 @@ inherit distutils
 [[ "${PV}" == "9999" ]] && inherit git-2
 
 DESCRIPTION="Powerful and Pythonic XML processing library combining libxml2/libxslt with the ElementTree API."
-HOMEPAGE="http://lxml.de/ http://pypi.python.org/pypi/lxml"
+HOMEPAGE="http://lxml.de/ https://pypi.python.org/pypi/lxml"
 if [[ "${PV}" == "9999" ]]; then
 	SRC_URI=""
 	EGIT_REPO_URI="https://github.com/lxml/lxml"
