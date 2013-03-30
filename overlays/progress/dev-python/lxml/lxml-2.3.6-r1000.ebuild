@@ -10,7 +10,7 @@ PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 inherit distutils
 
 DESCRIPTION="Powerful and Pythonic XML processing library combining libxml2/libxslt with the ElementTree API."
-HOMEPAGE="http://lxml.de/ http://pypi.python.org/pypi/lxml"
+HOMEPAGE="http://lxml.de/ https://pypi.python.org/pypi/lxml"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD ElementTree GPL-2 PSF-2"
