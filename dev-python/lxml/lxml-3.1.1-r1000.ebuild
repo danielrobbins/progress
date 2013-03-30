@@ -5,7 +5,7 @@
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.5 3.1"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.1"
 
 inherit distutils
 [[ "${PV}" == "9999" ]] && inherit git-2
