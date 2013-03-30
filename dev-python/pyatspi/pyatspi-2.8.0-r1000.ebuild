@@ -5,9 +5,9 @@
 EAPI="5-progress"
 GCONF_DEBUG="no"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5 3.* *-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="2.5 *-jython *-pypy-*"
 
-inherit gnome2 python
+inherit eutils gnome2 python
 
 DESCRIPTION="Python binding to at-spi library"
 HOMEPAGE="http://live.gnome.org/Accessibility"
@@ -33,6 +33,9 @@ DEPEND="${COMMON_DEPEND}
 	virtual/pkgconfig"
 
 src_prepare() {
+	# https://bugzilla.gnome.org/show_bug.cgi?id=689957
+	epatch "${FILESDIR}/${PN}-2.6.0-examples-python3.patch"
+
 	gnome2_src_prepare
 
 	python_clean_py-compile_files
@@ -49,7 +52,12 @@ src_compile() {
 }
 
 src_install() {
-	python_execute_function -s gnome2_src_install
+	installation() {
+		GNOME2_DESTDIR="${T}/images/${PYTHON_ABI}/" gnome2_src_install
+	}
+	python_execute_function -s installation
+	python_merge_intermediate_installation_images "${T}/images"
+
 	python_clean_installation_image
 }
 
