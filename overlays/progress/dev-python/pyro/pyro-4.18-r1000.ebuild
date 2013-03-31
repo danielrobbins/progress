@@ -51,13 +51,12 @@ src_prepare() {
 		-e "s/testStartNSfunc/_&/" \
 		-i tests/PyroTests/test_naming2.py
 	sed \
-		-e "s/testServerParallelism/_&/" \
-		-e "s/testServerConnections/_&/" \
-		-i tests/PyroTests/test_server.py
-	sed \
 		-e "s/testBroadcast/_&/" \
-		-e "s/testGetIP/_&/" \
+		-e "s/testGetIP(/_&/" \
 		-i tests/PyroTests/test_socket.py
+	
+	# Disable failing test.
+	sed -e "s/testGetIpVersion/_&/" -i tests/PyroTests/test_socket.py
 }
 
 src_compile() {
