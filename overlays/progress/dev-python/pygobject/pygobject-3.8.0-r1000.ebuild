@@ -56,6 +56,9 @@ src_prepare() {
 	# Do not build tests if unneeded, bug #226345
 	epatch "${FILESDIR}/${PN}-3.7.90-make_check.patch"
 
+	# Fix stack corruption due to incorrect format for argument parser (from 3.8 branch)
+	epatch "${FILESDIR}/${P}-stack-corruption.patch"
+
 	# Fix compatibility with Python 2.6 and 3.1.
 	sed -e "s/callable(\([^)]\+\))/(hasattr(\1, '__call__') if __import__('sys').version_info\[:2\] == (3, 1) else &)/" -i gi/overrides/GLib.py tests/test_gi.py || die
 	sed -e "s/if sys.version_info\[:2\] == (2, 6):/if False:/" -i tests/runtests.py || die
