@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 PYTHON_TESTS_RESTRICTED_ABIS="3.1"
@@ -11,7 +11,7 @@ PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 inherit distutils virtualx
 
 DESCRIPTION="Python bindings for SDL multimedia library"
-HOMEPAGE="http://www.pygame.org/"
+HOMEPAGE="http://www.pygame.org/ https://bitbucket.org/pygame/pygame"
 if [[ "${PV}" == *_pre* ]]; then
 	SRC_URI="http://people.apache.org/~Arfrever/gentoo/${P}.tar.xz"
 else
@@ -20,10 +20,10 @@ fi
 
 LICENSE="LGPL-2.1"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~ppc sparc x86 ~x86-fbsd"
+KEYWORDS="*"
 IUSE="doc examples X"
 
-DEPEND="$(python_abi_depend dev-python/numpy)
+RDEPEND="$(python_abi_depend dev-python/numpy)
 	media-libs/freetype:2
 	media-libs/sdl-image[png,jpeg]
 	media-libs/sdl-mixer
@@ -31,7 +31,8 @@ DEPEND="$(python_abi_depend dev-python/numpy)
 	media-libs/smpeg
 	X? ( media-libs/libsdl[X,video] )
 	!X? ( media-libs/libsdl )"
-RDEPEND="${DEPEND}"
+DEPEND="${RDEPEND}
+	doc? ( $(python_abi_depend dev-python/sphinx) )"
 
 if [[ "${PV}" != *_pre* ]]; then
 	S="${WORKDIR}/${P}release"
@@ -55,6 +56,15 @@ src_configure() {
 	sed -e "s:^#movie :movie :" -i Setup || die "sed failed"
 }
 
+src_compile() {
+	distutils_src_compile
+
+	if use doc; then
+		einfo "Generation of documentation"
+		sphinx-build docs/reST html || die "Generation of documentation failed"
+	fi
+}
+
 src_test() {
 	testing() {
 		python_execute PYTHONPATH="$(ls -d build-${PYTHON_ABI}/lib*)" "$(PYTHON)" run_tests.py
@@ -72,7 +82,7 @@ src_install() {
 	python_execute_function -q delete_examples_and_tests
 
 	if use doc; then
-		dohtml -r docs/*
+		dohtml -r html/
 	fi
 
 	if use examples; then
