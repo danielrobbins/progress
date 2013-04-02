@@ -4,23 +4,22 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-# 3.2, 3.3, 3.4: https://github.com/nose-devs/nose/issues/593
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython 3.2 3.3 3.4"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.5 2.6 *-jython"
 
 inherit distutils eutils git-2
 
 DESCRIPTION="nose extends unittest to make testing easier"
-HOMEPAGE="http://pypi.python.org/pypi/nose http://readthedocs.org/docs/nose/ https://github.com/nose-devs/nose"
+HOMEPAGE="https://nose.readthedocs.org/ https://github.com/nose-devs/nose https://pypi.python.org/pypi/nose"
 SRC_URI=""
 EGIT_REPO_URI="https://github.com/nose-devs/nose"
 
 LICENSE="LGPL-2.1"
 SLOT="0"
 KEYWORDS=""
-IUSE="coverage doc examples test"
+IUSE="doc examples test"
 
-RDEPEND="$(python_abi_depend dev-python/setuptools)
-	coverage? ( $(python_abi_depend dev-python/coverage) )"
+RDEPEND="$(python_abi_depend dev-python/coverage)
+	$(python_abi_depend dev-python/setuptools)"
 DEPEND="${RDEPEND}
 	doc? ( || (
 		dev-python/sphinx[python_abis_2.7]
