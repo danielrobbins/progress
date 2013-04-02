@@ -25,7 +25,7 @@ RDEPEND="!dev-python/pyro:0"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	doc? ( $(python_abi_depend dev-python/sphinx) )
-	test? ( $(python_abi_depend dev-python/nose[coverage]) )"
+	test? ( $(python_abi_depend dev-python/nose) )"
 
 S="${WORKDIR}/${MY_P}"
 
