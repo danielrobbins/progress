@@ -183,6 +183,23 @@ EXPORT_FUNCTIONS src_prepare src_configure src_compile src_install src_test
 # PATCHES=( "${FILESDIR}"/${P}-mypatch.patch )
 # @CODE
 
+# @ECLASS-VARIABLE: AUTOTOOLS_PRUNE_LIBTOOL_FILES
+# @DEFAULT-UNSET
+# @DESCRIPTION:
+# Sets the mode of pruning libtool files. The values correspond to
+# prune_libtool_files parameters, with leading dashes stripped.
+#
+# Defaults to pruning the libtool files when static libraries are not
+# installed or can be linked properly without them. Libtool files
+# for modules (plugins) will be kept in case plugin loader needs them.
+#
+# If set to 'modules', the .la files for modules will be removed
+# as well. This is often the preferred option.
+#
+# If set to 'all', all .la files will be removed unconditionally. This
+# option is discouraged and shall be used only if 'modules' does not
+# remove the files.
+
 # Determine using IN or OUT source build
 _check_build_dir() {
 	: ${ECONF_SOURCE:=${S}}
@@ -510,7 +527,8 @@ autotools-utils_src_install() {
 	fi
 
 	# Remove libtool files and unnecessary static libs
-	prune_libtool_files
+	local prune_ltfiles=${AUTOTOOLS_PRUNE_LIBTOOL_FILES}
+	prune_libtool_files ${prune_ltfiles:+--${prune_ltfiles}}
 }
 
 # @FUNCTION: autotools-utils_src_test

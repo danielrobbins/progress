@@ -3,7 +3,7 @@
 
 # @ECLASS: systemd.eclass
 # @MAINTAINER:
-# mgorny@gentoo.org
+# systemd@gentoo.org
 # @BLURB: helper functions to install systemd units
 # @DESCRIPTION:
 # This eclass provides a set of functions to install unit files for
