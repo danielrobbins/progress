@@ -2,25 +2,24 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-# https://github.com/nose-devs/nose/issues/538
-# https://github.com/nose-devs/nose/issues/548
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython 2.7 3.2 3.3"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.5 2.6 *-jython"
 
-inherit distutils eutils
+inherit distutils eutils vcs-snapshot
 
 DESCRIPTION="nose extends unittest to make testing easier"
-HOMEPAGE="http://pypi.python.org/pypi/nose http://readthedocs.org/docs/nose/ https://github.com/nose-devs/nose"
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
+HOMEPAGE="https://nose.readthedocs.org/ https://github.com/nose-devs/nose https://pypi.python.org/pypi/nose"
+# SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
+SRC_URI="https://github.com/nose-devs/${PN}/archive/ee922cfe47612fdcd920b8027e3e119347748c3f.tar.gz -> ${P}.tar.gz"
 
 LICENSE="LGPL-2.1"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh sparc x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos"
-IUSE="coverage doc examples test"
+KEYWORDS="*"
+IUSE="doc examples test"
 
-RDEPEND="$(python_abi_depend dev-python/setuptools)
-	coverage? ( $(python_abi_depend dev-python/coverage) )"
+RDEPEND="$(python_abi_depend dev-python/coverage)
+	$(python_abi_depend dev-python/setuptools)"
 DEPEND="${RDEPEND}
 	doc? ( || (
 		dev-python/sphinx[python_abis_2.7]
