@@ -2,20 +2,20 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 *-jython"
 
 inherit distutils
 
-DESCRIPTION="HTTP library for human beings"
-HOMEPAGE="http://python-requests.org/ https://github.com/kennethreitz/requests http://pypi.python.org/pypi/requests"
+DESCRIPTION="Python HTTP for Humans."
+HOMEPAGE="http://python-requests.org/ https://github.com/kennethreitz/requests https://pypi.python.org/pypi/requests"
 # SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
 SRC_URI="https://github.com/kennethreitz/${PN}/tarball/v${PV} -> ${P}.tar.gz"
 
 LICENSE="ISC"
 SLOT="0"
-KEYWORDS="amd64 ~arm x86"
+KEYWORDS="*"
 IUSE=""
 
 RDEPEND="app-misc/ca-certificates

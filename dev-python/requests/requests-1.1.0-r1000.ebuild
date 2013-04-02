@@ -9,7 +9,7 @@ PYTHON_RESTRICTED_ABIS="2.5 *-jython"
 inherit distutils
 
 DESCRIPTION="Python HTTP for Humans."
-HOMEPAGE="http://python-requests.org/ https://github.com/kennethreitz/requests http://pypi.python.org/pypi/requests"
+HOMEPAGE="http://python-requests.org/ https://github.com/kennethreitz/requests https://pypi.python.org/pypi/requests"
 SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="Apache-2.0"
