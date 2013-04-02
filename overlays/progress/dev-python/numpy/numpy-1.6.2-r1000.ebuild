@@ -70,6 +70,7 @@ pc_libs() {
 }
 
 src_prepare() {
+	epatch "${FILESDIR}/${PN}-1.6.2-python-3.2.4-numpy.distutils.misc_util.get_shared_lib_extension.patch"
 	epatch "${FILESDIR}/${PN}-1.6.1-atlas.patch"
 
 	if use lapack; then
