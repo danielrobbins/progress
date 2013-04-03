@@ -9,7 +9,7 @@ PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 
 inherit distutils eutils flag-o-matic fortran-2 multilib toolchain-funcs
 
-MY_P="${PN}-${PV/_beta/b}"
+MY_P="${PN}-${PV/_rc/c}"
 DOC_P="${PN}-0.11.0"
 
 DESCRIPTION="Scientific algorithms library for Python"
@@ -123,14 +123,6 @@ src_test() {
 
 src_install() {
 	distutils_src_install ${SCIPY_FCONFIG}
-
-	delete_incompatible_modules() {
-		if [[ "$(python_get_version -l --major)" == "3" ]]; then
-			# scipy.weave supports only Python 2.
-			rm -fr "${ED}$(python_get_sitedir)/scipy/weave"
-		fi
-	}
-	python_execute_function -q delete_incompatible_modules
 
 	if use doc; then
 		dohtml -r "${WORKDIR}/html/"*
