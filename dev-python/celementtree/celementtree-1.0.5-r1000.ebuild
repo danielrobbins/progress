@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 
@@ -11,16 +11,16 @@ inherit distutils eutils
 MY_P="cElementTree-${PV}-20051216"
 
 DESCRIPTION="The cElementTree module is a C implementation of the ElementTree API"
-HOMEPAGE="http://effbot.org/zone/celementtree.htm http://pypi.python.org/pypi/cElementTree"
+HOMEPAGE="http://effbot.org/zone/celementtree.htm https://pypi.python.org/pypi/cElementTree"
 SRC_URI="http://effbot.org/downloads/${MY_P}.tar.gz"
 
 LICENSE="ElementTree"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~ia64 ~ppc ~ppc64 sparc x86 ~x86-fbsd ~amd64-linux ~x86-linux ~x86-macos ~sparc-solaris"
-IUSE="doc"
+KEYWORDS="*"
+IUSE="examples"
 
-RDEPEND="$(python_abi_depend ">=dev-python/elementtree-1.2")
-	>=dev-libs/expat-1.95.8"
+RDEPEND="dev-libs/expat
+	$(python_abi_depend ">=dev-python/elementtree-1.2")"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
@@ -42,8 +42,8 @@ src_test() {
 src_install() {
 	distutils_src_install
 
-	if use doc; then
-		insinto /usr/share/doc/${PF}/samples
+	if use examples; then
+		insinto /usr/share/doc/${PF}/examples
 		doins samples/* selftest.py
 	fi
 }
