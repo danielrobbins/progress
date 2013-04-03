@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.*"
 
@@ -11,12 +11,12 @@ inherit distutils
 MY_P="${P}-20050316"
 
 DESCRIPTION="A light-weight XML object model for Python"
-HOMEPAGE="http://effbot.org/zone/element-index.htm http://pypi.python.org/pypi/elementtree"
+HOMEPAGE="http://effbot.org/zone/element-index.htm https://pypi.python.org/pypi/elementtree"
 SRC_URI="http://effbot.org/downloads/${MY_P}.tar.gz"
 
 LICENSE="ElementTree"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~s390 ~sh sparc x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux ~ppc-macos ~x86-macos ~sparc-solaris ~x64-solaris"
+KEYWORDS="*"
 IUSE=""
 
 DEPEND="$(python_abi_depend dev-python/setuptools)"
