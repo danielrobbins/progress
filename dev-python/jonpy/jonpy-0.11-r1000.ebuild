@@ -2,19 +2,19 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.*"
 
 inherit distutils
 
-DESCRIPTION="Powerful multi-threaded object-oriented CGI/FastCGI/mod_python/html-templating facilities"
-HOMEPAGE="http://jonpy.sourceforge.net/ http://pypi.python.org/pypi/jonpy"
-SRC_URI="mirror://sourceforge/${PN}/${P}.tar.gz"
+DESCRIPTION="Jon's Python modules"
+HOMEPAGE="http://jonpy.sourceforge.net/ https://pypi.python.org/pypi/jonpy"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
-LICENSE="as-is"
+LICENSE="MIT"
 SLOT="0"
-KEYWORDS="amd64 ~ia64 x86"
+KEYWORDS="*"
 IUSE="doc examples"
 
 DEPEND=""
@@ -30,7 +30,7 @@ src_install() {
 	fi
 
 	if use examples; then
-		insinto /usr/share/doc/${PF}
-		doins -r example
+		insinto /usr/share/doc/${PF}/examples
+		doins -r example/{*,.[^.]*}
 	fi
 }
