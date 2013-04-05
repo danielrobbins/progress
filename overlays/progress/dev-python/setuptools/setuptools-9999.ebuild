@@ -14,7 +14,7 @@ MY_PN="distribute"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Distribute (fork of Setuptools) is a collection of extensions to Distutils"
-HOMEPAGE="https://bitbucket.org/tarek/distribute http://pypi.python.org/pypi/distribute"
+HOMEPAGE="https://bitbucket.org/tarek/distribute https://pypi.python.org/pypi/distribute"
 SRC_URI=""
 EHG_REPO_URI="https://bitbucket.org/tarek/distribute"
 
