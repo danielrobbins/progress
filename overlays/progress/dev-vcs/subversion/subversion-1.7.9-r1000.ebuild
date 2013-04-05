@@ -231,9 +231,6 @@ pkg_setup() {
 	if use debug; then
 		append-cppflags -DSVN_DEBUG -DAP_DEBUG
 	fi
-
-	# Allow for custom repository locations.
-	SVN_REPOS_LOC="${SVN_REPOS_LOC:-${EPREFIX}/var/svn}"
 }
 
 src_prepare() {
@@ -705,10 +702,10 @@ LoadModule authz_svn_module modules/mod_authz_svn$(get_libname)
 # Example configuration:
 #<Location /svn/repos>
 #	DAV svn
-#	SVNPath ${SVN_REPOS_LOC}/repos
+#	SVNPath /var/svn/repos
 #	AuthType Basic
 #	AuthName "Subversion repository"
-#	AuthUserFile ${SVN_REPOS_LOC}/conf/svnusers
+#	AuthUserFile /var/svn/conf/svnusers
 #	Require valid-user
 #</Location>
 </IfDefine>
@@ -782,56 +779,6 @@ EOF
 	if ! use static-libs; then
 		find "${ED}" -name "*.la" -print0 | xargs -0 rm -f
 	fi
-
-	cat << EOF > server_notes
-Subversion Server Notes
------------------------
-
-If you intend to run a server, a repository needs to be created using
-svnadmin (see man svnadmin) or the following command to create it in
-${SVN_REPOS_LOC}:
-
-    emerge --config =${CATEGORY}/${PF}
-
-Subversion has multiple server types, take your pick:
-
- - svnserve daemon: 
-   1. Edit /etc/conf.d/svnserve
-   2. Fix the repository permissions (see "Fixing the repository permissions")
-   3. Start daemon: /etc/init.d/svnserve start
-   4. Make persistent: rc-update add svnserve default
-
- - svnserve via xinetd:
-   1. Edit /etc/xinetd.d/svnserve (remove disable line)
-   2. Fix the repository permissions (see "Fixing the repository permissions")
-   3. Restart xinetd.d: /etc/init.d/xinetd restart
-
- - svn over ssh:
-   1. Fix the repository permissions (see "Fixing the repository permissions")
-      Additionally run:
-        groupadd svnusers
-        chown -R root:svnusers ${SVN_REPOS_LOC}/repos
-   2. Create an svnserve wrapper in /usr/local/bin to set the umask you want, for example:
-         #!/bin/bash
-         . /etc/conf.d/svnserve
-         umask 007
-         exec /usr/bin/svnserve \${SVNSERVE_OPTS} "\$@"
-
- - http-based server:
-   1. Edit /etc/conf.d/apache2 to include both "-D DAV" and "-D SVN"
-   2. Create an htpasswd file:
-      htpasswd2 -m -c ${SVN_REPOS_LOC}/conf/svnusers USERNAME
-   3. Fix the repository permissions (see "Fixing the repository permissions")
-   4. Restart Apache: /etc/init.d/apache2 restart
-
-
- Fixing the repository permissions:
-   chmod -Rf go-rwx ${SVN_REPOS_LOC}/conf
-   chmod -Rf g-w,o-rwx ${SVN_REPOS_LOC}/repos
-   chmod -Rf g+rw ${SVN_REPOS_LOC}/repos/db
-   chmod -Rf g+rw ${SVN_REPOS_LOC}/repos/locks
-EOF
-	dodoc server_notes
 }
 
 pkg_preinst() {
@@ -873,8 +820,8 @@ pkg_postinst() {
 	if [[ -n "${CHANGED_BDB_VERSION}" ]]; then
 		ewarn "You upgraded from an older version of Berkeley DB and may experience"
 		ewarn "problems with your repository. Run the following commands as root to fix it:"
-		ewarn "    db4_recover -h ${SVN_REPOS_LOC}/repos"
-		ewarn "    chown -Rf apache:apache ${SVN_REPOS_LOC}/repos"
+		ewarn "    db4_recover -h \${repository_path}"
+		ewarn "    chown -Rf apache:apache \${repository_path}"
 	fi
 }
 
@@ -889,31 +836,6 @@ pkg_postrm() {
 }
 
 pkg_config() {
-	einfo "Initializing the database in ${ROOT}${SVN_REPOS_LOC}..."
-	if [[ -e "${ROOT}${SVN_REPOS_LOC}/repos" ]]; then
-		echo "A Subversion repository already exists and I will not overwrite it."
-		echo "Delete \"${ROOT}${SVN_REPOS_LOC}/repos\" first if you're sure you want to have a clean version."
-	else
-		mkdir -p "${ROOT}${SVN_REPOS_LOC}/conf"
-
-		einfo "Populating repository directory..."
-		# Create initial repository.
-		"${EROOT}usr/bin/svnadmin" create "${ROOT}${SVN_REPOS_LOC}/repos"
-
-		einfo "Setting repository permissions..."
-		SVNSERVE_USER="$(. "${EROOT}etc/conf.d/svnserve"; echo "${SVNSERVE_USER}")"
-		SVNSERVE_GROUP="$(. "${EROOT}etc/conf.d/svnserve"; echo "${SVNSERVE_GROUP}")"
-		if use apache2; then
-			[[ -z "${SVNSERVE_USER}" ]] && SVNSERVE_USER="apache"
-			[[ -z "${SVNSERVE_GROUP}" ]] && SVNSERVE_GROUP="apache"
-		else
-			[[ -z "${SVNSERVE_USER}" ]] && SVNSERVE_USER="svn"
-			[[ -z "${SVNSERVE_GROUP}" ]] && SVNSERVE_GROUP="svnusers"
-			enewgroup "${SVNSERVE_GROUP}"
-			enewuser "${SVNSERVE_USER}" -1 -1 "${SVN_REPOS_LOC}" "${SVNSERVE_GROUP}"
-		fi
-		chown -Rf "${SVNSERVE_USER}:${SVNSERVE_GROUP}" "${ROOT}${SVN_REPOS_LOC}/repos"
-		chmod -Rf go-rwx "${ROOT}${SVN_REPOS_LOC}/conf"
-		chmod -Rf o-rwx "${ROOT}${SVN_REPOS_LOC}/repos"
-	fi
+	elog "Read \"Version Control With Subversion\" book:"
+	elog "http://svnbook.red-bean.com/"
 }
