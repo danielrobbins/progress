@@ -9,7 +9,7 @@ PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 inherit distutils
 
 DESCRIPTION="SSH2 protocol library"
-HOMEPAGE="https://github.com/paramiko/paramiko http://pypi.python.org/pypi/paramiko"
+HOMEPAGE="https://github.com/paramiko/paramiko https://pypi.python.org/pypi/paramiko"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="LGPL-2.1"
