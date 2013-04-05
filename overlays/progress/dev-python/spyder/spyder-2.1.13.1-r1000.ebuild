@@ -9,7 +9,7 @@ PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 inherit distutils eutils
 
 DESCRIPTION="Scientific PYthon Development EnviRonment"
-HOMEPAGE="http://code.google.com/p/spyderlib/ http://pypi.python.org/pypi/spyder"
+HOMEPAGE="http://code.google.com/p/spyderlib/ https://pypi.python.org/pypi/spyder"
 SRC_URI="http://spyderlib.googlecode.com/files/${P}.zip"
 
 LICENSE="MIT"
@@ -17,7 +17,7 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="doc ipython matplotlib numpy pep8 +pyflakes pylint +rope scipy sphinx"
 
-RDEPEND="$(python_abi_depend dev-python/PyQt4[webkit])
+RDEPEND="$(python_abi_depend virtual/python-qt:4[X,svg,webkit])
 	ipython? ( $(python_abi_depend -e "2.5" dev-python/ipython) )
 	matplotlib? ( $(python_abi_depend -e "2.5" dev-python/matplotlib) )
 	numpy? ( $(python_abi_depend dev-python/numpy) )
