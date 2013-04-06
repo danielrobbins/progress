@@ -10,7 +10,7 @@ PYTHON_RESTRICTED_ABIS="2.5 *-jython"
 inherit distutils
 
 DESCRIPTION="Library for developers to extract data from Microsoft Excel (tm) spreadsheet files"
-HOMEPAGE="http://pypi.python.org/pypi/xlrd"
+HOMEPAGE="http://www.python-excel.org/ https://github.com/python-excel/xlrd https://pypi.python.org/pypi/xlrd"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD"
