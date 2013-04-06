@@ -264,7 +264,7 @@ src_install() {
 		-e "s/\(PY_LDFLAGS=\).*/\1/" \
 		-i "${ED}$(python_get_libdir)/config-${SLOT}/Makefile" || die "sed failed"
 
-	mv "${ED}usr/bin/python${SLOT}-config" "${ED}usr/bin/python-config-${SLOT}"
+	dosym python${SLOT}-config /usr/bin/python-config-${SLOT}
 
 	# Fix collisions between different slots of Python.
 	rm -f "${ED}usr/$(get_libdir)/libpython3.so"
