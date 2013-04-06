@@ -255,7 +255,7 @@ src_install() {
 	emake DESTDIR="${D}" altinstall maninstall || die "emake altinstall maninstall failed"
 	python_clean_installation_image -q
 
-	mv "${ED}usr/bin/python${SLOT}-config" "${ED}usr/bin/python-config-${SLOT}"
+	dosym python${SLOT}-config /usr/bin/python-config-${SLOT}
 
 	# Fix collisions between different slots of Python.
 	mv "${ED}usr/bin/2to3" "${ED}usr/bin/2to3-${SLOT}"
