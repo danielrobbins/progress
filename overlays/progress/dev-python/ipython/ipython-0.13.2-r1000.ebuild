@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_DEPEND="<<[{*-cpython}readline?,{*-cpython}sqlite?]>>"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 *-jython"
@@ -10,12 +10,12 @@ PYTHON_RESTRICTED_ABIS="2.5 *-jython"
 inherit distutils elisp-common eutils virtualx
 
 DESCRIPTION="IPython: Productive Interactive Computing"
-HOMEPAGE="http://ipython.org/ http://pypi.python.org/pypi/ipython"
+HOMEPAGE="http://ipython.org/ https://pypi.python.org/pypi/ipython"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="amd64 ~ia64 ~ppc ~ppc64 ~s390 x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos"
+KEYWORDS="*"
 IUSE="doc emacs examples matplotlib mongodb notebook octave qt4 readline +smp sqlite test wxwidgets"
 
 RDEPEND="$(python_abi_depend dev-python/decorator)
@@ -29,21 +29,18 @@ RDEPEND="$(python_abi_depend dev-python/decorator)
 		app-emacs/python-mode
 		virtual/emacs
 	)
-	matplotlib? ( $(python_abi_depend -i "2.*-cpython" dev-python/matplotlib) )
-	mongodb? ( $(python_abi_depend -i "2.*" dev-python/pymongo) )
+	matplotlib? ( $(python_abi_depend -e "*-pypy-*" dev-python/matplotlib) )
+	mongodb? ( $(python_abi_depend dev-python/pymongo) )
 	notebook? (
 		dev-libs/mathjax
-		$(python_abi_depend -e "*-pypy-*" ">=dev-python/pyzmq-2.1.4")
-		$(python_abi_depend -i "2.*" ">=www-servers/tornado-2.1")
+		$(python_abi_depend -e "3.1 *-pypy-*" ">=dev-python/pyzmq-2.1.4")
+		$(python_abi_depend -e "3.1 *-pypy-*" ">=www-servers/tornado-2.1")
 	)
 	octave? ( $(python_abi_depend -e "*-pypy-*" dev-python/oct2py) )
 	qt4? (
-		$(python_abi_depend dev-python/pygments)
-		|| (
-			$(python_abi_depend -e "*-pypy-*" dev-python/PyQt4)
-			dev-python/pyside
-		)
+		$(python_abi_depend -e "*-pypy-*" dev-python/pygments)
 		$(python_abi_depend -e "*-pypy-*" ">=dev-python/pyzmq-2.1.4")
+		$(python_abi_depend -e "*-pypy-*" virtual/python-qt:4)
 	)
 	smp? ( $(python_abi_depend -e "*-pypy-*" ">=dev-python/pyzmq-2.1.4") )
 	wxwidgets? ( $(python_abi_depend -i "2.*-cpython" dev-python/wxpython) )"
