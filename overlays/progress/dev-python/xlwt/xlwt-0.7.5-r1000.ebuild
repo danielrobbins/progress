@@ -2,19 +2,19 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.*"
 
 inherit distutils
 
-DESCRIPTION="Python library to create spreadsheet files compatible with Excel"
-HOMEPAGE="http://pypi.python.org/pypi/xlwt"
+DESCRIPTION="Library to create spreadsheet files compatible with MS Excel 97/2000/XP/2003 XLS files"
+HOMEPAGE="http://www.python-excel.org/ https://github.com/python-excel/xlwt https://pypi.python.org/pypi/xlwt"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="amd64 ~ppc ~ppc64 x86"
+KEYWORDS="*"
 IUSE="examples"
 
 DEPEND=""
@@ -23,16 +23,16 @@ RDEPEND=""
 src_prepare() {
 	distutils_src_prepare
 
-	# Don't install documentation and examples in site-packages directories.
+	# Do not install documentation and examples in site-packages directories.
 	sed -e "/package_data/,+6d" -i setup.py || die "sed failed"
 }
 
 src_install() {
 	distutils_src_install
 
-	insinto /usr/share/doc/${PF}
-	doins -r xlwt/doc/xlwt.html
+	dohtml -r xlwt/doc/
 	if use examples; then
-		doins -r xlwt/examples
+		insinto /usr/share/doc/${PF}/examples
+		doins xlwt/examples/*
 	fi
 }
