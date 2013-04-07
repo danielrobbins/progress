@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 GCONF_DEBUG="yes"
 GNOME2_LA_PUNT="yes"
 PYTHON_DEPEND="python? ( <<>> )"
@@ -16,8 +16,8 @@ HOMEPAGE="https://live.gnome.org/VTE"
 
 LICENSE="LGPL-2+"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh sparc x86 ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~x86-linux ~x64-solaris ~x86-solaris"
-IUSE="debug doc glade +introspection python"
+KEYWORDS="*"
+IUSE="debug glade +introspection python"
 
 PDEPEND="x11-libs/gnome-pty-helper"
 RDEPEND=">=dev-libs/glib-2.26:2
@@ -30,12 +30,12 @@ RDEPEND=">=dev-libs/glib-2.26:2
 
 	glade? ( dev-util/glade:3 )
 	introspection? ( >=dev-libs/gobject-introspection-0.9.0 )
-	python? ( $(python_abi_depend ">=dev-python/pygtk-2.4:2") )"
+	python? ( $(python_abi_depend dev-python/pygtk:2) )"
 DEPEND="${RDEPEND}
+	dev-util/gtk-doc-am
 	>=dev-util/intltool-0.35
 	sys-devel/gettext
-	virtual/pkgconfig
-	doc? ( >=dev-util/gtk-doc-1.13 )"
+	virtual/pkgconfig"
 
 pkg_setup() {
 	# Do not disable gnome-pty-helper, bug #401389
