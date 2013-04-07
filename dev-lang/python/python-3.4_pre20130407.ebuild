@@ -12,13 +12,13 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="10a82140f36d"
+	EHG_REVISION="504eed5a82a3"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
 fi
 
-PATCHSET_REVISION="20130210"
+PATCHSET_REVISION="20130324"
 
 DESCRIPTION="Python is an interpreted, interactive, object-oriented programming language."
 HOMEPAGE="http://www.python.org/"
@@ -32,12 +32,13 @@ else
 fi
 
 LICENSE="PSF-2"
-SLOT="3.2"
+SLOT="3.4"
 PYTHON_ABI="${SLOT}"
-KEYWORDS="*"
-IUSE="build doc elibc_uclibc examples gdbm ipv6 +ncurses +readline sqlite +ssl +threads tk +wide-unicode wininst +xml"
+KEYWORDS="~*"
+IUSE="build doc elibc_uclibc examples gdbm ipv6 +ncurses +readline sqlite +ssl +threads tk wininst +xml"
 
 RDEPEND="app-arch/bzip2
+		app-arch/xz-utils
 		>=sys-libs/zlib-1.1.3
 		virtual/libffi
 		virtual/libintl
@@ -70,6 +71,10 @@ fi
 
 pkg_setup() {
 	python_pkg_setup
+
+	if tc-is-cross-compiler && ! ROOT="/" has_version "${CATEGORY}/${PN}:${SLOT}"; then
+		die "Cross-compilation requires ${CATEGORY}/${PN}:${SLOT} installed in host system"
+	fi
 }
 
 src_prepare() {
@@ -102,11 +107,6 @@ src_prepare() {
 		fi
 	fi
 
-	local excluded_patches
-	if ! tc-is-cross-compiler; then
-		excluded_patches="*_all_crosscompile.patch"
-	fi
-
 	local patchset_dir
 	if [[ "${PV}" == *_pre* ]]; then
 		patchset_dir="${FILESDIR}/${SLOT}-${PATCHSET_REVISION}"
@@ -116,7 +116,7 @@ src_prepare() {
 		patchset_dir="${WORKDIR}/${MY_PV}"
 	fi
 
-	EPATCH_EXCLUDE="${excluded_patches}" EPATCH_SUFFIX="patch" epatch "${patchset_dir}"
+	EPATCH_SUFFIX="patch" epatch "${patchset_dir}"
 
 	sed -i -e "s:@@GENTOO_LIBDIR@@:$(get_libdir):g" \
 		Lib/distutils/command/install.py \
@@ -128,6 +128,8 @@ src_prepare() {
 		Modules/Setup.dist \
 		Modules/getpath.c \
 		setup.py || die "sed failed to replace @@GENTOO_LIBDIR@@"
+
+	sed -e "s/test_stty_match/_&/" -i Lib/test/test_shutil.py
 
 	# Disable ABI flags.
 	sed -e "s/ABIFLAGS=\"\${ABIFLAGS}.*\"/:/" -i configure.ac || die "sed failed"
@@ -177,24 +179,11 @@ src_configure() {
 		use hardened && replace-flags -O3 -O2
 	fi
 
-	if tc-is-cross-compiler; then
-		OPT="-O1" CFLAGS="" LDFLAGS="" CC="" \
-		./configure --{build,host}=${CBUILD} || die "cross-configure failed"
-		emake python Parser/pgen || die "cross-make failed"
-		mv python hostpython
-		mv Parser/pgen Parser/hostpgen
-		make distclean
-		sed -i \
-			-e "/^HOSTPYTHON/s:=.*:=./hostpython:" \
-			-e "/^HOSTPGEN/s:=.*:=./Parser/hostpgen:" \
-			Makefile.pre.in || die "sed failed"
-	fi
-
 	# Export CXX so it ends up in /usr/lib/python3.X/config/Makefile.
 	tc-export CXX
 
-	# Set LDFLAGS so we link modules with -lpython3.2 correctly.
-	# Needed on FreeBSD unless Python 3.2 is already installed.
+	# Set LDFLAGS so we link modules with -lpython3.4 correctly.
+	# Needed on FreeBSD unless Python 3.4 is already installed.
 	# Please query BSD team before removing this!
 	append-ldflags "-L."
 
@@ -208,7 +197,6 @@ src_configure() {
 		--enable-shared \
 		$(use_enable ipv6) \
 		$(use_with threads) \
-		$(use_with wide-unicode) \
 		--infodir='${prefix}/share/info' \
 		--mandir='${prefix}/share/man' \
 		--with-computed-gotos \
@@ -220,9 +208,19 @@ src_configure() {
 }
 
 src_compile() {
+	if [[ "${PV}" == *_pre* ]]; then
+		emake touch || die "emake touch failed"
+	fi
 	emake CPPFLAGS="" CFLAGS="" LDFLAGS="" || die "emake failed"
 
 	pax-mark m python
+
+	if use doc; then
+		einfo "Generation of documentation"
+		cd Doc
+		mkdir -p build/{doctrees,html}
+		sphinx-build -b html -d build/doctrees . build/html || die "Generation of documentation failed"
+	fi
 }
 
 src_test() {
@@ -243,7 +241,7 @@ src_test() {
 		mv Lib/test/test_${test}.py "${T}"
 	done
 
-	emake test EXTRATESTOPTS="-w" CPPFLAGS="" CFLAGS="" LDFLAGS="" < /dev/tty
+	emake test EXTRATESTOPTS="-j1 -ucpu,decimal,subprocess" CPPFLAGS="" CFLAGS="" LDFLAGS="" < /dev/tty
 	local result="$?"
 
 	for test in ${skipped_tests}; do
@@ -275,7 +273,7 @@ src_install() {
 		-e "s/\(PY_LDFLAGS=\).*/\1/" \
 		-i "${ED}$(python_get_libdir)/config-${SLOT}/Makefile" || die "sed failed"
 
-	mv "${ED}usr/bin/python${SLOT}-config" "${ED}usr/bin/python-config-${SLOT}"
+	dosym python${SLOT}-config /usr/bin/python-config-${SLOT}
 
 	# Fix collisions between different slots of Python.
 	rm -f "${ED}usr/$(get_libdir)/libpython3.so"
@@ -292,6 +290,12 @@ src_install() {
 	use wininst || rm -f "${ED}$(python_get_libdir)/distutils/command/"wininst-*.exe
 
 	dodoc Misc/{ACKS,HISTORY,NEWS} || die "dodoc failed"
+
+	if use doc; then
+		dohtml -A xml -r Doc/build/html/
+		echo "PYTHONDOCS_${SLOT//./_}=\"${EPREFIX}/usr/share/doc/${PF}/html/library\"" > "60python-docs-${SLOT}"
+		doenvd "60python-docs-${SLOT}"
+	fi
 
 	if use examples; then
 		insinto /usr/share/doc/${PF}/examples
