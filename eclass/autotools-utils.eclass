@@ -184,7 +184,7 @@ EXPORT_FUNCTIONS src_prepare src_configure src_compile src_install src_test
 # @CODE
 
 # @ECLASS-VARIABLE: AUTOTOOLS_PRUNE_LIBTOOL_FILES
-# @DEFAULT-UNSET
+# @DEFAULT_UNSET
 # @DESCRIPTION:
 # Sets the mode of pruning libtool files. The values correspond to
 # prune_libtool_files parameters, with leading dashes stripped.

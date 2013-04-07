@@ -17,6 +17,9 @@
 # builds (default), in-source builds and an implementation of the well-known use_enable
 # and use_with functions for CMake.
 
+if [[ ${___ECLASS_ONCE_CMAKE_UTILS} != "recur -_+^+_- spank" ]] ; then
+___ECLASS_ONCE_CMAKE_UTILS="recur -_+^+_- spank"
+
 # @ECLASS-VARIABLE: WANT_CMAKE
 # @DESCRIPTION:
 # Specify if cmake-utils eclass should depend on cmake optionaly or not.
@@ -399,6 +402,7 @@ enable_cmake-utils_src_configure() {
 		SET (CMAKE_CXX_COMPILER $(type -P $(tc-getCXX)) CACHE FILEPATH "C++ compiler" FORCE)
 		SET (CMAKE_CXX_COMPILE_OBJECT "<CMAKE_CXX_COMPILER> <DEFINES> ${CPPFLAGS} <FLAGS> -o <OBJECT> -c <SOURCE>" CACHE STRING "C++ compile command" FORCE)
 		SET (CMAKE_RANLIB $(type -P $(tc-getRANLIB)) CACHE FILEPATH "Archive index generator" FORCE)
+		SET (PKG_CONFIG_EXECUTABLE $(type -P $(tc-getPKG_CONFIG)) CACHE FILEPATH "pkg-config executable" FORCE)
 	_EOF_
 
 	has "${EAPI:-0}" 0 1 2 && ! use prefix && EPREFIX=
@@ -620,3 +624,5 @@ _execute_optionaly() {
 		use ${WANT_CMAKE} && enable_cmake-utils_${phase} "$@"
 	fi
 }
+
+fi
