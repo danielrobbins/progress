@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 *-jython"
 
@@ -14,11 +14,13 @@ SRC_URI="mirror://gentoo/${P}.tar.bz2"
 
 LICENSE="GPL-2"
 SLOT="2"
-KEYWORDS="amd64 ~ia64 ~ppc ~ppc64 x86 ~amd64-fbsd ~x86-fbsd"
+KEYWORDS="*"
 IUSE=""
 
 DEPEND=""
-RDEPEND=">=dev-java/java-config-wrapper-0.15"
+RDEPEND=">=dev-java/java-config-wrapper-0.15
+	!sys-apps/baselayout-java
+	!app-admin/eselect-java"
 # https://bugs.gentoo.org/show_bug.cgi?id=315229
 PDEPEND=">=virtual/jre-1.5"
 # Tests fail when java-config isn't already installed.
