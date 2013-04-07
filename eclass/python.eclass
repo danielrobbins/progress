@@ -3830,9 +3830,9 @@ python_mod_optimize() {
 					for dir in "${evaluated_dirs[@]}"; do
 						eval "dirs+=(\"\${root}${dir}\")"
 					done
-					stderr+="${stderr:+$'\n'}$("$(PYTHON)" -m compileall "${options[@]}" "${dirs[@]}" 2>&1)" || exit_status="1"
+					stderr+="${stderr:+$'\n'}$("$(PYTHON)" -m compileall -f "${options[@]}" "${dirs[@]}" 2>&1)" || exit_status="1"
 					if ! has "$(_python_get_implementation "${PYTHON_ABI}")" Jython PyPy; then
-						"$(PYTHON)" -O -m compileall "${options[@]}" "${dirs[@]}" &> /dev/null || exit_status="1"
+						"$(PYTHON)" -O -m compileall -f "${options[@]}" "${dirs[@]}" &> /dev/null || exit_status="1"
 					fi
 					_python_clean_compiled_modules "${dirs[@]}"
 				fi
@@ -3883,9 +3883,9 @@ python_mod_optimize() {
 			stderr_lines=()
 			ebegin "Compilation and optimization of Python modules placed outside of site-packages directories for $(python_get_implementation_and_version)"
 			if ((${#other_dirs[@]})); then
-				stderr+="${stderr:+$'\n'}$("$(PYTHON ${PYTHON_ABI})" -m compileall "${options[@]}" "${other_dirs[@]}" 2>&1)" || exit_status="1"
+				stderr+="${stderr:+$'\n'}$("$(PYTHON ${PYTHON_ABI})" -m compileall -f "${options[@]}" "${other_dirs[@]}" 2>&1)" || exit_status="1"
 				if ! has "$(_python_get_implementation "${PYTHON_ABI}")" Jython PyPy; then
-					"$(PYTHON ${PYTHON_ABI})" -O -m compileall "${options[@]}" "${other_dirs[@]}" &> /dev/null || exit_status="1"
+					"$(PYTHON ${PYTHON_ABI})" -O -m compileall -f "${options[@]}" "${other_dirs[@]}" &> /dev/null || exit_status="1"
 				fi
 				_python_clean_compiled_modules "${other_dirs[@]}"
 			fi
