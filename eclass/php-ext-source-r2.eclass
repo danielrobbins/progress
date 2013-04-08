@@ -261,13 +261,9 @@ php-ext-source-r2_createinifiles() {
 		local inifile
 		for inifile in ${PHPINIFILELIST} ; do
 			if [[ -n "${PHP_EXT_INIFILE}" ]]; then
-				cat "${FILESDIR}/${PHP_EXT_INIFILE}" > "${inifile}"
+				cat "${FILESDIR}/${PHP_EXT_INIFILE}" >> "${ED}/${inifile}"
 				einfo "Added content of ${FILESDIR}/${PHP_EXT_INIFILE} to ${inifile}"
 			fi
-
-
-
-
 			inidir="${inifile/${PHP_EXT_NAME}.ini/}"
 			inidir="${inidir/ext/ext-active}"
 			dodir "/${inidir}"
