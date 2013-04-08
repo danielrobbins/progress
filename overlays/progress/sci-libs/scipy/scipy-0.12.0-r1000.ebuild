@@ -9,7 +9,7 @@ PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 
 inherit distutils eutils flag-o-matic fortran-2 multilib toolchain-funcs
 
-MY_P="${PN}-${PV/_rc/c}"
+MY_P="${PN}-${PV/_/}"
 DOC_P="${PN}-0.11.0"
 
 DESCRIPTION="Scientific algorithms library for Python"
@@ -23,7 +23,7 @@ SRC_URI="mirror://sourceforge/${PN}/${MY_P}.tar.gz
 LICENSE="BSD LGPL-2"
 SLOT="0"
 IUSE="doc test umfpack"
-KEYWORDS="~*"
+KEYWORDS="*"
 
 CDEPEND="$(python_abi_depend dev-python/numpy[lapack])
 	sci-libs/arpack
