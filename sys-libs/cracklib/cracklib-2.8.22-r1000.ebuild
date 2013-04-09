@@ -19,7 +19,7 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="nls python static-libs zlib"
 
-RDEPEND="zlib? ( sys-libs/zlib )"
+RDEPEND="zlib? ( sys-libs/zlib:0= )"
 DEPEND="${RDEPEND}
 	python? ( $(python_abi_depend dev-python/setuptools) )"
 
