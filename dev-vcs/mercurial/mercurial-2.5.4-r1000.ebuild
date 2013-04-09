@@ -67,6 +67,11 @@ src_install() {
 
 	newbashcomp contrib/bash_completion ${PN} || die
 
+	if use emacs; then
+		elisp-install ${PN} contrib/mercurial.el* || die "elisp-install failed!"
+		elisp-site-file-install "${FILESDIR}"/${SITEFILE}
+	fi
+
 	if use zsh-completion; then
 		insinto /usr/share/zsh/site-functions
 		newins contrib/zsh_completion _hg
@@ -80,21 +85,16 @@ src_install() {
 	dobin contrib/hgk
 	python_install_executables contrib/hg-ssh
 
-	rm -f contrib/hgk contrib/hg-ssh || die
+	rm -fr contrib/{*.el,bash_completion,buildrpm,hg-ssh,hgk,mercurial.spec,plan9,wix,zsh_completion} || die
 
-	rm -f contrib/bash_completion || die
-	cp -r contrib "${ED}"/usr/share/doc/${PF}/ || die
+	dodoc -r contrib
+	docompress -x /usr/share/doc/${PF}/contrib
 	doman doc/*.?
 
 	cat > "${T}/80mercurial" <<-EOF
 HG="${EPREFIX}/usr/bin/hg"
 EOF
 	doenvd "${T}/80mercurial"
-
-	if use emacs; then
-		elisp-install ${PN} contrib/mercurial.el* || die "elisp-install failed!"
-		elisp-site-file-install "${FILESDIR}"/${SITEFILE}
-	fi
 
 	insinto /etc/mercurial/hgrc.d
 	doins "${FILESDIR}/cacerts.rc"
