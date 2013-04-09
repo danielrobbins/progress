@@ -20,7 +20,7 @@ SLOT="0"
 KEYWORDS=""
 IUSE="python static-libs zlib"
 
-RDEPEND="zlib? ( sys-libs/zlib )"
+RDEPEND="zlib? ( sys-libs/zlib:0= )"
 DEPEND="${RDEPEND}"
 
 PYTHON_MODULES="magic.py"
