@@ -21,14 +21,14 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="X doc examples lcms scanner tiff tk webp"
 
-RDEPEND="media-libs/freetype:2
-	sys-libs/zlib
+RDEPEND="media-libs/freetype:2=
+	sys-libs/zlib:0=
 	virtual/jpeg
 	X? ( x11-misc/xdg-utils )
-	lcms? ( media-libs/lcms:0 )
-	scanner? ( media-gfx/sane-backends )
-	tiff? ( media-libs/tiff:0 )
-	webp? ( media-libs/libwebp )"
+	lcms? ( media-libs/lcms:0= )
+	scanner? ( media-gfx/sane-backends:0= )
+	tiff? ( media-libs/tiff:0= )
+	webp? ( media-libs/libwebp:0= )"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
