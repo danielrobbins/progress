@@ -24,13 +24,13 @@ KEYWORDS="*"
 IUSE="doc examples X"
 
 RDEPEND="$(python_abi_depend dev-python/numpy)
-	media-libs/freetype:2
-	media-libs/sdl-image[png,jpeg]
-	media-libs/sdl-mixer
-	media-libs/sdl-ttf
-	media-libs/smpeg
-	X? ( media-libs/libsdl[X,video] )
-	!X? ( media-libs/libsdl )"
+	media-libs/freetype:2=
+	media-libs/sdl-image:0=[png,jpeg]
+	media-libs/sdl-mixer:0=
+	media-libs/sdl-ttf:0=
+	media-libs/smpeg:0=
+	X? ( media-libs/libsdl:0=[X,video] )
+	!X? ( media-libs/libsdl:0= )"
 DEPEND="${RDEPEND}
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
 
