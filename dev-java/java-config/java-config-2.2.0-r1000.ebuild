@@ -20,6 +20,7 @@ IUSE=""
 
 # baselayout-java is added as a dep till it can be added to eclass.
 RDEPEND="
+	app-admin/eselect-java
 	>=dev-java/java-config-wrapper-0.15
 	sys-apps/baselayout-java
 	sys-apps/portage"
