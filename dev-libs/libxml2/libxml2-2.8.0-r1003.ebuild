@@ -31,10 +31,10 @@ SRC_URI="ftp://xmlsoft.org/${PN}/${PN}-${PV/_rc/-rc}.tar.gz
 		http://www.w3.org/XML/Test/${XMLCONF_TARBALL} )
 	http://dev.gentoo.org/~tetromino/distfiles/${PN}/${P}-namespace-node-patches.tar.bz2"
 
-RDEPEND="sys-libs/zlib:=
-	icu? ( dev-libs/icu:= )
-	lzma? ( app-arch/xz-utils:= )
-	readline? ( sys-libs/readline:= )"
+RDEPEND="sys-libs/zlib:0=
+	icu? ( dev-libs/icu:0= )
+	lzma? ( app-arch/xz-utils:0= )
+	readline? ( sys-libs/readline:0= )"
 
 DEPEND="${RDEPEND}
 	dev-util/gtk-doc-am

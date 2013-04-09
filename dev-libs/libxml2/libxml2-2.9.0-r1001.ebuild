@@ -30,10 +30,10 @@ SRC_URI="ftp://xmlsoft.org/${PN}/${PN}-${PV/_rc/-rc}.tar.gz
 		${XSTS_HOME}/${XSTS_NAME_2}/${XSTS_TARBALL_2}
 		http://www.w3.org/XML/Test/${XMLCONF_TARBALL} )"
 
-RDEPEND="sys-libs/zlib:=
-	icu? ( dev-libs/icu:= )
-	lzma? ( app-arch/xz-utils:= )
-	readline? ( sys-libs/readline:= )"
+RDEPEND="sys-libs/zlib:0=
+	icu? ( dev-libs/icu:0= )
+	lzma? ( app-arch/xz-utils:0= )
+	readline? ( sys-libs/readline:0= )"
 
 DEPEND="${RDEPEND}
 	dev-util/gtk-doc-am
