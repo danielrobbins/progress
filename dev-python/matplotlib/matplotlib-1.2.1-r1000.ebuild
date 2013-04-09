@@ -28,8 +28,8 @@ CDEPEND="$(python_abi_depend dev-python/numpy)
 	$(python_abi_depend dev-python/python-dateutil)
 	$(python_abi_depend dev-python/pytz)
 	$(python_abi_depend -i "3.*" dev-python/six)
-	media-libs/freetype:2
-	media-libs/libpng
+	media-libs/freetype:2=
+	media-libs/libpng:0=
 	gtk? ( $(python_abi_depend -i "2.*" dev-python/pygtk) )
 	gtk3? (
 		dev-libs/gobject-introspection
