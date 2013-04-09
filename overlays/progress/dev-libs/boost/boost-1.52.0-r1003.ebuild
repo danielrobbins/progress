@@ -21,10 +21,10 @@ SLOT="0/$(get_version_component_range 1-3)"
 KEYWORDS="~*"
 IUSE="c++11 context debug doc icu mpi +nls python static-libs +threads tools"
 
-RDEPEND="icu? ( >=dev-libs/icu-3.6:=::${REPOSITORY}[c++11(-)=] )
+RDEPEND="icu? ( >=dev-libs/icu-3.6:0=::${REPOSITORY}[c++11(-)=] )
 	!icu? ( virtual/libiconv )
 	mpi? ( || ( sys-cluster/openmpi[cxx] sys-cluster/mpich2[cxx,threads] ) )
-	sys-libs/zlib
+	sys-libs/zlib:0=
 	!app-admin/eselect-boost"
 DEPEND="${RDEPEND}
 	=dev-util/boost-build-${MAJOR_V}*"

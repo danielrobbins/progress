@@ -22,9 +22,9 @@ KEYWORDS="*"
 IUSE="debug doc elibc_glibc icu mpi python static-libs tools"
 
 RDEPEND="elibc_glibc? ( <sys-libs/glibc-2.16 )
-	icu? ( >=dev-libs/icu-3.6 )
+	icu? ( >=dev-libs/icu-3.6:0= )
 	mpi? ( || ( sys-cluster/openmpi[cxx] sys-cluster/mpich2[cxx,threads] ) )
-	sys-libs/zlib
+	sys-libs/zlib:0=
 	!app-admin/eselect-boost"
 DEPEND="${RDEPEND}
 	=dev-util/boost-build-${MAJOR_V}*"
