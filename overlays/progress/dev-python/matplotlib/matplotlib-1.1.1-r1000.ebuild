@@ -27,8 +27,8 @@ IUSE="cairo doc examples excel fltk gtk latex qt4 test tk wxwidgets"
 CDEPEND="$(python_abi_depend dev-python/numpy)
 	$(python_abi_depend dev-python/python-dateutil)
 	$(python_abi_depend dev-python/pytz)
-	media-libs/freetype:2
-	media-libs/libpng
+	media-libs/freetype:2=
+	media-libs/libpng:0=
 	gtk? ( $(python_abi_depend dev-python/pygtk) )
 	wxwidgets? ( $(python_abi_depend dev-python/wxpython:2.8) )"
 
