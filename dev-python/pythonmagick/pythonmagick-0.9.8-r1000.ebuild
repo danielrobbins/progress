@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 *-jython *-pypy-*"
 PYTHON_EXPORT_PHASE_FUNCTIONS="1"
@@ -18,11 +18,11 @@ SRC_URI="http://www.imagemagick.org/download/python/${MY_P}.tar.xz"
 
 LICENSE="GPL-3"
 SLOT="0"
-KEYWORDS="amd64 ~ppc x86"
+KEYWORDS="*"
 IUSE=""
 
-RDEPEND="$(python_abi_depend ">=dev-libs/boost-1.48[python]")
-	>=media-gfx/imagemagick-6.4"
+RDEPEND="$(python_abi_depend dev-libs/boost:0=[python])
+	>=media-gfx/imagemagick-6.4:0="
 DEPEND="${RDEPEND}
 	virtual/pkgconfig"
 
