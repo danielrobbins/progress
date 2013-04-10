@@ -9,7 +9,7 @@ PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 inherit distutils
 
 DESCRIPTION="Python Bindings for TagLib"
-HOMEPAGE="http://mathema.tician.de/software/tagpy http://git.tiker.net/?p=tagpy.git http://pypi.python.org/pypi/tagpy"
+HOMEPAGE="http://mathema.tician.de/software/tagpy http://git.tiker.net/?p=tagpy.git https://pypi.python.org/pypi/tagpy"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
@@ -17,8 +17,8 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="examples"
 
-RDEPEND="$(python_abi_depend ">=dev-libs/boost-1.48[python]")
-	>=media-libs/taglib-1.4"
+RDEPEND="$(python_abi_depend dev-libs/boost:0=[python])
+	media-libs/taglib:0="
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
