@@ -20,9 +20,9 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="doc examples"
 
-RDEPEND=">=dev-cpp/gtkglextmm-1.2
-	dev-cpp/libglademm
-	$(python_abi_depend ">=dev-libs/boost-1.48[python]")
+RDEPEND="dev-cpp/gtkglextmm:1.0=
+	dev-cpp/libglademm:2.4=
+	$(python_abi_depend dev-libs/boost:0=[python])
 	$(python_abi_depend dev-python/numpy)
 	$(python_abi_depend -i "2.*" dev-python/polygon:2)
 	$(python_abi_depend -i "3.*" dev-python/polygon:3)
