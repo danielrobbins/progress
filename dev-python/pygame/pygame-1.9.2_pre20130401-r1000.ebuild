@@ -25,10 +25,12 @@ IUSE="doc examples X"
 
 RDEPEND="$(python_abi_depend dev-python/numpy)
 	media-libs/freetype:2=
+	media-libs/libpng:0=
 	media-libs/sdl-image:0=[png,jpeg]
 	media-libs/sdl-mixer:0=
 	media-libs/sdl-ttf:0=
 	media-libs/smpeg:0=
+	virtual/jpeg
 	X? ( media-libs/libsdl:0=[X,video] )
 	!X? ( media-libs/libsdl:0= )"
 DEPEND="${RDEPEND}
