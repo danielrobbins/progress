@@ -35,7 +35,8 @@ RDEPEND=">=dev-libs/libxml2-2.7.2
 		$(python_abi_depend -i "3.*" dev-python/beautifulsoup:python-3)
 	)"
 DEPEND="${RDEPEND}
-	$([[ "${PV}" == "9999" ]] && python_abi_depend dev-python/cython)"
+	$([[ "${PV}" == "9999" ]] && python_abi_depend dev-python/cython)
+	$(python_abi_depend dev-python/setuptools)"
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 
