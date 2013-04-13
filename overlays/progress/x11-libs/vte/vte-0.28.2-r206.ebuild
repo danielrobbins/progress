@@ -48,13 +48,6 @@ pkg_setup() {
 		$(use_enable python)
 		--with-gtk=2.0"
 
-	if [[ ${CHOST} == *-interix* ]]; then
-		G2CONF="${G2CONF} --disable-Bsymbolic"
-
-		# interix stropts.h is empty...
-		export ac_cv_header_stropts_h=no
-	fi
-
 	DOCS="AUTHORS ChangeLog HACKING NEWS README"
 
 	if use python; then
@@ -66,16 +59,12 @@ src_prepare() {
 	# https://bugzilla.gnome.org/show_bug.cgi?id=663779
 	epatch "${FILESDIR}/${PN}-0.30.1-alt-meta.patch"
 
-	# https://bugzilla.gnome.org/show_bug.cgi?id=652290
-	epatch "${FILESDIR}"/${PN}-0.28.2-interix.patch
-
 	# Fix CVE-2012-2738, upstream bug #676090
 	epatch "${FILESDIR}"/${PN}-0.28.2-limit-arguments.patch
 
 	# Python bindings are built/installed manually.
-	sed -e "/SUBDIRS += python/d" -i Makefile.am
-
-	eautoreconf
+	# Avoid eautoreconf. 'am__append_1 = python' in Makefile.
+	sed -e "/^SUBDIRS =/s/ \$(am__append_1)//" -i Makefile.in
 
 	gnome2_src_prepare
 }
