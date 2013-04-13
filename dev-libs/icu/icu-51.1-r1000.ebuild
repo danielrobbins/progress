@@ -25,7 +25,7 @@ SRC_URI="${BASE_URI}/${SRC_ARCHIVE}
 
 LICENSE="BSD"
 SLOT="0/${MAJOR_VERSION}"
-KEYWORDS="~*"
+KEYWORDS="*"
 IUSE="c++11 debug doc examples static-libs"
 
 DEPEND=""
