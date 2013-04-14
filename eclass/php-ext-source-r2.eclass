@@ -25,7 +25,7 @@ RDEPEND=""
 
 # Because of USE deps, we require at least EAPI 2
 case ${EAPI} in
-	2|3|4|4-python|5|5-progress) ;;
+	4|4-python|5|5-progress) ;;
 	*)
 		die "php-ext-source-r2 is not compatible with EAPI=${EAPI}"
 esac
@@ -67,20 +67,21 @@ esac
 # Defaults to ${S}
 [[ -z "${PHP_EXT_S}" ]] && PHP_EXT_S="${S}"
 
-#Make sure at least one target is installed. Abuses USE dependencies.
+#Make sure at least one target is installed.
+REQUIRED_USE="|| ( "
 for target in ${USE_PHP}; do
 	IUSE="${IUSE} php_targets_${target}"
 	target=${target/+}
-	SELFDEPEND="${SELFDEPEND} =${CATEGORY}/${PF}[php_targets_${target}]"
+	REQUIRED_USE+="php_targets_${target} "
 	slot=${target/php}
 	slot=${slot/-/.}
 	PHPDEPEND="${PHPDEPEND}
 	php_targets_${target}? ( dev-lang/php:${slot} )"
 done
+REQUIRED_USE+=")"
 
 RDEPEND="${RDEPEND}
 	${PHP_EXT_OPTIONAL_USE}${PHP_EXT_OPTIONAL_USE:+? ( }
-	|| ( ${SELFDEPEND} )
 	${PHPDEPEND}
 	${PHP_EXT_OPTIONAL_USE:+ )}"
 
