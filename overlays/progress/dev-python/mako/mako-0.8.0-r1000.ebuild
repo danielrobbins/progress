@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 DISTUTILS_SRC_TEST="nosetests"
@@ -12,12 +12,12 @@ inherit distutils
 MY_P="Mako-${PV}"
 
 DESCRIPTION="A Python templating language"
-HOMEPAGE="http://www.makotemplates.org/ http://pypi.python.org/pypi/Mako"
+HOMEPAGE="http://www.makotemplates.org/ https://pypi.python.org/pypi/Mako"
 SRC_URI="http://www.makotemplates.org/downloads/${MY_P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~ppc ~s390 ~sh sparc x86 ~amd64-linux ~x86-linux ~x64-macos ~x86-macos"
+KEYWORDS="*"
 IUSE="doc"
 
 RDEPEND="$(python_abi_depend ">=dev-python/beaker-1.1")
@@ -27,21 +27,11 @@ DEPEND="${RDEPEND}
 
 S="${WORKDIR}/${MY_P}"
 
-DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES="1"
-
 src_prepare() {
 	distutils_src_prepare
 
-	preparation() {
-		if [[ "$(python_get_version -l --major)" == "3" ]]; then
-			2to3-${PYTHON_ABI} -nw --no-diffs test
-		fi
-	}
-	python_execute_function -s preparation
-}
-
-src_test() {
-	distutils_src_test -P -w test
+	# http://www.makotemplates.org/trac/ticket/212
+	sed -e "s/print render(data, filename, kw)/print(render(data, filename, kw))/" -i scripts/mako-render
 }
 
 src_install() {
