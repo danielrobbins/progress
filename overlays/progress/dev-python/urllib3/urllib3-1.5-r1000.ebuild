@@ -1,7 +1,7 @@
 # Copyright owners: Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.6 3.1 *-jython"
@@ -10,12 +10,12 @@ DISTUTILS_SRC_TEST="nosetests"
 inherit distutils
 
 DESCRIPTION="HTTP library with thread-safe connection pooling, file post, and more."
-HOMEPAGE="http://urllib3.readthedocs.org/ https://github.com/shazow/urllib3 http://pypi.python.org/pypi/urllib3"
+HOMEPAGE="https://urllib3.readthedocs.org/ https://github.com/shazow/urllib3 https://pypi.python.org/pypi/urllib3"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="amd64 ~arm x86"
+KEYWORDS="*"
 IUSE="test"
 
 RDEPEND="$(python_abi_depend dev-python/six)"
