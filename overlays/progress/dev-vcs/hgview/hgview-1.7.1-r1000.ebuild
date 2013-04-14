@@ -9,12 +9,12 @@ PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 inherit distutils
 
 DESCRIPTION="Mercurial log navigator"
-HOMEPAGE="http://www.logilab.org/project/hgview http://pypi.python.org/pypi/hgview"
-SRC_URI="http://ftp.logilab.org/pub/${PN}/${P}.tar.gz"
+HOMEPAGE="http://www.logilab.org/project/hgview https://pypi.python.org/pypi/hgview"
+SRC_URI="http://download.logilab.org/pub/${PN}/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="amd64 x86"
+KEYWORDS="*"
 IUSE="doc +qt4 urwid"
 REQUIRED_USE="|| ( qt4 urwid )"
 
