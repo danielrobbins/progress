@@ -6,7 +6,8 @@ EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 3.1"
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-pypy-*"
+# 3.3, 3.4: https://github.com/Pylons/webtest/issues/64
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.3 3.4 *-pypy-*"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
