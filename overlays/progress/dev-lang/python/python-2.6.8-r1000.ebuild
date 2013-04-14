@@ -1,7 +1,8 @@
 # Copyright owners: Gentoo Foundation
+#                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="2"
+EAPI="3"
 WANT_AUTOMAKE="none"
 WANT_LIBTOOL="none"
 
@@ -33,7 +34,7 @@ fi
 LICENSE="PSF-2"
 SLOT="2.6"
 PYTHON_ABI="${SLOT}"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh sparc x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd"
+KEYWORDS="*"
 IUSE="-berkdb build doc elibc_uclibc examples gdbm ipv6 +ncurses +readline sqlite +ssl +threads tk +wide-unicode wininst +xml"
 
 RDEPEND="app-arch/bzip2
@@ -276,8 +277,6 @@ src_test() {
 }
 
 src_install() {
-	[[ -z "${ED}" ]] && ED="${D%/}${EPREFIX}/"
-
 	emake DESTDIR="${D}" altinstall maninstall || die "emake altinstall maninstall failed"
 	python_clean_installation_image -q
 
@@ -324,8 +323,6 @@ pkg_preinst() {
 }
 
 eselect_python_update() {
-	[[ -z "${EROOT}" || (! -d "${EROOT}" && -d "${ROOT}") ]] && EROOT="${ROOT%/}${EPREFIX}/"
-
 	if [[ -z "$(eselect python show)" || ! -f "${EROOT}usr/bin/$(eselect python show)" ]]; then
 		eselect python update
 	fi
@@ -352,12 +349,7 @@ pkg_postinst() {
 		ewarn
 		ewarn "\e[1;31m************************************************************************\e[0m"
 		ewarn
-
-		local n
-		for ((n = 0; n < 12; n++)); do
-			echo -ne "\a"
-			sleep 1
-		done
+		echo -ne "\a"
 	fi
 }
 

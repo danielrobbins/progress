@@ -344,12 +344,7 @@ pkg_postinst() {
 		ewarn
 		ewarn "\e[1;31m************************************************************************\e[0m"
 		ewarn
-
-		local n
-		for ((n = 0; n < 12; n++)); do
-			echo -ne "\a"
-			sleep 1
-		done
+		echo -ne "\a"
 	fi
 }
 
