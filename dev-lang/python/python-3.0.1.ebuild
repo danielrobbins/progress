@@ -1,4 +1,5 @@
 # Copyright owners: Gentoo Foundation
+#                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="3"
@@ -33,7 +34,7 @@ fi
 LICENSE="PSF-2"
 SLOT="3.0"
 PYTHON_ABI="${SLOT}"
-KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd"
+KEYWORDS="~*"
 IUSE="build doc elibc_uclibc examples gdbm ipv6 +ncurses +readline sqlite +ssl +threads tk +wide-unicode wininst +xml"
 
 RDEPEND="app-arch/bzip2
@@ -51,6 +52,7 @@ RDEPEND="app-arch/bzip2
 			tk? (
 				>=dev-lang/tk-8.0
 				dev-tcltk/blt
+				dev-tcltk/tix
 			)
 			xml? ( >=dev-libs/expat-2 )
 		)"
@@ -227,7 +229,6 @@ src_test() {
 		mv Lib/test/test_${test}.py "${T}"
 	done
 
-	# Rerun failed tests in verbose mode (regrtest -w).
 	emake test EXTRATESTOPTS="-w" < /dev/tty
 	local result="$?"
 
@@ -326,12 +327,7 @@ pkg_postinst() {
 		ewarn
 		ewarn "\e[1;31m************************************************************************\e[0m"
 		ewarn
-
-		local n
-		for ((n = 0; n < 12; n++)); do
-			echo -ne "\a"
-			sleep 1
-		done
+		echo -ne "\a"
 	fi
 }
 
