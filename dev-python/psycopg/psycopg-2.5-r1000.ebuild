@@ -12,7 +12,7 @@ MY_PN="${PN}2"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="PostgreSQL database adapter for Python"
-HOMEPAGE="http://initd.org/psycopg/ http://pypi.python.org/pypi/psycopg2"
+HOMEPAGE="http://initd.org/psycopg/ https://pypi.python.org/pypi/psycopg2"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="GPL-2"
