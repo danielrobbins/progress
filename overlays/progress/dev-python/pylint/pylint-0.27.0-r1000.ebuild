@@ -11,8 +11,8 @@ PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 inherit distutils
 
 DESCRIPTION="Python code static checker"
-HOMEPAGE="http://www.logilab.org/project/pylint http://pypi.python.org/pypi/pylint"
-SRC_URI="ftp://ftp.logilab.org/pub/${PN}/${P}.tar.gz"
+HOMEPAGE="http://www.logilab.org/project/pylint https://pypi.python.org/pypi/pylint"
+SRC_URI="http://download.logilab.org/pub/${PN}/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
