@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.*"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
@@ -10,15 +10,15 @@ PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 inherit distutils eutils
 
 DESCRIPTION="Simple config file reader and writer"
-HOMEPAGE="http://www.voidspace.org.uk/python/configobj.html http://code.google.com/p/configobj/ http://pypi.python.org/pypi/configobj"
+HOMEPAGE="http://www.voidspace.org.uk/python/configobj.html http://code.google.com/p/configobj/ https://pypi.python.org/pypi/configobj"
 SRC_URI="mirror://sourceforge/${PN}/${P}.zip"
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="amd64 ~ia64 ~ppc ~ppc64 sparc x86 ~amd64-linux ~x86-linux ~x64-macos ~x86-macos"
+KEYWORDS="*"
 IUSE="doc"
 
-DEPEND="app-arch/unzip"
+DEPEND=""
 RDEPEND=""
 
 PYTHON_MODULES="configobj.py validate.py"
