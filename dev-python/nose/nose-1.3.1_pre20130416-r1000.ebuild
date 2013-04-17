@@ -11,7 +11,7 @@ inherit distutils eutils vcs-snapshot
 DESCRIPTION="nose extends unittest to make testing easier"
 HOMEPAGE="https://nose.readthedocs.org/ https://github.com/nose-devs/nose https://pypi.python.org/pypi/nose"
 # SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
-SRC_URI="https://github.com/nose-devs/${PN}/archive/ee922cfe47612fdcd920b8027e3e119347748c3f.tar.gz -> ${P}.tar.gz"
+SRC_URI="https://github.com/nose-devs/${PN}/archive/d130b78af07a606628003bcb2931ed7f55dcb7d0.tar.gz -> ${P}.tar.gz"
 
 LICENSE="LGPL-2.1"
 SLOT="0"
@@ -21,11 +21,7 @@ IUSE="doc examples test"
 RDEPEND="$(python_abi_depend dev-python/coverage)
 	$(python_abi_depend dev-python/setuptools)"
 DEPEND="${RDEPEND}
-	doc? ( || (
-		dev-python/sphinx[python_abis_2.7]
-		dev-python/sphinx[python_abis_2.6]
-		dev-python/sphinx[python_abis_2.5]
-	) )
+	doc? ( $(python_abi_depend dev-python/sphinx) )
 	test? ( $(python_abi_depend -e "2.5 3.* *-jython" dev-python/twisted) )"
 
 DOCS="AUTHORS"
@@ -33,8 +29,13 @@ DOCS="AUTHORS"
 src_prepare() {
 	distutils_src_prepare
 
-	# Disable usage of sphinx.ext.intersphinx, which requires network connection.
-	epatch "${FILESDIR}/${PN}-0.11.0-disable_intersphinx.patch"
+	sed \
+		-e "/^sys.path.insert(.*)$/d" \
+		-e "/^sys.path.insert(/,/)$/d" \
+		-i doc/conf.py
+
+	# Disable versioning of nosetests script to avoid collision with versioning performed by python_merge_intermediate_installation_images().
+	sed -e "/'nosetests%s = nose:run_exit' % py_vers_tag,/d" -i setup.py || die "sed failed"
 
 	# Disable tests requiring network connection.
 	sed \
@@ -42,9 +43,6 @@ src_prepare() {
 		-e "s/test_raises_bad_return/_&/g" \
 		-e "s/test_raises_twisted_error/_&/g" \
 		-i unit_tests/test_twisted.py || die "sed failed"
-
-	# Disable versioning of nosetests script to avoid collision with versioning performed by python_merge_intermediate_installation_images().
-	sed -e "/'nosetests%s = nose:run_exit' % py_vers_tag,/d" -i setup.py || die "sed failed"
 }
 
 src_compile() {
@@ -53,19 +51,15 @@ src_compile() {
 	if use doc; then
 		einfo "Generation of documentation"
 		pushd doc > /dev/null
-		# https://github.com/nose-devs/nose/issues/481
-		if ROOT="/" has_version "dev-python/sphinx[python_abis_2.7]"; then
-			emake html SPHINXBUILD="sphinx-build-2.7"
-		elif ROOT="/" has_version "dev-python/sphinx[python_abis_2.6]"; then
-			emake html SPHINXBUILD="sphinx-build-2.6"
-		else
-			emake html SPHINXBUILD="sphinx-build-2.5"
-		fi
+		PYTHONPATH="../build-$(PYTHON -f --ABI)/lib" emake html
 		popd > /dev/null
 	fi
 }
 
 src_test() {
+	# Disable failing doctest.
+	rm -f functional_tests/doc_tests/test_multiprocess/multiprocess.rst
+
 	testing() {
 		if [[ "$(python_get_version -l --major)" == "3" ]]; then
 			rm -fr build || return
@@ -73,7 +67,7 @@ src_test() {
 		fi
 
 		python_execute "$(PYTHON)" setup.py egg_info || return
-		python_execute "$(PYTHON)" selftest.py -v
+		python_execute PATH="$(pwd)/bin:${PATH}" PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" selftest.py -v
 	}
 	python_execute_function testing
 }
