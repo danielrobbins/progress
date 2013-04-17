@@ -25,7 +25,6 @@ RDEPEND="app-misc/ca-certificates
 	tk? ( dev-lang/tk )
 	zsh-completion? ( app-shells/zsh )"
 DEPEND="emacs? ( virtual/emacs )
-	$([[ ${PV} == 9999 ]] && echo app-text/asciidoc)
 	$([[ ${PV} == 9999 ]] && python_abi_depend dev-python/docutils)
 	test? (
 		app-arch/unzip
