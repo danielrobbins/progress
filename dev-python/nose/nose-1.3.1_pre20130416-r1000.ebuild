@@ -6,7 +6,7 @@ EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.5 2.6 *-jython"
 
-inherit distutils eutils vcs-snapshot
+inherit distutils vcs-snapshot
 
 DESCRIPTION="nose extends unittest to make testing easier"
 HOMEPAGE="https://nose.readthedocs.org/ https://github.com/nose-devs/nose https://pypi.python.org/pypi/nose"
