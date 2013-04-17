@@ -2,18 +2,18 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 
 inherit distutils eutils
 
 DESCRIPTION="Python client for the Advanced Message Queuing Procotol (AMQP)"
-HOMEPAGE="http://code.google.com/p/py-amqplib/ http://pypi.python.org/pypi/amqplib"
+HOMEPAGE="http://code.google.com/p/py-amqplib/ https://pypi.python.org/pypi/amqplib"
 SRC_URI="http://py-amqplib.googlecode.com/files/${P}.tgz"
 
 LICENSE="LGPL-2.1"
 SLOT="0"
-KEYWORDS="amd64 x86"
+KEYWORDS="*"
 IUSE="examples extras"
 
 DEPEND="$(python_abi_depend dev-python/setuptools)"
