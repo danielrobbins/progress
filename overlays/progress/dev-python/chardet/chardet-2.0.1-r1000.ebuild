@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES="1"
 
@@ -15,7 +15,7 @@ SRC_URI="http://chardet.feedparser.org/download/python2-${P}.tgz
 
 LICENSE="LGPL-2.1"
 SLOT="0"
-KEYWORDS="amd64 ~arm ~hppa ~ppc ~ppc64 sparc x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux ~x86-macos"
+KEYWORDS="*"
 IUSE=""
 
 DEPEND=""
