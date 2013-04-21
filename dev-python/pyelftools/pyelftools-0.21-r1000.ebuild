@@ -7,24 +7,21 @@ PYTHON_MULTIPLE_ABIS="1"
 # *-jython: http://bugs.jython.org/issue1973
 PYTHON_RESTRICTED_ABIS="2.5 3.1 *-jython"
 
-inherit distutils eutils
+inherit distutils
 
 DESCRIPTION="Library for analyzing ELF files and DWARF debugging information"
-HOMEPAGE="http://pypi.python.org/pypi/pyelftools https://bitbucket.org/eliben/pyelftools"
+HOMEPAGE="https://pypi.python.org/pypi/pyelftools https://bitbucket.org/eliben/pyelftools"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="public-domain"
 SLOT="0"
 KEYWORDS="*"
-IUSE=""
+IUSE="test"
+
+DEPEND="test? ( $(python_abi_depend -i "2.6" dev-python/unittest2) )"
+RDEPEND=""
 
 PYTHON_MODULES="elftools"
-
-src_prepare() {
-	distutils_src_prepare
-	epatch "${FILESDIR}"/${P}-dyntags-{1,2}.patch
-	sed -e "s/from enums import ENUM_D_TAG/from .enums import ENUM_D_TAG/" -i elftools/elf/dynamic.py
-}
 
 src_test() {
 	testing() {
