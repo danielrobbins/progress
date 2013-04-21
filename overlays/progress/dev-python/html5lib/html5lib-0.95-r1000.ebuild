@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_DEPEND="<<[xml]>>"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.* *-jython"
@@ -11,12 +11,12 @@ DISTUTILS_SRC_TEST="nosetests"
 inherit distutils
 
 DESCRIPTION="HTML parser based on the WHAT-WG Web Applications 1.0 (\"HTML5\") specification"
-HOMEPAGE="http://code.google.com/p/html5lib/ http://pypi.python.org/pypi/html5lib"
+HOMEPAGE="http://code.google.com/p/html5lib/ https://pypi.python.org/pypi/html5lib"
 SRC_URI="http://${PN}.googlecode.com/files/${P}.tar.gz mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="amd64 x86 ~x86-fbsd"
+KEYWORDS="*"
 IUSE=""
 
 DEPEND="$(python_abi_depend dev-python/setuptools)
