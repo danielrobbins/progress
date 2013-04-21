@@ -4,12 +4,12 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="2.5 3.* *-jython *-pypy-*"
 
 inherit distutils
 
 DESCRIPTION="Amazon Web Services Library"
-HOMEPAGE="https://github.com/boto/boto http://pypi.python.org/pypi/boto"
+HOMEPAGE="https://github.com/boto/boto https://pypi.python.org/pypi/boto"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
