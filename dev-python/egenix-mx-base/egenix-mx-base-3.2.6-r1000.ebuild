@@ -9,12 +9,12 @@ PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 inherit distutils
 
 DESCRIPTION="eGenix mx Base Distribution for Python - mxDateTime, mxTextTools, mxProxy, mxTools, mxBeeBase, mxStack, mxQueue, mxURL, mxUID"
-HOMEPAGE="http://www.egenix.com/products/python/mxBase http://pypi.python.org/pypi/egenix-mx-base"
+HOMEPAGE="http://www.egenix.com/products/python/mxBase https://pypi.python.org/pypi/egenix-mx-base"
 SRC_URI="http://downloads.egenix.com/python/${P}.tar.gz"
 
 LICENSE="eGenixPublic-1.1"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh sparc x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd ~amd64-linux ~x86-linux ~ppc-macos ~x86-macos ~sparc-solaris ~x86-solaris"
+KEYWORDS="*"
 IUSE=""
 
 DEPEND=""
@@ -25,7 +25,7 @@ PYTHON_MODULES="mx"
 src_prepare() {
 	distutils_src_prepare
 
-	# Don't install documentation in site-packages directories.
+	# Do not install documentation in site-packages directories.
 	sed -e "/\/Doc\//d" -i egenix_mx_base.py || die "sed failed"
 
 	# Disable failing tests.
