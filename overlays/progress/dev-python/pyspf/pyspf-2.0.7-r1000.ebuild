@@ -2,19 +2,19 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5"
 
 inherit distutils
 
 DESCRIPTION="SPF (Sender Policy Framework) implemented in Python."
-HOMEPAGE="http://pypi.python.org/pypi/pyspf"
+HOMEPAGE="https://pypi.python.org/pypi/pyspf"
 SRC_URI="mirror://sourceforge/pymilter/${P}.tar.gz"
 
 LICENSE="PSF-2"
 SLOT="0"
-KEYWORDS="amd64 x86"
+KEYWORDS="*"
 IUSE="test"
 
 RDEPEND="$(python_abi_depend dev-python/authres)
@@ -34,6 +34,9 @@ src_prepare() {
 		-e "s/print q.check(),q.mechanism/print(q.check(),q.mechanism)/" \
 		-e "s/print q.perm_error.ext/print(q.perm_error.ext)/" \
 		-i spf.py
+
+	# https://bugs.launchpad.net/pypolicyd-spf/+bug/832480
+	sed -e "1132,1141s/except UnicodeEncodeError:/except UnicodeError:/" -i spf.py
 }
 
 src_test() {
