@@ -22,17 +22,15 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="bindist bzip2 doc gmp python ssl threads zlib"
 
-RDEPEND="bzip2? ( >=app-arch/bzip2-1.0.5 )
-	gmp? ( >=dev-libs/gmp-4.2.2 )
-	python? ( $(python_abi_depend ">=dev-libs/boost-1.48[python]") )
-	ssl? ( >=dev-libs/openssl-0.9.8g[bindist=] )
-	zlib? ( >=sys-libs/zlib-1.2.3 )"
+RDEPEND="bzip2? ( app-arch/bzip2:0= )
+	gmp? ( dev-libs/gmp:0= )
+	python? ( $(python_abi_depend dev-libs/boost:0=[python]) )
+	ssl? ( dev-libs/openssl:0=[bindist=] )
+	zlib? ( sys-libs/zlib:0= )"
 DEPEND="${RDEPEND}
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
 
 S="${WORKDIR}/${MY_P}"
-
-DOCS="readme.txt"
 
 src_prepare() {
 	sed -e "s/-Wl,-soname,\$@ //" -i src/build-data/makefile/python.in || die "sed failed"
@@ -41,20 +39,22 @@ src_prepare() {
 		-e "/^install:/s/ docs//" \
 		-i src/build-data/makefile/unix_shr.in || die "sed failed"
 
-	# Fix ImportError with Python 3.
+	# Fix check for Sphinx version.
+	sed \
+		-e "/import sphinx/i\\    import re" \
+		-e "s/version = map(int, sphinx.__version__.split('.'))/version = [int(getattr(re.match(r'\\\\d', x), 'group', lambda: '0')()) for x in sphinx.__version__.split('.')]/" \
+		-i doc/conf.py
+
+	# Fix compatibility with Python 3.
+	sed -e "s/return map(int, gcc_version.split('.')\[0:2\])/return [int(x) for x in gcc_version.split('.')[0:2]]/" -i configure.py
 	sed -e "s/_botan/.&/" -i src/wrap/python/__init__.py || die "sed failed"
 }
 
 src_configure() {
 	local disable_modules="proc_walk,unix_procs,cpu_counter"
-
-	if ! use threads; then
-		disable_modules+=",pthreads"
-	fi
-
-	if use bindist; then
-		disable_modules+=",ecdsa"
-	fi
+	use threads || disable_modules+=",pthreads"
+	use bindist && disable_modules+=",ecdsa"
+	elog "Disabling modules: ${disable_modules}"
 
 	# Enable v9 instructions for sparc64
 	if [[ "${PROFILE_ARCH}" = "sparc64" ]]; then
@@ -63,17 +63,12 @@ src_configure() {
 		CHOSTARCH="${CHOST%%-*}"
 	fi
 
-	elog "Disabling modules: ${disable_modules}"
-
 	local os
 	case ${CHOST} in
 		*-darwin*)   os=darwin ;;
 		*)           os=linux  ;;
 	esac
 
-	# foobared buildsystem, --prefix translates into DESTDIR, see also make
-	# install in src_install, we need the correct live-system prefix here on
-	# Darwin for a shared lib with correct install_name
 	./configure.py \
 		--prefix="${EPREFIX}/usr" \
 		--libdir=$(get_libdir) \
@@ -98,7 +93,7 @@ src_compile() {
 
 	if use doc; then
 		einfo "Generation of documentation"
-		sphinx-build doc doc_output
+		sphinx-build doc html || die "Generation of documentation failed"
 	fi
 
 	if use python; then
@@ -137,10 +132,7 @@ src_install() {
 	dosym botan-1.10.pc /usr/$(get_libdir)/pkgconfig/botan.pc
 
 	if use doc; then
-		pushd doc_output > /dev/null
-		insinto /usr/share/doc/${PF}/html
-		doins -r [a-z]* _static
-		popd > /dev/null
+		dohtml -r html/
 	fi
 
 	if use python; then
