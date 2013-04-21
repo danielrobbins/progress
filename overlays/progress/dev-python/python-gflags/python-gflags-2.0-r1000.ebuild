@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.*"
 # http://code.google.com/p/python-gflags/issues/detail?id=7
@@ -12,12 +12,12 @@ PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 inherit distutils
 
 DESCRIPTION="Command line flags module for Python"
-HOMEPAGE="http://code.google.com/p/python-gflags/ http://pypi.python.org/pypi/python-gflags"
+HOMEPAGE="http://code.google.com/p/python-gflags/ https://pypi.python.org/pypi/python-gflags"
 SRC_URI="http://${PN}.googlecode.com/files/${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="amd64 x86"
+KEYWORDS="*"
 IUSE=""
 
 DEPEND="$(python_abi_depend dev-python/setuptools)"
