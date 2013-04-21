@@ -45,8 +45,7 @@ src_install() {
 	python_generate_wrapper_scripts -E -f -q "${ED}usr/bin/cython"
 
 	if use doc; then
-		# "-A c" is for "Doc/primes.c".
-		dohtml -A c -r Doc/*
+		dohtml -A c -r Doc/
 	fi
 
 	if use examples; then
