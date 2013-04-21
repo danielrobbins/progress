@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="2"
+EAPI="3"
 WANT_AUTOMAKE="none"
 WANT_LIBTOOL="none"
 
@@ -12,7 +12,7 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="ef762dbe3e42"
+	EHG_REVISION="0c308d65d7bc"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
@@ -25,7 +25,7 @@ HOMEPAGE="http://www.python.org/"
 if [[ "${PV}" == *_pre* ]]; then
 	SRC_URI=""
 else
-	SRC_URI="http://www.python.org/ftp/python/${MY_PV}/${MY_P}.tar.bz2"
+	SRC_URI="http://www.python.org/ftp/python/${MY_PV}/${MY_P}.tar.xz"
 	if [[ "${PR#r}" -lt 1000 ]]; then
 		SRC_URI+=" http://people.apache.org/~Arfrever/gentoo/python-gentoo-patches-${MY_PV}$([[ "${PATCHSET_REVISION}" != "0" ]] && echo "-r${PATCHSET_REVISION}").tar.bz2"
 	fi
@@ -233,7 +233,9 @@ src_configure() {
 }
 
 src_compile() {
-	emake touch || die "emake touch failed"
+	if [[ "${PV}" == *_pre* ]]; then
+		emake touch || die "emake touch failed"
+	fi
 	emake EPYTHON="python${PV%%.*}" || die "emake failed"
 
 	pax-mark m python
@@ -281,14 +283,12 @@ src_test() {
 }
 
 src_install() {
-	[[ -z "${ED}" ]] && ED="${D%/}${EPREFIX}/"
-
 	emake DESTDIR="${D}" altinstall || die "emake altinstall failed"
 	python_clean_installation_image -q
 
 	sed -e "s/\(LDFLAGS=\).*/\1/" -i "${ED}$(python_get_libdir)/config/Makefile" || die "sed failed"
 
-	mv "${ED}usr/bin/python${SLOT}-config" "${ED}usr/bin/python-config-${SLOT}"
+	dosym python${SLOT}-config /usr/bin/python-config-${SLOT}
 
 	# Fix collisions between different slots of Python.
 	mv "${ED}usr/bin/2to3" "${ED}usr/bin/2to3-${SLOT}"
@@ -330,8 +330,6 @@ pkg_preinst() {
 }
 
 eselect_python_update() {
-	[[ -z "${EROOT}" || (! -d "${EROOT}" && -d "${ROOT}") ]] && EROOT="${ROOT%/}${EPREFIX}/"
-
 	if [[ -z "$(eselect python show)" || ! -f "${EROOT}usr/bin/$(eselect python show)" ]]; then
 		eselect python update
 	fi
@@ -358,12 +356,7 @@ pkg_postinst() {
 		ewarn
 		ewarn "\e[1;31m************************************************************************\e[0m"
 		ewarn
-
-		local n
-		for ((n = 0; n < 12; n++)); do
-			echo -ne "\a"
-			sleep 1
-		done
+		echo -ne "\a"
 	fi
 }
 
