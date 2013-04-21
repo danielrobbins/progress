@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 
@@ -16,10 +16,10 @@ SRC_URI="mirror://sourceforge/${PN}/${MY_P}.tar.gz"
 
 LICENSE="LGPL-2"
 SLOT="0"
-KEYWORDS="amd64 ~ppc ~ppc64 x86"
+KEYWORDS="*"
 IUSE="doc"
 
-DEPEND=">=x11-libs/fltk-1.3.0:1[opengl]"
+DEPEND=">=x11-libs/fltk-1.3.0:1=[opengl]"
 RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/${MY_P}"
@@ -41,6 +41,6 @@ src_install() {
 	distutils_src_install
 
 	if use doc; then
-		dohtml fltk/docs/*
+		dohtml -r fltk/docs/
 	fi
 }
