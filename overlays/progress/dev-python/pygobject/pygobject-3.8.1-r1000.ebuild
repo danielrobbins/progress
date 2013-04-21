@@ -45,19 +45,9 @@ RDEPEND="${COMMON_DEPEND}
 
 src_prepare() {
 	DOCS="AUTHORS ChangeLog* NEWS README"
-	# Hard-enable libffi support since both gobject-introspection and
-	# glib-2.29.x rdepend on it anyway
-	# docs disabled by upstream default since they are very out of date
-	G2CONF="${G2CONF}
-		--with-ffi
-		$(use_enable cairo)
-		$(use_enable threads thread)"
 
-	# Do not build tests if unneeded, bug #226345
+	# Do not build tests if unneeded, bug #226345, upstream bug #698444
 	epatch "${FILESDIR}/${PN}-3.7.90-make_check.patch"
-
-	# Fix stack corruption due to incorrect format for argument parser (from 3.8 branch)
-	epatch "${FILESDIR}/${P}-stack-corruption.patch"
 
 	# Fix compatibility with Python 2.6 and 3.1.
 	sed -e "s/callable(\([^)]\+\))/(hasattr(\1, '__call__') if __import__('sys').version_info\[:2\] == (3, 1) else &)/" -i gi/overrides/GLib.py tests/test_gi.py || die
@@ -82,8 +72,15 @@ src_prepare() {
 }
 
 src_configure() {
+	# Hard-enable libffi support since both gobject-introspection and
+	# glib-2.29.x rdepend on it anyway
+	# docs disabled by upstream default since they are very out of date
+
 	configuration() {
-		PYTHON="$(PYTHON)" gnome2_src_configure
+		PYTHON="$(PYTHON)" gnome2_src_configure \
+			--with-ffi \
+			$(use_enable cairo) \
+			$(use_enable threads thread)
 	}
 	python_execute_function -s configuration
 }
