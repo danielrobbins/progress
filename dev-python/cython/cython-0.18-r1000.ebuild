@@ -9,10 +9,13 @@ PYTHON_RESTRICTED_ABIS="*-jython"
 inherit distutils
 
 MY_PN="Cython"
-MY_P="${MY_PN}-${PV/_beta/b}"
+MY_PV="${PV/_alpha/a}"
+MY_PV="${MY_PV/_beta/b}"
+MY_PV="${MY_PV/_rc/rc}"
+MY_P="${MY_PN}-${MY_PV}"
 
 DESCRIPTION="The Cython compiler for writing C extensions for the Python language"
-HOMEPAGE="http://www.cython.org/ http://pypi.python.org/pypi/Cython"
+HOMEPAGE="http://www.cython.org/ https://pypi.python.org/pypi/Cython"
 SRC_URI="http://www.cython.org/release/${MY_P}.tar.gz"
 
 LICENSE="Apache-2.0"
@@ -42,8 +45,7 @@ src_install() {
 	python_generate_wrapper_scripts -E -f -q "${ED}usr/bin/cython"
 
 	if use doc; then
-		# "-A c" is for "Doc/primes.c".
-		dohtml -A c -r Doc/*
+		dohtml -A c -r Doc/
 	fi
 
 	if use examples; then
