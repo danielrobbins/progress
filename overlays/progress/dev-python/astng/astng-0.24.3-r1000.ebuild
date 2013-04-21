@@ -10,7 +10,8 @@ inherit distutils
 
 DESCRIPTION="Abstract Syntax Tree New Generation for logilab packages"
 HOMEPAGE="http://www.logilab.org/project/logilab-astng https://pypi.python.org/pypi/logilab-astng"
-SRC_URI="http://download.logilab.org/pub/astng/logilab-${P}.tar.gz"
+# SRC_URI="http://download.logilab.org/pub/astng/logilab-${P}.tar.gz"
+SRC_URI="mirror://pypi/l/logilab-${PN}/logilab-${P}.tar.gz"
 
 LICENSE="LGPL-2.1"
 SLOT="0"
