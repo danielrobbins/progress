@@ -12,7 +12,7 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="4db1b0bb3683"
+	EHG_REVISION="354e4d096c34"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
@@ -208,7 +208,9 @@ src_configure() {
 }
 
 src_compile() {
-	emake touch || die "emake touch failed"
+	if [[ "${PV}" == *_pre* ]]; then
+		emake touch || die "emake touch failed"
+	fi
 	emake CPPFLAGS="" CFLAGS="" LDFLAGS="" || die "emake failed"
 
 	pax-mark m python
@@ -264,7 +266,7 @@ src_install() {
 		-e "s/\(PY_LDFLAGS=\).*/\1/" \
 		-i "${ED}$(python_get_libdir)/config-${SLOT}/Makefile" || die "sed failed"
 
-	mv "${ED}usr/bin/python${SLOT}-config" "${ED}usr/bin/python-config-${SLOT}"
+	dosym python${SLOT}-config /usr/bin/python-config-${SLOT}
 
 	# Fix collisions between different slots of Python.
 	rm -f "${ED}usr/$(get_libdir)/libpython3.so"
@@ -329,12 +331,7 @@ pkg_postinst() {
 		ewarn
 		ewarn "\e[1;31m************************************************************************\e[0m"
 		ewarn
-
-		local n
-		for ((n = 0; n < 12; n++)); do
-			echo -ne "\a"
-			sleep 1
-		done
+		echo -ne "\a"
 	fi
 }
 
