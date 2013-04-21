@@ -10,8 +10,9 @@ PYTHON_NAMESPACES="logilab"
 inherit distutils python-namespaces
 
 DESCRIPTION="Useful miscellaneous modules used by Logilab projects"
-HOMEPAGE="http://www.logilab.org/project/logilab-common http://pypi.python.org/pypi/logilab-common"
-SRC_URI="http://download.logilab.org/pub/common/${P}.tar.gz"
+HOMEPAGE="http://www.logilab.org/project/logilab-common https://pypi.python.org/pypi/logilab-common"
+# SRC_URI="http://download.logilab.org/pub/common/${P}.tar.gz"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="LGPL-2.1"
 SLOT="0"
@@ -31,13 +32,6 @@ DEPEND="${RDEPEND}
 S="${WORKDIR}/${P}"
 
 PYTHON_MODULES="logilab"
-
-src_prepare() {
-	distutils_src_prepare
-
-	# https://www.logilab.org/ticket/117580
-	sed -e "806s/\t\t/               /" -i registry.py
-}
 
 src_compile() {
 	distutils_src_compile
