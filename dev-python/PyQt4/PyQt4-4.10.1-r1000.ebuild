@@ -10,7 +10,7 @@ PYTHON_EXPORT_PHASE_FUNCTIONS="1"
 inherit eutils python qt4-r2 toolchain-funcs
 
 DESCRIPTION="Python bindings for the Qt toolkit"
-HOMEPAGE="http://www.riverbankcomputing.co.uk/software/pyqt/intro http://pypi.python.org/pypi/PyQt"
+HOMEPAGE="http://www.riverbankcomputing.co.uk/software/pyqt/intro https://pypi.python.org/pypi/PyQt"
 
 if [[ "${PV}" == *_pre* ]]; then
 	MY_P="PyQt-x11-gpl-snapshot-${PV%_pre*}-${REVISION}"
@@ -79,7 +79,10 @@ src_prepare() {
 	use arm && epatch "${FILESDIR}/${PN}-4.7.3-qreal_float_support.patch"
 
 	# Use proper include directory for phonon.
-	sed -e "s:^\s\+generate_code(\"phonon\":&, extra_include_dirs=[\"${EPREFIX}/usr/include/phonon\"]:" -i configure.py || die "sed configure.py failed"
+	sed \
+		-e "s:VideoWidget()\":&, extra_include_dirs=[\"${EPREFIX}/usr/include/qt4/QtGui\"]:" \
+		-e "s:^\s\+generate_code(\"phonon\":&, extra_include_dirs=[\"${EPREFIX}/usr/include/phonon\"]:" \
+		-i configure.py || die "sed configure.py failed"
 
 	if ! use dbus; then
 		sed -e "s/^\(\s\+\)check_dbus()/\1pass/" -i configure.py || die "sed configure.py failed"
