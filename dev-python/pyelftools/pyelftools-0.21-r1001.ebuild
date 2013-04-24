@@ -7,7 +7,7 @@ PYTHON_MULTIPLE_ABIS="1"
 # *-jython: http://bugs.jython.org/issue1973
 PYTHON_RESTRICTED_ABIS="2.5 3.1 *-jython"
 
-inherit distutils
+inherit distutils eutils
 
 DESCRIPTION="Library for analyzing ELF files and DWARF debugging information"
 HOMEPAGE="https://pypi.python.org/pypi/pyelftools https://bitbucket.org/eliben/pyelftools"
@@ -22,6 +22,11 @@ DEPEND="test? ( $(python_abi_depend -i "2.6" dev-python/unittest2) )"
 RDEPEND=""
 
 PYTHON_MODULES="elftools"
+
+src_prepare() {
+	distutils_src_prepare
+	epatch "${FILESDIR}/${P}-dyntable.patch"
+}
 
 src_test() {
 	testing() {
