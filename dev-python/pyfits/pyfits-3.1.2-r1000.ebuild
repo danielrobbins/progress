@@ -10,7 +10,7 @@ DISTUTILS_SRC_TEST="nosetests"
 inherit distutils eutils
 
 DESCRIPTION="Reads FITS images and tables into numpy arrays and manipulates FITS headers"
-HOMEPAGE="http://www.stsci.edu/institute/software_hardware/pyfits http://pypi.python.org/pypi/pyfits"
+HOMEPAGE="http://www.stsci.edu/institute/software_hardware/pyfits https://pypi.python.org/pypi/pyfits"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD"
@@ -19,6 +19,7 @@ KEYWORDS="*"
 IUSE=""
 
 RDEPEND="$(python_abi_depend dev-python/numpy)
+	$(python_abi_depend dev-python/setuptools)
 	!dev-python/astropy"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/d2to1)
