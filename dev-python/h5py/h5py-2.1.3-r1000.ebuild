@@ -9,7 +9,7 @@ DISTUTILS_SRC_TEST="setup.py"
 
 inherit distutils
 
-DESCRIPTION="A simple Python interface to HDF5 files"
+DESCRIPTION="Simple Python interface to HDF5 files"
 HOMEPAGE="http://h5py.alfven.org/ http://code.google.com/p/h5py/ https://pypi.python.org/pypi/h5py"
 SRC_URI="http://${PN}.googlecode.com/files/${P}.tar.gz"
 
