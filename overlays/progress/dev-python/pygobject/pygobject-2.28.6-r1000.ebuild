@@ -63,10 +63,14 @@ src_prepare() {
 	epatch "${FILESDIR}/${P}-python-3-codegen.patch"
 	sed -e "s/print datetime.date.today()/print(datetime.date.today())/" -i docs/Makefile.am
 
-	python_clean_py-compile_files
+	sed \
+		-e "s/AM_CONFIG_HEADER/AC_CONFIG_HEADERS/" \
+		-e "/AM_PROG_CC_STDC/d" \
+		-i configure.ac || die
 
 	eautoreconf
 	gnome2_src_prepare
+	python_clean_py-compile_files
 
 	python_copy_sources
 }
