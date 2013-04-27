@@ -59,10 +59,14 @@ src_prepare() {
 	# Do not build tests if unneeded, bug #226345
 	epatch "${FILESDIR}/${PN}-2.90.1-make_check.patch"
 
-	python_clean_py-compile_files
+	sed \
+		-e "s/AM_CONFIG_HEADER/AC_CONFIG_HEADERS/" \
+		-e "/AM_PROG_CC_STDC/d" \
+		-i configure.ac || die
 
 	eautoreconf
 	gnome2_src_prepare
+	python_clean_py-compile_files
 
 	python_copy_sources
 

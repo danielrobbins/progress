@@ -63,6 +63,11 @@ src_prepare() {
 	sed -e "s/callable(\([^)]\+\))/hasattr(\1, '__call__') if __import__('sys').version_info\[:2\] == (3, 1) else &/" -i tests/test_gi.py || die
 	sed -e "s/\([[:space:]]*\)def test_help(self):/\1@unittest.skipIf(__import__('sys').version_info\[:2\] in ((2, 6), (3, 1)), 'Python 2.6 or 3.1')\n&/" -i tests/test_gi.py || die
 
+	sed \
+		-e "s/AM_CONFIG_HEADER/AC_CONFIG_HEADERS/" \
+		-e "/AM_PROG_CC_STDC/d" \
+		-i configure.ac || die
+
 	eautoreconf
 	gnome2_src_prepare
 	python_clean_py-compile_files
