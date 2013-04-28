@@ -19,8 +19,8 @@ IUSE="doc examples test"
 
 DEPEND="$(python_abi_depend -e "2.5" dev-python/imaging)
 	media-fonts/ttf-bitstream-vera
-	media-libs/libart_lgpl
-	sys-libs/zlib"
+	media-libs/libart_lgpl:0=
+	sys-libs/zlib:0="
 RDEPEND="${DEPEND}"
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
