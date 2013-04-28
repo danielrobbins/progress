@@ -10,20 +10,32 @@ PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
 inherit distutils
 
 DESCRIPTION="Python FTP server library"
-HOMEPAGE="http://code.google.com/p/pyftpdlib/ http://pypi.python.org/pypi/pyftpdlib"
+HOMEPAGE="http://code.google.com/p/pyftpdlib/ https://pypi.python.org/pypi/pyftpdlib"
 SRC_URI="http://pyftpdlib.googlecode.com/files/${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
 KEYWORDS="*"
-IUSE="examples pysendfile ssl"
+IUSE="examples ssl"
 
-RDEPEND="pysendfile? ( $(python_abi_depend -e "*-jython" dev-python/pysendfile) )
+# Python >=3.3 provides os.sendfile().
+RDEPEND="$(python_abi_depend -e "3.[3-9] *-jython" dev-python/pysendfile)
 	ssl? ( $(python_abi_depend -e "*-jython" dev-python/pyopenssl) )"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
 DOCS="CREDITS HISTORY"
+
+src_prepare() {
+	distutils_src_prepare
+
+	# http://code.google.com/p/pyftpdlib/issues/detail?id=256
+	sed \
+		-e "/unicode = str/i\\    basestring = str" \
+		-e "/unicode = unicode/i\\    basestring = basestring" \
+		-i pyftpdlib/_compat.py
+	sed -e "s/from pyftpdlib._compat import PY3, u, b, getcwdu, callable/from pyftpdlib._compat import PY3, u, b, getcwdu, callable, basestring/" -i test/test_ftpd.py
+}
 
 src_test() {
 	testing() {
