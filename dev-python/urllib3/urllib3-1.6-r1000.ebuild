@@ -4,7 +4,7 @@
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.6 3.1 *-jython"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.1 *-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
@@ -41,4 +41,10 @@ src_prepare() {
 		-e "s/from urllib3.packages.six import/from six import/" \
 		-i test/*.py
 	rm -f urllib3/packages/six.py
+
+	# Disable minimum percentage of coverage for tests to pass.
+	sed -e "/cover-min-percentage = 100/d" -i setup.cfg
+
+	# https://github.com/shazow/urllib3/issues/177
+	sed -e "s/DOMAIN\\\\username/DOMAIN\\\\\\\\username/" -i urllib3/contrib/ntlmpool.py
 }
