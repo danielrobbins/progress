@@ -9,7 +9,7 @@ DISTUTILS_SRC_TEST="setup.py"
 inherit distutils
 
 DESCRIPTION="The Pyramid web application development framework, a Pylons project"
-HOMEPAGE="http://pypi.python.org/pypi/pyramid"
+HOMEPAGE="https://pypi.python.org/pypi/pyramid"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD repoze ZPL doc? ( CC-BY-NC-SA-3.0 )"
@@ -44,7 +44,7 @@ src_prepare() {
 	distutils_src_prepare
 
 	# Fix Sphinx theme.
-	sed -e "/# Add and use Pylons theme/,+33d" -i docs/conf.py || die "sed failed"
+	sed -e "/# Add and use Pylons theme/,+31d" -i docs/conf.py || die "sed failed"
 }
 
 src_compile() {
