@@ -10,20 +10,20 @@ PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 inherit distutils
 
 DESCRIPTION="py.test: simple powerful testing with Python"
-HOMEPAGE="http://pytest.org/ https://bitbucket.org/hpk42/pytest http://pypi.python.org/pypi/pytest"
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.zip"
+HOMEPAGE="http://pytest.org/ https://bitbucket.org/hpk42/pytest https://pypi.python.org/pypi/pytest"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh sparc x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~ia64-linux ~x86-linux ~ppc-macos ~x86-macos"
+KEYWORDS="*"
 IUSE="doc"
 
-RDEPEND="$(python_abi_depend ">=dev-python/py-1.4.12")"
+RDEPEND="$(python_abi_depend ">=dev-python/py-1.4.13")"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
 
-DOCS="CHANGELOG README.txt"
+DOCS="CHANGELOG README.rst"
 PYTHON_MODULES="pytest.py _pytest"
 
 src_prepare() {
