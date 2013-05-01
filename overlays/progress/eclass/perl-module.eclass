@@ -174,7 +174,7 @@ perl-module_src_compile() {
 #  and apply them to Test::Harness.
 #
 #  If you want more verbose testing, set TEST_VERBOSE=1
-#  in your bashrc | /etc/make.conf | ENV
+#  in your bashrc | /etc/portage/make.conf | ENV
 #
 # For ebuild writers:
 #  If you wish to enable default tests w/ 'make test' ,
