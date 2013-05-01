@@ -27,7 +27,7 @@ RDEPEND=""
 
 S="${WORKDIR}/${MY_P}"
 
-DOCS="README.md CHANGES"
+DOCS="README.rst CHANGES"
 PYTHON_MODULES="redis"
 
 src_test() {
