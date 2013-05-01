@@ -11,7 +11,8 @@ PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 inherit distutils
 
 DESCRIPTION="Python code static checker"
-HOMEPAGE="http://www.logilab.org/project/pylint https://pypi.python.org/pypi/pylint"
+# Old homepage: http://www.logilab.org/project/pylint
+HOMEPAGE="http://www.pylint.org/ https://bitbucket.org/logilab/pylint https://pypi.python.org/pypi/pylint"
 SRC_URI="http://download.logilab.org/pub/${PN}/${P}.tar.gz"
 
 LICENSE="GPL-2"
@@ -21,16 +22,17 @@ IUSE="examples tk"
 
 # Versions specified in __pkginfo__.py.
 RDEPEND="$(python_abi_depend ">=dev-python/logilab-common-0.53.0")
-	$(python_abi_depend ">=dev-python/astng-0.21.1")"
+	$(python_abi_depend ">=dev-python/astng-0.24.3")"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
 DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES="1"
-DOCS="doc/*.txt"
+# DOCS="doc/*.txt"
 
 src_prepare() {
-	# Disable failing test.
-	sed -e "s/test_gtk_import/_&/" -i test/test_regr.py
+	# https://bitbucket.org/logilab/pylint/commits/86cdfa0bd31e3d4d923b741867e6ce0b935859dc
+	mv test/input/{func_dangerous_default_py27.py,func_set_literal_as_default_py27.py} || die
+	echo "W:  5:function1: Dangerous default value {1} as argument" > test/messages/func_set_literal_as_default_py27.txt
 
 	distutils_src_prepare
 }
