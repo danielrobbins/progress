@@ -539,7 +539,9 @@ autotools-utils_src_test() {
 
 	_check_build_dir
 	pushd "${BUILD_DIR}" > /dev/null || die
-	# Run default src_test as defined in ebuild.sh
-	default_src_test
+
+	# XXX: do we need to support other targets in autotools?
+	emake check "${@}" || die 'emake check failed.'
+
 	popd > /dev/null || die
 }
