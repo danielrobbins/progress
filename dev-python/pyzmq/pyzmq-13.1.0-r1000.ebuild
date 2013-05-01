@@ -43,7 +43,7 @@ src_install() {
 	python_execute_function -q delete_tests
 
 	if use examples; then
-		insinto /usr/share/doc/${PF}
-		doins -r examples
+		insinto /usr/share/doc/${PF}/examples
+		doins -r examples/*
 	fi
 }
