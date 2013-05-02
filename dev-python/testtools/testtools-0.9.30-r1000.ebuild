@@ -10,7 +10,7 @@ PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
 inherit distutils
 
 DESCRIPTION="Extensions to the Python standard library unit testing framework"
-HOMEPAGE="https://github.com/testing-cabal/testtools https://launchpad.net/testtools http://pypi.python.org/pypi/testtools"
+HOMEPAGE="https://github.com/testing-cabal/testtools https://launchpad.net/testtools https://pypi.python.org/pypi/testtools"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
@@ -18,16 +18,10 @@ SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
-RDEPEND="$(python_abi_depend dev-python/extras)"
+RDEPEND="$(python_abi_depend dev-python/extras)
+	$(python_abi_depend dev-python/mimeparse)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
-
-src_prepare() {
-	distutils_src_prepare
-
-	# Avoid ImportError with Python 3 due to not installed testtools/_compat2x.py.
-	sed -e "s/except SyntaxError:/except (ImportError, SyntaxError):/" -i testtools/compat.py || die "sed failed"
-}
 
 src_test() {
 	testing() {
@@ -40,9 +34,7 @@ src_install() {
 	distutils_src_install
 
 	delete_version-specific_modules() {
-		if [[ "$(python_get_version -l --major)" == "3" ]]; then
-			rm -f "${ED}$(python_get_sitedir)/testtools/_compat2x.py"
-		else
+		if [[ "$(python_get_version -l --major)" == "2" ]]; then
 			rm -f "${ED}$(python_get_sitedir)/testtools/_compat3x.py"
 		fi
 	}
