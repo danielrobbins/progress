@@ -79,7 +79,6 @@ RDEPEND="$(python_abi_depend net-zope/namespaces-zope[Products,Shared,Shared.DC]
 	$(python_abi_depend net-zope/zope.viewlet)
 	$(python_abi_depend net-zope/zopeundo)"
 DEPEND="${RDEPEND}
-	app-arch/unzip
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
 PDEPEND="$(python_abi_depend net-zope/btreefolder2)
 	$(python_abi_depend net-zope/externalmethod)

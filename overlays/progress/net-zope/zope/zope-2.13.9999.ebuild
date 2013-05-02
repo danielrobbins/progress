@@ -1,7 +1,7 @@
 # Copyright owners: Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 3.* *-jython *-pypy-*"
 
@@ -11,7 +11,7 @@ MY_PN="Zope2"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Zope 2 application server / web framework"
-HOMEPAGE="http://www.zope.org http://zope2.zope.org http://pypi.python.org/pypi/Zope2 https://launchpad.net/zope2"
+HOMEPAGE="http://www.zope.org http://zope2.zope.org https://pypi.python.org/pypi/Zope2 https://launchpad.net/zope2"
 SRC_URI=""
 
 LICENSE="ZPL"
@@ -100,7 +100,7 @@ pkg_setup() {
 
 src_prepare() {
 	distutils_src_prepare
-	epatch "${FILESDIR}/${PN}-2.13.15-backports.patch"
+	epatch "${FILESDIR}/${PN}-2.13.20-backports.patch"
 
 	local files="$(find -type f | sed -e "s:^\./::" | sort)"
 	mkdir src/Zope2.egg-info
