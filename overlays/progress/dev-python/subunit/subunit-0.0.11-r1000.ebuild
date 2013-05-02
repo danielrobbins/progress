@@ -5,8 +5,8 @@
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5"
-# https://bugs.launchpad.net/subunit/+bug/1025392
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.3 3.4"
+# 3.[3-9]: https://bugs.launchpad.net/subunit/+bug/1025392
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.[3-9] *-jython"
 
 inherit distutils
 
@@ -14,7 +14,7 @@ MY_PN="python-${PN}"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Python implementation of subunit test streaming protocol"
-HOMEPAGE="https://launchpad.net/subunit http://pypi.python.org/pypi/python-subunit"
+HOMEPAGE="https://launchpad.net/subunit https://pypi.python.org/pypi/python-subunit"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="|| ( Apache-2.0 BSD )"
@@ -22,7 +22,8 @@ SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
-RDEPEND="$(python_abi_depend ">=dev-python/testtools-0.9.23")"
+RDEPEND="$(python_abi_depend dev-python/extras)
+	$(python_abi_depend ">=dev-python/testtools-0.9.30")"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
