@@ -51,20 +51,15 @@ http://svn.zope.org/?rev=127347&view=rev
      implements(OFS.interfaces.IObjectClonedEvent)
 --- src/OFS/interfaces.py
 +++ src/OFS/interfaces.py
-@@ -13,10 +13,11 @@
- """OFS interfaces.
- """
- 
-+from zope.component.interfaces import IPossibleSite
+@@ -16,6 +16,7 @@
  from zope.container.interfaces import IContainer
  from zope.interface import Attribute
  from zope.interface import Interface
--from zope.location.interfaces import IPossibleSite
 +from zope.interface.interfaces import IObjectEvent
  from zope.location.interfaces import IRoot
  from zope.schema import Bool, BytesLine, Tuple
  
-@@ -572,7 +573,7 @@
+@@ -577,7 +578,7 @@
          """
  
      def manage_exportObject(id='', download=None, toxml=None,
@@ -73,7 +68,7 @@ http://svn.zope.org/?rev=127347&view=rev
          """Exports an object to a file and returns that file."""
  
      def manage_importObject(file, REQUEST=None, set_owner=1):
-@@ -886,8 +887,6 @@
+@@ -891,8 +892,6 @@
  ##################################################
  # Event interfaces
  
@@ -82,7 +77,7 @@ http://svn.zope.org/?rev=127347&view=rev
  class IObjectWillBeMovedEvent(IObjectEvent):
      """An object will be moved."""
      oldParent = Attribute("The old location parent for the object.")
-@@ -895,12 +894,15 @@
+@@ -900,12 +899,15 @@
      newParent = Attribute("The new location parent for the object.")
      newName = Attribute("The new location name for the object.")
  
@@ -212,15 +207,7 @@ http://svn.zope.org/?rev=127347&view=rev
  from zope.security.zcml import Permission
  
  import zope.browserpage.metaconfigure
-@@ -56,18 +56,12 @@
- def page(_context, name, permission, for_,
-          layer=IDefaultBrowserLayer, template=None, class_=None,
-          allowed_interface=None, allowed_attributes=None,
--         attribute='__call__', menu=None, title=None,
-+         attribute='__call__', menu=None, title=None, 
-          ):
--
-     _handle_menu(_context, menu, title, [for_], name, permission)
+@@ -64,11 +64,6 @@
  
      if not (class_ or template):
          raise ConfigurationError("Must specify a class or template")
@@ -232,7 +219,7 @@ http://svn.zope.org/?rev=127347&view=rev
  
      if attribute != '__call__':
          if template:
-@@ -92,6 +86,7 @@
+@@ -93,6 +88,7 @@
          cdict = getSecurityInfo(class_)
          cdict['__name__'] = name
          if template:
@@ -240,7 +227,7 @@ http://svn.zope.org/?rev=127347&view=rev
              new_class = makeClassForTemplate(template, bases=(class_, ),
                                               cdict=cdict, name=name)
          elif attribute != "__call__":
-@@ -120,21 +115,30 @@
+@@ -121,21 +117,30 @@
              # some security declarations on it so we really shouldn't
              # modify the original.  So, instead we make a new class
              # with just one base class -- the original
@@ -273,7 +260,7 @@ http://svn.zope.org/?rev=127347&view=rev
      _context.action(
          discriminator = ('five:protectClass', new_class),
          callable = protectClass,
-@@ -166,6 +170,7 @@
+@@ -167,6 +172,7 @@
          args = (new_class,)
          )
  
@@ -281,7 +268,7 @@ http://svn.zope.org/?rev=127347&view=rev
  class pages(zope.browserpage.metaconfigure.pages):
  
      def page(self, _context, name, attribute='__call__', template=None,
-@@ -191,7 +196,7 @@
+@@ -192,7 +198,7 @@
  class view(zope.browserpage.metaconfigure.view):
  
      def __call__(self):
@@ -289,8 +276,8 @@ http://svn.zope.org/?rev=127347&view=rev
 +        (_context, name, (for_, layer), permission, class_,
           allowed_interface, allowed_attributes) = self.args
  
-         required = {}
-@@ -200,6 +205,7 @@
+         name = str(name)  # De-unicode
+@@ -203,6 +209,7 @@
          pages = {}
  
          for pname, attribute, template in self.pages:
@@ -298,7 +285,7 @@ http://svn.zope.org/?rev=127347&view=rev
              if template:
                  cdict[pname] = ViewPageTemplateFile(template)
                  if attribute and attribute != name:
-@@ -222,8 +228,7 @@
+@@ -225,8 +232,7 @@
  
                  if name in pages:
                      return getattr(self, pages[name])
@@ -308,7 +295,7 @@ http://svn.zope.org/?rev=127347&view=rev
                  if view is not None:
                      return view
  
-@@ -236,8 +241,7 @@
+@@ -239,8 +245,7 @@
  
                  if name in pages:
                      return getattr(self, pages[name])
@@ -318,7 +305,7 @@ http://svn.zope.org/?rev=127347&view=rev
                  if view is not None:
                      return view
  
-@@ -266,10 +270,10 @@
+@@ -269,10 +274,10 @@
              cname = str(name)
          except:
              cname = "GeneratedClass"
@@ -331,7 +318,7 @@ http://svn.zope.org/?rev=127347&view=rev
          _handle_for(_context, for_)
  
          if self.provides is not None:
-@@ -280,22 +284,21 @@
+@@ -283,22 +288,21 @@
                  )
  
          _context.action(
@@ -358,7 +345,7 @@ http://svn.zope.org/?rev=127347&view=rev
          if allowed_attributes:
              for attr in allowed_attributes:
                  _context.action(
-@@ -303,7 +306,7 @@
+@@ -306,7 +310,7 @@
                      callable = protectName,
                      args = (newclass, attr, permission)
                      )
@@ -367,7 +354,7 @@ http://svn.zope.org/?rev=127347&view=rev
          # Make everything else private
          allowed = allowed_attributes or []
          private_attrs = [name for name in dir(newclass)
-@@ -316,7 +319,7 @@
+@@ -319,7 +323,7 @@
                  callable = protectName,
                  args = (newclass, attr, CheckerPrivateId, False)
                  )
@@ -376,7 +363,7 @@ http://svn.zope.org/?rev=127347&view=rev
          # Protect the class
          _context.action(
              discriminator = ('five:initialize:class', newclass),
-@@ -441,6 +444,7 @@
+@@ -444,6 +448,7 @@
              args = (new_class,)
              )
  
@@ -384,7 +371,7 @@ http://svn.zope.org/?rev=127347&view=rev
  class ViewMixinForAttributes(BrowserView,
                               zope.browserpage.metaconfigure.simple):
  
-@@ -454,6 +458,7 @@
+@@ -457,6 +462,7 @@
      def __call__(self):
          return getattr(self, self.__page_attribute__)
  
@@ -392,7 +379,7 @@ http://svn.zope.org/?rev=127347&view=rev
  class ViewMixinForTemplates(BrowserView):
      # Cloned from zope.app.pagetemplate.simpleviewclass.simple
      implements(IBrowserPublisher)
-@@ -489,4 +494,3 @@
+@@ -492,4 +498,3 @@
          class_.__used_for__ = used_for
  
      return class_
@@ -461,7 +448,7 @@ http://svn.zope.org/?rev=127347&view=rev
        />
 --- src/Products/Five/component/__init__.py
 +++ src/Products/Five/component/__init__.py
-@@ -14,11 +14,12 @@
+@@ -14,10 +14,10 @@
  """Five local component look-up support
  """
  
@@ -469,24 +456,21 @@ http://svn.zope.org/?rev=127347&view=rev
  import zope.component
  import zope.event
 -from zope.component.interfaces import IComponentLookup
--from zope.location.interfaces import ISite, IPossibleSite
 +import zope.interface
-+from zope.component.interfaces import IPossibleSite
-+from zope.component.interfaces import ISite
 +from zope.interface.interfaces import IComponentLookup
  from zope.traversing.interfaces import BeforeTraverseEvent
  
  import ExtensionClass
-@@ -28,7 +29,7 @@
- from ZPublisher.BeforeTraverse import unregisterBeforeTraverse
+@@ -36,7 +36,7 @@
+ 
  
  # Hook up custom component architecture calls
 -from zope.site.hooks import setHooks
 +from zope.component.hooks import setHooks
  setHooks()
  
- def findSite(obj, iface=ISite):
-@@ -63,7 +64,7 @@
+ 
+@@ -72,7 +72,7 @@
      # We want the original object, not stuff in between, and no acquisition
      obj = aq_base(obj)
      if not IPossibleSite.providedBy(obj):
