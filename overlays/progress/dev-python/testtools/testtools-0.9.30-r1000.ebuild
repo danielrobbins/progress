@@ -39,10 +39,4 @@ src_install() {
 		fi
 	}
 	python_execute_function -q delete_version-specific_modules
-
-	delete_tests() {
-		# dev-python/subunit imports some objects from testtools.tests.helpers.
-		rm -fr "${ED}$(python_get_sitedir)/testtools/tests/"{matchers,test_*}
-	}
-	python_execute_function -q delete_tests
 }
