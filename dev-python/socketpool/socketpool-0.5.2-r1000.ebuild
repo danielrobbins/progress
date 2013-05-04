@@ -9,12 +9,12 @@ PYTHON_RESTRICTED_ABIS="2.5"
 inherit distutils
 
 DESCRIPTION="Python socket pool"
-HOMEPAGE="https://github.com/benoitc/socketpool http://pypi.python.org/pypi/socketpool"
+HOMEPAGE="https://github.com/benoitc/socketpool https://pypi.python.org/pypi/socketpool"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
-LICENSE="MIT"
+LICENSE="|| ( MIT public-domain )"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~s390 ~sh sparc x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux"
+KEYWORDS="*"
 IUSE="eventlet examples gevent"
 
 RDEPEND="eventlet? ( $(python_abi_depend -e "3.* *-jython *-pypy-*" dev-python/eventlet) )
