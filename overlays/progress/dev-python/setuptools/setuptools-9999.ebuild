@@ -34,8 +34,10 @@ PYTHON_MODULES="_markerlib easy_install.py pkg_resources.py setuptools site.py"
 src_prepare() {
 	distutils_src_prepare
 
-	epatch "${FILESDIR}/${PN}-0.6_rc7-noexe.patch"
 	epatch "${FILESDIR}/distribute-0.6.16-fix_deprecation_warnings.patch"
+
+	# Disable installation of Windows-specific files.
+	sed -e "/package_data = {'setuptools':\['\*.exe'\], 'setuptools.command':\['\*.xml'\]},/d" -i setup.py
 
 	# Disable tests requiring network connection.
 	rm -f setuptools/tests/test_packageindex.py
