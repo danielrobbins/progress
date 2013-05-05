@@ -12,7 +12,7 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="7b75f0bd9a5e"
+	EHG_REVISION="996a937cdf81"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
@@ -34,7 +34,7 @@ fi
 LICENSE="PSF-2"
 SLOT="3.3"
 PYTHON_ABI="${SLOT}"
-KEYWORDS="~*"
+KEYWORDS=""
 IUSE="build doc elibc_uclibc examples gdbm ipv6 +ncurses +readline sqlite +ssl +threads tk wininst +xml"
 
 RDEPEND="app-arch/bzip2
