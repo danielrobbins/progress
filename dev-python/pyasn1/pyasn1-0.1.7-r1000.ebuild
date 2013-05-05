@@ -8,15 +8,16 @@ PYTHON_MULTIPLE_ABIS="1"
 inherit distutils
 
 DESCRIPTION="ASN.1 types and codecs"
-HOMEPAGE="http://pyasn1.sourceforge.net/ http://pypi.python.org/pypi/pyasn1"
+HOMEPAGE="http://pyasn1.sourceforge.net/ https://pypi.python.org/pypi/pyasn1"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
-LICENSE="BSD"
+LICENSE="BSD-2"
 SLOT="0"
 KEYWORDS="*"
-IUSE=""
+IUSE="test"
 
-DEPEND="$(python_abi_depend dev-python/setuptools)"
+DEPEND="$(python_abi_depend dev-python/setuptools)
+	test? ( $(python_abi_depend -i "2.6 3.1" dev-python/unittest2) )"
 RDEPEND=""
 
 DOCS="CHANGES README THANKS TODO"
