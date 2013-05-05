@@ -545,8 +545,11 @@ autotools-utils_src_test() {
 	_check_build_dir
 	pushd "${BUILD_DIR}" > /dev/null || die
 
-	# XXX: do we need to support other targets in autotools?
-	emake check "${@}" || die 'emake check failed.'
+	if make -n check &>/dev/null; then
+		emake check "${@}" || die 'emake check failed.'
+	elif make -n test &>/dev/null; then
+		emake test "${@}" || die 'emake test failed.'
+	fi
 
 	popd > /dev/null || die
 }
