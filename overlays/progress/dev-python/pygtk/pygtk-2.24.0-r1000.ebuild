@@ -48,9 +48,10 @@ src_prepare() {
 	# Disable installation of examples in wrong directory.
 	sed -e "/^SUBDIRS =/s/ examples//" -i Makefile.am
 
-	python_clean_py-compile_files
+	sed -e "s/AM_CONFIG_HEADER/AC_CONFIG_HEADERS/" -i configure.ac
 
 	AT_M4DIR="m4" eautoreconf
+	python_clean_py-compile_files
 
 	python_copy_sources
 }
