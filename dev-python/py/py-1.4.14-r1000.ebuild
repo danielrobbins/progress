@@ -11,7 +11,7 @@ DISTUTILS_SRC_TEST="py.test"
 inherit distutils
 
 DESCRIPTION="library with cross-python path, ini-parsing, io, code, log facilities"
-HOMEPAGE="http://pylib.readthedocs.org/ https://bitbucket.org/hpk42/py http://pypi.python.org/pypi/py"
+HOMEPAGE="https://pylib.readthedocs.org/ https://bitbucket.org/hpk42/py https://pypi.python.org/pypi/py"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
