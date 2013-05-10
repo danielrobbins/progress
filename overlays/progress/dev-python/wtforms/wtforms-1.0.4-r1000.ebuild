@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5"
 # http://bugs.jython.org/issue1964
@@ -14,18 +14,17 @@ MY_PN="WTForms"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="A flexible forms validation and rendering library for python web development."
-HOMEPAGE="http://wtforms.simplecodes.com/ https://bitbucket.org/simplecodes/wtforms http://pypi.python.org/pypi/WTForms"
+HOMEPAGE="http://wtforms.simplecodes.com/ https://bitbucket.org/simplecodes/wtforms https://pypi.python.org/pypi/WTForms"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.zip"
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="amd64 x86"
+KEYWORDS="*"
 IUSE="doc"
 
 S="${WORKDIR}/${MY_P}"
 
-DEPEND="app-arch/unzip
-	$(python_abi_depend dev-python/setuptools)
+DEPEND="$(python_abi_depend dev-python/setuptools)
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
 RDEPEND=""
 
@@ -33,19 +32,19 @@ DOCS="AUTHORS.txt CHANGES.txt README.txt"
 
 src_prepare() {
 	distutils_src_prepare
-	epatch "${FILESDIR}/${P}-tests.patch"
 
-	# https://bitbucket.org/simplecodes/wtforms/issue/117
-	# https://bitbucket.org/simplecodes/wtforms/changeset/a5d05f5e615a
-	sed -e "/quantized = self.data.quantize/s/rounding=self.rounding/**{'rounding': self.rounding} if self.rounding is not None else {}/" -i wtforms/fields/core.py
+	epatch "${FILESDIR}/${P}-python-3.patch"
 
-	preparation() {
-		cp -r tests tests-${PYTHON_ABI} || return
-		if [[ "$(python_get_version -l --major)" == "3" ]]; then
-			2to3-${PYTHON_ABI} -nw --no-diffs tests-${PYTHON_ABI}
-		fi
-	}
-	python_execute_function preparation
+	# Fix compatibility with Python 3.1.
+	cat << EOF >> wtforms/compat.py
+try:
+    callable = callable
+except NameError:
+    def callable(x):
+        import collections
+        return isinstance(x, collections.Callable)
+EOF
+	sed -e "/from wtforms import validators/a\\from wtforms.compat import callable" -i wtforms/ext/sqlalchemy/orm.py
 }
 
 src_compile() {
@@ -61,7 +60,7 @@ src_compile() {
 
 src_test() {
 	testing() {
-		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" tests-${PYTHON_ABI}/runtests.py
+		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" tests/runtests.py
 	}
 	python_execute_function testing
 }
