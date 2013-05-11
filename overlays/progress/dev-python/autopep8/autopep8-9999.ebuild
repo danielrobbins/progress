@@ -11,7 +11,7 @@ PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 inherit distutils git-2
 
 DESCRIPTION="A tool that automatically formats Python code to conform to the PEP 8 style guide"
-HOMEPAGE="https://github.com/hhatto/autopep8 http://pypi.python.org/pypi/autopep8"
+HOMEPAGE="https://github.com/hhatto/autopep8 https://pypi.python.org/pypi/autopep8"
 SRC_URI=""
 EGIT_REPO_URI="git://github.com/hhatto/${PN}.git"
 
@@ -20,7 +20,7 @@ SLOT="0"
 KEYWORDS=""
 IUSE=""
 
-DEPEND="$(python_abi_depend ">=dev-python/pep8-1.3.2")
+DEPEND="$(python_abi_depend ">=dev-python/pep8-1.4.5")
 	$(python_abi_depend dev-python/setuptools)"
 RDEPEND="${DEPEND}"
 
