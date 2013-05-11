@@ -14,12 +14,12 @@ MY_PN="python-${PN}"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Mercurial Python library"
-HOMEPAGE="http://mercurial.selenic.com/ http://pypi.python.org/pypi/python-hglib"
+HOMEPAGE="http://mercurial.selenic.com/ https://pypi.python.org/pypi/python-hglib"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="amd64 x86"
+KEYWORDS="*"
 IUSE=""
 
 DEPEND="$(python_abi_depend ">=dev-vcs/mercurial-1.9")"
