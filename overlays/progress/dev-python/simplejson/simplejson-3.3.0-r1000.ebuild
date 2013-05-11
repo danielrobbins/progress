@@ -22,6 +22,16 @@ RDEPEND=""
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 
+src_prepare() {
+	distutils_src_prepare
+
+	# https://github.com/simplejson/simplejson/issues/70
+	sed \
+		-e "/'simplejson.tests.test_scanstring',/d" \
+		-e "64s/\])/] + ([] if sys.platform.startswith('java') else ['simplejson.tests.test_scanstring']))/" \
+		-i simplejson/tests/__init__.py
+}
+
 src_test() {
 	testing() {
 		if [[ "$(python_get_implementation)" != "Jython" ]]; then
