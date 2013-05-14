@@ -18,9 +18,9 @@
 # enabled. Thus, it is impossible to use AUTOTOOLS_IN_SOURCE_BUILD with
 # it.
 
-# EAPI=5 is required for meaningful MULTILIB_USEDEP.
+# EAPI=4 is required for meaningful MULTILIB_USEDEP.
 case ${EAPI:-0} in
-	5|5-progress) ;;
+	4|4-python|5|5-progress) ;;
 	*) die "EAPI=${EAPI} is not supported" ;;
 esac
 
