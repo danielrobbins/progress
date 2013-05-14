@@ -75,7 +75,6 @@ src_configure() {
 	# Hard-enable libffi support since both gobject-introspection and
 	# glib-2.29.x rdepend on it anyway
 	# docs disabled by upstream default since they are very out of date
-
 	configuration() {
 		PYTHON="$(PYTHON)" gnome2_src_configure \
 			--with-ffi \
@@ -113,9 +112,9 @@ src_install() {
 }
 
 pkg_postinst() {
-	python_mod_optimize gi
+	python_mod_optimize gi pygtkcompat
 }
 
 pkg_postrm() {
-	python_mod_cleanup gi
+	python_mod_cleanup gi pygtkcompat
 }
