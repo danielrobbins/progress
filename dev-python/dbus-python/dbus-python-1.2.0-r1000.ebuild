@@ -19,7 +19,7 @@ KEYWORDS="*"
 IUSE="doc examples test"
 
 RDEPEND=">=dev-libs/dbus-glib-0.70:=
-	>=sys-apps/dbus-1.4:="
+	>=sys-apps/dbus-1.6:="
 DEPEND="${RDEPEND}
 	virtual/pkgconfig
 	doc? ( =dev-python/epydoc-3* )
