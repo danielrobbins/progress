@@ -12,16 +12,17 @@ DISTUTILS_SRC_TEST="nosetests"
 inherit distutils
 
 DESCRIPTION="A Python module to deal with freedesktop.org specifications"
-HOMEPAGE="http://freedesktop.org/wiki/Software/pyxdg http://cgit.freedesktop.org/xdg/pyxdg/ http://pypi.python.org/pypi/pyxdg"
+HOMEPAGE="http://freedesktop.org/wiki/Software/pyxdg http://cgit.freedesktop.org/xdg/pyxdg/ https://pypi.python.org/pypi/pyxdg"
 SRC_URI="http://people.freedesktop.org/~takluyver/${P}.tar.gz"
 
 LICENSE="LGPL-2"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 sparc x86 ~x86-fbsd"
-IUSE=""
+KEYWORDS="*"
+IUSE="test"
 
-DEPEND=""
-RDEPEND=""
+RDEPEND="x11-misc/shared-mime-info"
+DEPEND="${RDEPEND}
+	test? ( x11-themes/hicolor-icon-theme )"
 
 DOCS="AUTHORS ChangeLog README TODO"
 PYTHON_MODULES="xdg"
