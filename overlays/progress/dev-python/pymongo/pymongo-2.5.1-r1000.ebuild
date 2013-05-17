@@ -30,16 +30,6 @@ src_prepare() {
 	sed -e "/^sys.path\[0:0\] =/d" -i doc/conf.py
 	rm -f setup.cfg
 
-	# Support for SSL in Jython is incomplete.
-	sed \
-		-e "s/^\([[:space:]]\+\)import ssl/&\n\1ssl.CERT_NONE/" \
-		-e "s/except ImportError:/except (AttributeError, ImportError):/" \
-		-i pymongo/common.py
-
-	# Disable failing tests.
-	# https://github.com/mongodb/mongo-python-driver/commit/c0673df4eaeac3476cb8bf2bcc265319ae7ffa7f
-	rm -f test/test_ssl.py
-
 	preparation() {
 		mkdir build-${PYTHON_ABI} || return
 		cp -r test build-${PYTHON_ABI} || return
