@@ -12,7 +12,7 @@ inherit distutils
 MY_P="${PN}-${PV/_alpha/a}"
 
 DESCRIPTION="A simple schema-based serialization and deserialization library"
-HOMEPAGE="http://docs.repoze.org/colander https://github.com/Pylons/colander http://pypi.python.org/pypi/colander"
+HOMEPAGE="https://docs.pylonsproject.org/projects/colander https://github.com/Pylons/colander https://pypi.python.org/pypi/colander"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${MY_P}.tar.gz"
 
 LICENSE="MIT repoze"
