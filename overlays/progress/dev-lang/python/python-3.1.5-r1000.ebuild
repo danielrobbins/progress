@@ -215,7 +215,11 @@ src_configure() {
 src_compile() {
 	emake || die "emake failed"
 
-	pax-mark m python
+	if has_version dev-libs/libffi[pax_kernel]; then
+		pax-mark E python
+	else
+		pax-mark m python
+	fi
 }
 
 src_test() {
