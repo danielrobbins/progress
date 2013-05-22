@@ -12,7 +12,7 @@ MY_PN="MarkupSafe"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Implements a XML/HTML/XHTML Markup safe string for Python"
-HOMEPAGE="http://pypi.python.org/pypi/MarkupSafe"
+HOMEPAGE="https://github.com/mitsuhiko/markupsafe https://pypi.python.org/pypi/MarkupSafe"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="BSD"
@@ -25,7 +25,19 @@ RDEPEND=""
 
 S="${WORKDIR}/${MY_P}"
 
+DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES="1"
 DISTUTILS_GLOBAL_OPTIONS=("*-cpython --with-speedups")
+
+src_prepare() {
+	distutils_src_prepare
+
+	preparation() {
+		if has "$(python_get_version -l)" 3.1 3.2; then
+			2to3-${PYTHON_ABI} -f unicode -nw --no-diffs markupsafe
+		fi
+	}
+	python_execute_function -s preparation
+}
 
 src_install() {
 	distutils_src_install
