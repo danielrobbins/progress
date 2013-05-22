@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 
@@ -13,7 +13,7 @@ HOMEPAGE="http://xcb.freedesktop.org/"
 #EGIT_REPO_URI="git://anongit.freedesktop.org/git/xcb/xpyb"
 SRC_URI="http://xcb.freedesktop.org/dist/${P}.tar.bz2"
 
-KEYWORDS="amd64 ~arm ~hppa ~ppc ~ppc64 x86 ~amd64-fbsd ~x86-fbsd"
+KEYWORDS="*"
 IUSE="selinux"
 
 RDEPEND=">=x11-libs/libxcb-1.7
@@ -27,7 +27,7 @@ pkg_setup() {
 
 	xorg-2_pkg_setup
 	XORG_CONFIGURE_OPTIONS=(
-		$(use_enable selinux xselinux)
+		$(use_enable selinux)
 	)
 }
 
