@@ -1,9 +1,4 @@
 # Arfrever Frehtes Taifersar Arahesis <Arfrever@Apache.Org>
-# Python 3.3 contains many incompatible changes.
-# https://code.google.com/p/gentoo-progress/issues/detail?id=1
-dev-lang/python:3.3
-
-# Arfrever Frehtes Taifersar Arahesis <Arfrever@Apache.Org>
 # Python 3.4 contains many incompatible changes.
 # https://code.google.com/p/gentoo-progress/issues/detail?id=3
 dev-lang/python:3.4
