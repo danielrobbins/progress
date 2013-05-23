@@ -250,37 +250,38 @@ multibuild_merge_root() {
 	local src=${1}
 	local dest=${2}
 
-	local lockfile=${T}/multibuild_merge_lock
+	local lockfile=${T}/.multibuild_merge_lock
+	local lockfile_l=${lockfile}.${$}
 	local ret
 
+	# Lock the install tree for merge. The touch+ln method ensures race
+	# condition-free locking with maximum portability.
+	touch "${lockfile_l}" || die
+	until ln "${lockfile_l}" "${lockfile}" &>/dev/null; do
+		sleep 1
+	done
+	rm "${lockfile_l}" || die
+
 	if use userland_BSD; then
-		# Locking is done by 'lockf' which can wrap a command.
 		# 'cp -a -n' is broken:
 		# http://www.freebsd.org/cgi/query-pr.cgi?pr=174489
 		# using tar instead which is universal but terribly slow.
 
 		tar -C "${src}" -f - -c . \
-			| lockf "${lockfile}" tar -x -f - -C "${dest}"
+			| tar -x -f - -C "${dest}"
 		[[ ${PIPESTATUS[*]} == '0 0' ]]
 		ret=${?}
 	elif use userland_GNU; then
-		# GNU has 'flock' which can't wrap commands but can lock
-		# a fd which is good enough for us.
-		# and cp works with '-a -n'.
-
-		local lock_fd
-		redirect_alloc_fd lock_fd "${lockfile}" '>>'
-		flock ${lock_fd}
+		# cp works with '-a -n'.
 
 		cp -a -l -n "${src}"/. "${dest}"/
 		ret=${?}
-
-		# Close the lock file when we are done with it.
-		# Prevents deadlock if we aren't in a subshell.
-		eval "exec ${lock_fd}>&-"
 	else
 		die "Unsupported userland (${USERLAND}), please report."
 	fi
+
+	# Remove the lock.
+	rm "${lockfile}" || die
 
 	if [[ ${ret} -ne 0 ]]; then
 		die "${MULTIBUILD_VARIANT:-(unknown)}: merging image failed."
