@@ -13,17 +13,18 @@ MY_PN="Sphinx"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Python documentation generator"
-HOMEPAGE="http://sphinx.pocoo.org/ https://bitbucket.org/birkenfeld/sphinx http://pypi.python.org/pypi/Sphinx"
+HOMEPAGE="http://sphinx-doc.org/ https://bitbucket.org/birkenfeld/sphinx https://pypi.python.org/pypi/Sphinx"
 if [[ "${PV}" == *_pre* ]]; then
 	SRC_URI="http://people.apache.org/~Arfrever/gentoo/${MY_P}.tar.xz"
 else
 	SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 fi
 
-LICENSE="BSD"
+# Main license: BSD-2
+LICENSE="BSD BSD-2 MIT PSF-2 test? ( ElementTree )"
 SLOT="0"
 KEYWORDS="*"
-IUSE="doc latex"
+IUSE="doc latex test"
 
 DEPEND="$(python_abi_depend dev-python/docutils)
 	$(python_abi_depend dev-python/jinja)
