@@ -251,7 +251,7 @@ multibuild_merge_root() {
 	local dest=${2}
 
 	local lockfile=${T}/.multibuild_merge_lock
-	local lockfile_l=${lockfile}.${$}
+	local lockfile_l=${lockfile}.${BASHPID}
 	local ret
 
 	# Lock the install tree for merge. The touch+ln method ensures race
