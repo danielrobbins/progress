@@ -6,8 +6,7 @@ EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 3.1"
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
-# 3.3, 3.4: https://github.com/Pylons/webtest/issues/64
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.3 3.4 *-pypy-*"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-pypy-*"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
@@ -16,7 +15,7 @@ MY_PN="WebTest"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Helper to test WSGI applications"
-HOMEPAGE="http://webtest.pythonpaste.org/ https://github.com/Pylons/webtest https://pypi.python.org/pypi/WebTest"
+HOMEPAGE="https://webtest.pythonpaste.org/ https://docs.pylonsproject.org/projects/webtest https://github.com/Pylons/webtest https://pypi.python.org/pypi/WebTest"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.zip"
 
 LICENSE="MIT"
