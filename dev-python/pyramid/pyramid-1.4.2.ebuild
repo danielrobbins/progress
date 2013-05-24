@@ -9,7 +9,7 @@ DISTUTILS_SRC_TEST="setup.py"
 inherit distutils
 
 DESCRIPTION="The Pyramid web application development framework, a Pylons project"
-HOMEPAGE="https://pypi.python.org/pypi/pyramid"
+HOMEPAGE="https://docs.pylonsproject.org/projects/pyramid https://pypi.python.org/pypi/pyramid"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD repoze ZPL doc? ( CC-BY-NC-SA-3.0 )"
