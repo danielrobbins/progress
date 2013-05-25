@@ -45,11 +45,22 @@ src_prepare() {
 	# sed -e "/requests\.packages\./d" -i setup.py
 	# Disable installation of deleted internal copy of dev-python/charade.
 	sed -e "/requests\.packages\.charade/d" -i setup.py
+
+	# https://github.com/shazow/urllib3/issues/177
+	sed -e "s/DOMAIN\\\\username/DOMAIN\\\\\\\\username/" -i requests/packages/urllib3/contrib/ntlmpool.py
+
+	preparation() {
+		cp test_requests.py test_requests-${PYTHON_ABI}.py
+		if has "$(python_get_version -l)" 3.1 3.2; then
+			2to3-${PYTHON_ABI} -f unicode -nw --no-diffs test_requests-${PYTHON_ABI}.py
+		fi
+	}
+	python_execute_function preparation
 }
 
 src_test() {
 	testing() {
-		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" test_requests.py -v
+		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" test_requests-${PYTHON_ABI}.py -v
 	}
 	python_execute_function testing
 }
