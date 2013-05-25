@@ -14,7 +14,7 @@ MY_PN="distribute"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Distribute (fork of Setuptools) is a collection of extensions to Distutils"
-HOMEPAGE="https://bitbucket.org/tarek/distribute https://pypi.python.org/pypi/distribute"
+HOMEPAGE="https://bitbucket.org/pypa/setuptools https://pypi.python.org/pypi/distribute"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="PSF-2"
@@ -28,7 +28,7 @@ RDEPEND=""
 S="${WORKDIR}/${MY_P}"
 
 DOCS="README.txt docs/easy_install.txt docs/pkg_resources.txt docs/setuptools.txt"
-PYTHON_MODULES="_markerlib easy_install.py pkg_resources.py setuptools site.py"
+PYTHON_MODULES="_markerlib easy_install.py pkg_resources.py setuptools"
 
 src_prepare() {
 	distutils_src_prepare
@@ -36,7 +36,7 @@ src_prepare() {
 	epatch "${FILESDIR}/distribute-0.6.16-fix_deprecation_warnings.patch"
 
 	# Disable installation of Windows-specific files.
-	sed -e "/package_data = {'setuptools':\['\*.exe'\], 'setuptools.command':\['\*.xml'\]},/d" -i setup.py
+	sed -e "/package_data =/{s/'\*.exe', //;s/, 'setuptools.command':\['\*.xml'\]//}" -i setup.py
 
 	# Disable tests requiring network connection.
 	rm -f setuptools/tests/test_packageindex.py
