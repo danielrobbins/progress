@@ -12,7 +12,7 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="d232cff25bbd"
+	EHG_REVISION="c20b701c66fc"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
@@ -32,7 +32,7 @@ else
 fi
 
 LICENSE="PSF-2"
-SLOT="3.4"
+SLOT="3.3"
 PYTHON_ABI="${SLOT}"
 KEYWORDS="~*"
 IUSE="build doc elibc_uclibc examples gdbm ipv6 +ncurses +readline sqlite +ssl +threads tk wininst +xml"
@@ -182,8 +182,8 @@ src_configure() {
 	# Export CXX so it ends up in /usr/lib/python3.X/config/Makefile.
 	tc-export CXX
 
-	# Set LDFLAGS so we link modules with -lpython3.4 correctly.
-	# Needed on FreeBSD unless Python 3.4 is already installed.
+	# Set LDFLAGS so we link modules with -lpython3.3 correctly.
+	# Needed on FreeBSD unless Python 3.3 is already installed.
 	# Please query BSD team before removing this!
 	append-ldflags "-L."
 
@@ -213,13 +213,10 @@ src_compile() {
 	fi
 	emake CPPFLAGS="" CFLAGS="" LDFLAGS="" || die "emake failed"
 
-	pax-mark m python
-
-	if use doc; then
-		einfo "Generation of documentation"
-		cd Doc
-		mkdir -p build/{doctrees,html}
-		sphinx-build -b html -d build/doctrees . build/html || die "Generation of documentation failed"
+	if has_version dev-libs/libffi[pax_kernel]; then
+		pax-mark E python
+	else
+		pax-mark m python
 	fi
 }
 
@@ -290,12 +287,6 @@ src_install() {
 	use wininst || rm -f "${ED}$(python_get_libdir)/distutils/command/"wininst-*.exe
 
 	dodoc Misc/{ACKS,HISTORY,NEWS} || die "dodoc failed"
-
-	if use doc; then
-		dohtml -A xml -r Doc/build/html/
-		echo "PYTHONDOCS_${SLOT//./_}=\"${EPREFIX}/usr/share/doc/${PF}/html/library\"" > "60python-docs-${SLOT}"
-		doenvd "60python-docs-${SLOT}"
-	fi
 
 	if use examples; then
 		insinto /usr/share/doc/${PF}/examples

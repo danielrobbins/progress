@@ -12,7 +12,7 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="09811ecd5df1"
+	EHG_REVISION="f4981d8eb401"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
@@ -238,7 +238,11 @@ src_compile() {
 	fi
 	emake EPYTHON="python${PV%%.*}" || die "emake failed"
 
-	pax-mark m python
+	if has_version dev-libs/libffi[pax_kernel]; then
+		pax-mark E python
+	else
+		pax-mark m python
+	fi
 }
 
 src_test() {
