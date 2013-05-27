@@ -10,17 +10,18 @@ DISTUTILS_SRC_TEST="nosetests"
 inherit distutils
 
 DESCRIPTION="Waitress WSGI server"
-HOMEPAGE="https://github.com/Pylons/waitress https://pypi.python.org/pypi/waitress"
+HOMEPAGE="https://docs.pylonsproject.org/projects/waitress https://github.com/Pylons/waitress https://pypi.python.org/pypi/waitress"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="ZPL"
 SLOT="0"
 KEYWORDS="*"
-IUSE="doc"
+IUSE="doc test"
 
-DEPEND="$(python_abi_depend dev-python/setuptools)
-	doc? ( $(python_abi_depend dev-python/sphinx) )"
-RDEPEND=""
+RDEPEND="$(python_abi_depend dev-python/setuptools)"
+DEPEND="${RDEPEND}
+	doc? ( $(python_abi_depend dev-python/sphinx) )
+	test? ( $(python_abi_depend -i "2.6" dev-python/unittest2) )"
 
 DOCS="CHANGES.txt README.rst"
 
