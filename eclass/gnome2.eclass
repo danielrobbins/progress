@@ -157,6 +157,11 @@ gnome2_src_configure() {
 		G2CONF="--disable-schemas-compile ${G2CONF}"
 	fi
 
+	# Pass --enable-compile-warnings=minimum as we don't want -Werror* flags, bug #471336
+	if grep -q "enable-compile-warnings" "${ECONF_SOURCE:-.}"/configure; then
+		G2CONF="--enable-compile-warnings=minimum ${G2CONF}"
+	fi
+
 	# Avoid sandbox violations caused by gnome-vfs (bug #128289 and #345659)
 	addwrite "$(unset HOME; echo ~)/.gnome2"
 
