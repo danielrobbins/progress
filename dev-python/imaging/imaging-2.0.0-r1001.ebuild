@@ -12,23 +12,23 @@ inherit distutils eutils multilib
 MY_PN="Pillow"
 MY_P="${MY_PN}-${PV}"
 
-DESCRIPTION="Pillow (fork of PIL) - Python Imaging Library"
+DESCRIPTION="Python Imaging Library - Pillow (fork of PIL)"
 HOMEPAGE="https://github.com/python-imaging/Pillow https://pypi.python.org/pypi/Pillow"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.zip"
 
 LICENSE="HPND"
 SLOT="0"
 KEYWORDS="*"
-IUSE="X doc examples lcms scanner tiff tk webp"
+IUSE="X doc examples jpeg lcms scanner tiff tk truetype webp zlib"
 
-RDEPEND="media-libs/freetype:2=
-	sys-libs/zlib:0=
-	virtual/jpeg
-	X? ( x11-misc/xdg-utils )
+RDEPEND="X? ( x11-misc/xdg-utils )
+	jpeg? ( virtual/jpeg )
 	lcms? ( media-libs/lcms:0= )
 	scanner? ( media-gfx/sane-backends:0= )
 	tiff? ( media-libs/tiff:0= )
-	webp? ( media-libs/libwebp:0= )"
+	truetype? ( media-libs/freetype:2= )
+	webp? ( media-libs/libwebp:0= )
+	zlib? ( sys-libs/zlib:0= )"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
@@ -46,32 +46,29 @@ src_prepare() {
 	distutils_src_prepare
 
 	epatch "${FILESDIR}/${P}-delete_hardcoded_paths.patch"
-	epatch "${FILESDIR}/${P}-gif_transparency.patch"
 	epatch "${FILESDIR}/${P}-libm_linking.patch"
 	epatch "${FILESDIR}/${P}-use_xdg-open.patch"
 
 	# https://github.com/python-imaging/Pillow/issues/166
 	sed -e "s/#if PY_VERSION_HEX >= 0x03000000/#if PY_VERSION_HEX >= 0x03020000/" -i path.c
 
+	# https://github.com/python-imaging/Pillow/issues/237
+	sed -e "s/#if PY_VERSION_HEX >= 0x03020000/#if (PY_VERSION_HEX >= 0x02070000 \\&\\& PY_VERSION_HEX < 0x03000000) || PY_VERSION_HEX >= 0x03010000/" -i _imaging.c
+
 	# Add shebang.
 	# https://github.com/python-imaging/Pillow/issues/167
 	sed -e "1i#!/usr/bin/python" -i Scripts/pilfont.py || die "sed failed"
 
-	if ! use lcms; then
-		sed -e "s/\(^[[:space:]]*feature\.lcms =\).*/\1 False/" -i setup.py
-	fi
-
-	if ! use tiff; then
-		sed -e "s/\(^[[:space:]]*feature\.tiff =\).*/\1 False/" -i setup.py
-	fi
+	local feature
+	for feature in jpeg lcms tiff truetype:freetype webp zlib; do
+		if ! use ${feature%:*}; then
+			sed -e "s/\(^[[:space:]]*feature\.${feature#*:} =\).*/\1 None/" -i setup.py
+		fi
+	done
 
 	if ! use tk; then
 		sed -e "s/import _tkinter/raise ImportError/" -i setup.py
 	fi
-
-	if ! use webp; then
-		sed -e "s/\(^[[:space:]]*feature\.webp =\).*/\1 False/" -i setup.py
-	fi	
 }
 
 src_compile() {
@@ -93,13 +90,44 @@ src_compile() {
 
 src_test() {
 	tests() {
-		python_execute PYTHONPATH="$(ls -d build-${PYTHON_ABI}/lib.*)" "$(PYTHON)" selftest.py
+		python_execute PYTHONPATH="$(ls -d build-${PYTHON_ABI}/lib.*)" "$(PYTHON)" selftest.py || return
+		python_execute PYTHONPATH="$(ls -d build-${PYTHON_ABI}/lib.*)" "$(PYTHON)" Tests/run.py --installed || return
 	}
 	python_execute_function tests
 }
 
 src_install() {
 	distutils_src_install
+
+	local module
+	for module in PIL/*.py; do
+		module="${module#PIL/}"
+		module="${module%.py}"
+		[[ "${module}" =~ ^(__init__|_binary|JpegPresets|WebPImagePlugin)$ ]] && continue
+		PYTHON_MODULES+=" ${module}.py"
+	done
+
+	generate_compatibility_modules() {
+		local module
+		for module in PIL/*.py; do
+			module="${module#PIL/}"
+			module="${module%.py}"
+			[[ "${module}" =~ ^(__init__|_binary|JpegPresets|WebPImagePlugin)$ ]] && continue
+			dodir "$(python_get_sitedir)"
+			cat << EOF > "${ED}$(python_get_sitedir)/${module}.py"
+def _warning():
+	import warnings
+	message = "'%s' module is deprecated. Use 'PIL.%s' module instead." % (__name__, __name__)
+	warnings.filterwarnings("default", message, DeprecationWarning)
+	warnings.warn(message, DeprecationWarning)
+_warning()
+del _warning
+
+from PIL.${module} import *
+EOF
+		done
+	}
+	python_execute_function -q generate_compatibility_modules
 
 	if use doc; then
 		dohtml -r docs/_build/html/
