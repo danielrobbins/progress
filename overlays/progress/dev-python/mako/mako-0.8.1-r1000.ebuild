@@ -27,13 +27,6 @@ DEPEND="${RDEPEND}
 
 S="${WORKDIR}/${MY_P}"
 
-src_prepare() {
-	distutils_src_prepare
-
-	# http://www.makotemplates.org/trac/ticket/212
-	sed -e "s/print render(data, filename, kw)/print(render(data, filename, kw))/" -i scripts/mako-render
-}
-
 src_install() {
 	distutils_src_install
 
