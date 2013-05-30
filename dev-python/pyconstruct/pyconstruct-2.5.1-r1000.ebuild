@@ -4,8 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-# 3.*: https://github.com/construct/construct/issues/15
-PYTHON_RESTRICTED_ABIS="2.5 3.*"
+PYTHON_RESTRICTED_ABIS="2.5"
 
 inherit distutils
 
@@ -13,7 +12,7 @@ MY_PN="construct"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="A powerful declarative parser/builder for binary data"
-HOMEPAGE="http://construct.readthedocs.org/ https://github.com/construct/construct http://pypi.python.org/pypi/construct"
+HOMEPAGE="https://construct.readthedocs.org/ https://github.com/construct/construct https://pypi.python.org/pypi/construct"
 SRC_URI="https://github.com/construct/construct/archive/v${PV}.tar.gz -> ${MY_P}.tar.gz"
 
 LICENSE="MIT"
