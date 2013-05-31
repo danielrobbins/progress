@@ -9,23 +9,18 @@ DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
 
-DESCRIPTION="Dulwich is a pure-Python implementation of the Git file formats and protocols."
-HOMEPAGE="http://www.samba.org/~jelmer/dulwich/ http://pypi.python.org/pypi/dulwich"
+DESCRIPTION="Python Git Library"
+HOMEPAGE="http://www.samba.org/~jelmer/dulwich/ https://pypi.python.org/pypi/dulwich"
 SRC_URI="http://www.samba.org/~jelmer/dulwich/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="amd64 ~ppc x86 ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
+KEYWORDS="*"
 IUSE=""
 
 DEPEND="$(python_abi_depend dev-python/setuptools)
 	test? ( $(python_abi_depend -e "2.7" dev-python/unittest2) )"
 RDEPEND=""
-
-src_prepare() {
-	distutils_src_prepare
-	sed -e "s/test_fetch_from_dulwich(/_&/" -i dulwich/tests/compat/server_utils.py
-}
 
 distutils_src_test_pre_hook() {
 	local module
