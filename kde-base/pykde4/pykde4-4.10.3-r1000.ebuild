@@ -17,9 +17,9 @@ IUSE="debug doc examples semantic-desktop"
 
 RDEPEND="
 	$(python_abi_depend ">=dev-python/sip-4.14:0=")
-	$(add_kdebase_dep kdelibs 'opengl,semantic-desktop?')
+	$(add_kdebase_dep kdelibs 'opengl,semantic-desktop(+)?')
 	semantic-desktop? (
-		$(add_kdebase_dep kdepimlibs 'semantic-desktop')
+		$(add_kdebase_dep kdepimlibs 'semantic-desktop(+)')
 		>=dev-libs/soprano-2.9.0
 	)
 	aqua? ( $(python_abi_depend ">=dev-python/PyQt4-4.9.5:0=[aqua,dbus,declarative,script,sql,svg,webkit]") )
