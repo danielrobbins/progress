@@ -14,14 +14,14 @@ MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Beautiful Soup is a Python library for pulling data out of HTML and XML files"
 HOMEPAGE="http://www.crummy.com/software/BeautifulSoup/ https://launchpad.net/beautifulsoup https://pypi.python.org/pypi/beautifulsoup4"
-SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
+SRC_URI="http://www.crummy.com/software/BeautifulSoup/bs4/download/4.2/${MY_P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="4"
 KEYWORDS="*"
 IUSE="doc html5lib +lxml"
 
-RDEPEND="html5lib? ( $(python_abi_depend -e "3.* *-jython" dev-python/html5lib) )
+RDEPEND="html5lib? ( $(python_abi_depend -e "*-jython" dev-python/html5lib) )
 	lxml? ( $(python_abi_depend -e "*-jython *-pypy-*" dev-python/lxml) )"
 DEPEND="${RDEPEND}
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
@@ -43,7 +43,13 @@ src_compile() {
 }
 
 src_test() {
+	einfo "Testing with enabled html5lib and enabled lxml"
 	python_execute_nosetests -e -P 'build-${PYTHON_ABI}/lib' -- -P -w 'build-${PYTHON_ABI}/lib'
+
+	einfo "Testing with disabled html5lib and disabled lxml"
+	echo "raise ImportError" > "${T}/html5lib.py"
+	echo "raise ImportError" > "${T}/lxml.py"
+	python_execute_nosetests -e -P '${T}:build-${PYTHON_ABI}/lib' -- -P -w 'build-${PYTHON_ABI}/lib'
 }
 
 src_install() {
