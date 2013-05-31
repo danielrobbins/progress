@@ -2,28 +2,49 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython"
 
 inherit db-use distutils multilib
 
 DESCRIPTION="Python bindings for Berkeley DB"
-HOMEPAGE="http://www.jcea.es/programacion/pybsddb.htm http://pypi.python.org/pypi/bsddb3"
+HOMEPAGE="http://www.jcea.es/programacion/pybsddb.htm https://pypi.python.org/pypi/bsddb3"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="amd64 ~ia64 ~ppc sparc x86"
+KEYWORDS="*"
 IUSE="doc"
 
-RDEPEND=">=sys-libs/db-4.8"
+RDEPEND=">=sys-libs/db-4.8:="
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 
 DOCS="ChangeLog TODO.txt"
+
+src_prepare() {
+	distutils_src_prepare
+
+	# https://hg.jcea.es/pybsddb/rev/36776da36249
+	sed -e "s/err = self->db_env->rep_elect(self->db_env, nvotes, nvotes, 0);/err = self->db_env->rep_elect(self->db_env, nsites, nvotes, 0);/" -i Modules/_bsddb.c
+
+	# https://hg.jcea.es/pybsddb/rev/479404f6782a
+	sed \
+		-e "49s/rp = repr(db)/rp = repr(sorted(db.items()))/" \
+		-e "s/self.assertEqual(rp, repr(d))/rd = repr(sorted(d.items()))\n        self.assertEqual(rp, rd)/" \
+		-i Lib3/bsddb/test/test_misc.py
+
+	# https://hg.jcea.es/pybsddb/rev/202093fbbfc2
+	sed \
+		-e "72s/def __next__(self) :/def __next__(self, flags=0, dlen=-1, doff=-1) :/" \
+		-e "/v = getattr(self._dbcursor, \"next\")/s/()/(flags=flags, dlen=dlen, doff=doff)/" \
+		-e "126s/def first(self) :/def first(self, flags=0, dlen=-1, doff=-1) :/" \
+		-e "/v = self._dbcursor.first/s/()/(flags=flags, dlen=dlen, doff=doff)/" \
+		-i Lib3/bsddb/test/test_all.py
+}
 
 src_configure() {
 	for DB_VER in 5.3 5.2 5.1 5.0 4.8; do
@@ -47,7 +68,7 @@ src_test() {
 		rm -f build
 		ln -s build-${PYTHON_ABI} build
 
-		python_execute TMPDIR="${T}/tests-${PYTHON_ABI}" "$(PYTHON)" test.py
+		python_execute TMPDIR="${T}/tests-${PYTHON_ABI}" "$(PYTHON)" test.py -vv
 	}
 	python_execute_function tests
 }
