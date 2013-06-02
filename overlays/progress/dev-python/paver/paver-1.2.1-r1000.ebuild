@@ -10,12 +10,11 @@ DISTUTILS_SRC_TEST="nosetests"
 inherit distutils
 
 MY_PN="Paver"
-MY_P="${MY_PN}-${PV%.0}"
+MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Easy build, distribution and deployment scripting"
 HOMEPAGE="http://paver.github.io/paver/ https://github.com/paver/paver https://pypi.python.org/pypi/Paver"
-# SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
-SRC_URI="https://github.com/${PN}/${PN}/archive/${MY_P}.tar.gz"
+SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
@@ -28,32 +27,11 @@ RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/${MY_P}"
 
-src_unpack() {
-	default
-	mv paver-Paver-* ${MY_P}
-}
-
 src_prepare() {
 	distutils_src_prepare
 
-	# https://github.com/paver/paver/issues/93
-	sed -e "s/test_cogging/_&/" -i paver/tests/test_doctools.py
-
-	# https://github.com/paver/paver/issues/106
-	sed -e "s/keys = self.keys()/keys = list(self.keys())/" -i paver/options.py
-
-	rm -fr tests_integration
-}
-
-src_compile() {
-	distutils_src_compile
-
-	if use doc; then
-		einfo "Generation of documentation"
-		pushd docs > /dev/null
-		PYTHONPATH="../build-$(PYTHON -f --ABI)/lib" emake html
-		popd > /dev/null
-	fi
+	# Fix compatibility with Jython 2.5.
+	sed -e "1i\\from __future__ import with_statement" -i pavement.py
 }
 
 src_install() {
@@ -74,6 +52,6 @@ src_install() {
 	python_execute_function -q delete_documentation
 
 	if use doc; then
-		dohtml -r docs/build/html/
+		dohtml -r paver/docs/
 	fi
 }
