@@ -68,7 +68,7 @@ esac
 [[ -z "${PHP_EXT_S}" ]] && PHP_EXT_S="${S}"
 
 #Make sure at least one target is installed.
-REQUIRED_USE="|| ( "
+REQUIRED_USE="${PHP_EXT_OPTIONAL_USE}${PHP_EXT_OPTIONAL_USE:+? ( }|| ( "
 for target in ${USE_PHP}; do
 	IUSE="${IUSE} php_targets_${target}"
 	target=${target/+}
@@ -78,7 +78,7 @@ for target in ${USE_PHP}; do
 	PHPDEPEND="${PHPDEPEND}
 	php_targets_${target}? ( dev-lang/php:${slot} )"
 done
-REQUIRED_USE+=")"
+REQUIRED_USE+=") ${PHP_EXT_OPTIONAL_USE:+ )}"
 
 RDEPEND="${RDEPEND}
 	${PHP_EXT_OPTIONAL_USE}${PHP_EXT_OPTIONAL_USE:+? ( }
