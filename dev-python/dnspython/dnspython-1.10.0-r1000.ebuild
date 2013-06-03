@@ -9,7 +9,7 @@ PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 inherit distutils eutils
 
 DESCRIPTION="DNS toolkit for Python"
-HOMEPAGE="http://www.dnspython.org/ http://pypi.python.org/pypi/dnspython http://pypi.python.org/pypi/dnspython3"
+HOMEPAGE="http://www.dnspython.org/ https://github.com/rthalley/dnspython https://pypi.python.org/pypi/dnspython https://pypi.python.org/pypi/dnspython3"
 SRC_URI="http://www.dnspython.org/kits/${PV}/${P}.tar.gz http://www.dnspython.org/kits3/${PV}/${PN}3-${PV}.tar.gz"
 
 LICENSE="ISC"
