@@ -64,10 +64,8 @@ src_test() {
 }
 
 src_install() {
-	# Maintainer note:
-	# In order to work with mod_wsgi, we need to disable the C extension.
-	# See [1] for more information.
-	# [1] http://api.mongodb.org/python/current/faq.html#does-pymongo-work-with-mod-wsgi
+	# Extension modules should be disabled for mod_wsgi.
+	# http://api.mongodb.org/python/current/faq.html#does-pymongo-work-with-mod-wsgi
 	distutils_src_install $(use mod_wsgi && echo --no_ext)
 
 	if use doc; then
