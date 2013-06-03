@@ -6,6 +6,7 @@ EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 3.1"
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
+WEBAPP_NO_AUTO_INSTALL="yes"
 
 inherit bash-completion-r1 distutils versionator webapp
 
@@ -87,18 +88,10 @@ src_install() {
 	webapp_src_install
 }
 
-pkg_preinst() {
-	:
-}
-
 pkg_postinst() {
 	distutils_pkg_postinst
 
-	elog "A copy of the admin media is available to"
-	elog "webapp-config for installation in a webroot,"
-	elog "as well as the traditional location in python's"
-	elog "site-packages dir for easy development"
-	ewarn "If you build Django ${PV} without USE=\"vhosts\""
-	ewarn "webapp-config will automatically install the"
-	ewarn "admin media into the localhost webroot."
+	elog "A copy of the admin media is available to webapp-config for installation in a webroot,"
+	elog "as well as the traditional location in Python's site-packages directory for easy development."
+	webapp_pkg_postinst
 }
