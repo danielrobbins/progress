@@ -19,7 +19,7 @@ IUSE="doc examples sasl ssl"
 
 RDEPEND="$(python_abi_depend dev-python/pyasn1)
 	$(python_abi_depend dev-python/pyasn1-modules)
-	>=net-nds/openldap-2.4.11
+	>=net-nds/openldap-2.4.11[sasl?]
 	sasl? ( dev-libs/cyrus-sasl )"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
@@ -32,13 +32,15 @@ src_prepare() {
 	distutils_src_prepare
 
 	local defines extra_link_args include_dirs libs
-	libs="ldap"
+	libs="lber ldap_r"
+
+	if use elibc_glibc; then
+		libs+=" resolv"
+	fi
 
 	if use sasl; then
 		include_dirs+=" ${EPREFIX}/usr/include/sasl"
 		defines+=" HAVE_SASL"
-		[[ "${CHOST}" != *-darwin* ]] && extra_link_args="-Wl,-rpath=${EPREFIX}/usr/$(get_libdir)/sasl2"
-		use ssl && libs="ldap_r"
 		libs+=" sasl2"
 	fi
 
@@ -51,9 +53,7 @@ src_prepare() {
 		-e "s:^\(library_dirs =\).*:\1:" \
 		-e "s:^\(include_dirs =\).*:\1 ${include_dirs}:" \
 		-e "s:^\(defines =\).*:\1 ${defines}:" \
-		-e "s:^\(extra_compile_args =\).*:\1:" \
-		-e "/^extra_compile_args/a extra_link_args = ${extra_link_args}" \
-		-e "s:^\(libs =\).*:\1 lber resolv ${libs}:" \
+		-e "s:^\(libs =\).*:\1 ${libs}:" \
 		-i setup.cfg || die "sed failed"
 }
 
