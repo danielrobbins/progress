@@ -21,11 +21,15 @@ SLOT="4"
 KEYWORDS="*"
 IUSE="doc examples test"
 
-RDEPEND="!dev-python/pyro:0"
+RDEPEND="$(python_abi_depend dev-python/serpent)
+	!dev-python/pyro:0"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	doc? ( $(python_abi_depend dev-python/sphinx) )
-	test? ( $(python_abi_depend dev-python/nose) )"
+	test? (
+		$(python_abi_depend dev-python/nose)
+		$(python_abi_depend -i "2.6" dev-python/unittest2)
+	)"
 
 S="${WORKDIR}/${MY_P}"
 
@@ -35,6 +39,9 @@ src_prepare() {
 	distutils_src_prepare
 
 	sed -e '/sys.path.insert/a sys.path.insert(1,"PyroTests")' -i tests/run_suite.py
+
+	# Fix compatibility with Python 2.6.
+	sed -e "s/import unittest/unittest = __import__('unittest2') if __import__('sys').version_info\[:2\] == (2, 6) else __import__('unittest')/" -i tests/PyroTests/*.py
 
 	# Disable tests requiring network connection.
 	sed \
