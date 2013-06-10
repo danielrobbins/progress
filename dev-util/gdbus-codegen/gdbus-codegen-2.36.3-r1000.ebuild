@@ -26,7 +26,7 @@ PDEPEND=">=dev-libs/glib-${PV}:2"
 
 S="${WORKDIR}/glib-${PV}/gio/gdbus-2.0/codegen"
 
-PYTHON_MODNAME="gdbus_codegen"
+PYTHON_MODULES="gdbus_codegen"
 
 src_prepare() {
 	epatch "${FILESDIR}/${PN}-2.36.0-sitedir.patch"
