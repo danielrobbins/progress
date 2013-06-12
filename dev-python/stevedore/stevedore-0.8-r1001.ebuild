@@ -9,7 +9,7 @@ DISTUTILS_SRC_TEST="nosetests"
 inherit distutils
 
 DESCRIPTION="Manage dynamic plugins for Python applications"
-HOMEPAGE="https://github.com/dreamhost/stevedore http://pypi.python.org/pypi/stevedore"
+HOMEPAGE="https://github.com/dreamhost/stevedore https://pypi.python.org/pypi/stevedore"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="Apache-2.0"
@@ -21,6 +21,13 @@ RDEPEND="$(python_abi_depend dev-python/setuptools)"
 DEPEND="${RDEPEND}
 	doc? ( $(python_abi_depend dev-python/sphinx) )
 	test? ( $(python_abi_depend dev-python/mock) )"
+
+src_prepare() {
+	distutils_src_prepare
+
+	# https://github.com/dreamhost/stevedore/issues/19
+	sed -e "/^install_requires =/s/distribute/setuptools/" -i setup.py
+}
 
 src_compile() {
 	distutils_src_compile
