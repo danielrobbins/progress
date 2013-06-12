@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.3 3.4 *-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 
 FORTRAN_NEEDED="lapack"
 
@@ -27,6 +27,7 @@ LICENSE="BSD"
 SLOT="0"
 KEYWORDS="*"
 IUSE="doc lapack test"
+REQUIRED_USE="!python_abis_3.3 !python_abis_3.4"
 
 RDEPEND="
 	$(python_abi_depend dev-python/setuptools)
