@@ -22,6 +22,25 @@ case ${EAPI:-0} in
 	*) die "EAPI ${EAPI} unsupported (yet)."
 esac
 
+# @FUNCTION: _bash-completion-r1_get_bashcompdir
+# @INTERNAL
+# @DESCRIPTION:
+# Get unprefixed bash-completion directory.
+_bash-completion-r1_get_bashcompdir() {
+	debug-print-function ${FUNCNAME} "${@}"
+
+	echo /usr/share/bash-completion
+}
+
+# @FUNCTION: get_bashcompdir
+# @DESCRIPTION:
+# Get the bash-completion directory.
+get_bashcompdir() {
+	debug-print-function ${FUNCNAME} "${@}"
+
+	echo "${EPREFIX}$(_bash-completion-r1_get_bashcompdir)"
+}
+
 # @FUNCTION: dobashcomp
 # @USAGE: file [...]
 # @DESCRIPTION:
@@ -31,7 +50,7 @@ dobashcomp() {
 	debug-print-function ${FUNCNAME} "${@}"
 
 	(
-		insinto /usr/share/bash-completion
+		insinto "$(_bash-completion-r1_get_bashcompdir)"
 		doins "${@}"
 	)
 }
@@ -45,7 +64,7 @@ newbashcomp() {
 	debug-print-function ${FUNCNAME} "${@}"
 
 	(
-		insinto /usr/share/bash-completion
+		insinto "$(_bash-completion-r1_get_bashcompdir)"
 		newins "${@}"
 	)
 }

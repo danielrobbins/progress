@@ -135,22 +135,6 @@ EXPORT_FUNCTIONS src_prepare src_configure src_compile src_install src_test
 # @DESCRIPTION:
 # Specify location of autotools' configure script. By default it uses ${S}.
 
-# @ECLASS-VARIABLE: myeconfargs
-# @DEFAULT_UNSET
-# @DESCRIPTION:
-# Optional econf arguments as Bash array. Should be defined before calling src_configure.
-# @CODE
-# src_configure() {
-# 	local myeconfargs=(
-# 		--disable-readline
-# 		--with-confdir="/etc/nasty foo confdir/"
-# 		$(use_enable debug cnddebug)
-# 		$(use_enable threads multithreading)
-# 	)
-# 	autotools-utils_src_configure
-# }
-# @CODE
-
 # @ECLASS-VARIABLE: DOCS
 # @DEFAULT_UNSET
 # @DESCRIPTION:
@@ -426,6 +410,22 @@ autotools-utils_src_prepare() {
 #
 # IUSE="static-libs" passes --enable-shared and either --disable-static/--enable-static
 # to econf respectively.
+
+# @VARIABLE: myeconfargs
+# @DEFAULT_UNSET
+# @DESCRIPTION:
+# Optional econf arguments as Bash array. Should be defined before calling src_configure.
+# @CODE
+# src_configure() {
+# 	local myeconfargs=(
+# 		--disable-readline
+# 		--with-confdir="/etc/nasty foo confdir/"
+# 		$(use_enable debug cnddebug)
+# 		$(use_enable threads multithreading)
+# 	)
+# 	autotools-utils_src_configure
+# }
+# @CODE
 autotools-utils_src_configure() {
 	debug-print-function ${FUNCNAME} "$@"
 

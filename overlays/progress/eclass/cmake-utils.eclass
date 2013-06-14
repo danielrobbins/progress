@@ -64,7 +64,12 @@ inherit toolchain-funcs multilib flag-o-matic base
 CMAKE_EXPF="src_compile src_test src_install"
 case ${EAPI:-0} in
 	2|3|4|4-python|5|5-progress) CMAKE_EXPF+=" src_prepare src_configure" ;;
-	1|0) ;;
+	1|0) ewarn "EAPI 0 and 1 support is now deprecated."
+		ewarn "If you are the package maintainer, please"
+		ewarn "update this package to a newer EAPI."
+		ewarn "Support for EAPI 0-1 will be dropped at the beginning of July."
+    ;;
+	
 	*) die "Unknown EAPI, Bug eclass maintainers." ;;
 esac
 EXPORT_FUNCTIONS ${CMAKE_EXPF}
@@ -357,6 +362,20 @@ enable_cmake-utils_src_prepare() {
 
 	base_src_prepare
 }
+
+# @VARIABLE: mycmakeargs
+# @DEFAULT_UNSET
+# @DESCRIPTION:
+# Optional cmake defines as a bash array. Should be defined before calling
+# src_configure.
+# @CODE
+# src_configure() {
+# 	local mycmakeargs=(
+# 		$(cmake-utils_use_with openconnect)
+# 	)
+# 	cmake-utils_src_configure
+# }
+
 
 enable_cmake-utils_src_configure() {
 	debug-print-function ${FUNCNAME} "$@"
