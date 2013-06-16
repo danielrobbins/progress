@@ -24,7 +24,8 @@ SRC_URI="${BASE_URI}/${SRC_ARCHIVE}
 	doc? ( ${BASE_URI}/${DOCS_ARCHIVE} )"
 
 LICENSE="BSD"
-SLOT="0/${MAJOR_VERSION}"
+# SLOT="0/${MAJOR_VERSION}"
+SLOT="0/51.1"
 KEYWORDS="*"
 IUSE="c++11 debug doc examples static-libs"
 
