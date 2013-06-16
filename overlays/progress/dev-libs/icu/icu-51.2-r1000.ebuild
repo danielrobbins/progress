@@ -49,7 +49,6 @@ src_unpack() {
 
 src_prepare() {
 	epatch "${FILESDIR}/${PN}-4.8.1.1-fix_ltr.patch"
-	epatch "${FILESDIR}/${PN}-51.2-binary_format_fonts.patch"
 
 	sed -e "s/#CXXFLAGS =/CXXFLAGS =/" -i config/icu.pc.in || die "sed failed"
 
