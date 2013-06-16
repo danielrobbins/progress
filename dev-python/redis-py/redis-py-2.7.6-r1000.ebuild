@@ -5,7 +5,7 @@
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython"
-DISTUTILS_SRC_TEST="setup.py"
+DISTUTILS_SRC_TEST="py.test"
 
 inherit distutils
 
