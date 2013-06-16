@@ -20,7 +20,7 @@ SRC_URI="http://userspace.selinuxproject.org/releases/20130423/${P}.tar.gz
 
 LICENSE="public-domain"
 SLOT="0"
-KEYWORDS="~*"
+KEYWORDS="*"
 IUSE="python ruby static-libs"
 
 RDEPEND=">=sys-libs/libsepol-${SEPOL_VER}
