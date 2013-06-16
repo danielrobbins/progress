@@ -20,7 +20,14 @@ IUSE=""
 
 DEPEND="$(python_abi_depend ">=dev-python/mozinfo-0.4")
 	$(python_abi_depend ">=dev-python/mozprocess-0.8")
-	$(python_abi_depend ">=dev-python/mozprofile-0.4")
+	$(python_abi_depend ">=dev-python/mozprofile-0.11")
 	$(python_abi_depend dev-python/setuptools)
 	$(python_abi_depend virtual/python-json[external])"
 RDEPEND="${DEPEND}"
+
+src_prepare() {
+	distutils_src_prepare
+
+	# Disable installation of Windows-specific files.
+	sed -e "/package_data={'mozrunner': \[/,/\]},/d" -i setup.py
+}
