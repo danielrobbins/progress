@@ -3120,7 +3120,7 @@ python_get_library() {
 python_get_extension_module_suffix() {
 	_python_check_python_pkg_setup_execution
 
-	local final_ABI="0" PYTHON_ABI="${PYTHON_ABI}"
+	local extension_module_suffix final_ABI="0" PYTHON_ABI="${PYTHON_ABI}"
 
 	while (($#)); do
 		case "$1" in
@@ -3154,15 +3154,18 @@ python_get_extension_module_suffix() {
 
 	if [[ "$(_python_get_implementation "${PYTHON_ABI}")" == "CPython" ]]; then
 		if [[ "${PYTHON_ABI}" < "3.2" ]]; then
-			echo ".so"
+			extension_module_suffix=".so"
 		else
-			echo ".cpython-${PYTHON_ABI/./}.so"
+			extension_module_suffix=".cpython-${PYTHON_ABI/./}.so"
 		fi
 	elif [[ "$(_python_get_implementation "${PYTHON_ABI}")" == "Jython" ]]; then
 		die "${FUNCNAME}(): Jython does not support extension modules"
 	elif [[ "$(_python_get_implementation "${PYTHON_ABI}")" == "PyPy" ]]; then
-		echo ".so"
+		extension_module_suffix="${PYTHON_ABI##*-}"
+		extension_module_suffix=".pypy-${extension_module_suffix/./}.so"
 	fi
+
+	echo "${extension_module_suffix}"
 }
 
 # @FUNCTION: python_get_version
