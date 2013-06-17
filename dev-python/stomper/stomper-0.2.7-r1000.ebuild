@@ -21,13 +21,6 @@ IUSE="examples"
 DEPEND="$(python_abi_depend dev-python/setuptools)"
 RDEPEND=""
 
-src_prepare() {
-	distutils_src_prepare
-
-	# https://github.com/oisinmulvihill/stomper/issues/1
-	sed -e "s/self.headers.items()/sorted(self.headers.items())/" -i lib/stomper/__init__.py
-}
-
 src_install() {
 	distutils_src_install
 
