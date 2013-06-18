@@ -28,7 +28,7 @@ fi
 
 LICENSE="|| ( GPL-2 GPL-3 sip )"
 # Subslot based on SIP_API_MAJOR_NR from siplib/sip.h.in
-SLOT="0/9"
+SLOT="0/10"
 KEYWORDS="*"
 IUSE="debug doc"
 
