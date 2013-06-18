@@ -37,6 +37,7 @@ src_configure() {
 	configuration() {
 		local myconf=(
 			"$(PYTHON)" configure.py
+			--pyqt=PyQt4
 			--pyqt-sipdir="${EPREFIX}/usr/share/sip"
 			--apidir="${EPREFIX}/usr/share/qt4/qsci"
 			--destdir="${EPREFIX}$(python_get_sitedir)/PyQt4"
