@@ -8,7 +8,7 @@ PYTHON_MULTIPLE_ABIS="1"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.5 *-jython"
 DISTUTILS_SRC_TEST="setup.py"
 
-inherit distutils eutils
+inherit distutils
 
 DESCRIPTION="Setuptools is a collection of extensions to Distutils"
 HOMEPAGE="https://pythonhosted.org/setuptools/ https://bitbucket.org/pypa/setuptools https://pypi.python.org/pypi/setuptools"
@@ -27,11 +27,6 @@ PYTHON_MODULES="_markerlib easy_install.py pkg_resources.py setuptools"
 
 src_prepare() {
 	distutils_src_prepare
-
-	epatch "${FILESDIR}/distribute-0.6.16-fix_deprecation_warnings.patch"
-
-	# Disable installation of Windows-specific files.
-	sed -e "/package_data =/{s/'\*.exe', //;s/, 'setuptools.command':\['\*.xml'\]//}" -i setup.py
 
 	# Disable tests requiring network connection.
 	rm -f setuptools/tests/test_packageindex.py
