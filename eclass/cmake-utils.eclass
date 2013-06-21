@@ -64,10 +64,11 @@ inherit toolchain-funcs multilib flag-o-matic base
 CMAKE_EXPF="src_compile src_test src_install"
 case ${EAPI:-0} in
 	2|3|4|4-python|5|5-progress) CMAKE_EXPF+=" src_prepare src_configure" ;;
-	1|0) ewarn "EAPI 0 and 1 support is now deprecated."
-		ewarn "If you are the package maintainer, please"
-		ewarn "update this package to a newer EAPI."
-		ewarn "Support for EAPI 0-1 will be dropped at the beginning of July."
+	1|0) eqawarn "${CATEGORY}/${PF}: EAPI 0 and 1 support is now deprecated."
+		eqawarn "If you are the package maintainer, please"
+		eqawarn "update this package to a newer EAPI."
+		eqawarn "Support for EAPI 0-1 for 'cmake-utils.eclass'"
+		eqawarn "will be dropped at the beginning of July."
     ;;
 	
 	*) die "Unknown EAPI, Bug eclass maintainers." ;;

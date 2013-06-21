@@ -13,10 +13,10 @@
 # implementations).
 
 case "${EAPI:-0}" in
-	0|1|2|3|4)
+	0|1|2|3)
 		die "Unsupported EAPI=${EAPI:-0} (too old) for ${ECLASS}"
 		;;
-	5|5-progress)
+	4|4-python|5|5-progress)
 		;;
 	*)
 		die "Unsupported EAPI=${EAPI} (unknown) for ${ECLASS}"
