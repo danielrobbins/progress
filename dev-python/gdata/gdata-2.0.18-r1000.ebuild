@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_DEPEND="<<[ssl,xml]>>"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.*"
@@ -10,12 +10,12 @@ PYTHON_RESTRICTED_ABIS="3.*"
 inherit distutils
 
 DESCRIPTION="Python client library for Google data APIs"
-HOMEPAGE="http://code.google.com/p/gdata-python-client/ http://pypi.python.org/pypi/gdata"
+HOMEPAGE="http://code.google.com/p/gdata-python-client/ https://pypi.python.org/pypi/gdata"
 SRC_URI="http://gdata-python-client.googlecode.com/files/${P}.tar.gz"
 
 LICENSE="Apache-2.0"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 sparc x86 ~x86-fbsd"
+KEYWORDS="*"
 IUSE="examples"
 
 DEPEND=""
