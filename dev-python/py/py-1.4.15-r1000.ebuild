@@ -30,7 +30,7 @@ src_prepare() {
 	distutils_src_prepare
 
 	# https://bitbucket.org/hpk42/py/issue/29
-	sed -e "s/if sys.version_info < (2,7):/if sys.version_info < (2,7) or sys.version_info >= (3, 0) and sys.version_info < (3, 2):/" -i py/_code/source.py
+	sed -e "s/if sys.version_info < (2,7):/if sys.version_info < (2, 7) or sys.version_info >= (3, 0) and sys.version_info < (3, 2):/" -i py/_code/source.py
 }
 
 src_compile() {
