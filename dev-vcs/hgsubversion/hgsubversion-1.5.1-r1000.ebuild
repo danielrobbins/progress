@@ -9,12 +9,12 @@ PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 inherit distutils
 
 DESCRIPTION="hgsubversion is a Mercurial extension for working with Subversion repositories."
-HOMEPAGE="https://bitbucket.org/durin42/hgsubversion/wiki/Home http://pypi.python.org/pypi/hgsubversion"
+HOMEPAGE="https://bitbucket.org/durin42/hgsubversion https://pypi.python.org/pypi/hgsubversion"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="amd64 x86 ~ppc-macos ~x64-macos ~x86-solaris"
+KEYWORDS="*"
 IUSE="test"
 
 RDEPEND="$(python_abi_depend ">=dev-vcs/mercurial-1.4")
@@ -28,13 +28,6 @@ DEPEND="${RDEPEND}
 	test? ( $(python_abi_depend dev-python/nose) )"
 
 DOCS="README"
-
-src_prepare() {
-	distutils_src_prepare
-
-	# https://bitbucket.org/durin42/hgsubversion/issue/370
-	sed -e "s/test_invalid_message/_&/" -i tests/test_fetch_command.py
-}
 
 src_test() {
 	cd tests
