@@ -33,7 +33,6 @@ DOCS="AUTHORS NEWS README doc/HACKING doc/psycopg2.txt"
 PYTHON_MODULES="${PN}2"
 
 src_prepare() {
-	epatch "${FILESDIR}/${PN}-2.0.9-round-solaris.patch"
 	epatch "${FILESDIR}/${PN}-2.4.2-setup.py.patch"
 
 	if use debug; then
