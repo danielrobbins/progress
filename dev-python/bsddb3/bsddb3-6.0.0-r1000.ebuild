@@ -8,7 +8,7 @@ PYTHON_RESTRICTED_ABIS="*-jython"
 
 inherit db-use distutils multilib
 
-DESCRIPTION="Python bindings for Berkeley DB"
+DESCRIPTION="Python interface for Berkeley DB"
 HOMEPAGE="http://www.jcea.es/programacion/pybsddb.htm https://pypi.python.org/pypi/bsddb3"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
@@ -25,29 +25,8 @@ PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 
 DOCS="ChangeLog TODO.txt"
 
-src_prepare() {
-	distutils_src_prepare
-
-	# https://hg.jcea.es/pybsddb/rev/36776da36249
-	sed -e "s/err = self->db_env->rep_elect(self->db_env, nvotes, nvotes, 0);/err = self->db_env->rep_elect(self->db_env, nsites, nvotes, 0);/" -i Modules/_bsddb.c
-
-	# https://hg.jcea.es/pybsddb/rev/479404f6782a
-	sed \
-		-e "49s/rp = repr(db)/rp = repr(sorted(db.items()))/" \
-		-e "s/self.assertEqual(rp, repr(d))/rd = repr(sorted(d.items()))\n        self.assertEqual(rp, rd)/" \
-		-i Lib3/bsddb/test/test_misc.py
-
-	# https://hg.jcea.es/pybsddb/rev/202093fbbfc2
-	sed \
-		-e "72s/def __next__(self) :/def __next__(self, flags=0, dlen=-1, doff=-1) :/" \
-		-e "/v = getattr(self._dbcursor, \"next\")/s/()/(flags=flags, dlen=dlen, doff=doff)/" \
-		-e "126s/def first(self) :/def first(self, flags=0, dlen=-1, doff=-1) :/" \
-		-e "/v = self._dbcursor.first/s/()/(flags=flags, dlen=dlen, doff=doff)/" \
-		-i Lib3/bsddb/test/test_all.py
-}
-
 src_configure() {
-	for DB_VER in 5.3 5.2 5.1 5.0 4.8; do
+	for DB_VER in 6.0 5.3 5.2 5.1 5.0 4.8; do
 		if has_version sys-libs/db:${DB_VER}; then
 			break
 		fi
