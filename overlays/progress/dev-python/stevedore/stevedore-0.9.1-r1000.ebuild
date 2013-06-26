@@ -17,17 +17,11 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="doc test"
 
-RDEPEND="$(python_abi_depend dev-python/setuptools)"
+RDEPEND="$(python_abi_depend dev-python/setuptools)
+	$(python_abi_depend virtual/python-argparse)"
 DEPEND="${RDEPEND}
 	doc? ( $(python_abi_depend dev-python/sphinx) )
 	test? ( $(python_abi_depend dev-python/mock) )"
-
-src_prepare() {
-	distutils_src_prepare
-
-	# https://github.com/dreamhost/stevedore/issues/19
-	sed -e "/^install_requires =/s/distribute/setuptools/" -i setup.py
-}
 
 src_compile() {
 	distutils_src_compile
