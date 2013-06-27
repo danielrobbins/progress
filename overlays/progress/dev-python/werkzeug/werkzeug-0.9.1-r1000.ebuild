@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.*"
+PYTHON_RESTRICTED_ABIS="2.5 3.1 3.2"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 DISTUTILS_SRC_TEST="setup.py"
 
@@ -20,13 +20,12 @@ SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="*"
-IUSE="redis test"
+IUSE="redis"
 
 RDEPEND="$(python_abi_depend virtual/python-json[external])
 	redis? ( $(python_abi_depend -e "*-jython" dev-python/redis-py) )"
 DEPEND="${RDEPEND}
-	$(python_abi_depend dev-python/setuptools)
-	test? ( $(python_abi_depend -e "*-jython *-pypy-*" dev-python/lxml) )"
+	$(python_abi_depend dev-python/setuptools)"
 
 S="${WORKDIR}/${MY_P}"
 
@@ -35,9 +34,8 @@ DOCS="CHANGES"
 src_prepare() {
 	distutils_src_prepare
 
-	# Disable redis-related tests.
-	# https://github.com/mitsuhiko/werkzeug/issues/120
-	sed -e "s/import redis/redis = None/" -i werkzeug/testsuite/contrib/cache.py
+	# Fix compatibility with Jython.
+	sed -e "s/if isinstance(x, (bytes, bytearray, buffer)):/if isinstance(x, (bytes, bytearray)) or hasattr(builtins, 'buffer') and isinstance(x, buffer):/" -i werkzeug/_compat.py
 }
 
 src_install() {
