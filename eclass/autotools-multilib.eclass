@@ -52,9 +52,12 @@ autotools-multilib_src_install() {
 	autotools-multilib_secure_install() {
 		autotools-utils_src_install "${@}"
 
-		multilib_prepare_wrappers
-		# Make sure all headers are the same for each ABI.
-		multilib_check_headers
+		# Do multilib magic only when >1 ABI is used.
+		if [[ ${#MULTIBUILD_VARIANTS[@]} -gt 1 ]]; then
+			multilib_prepare_wrappers
+			# Make sure all headers are the same for each ABI.
+			multilib_check_headers
+		fi
 	}
 
 	multilib_foreach_abi autotools-multilib_secure_install "${@}"
