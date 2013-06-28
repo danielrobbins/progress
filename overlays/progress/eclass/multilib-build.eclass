@@ -303,7 +303,7 @@ _EOF_
 		esac
 
 		# Note: match a space afterwards to avoid collision potential.
-		sed -e "/${abi_flag} /s&error.*&include <${CHOST}/${f}>&" \
+		sed -e "/${abi_flag} /s&error.*&include <${CHOST}${f}>&" \
 			-i "${ED}/tmp/multilib-include${f}" || die
 	done
 }
