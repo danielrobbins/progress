@@ -37,6 +37,9 @@ src_prepare() {
 		-e "s/test_fetch_all/_&/" \
 		-i test/test_psutil.py
 	sed -e "s/test_memory_maps/_&/" -i test/_linux.py
+
+	# http://code.google.com/p/psutil/issues/detail?id=404
+	sed -e "/#include <sched.h>/i\\#define _GNU_SOURCE" -i psutil/_psutil_linux.c
 }
 
 src_test() {
