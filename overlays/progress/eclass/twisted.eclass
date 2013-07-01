@@ -23,7 +23,7 @@ if [[ "${CATEGORY}/${PN}" == "dev-python/twisted"* ]]; then
 	MY_PV="${MY_PV:-${PV}}"
 	MY_P="Twisted${MY_PACKAGE}-${MY_PV}"
 
-	HOMEPAGE="http://twistedmatrix.com/trac/ https://pypi.python.org/pypi/Twisted https://pypi.python.org/pypi/Twisted%20${MY_PACKAGE}"
+	HOMEPAGE="http://twistedmatrix.com/trac/ https://pypi.python.org/pypi/Twisted"
 	SRC_URI="http://twistedmatrix.com/Releases/${MY_PACKAGE}/$(get_version_component_range 1-2 ${MY_PV})/${MY_P}.tar.bz2"
 
 	LICENSE="MIT"
