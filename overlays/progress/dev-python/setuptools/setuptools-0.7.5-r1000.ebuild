@@ -45,5 +45,5 @@ src_test() {
 }
 
 src_install() {
-	DISTRIBUTE_DISABLE_VERSIONED_EASY_INSTALL_SCRIPT="1" distutils_src_install
+	SETUPTOOLS_DISABLE_VERSIONED_EASY_INSTALL_SCRIPT="1" distutils_src_install
 }
