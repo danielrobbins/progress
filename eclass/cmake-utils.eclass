@@ -11,8 +11,7 @@
 # Original author: Zephyrus (zephyrus@mirach.it)
 # @BLURB: common ebuild functions for cmake-based packages
 # @DESCRIPTION:
-# The cmake-utils eclass is base.eclass(5) wrapper that makes creating ebuilds for
-# cmake-based packages much easier.
+# The cmake-utils eclass makes creating ebuilds for cmake-based packages much easier.
 # It provides all inherited features (DOCS, HTML_DOCS, PATCHES) along with out-of-source
 # builds (default), in-source builds and an implementation of the well-known use_enable
 # and use_with functions for CMake.
@@ -59,19 +58,14 @@ case ${WANT_CMAKE} in
 		CMAKEDEPEND+="${WANT_CMAKE}? ( "
 		;;
 esac
-inherit toolchain-funcs multilib flag-o-matic base
+inherit toolchain-funcs multilib flag-o-matic eutils
 
 CMAKE_EXPF="src_compile src_test src_install"
 case ${EAPI:-0} in
 	2|3|4|4-python|5|5-progress) CMAKE_EXPF+=" src_prepare src_configure" ;;
-	1|0) eqawarn "${CATEGORY}/${PF}: EAPI 0 and 1 support is now deprecated."
-		eqawarn "If you are the package maintainer, please"
-		eqawarn "update this package to a newer EAPI."
-		eqawarn "Support for EAPI 0-1 for 'cmake-utils.eclass'"
-		eqawarn "will be dropped at the beginning of July."
-    ;;
-	
-	*) die "Unknown EAPI, Bug eclass maintainers." ;;
+	1|0) eerror "cmake-utils no longer supports EAPI 0-1." && die
+	;;
+	*) die "Unknown EAPI, bug eclass maintainers." ;;
 esac
 EXPORT_FUNCTIONS ${CMAKE_EXPF}
 
@@ -257,8 +251,8 @@ cmake-utils_use_enable() { _use_me_now ENABLE_ "$@" ; }
 # @DESCRIPTION:
 # Based on use_enable. See ebuild(5).
 #
-# `cmake-utils_use_find_package foo FOO` echoes -DCMAKE_DISABLE_FIND_PACKAGE=OFF
-# if foo is enabled and -DCMAKE_DISABLE_FIND_PACKAGE=ON if it is disabled.
+# `cmake-utils_use_find_package foo LibFoo` echoes -DCMAKE_DISABLE_FIND_PACKAGE_LibFoo=OFF
+# if foo is enabled and -DCMAKE_DISABLE_FIND_PACKAGE_LibFoo=ON if it is disabled.
 # This can be used to make find_package optional (since cmake-2.8.6).
 cmake-utils_use_find_package() { _use_me_now_inverted CMAKE_DISABLE_FIND_PACKAGE_ "$@" ; }
 
@@ -361,7 +355,16 @@ _modify-cmakelists() {
 enable_cmake-utils_src_prepare() {
 	debug-print-function ${FUNCNAME} "$@"
 
-	base_src_prepare
+    debug-print "$FUNCNAME: PATCHES=$PATCHES"
+
+    pushd "${S}" > /dev/null
+    [[ ${PATCHES[@]} ]] && epatch "${PATCHES[@]}"
+		
+	debug-print "$FUNCNAME: applying user patches"
+    epatch_user
+
+    popd > /dev/null
+
 }
 
 # @VARIABLE: mycmakeargs
@@ -551,11 +554,25 @@ enable_cmake-utils_src_install() {
 
 	_check_build_dir
 	pushd "${BUILD_DIR}" > /dev/null
-
 	DESTDIR="${D}" ${CMAKE_MAKEFILE_GENERATOR} install "$@" || die "died running ${CMAKE_MAKEFILE_GENERATOR} install"
-	base_src_install_docs
-
 	popd > /dev/null
+
+	pushd "${S}" > /dev/null
+    #Install docs, copied from base_src_install_docs
+	local x
+
+    if [[ "$(declare -p DOCS 2>/dev/null 2>&1)" == "declare -a"* ]]; then
+        for x in "${DOCS[@]}"; do
+            debug-print "$FUNCNAME: docs: creating document from ${x}"
+            dodoc "${x}" || die "dodoc failed"
+        done
+    fi
+    if [[ "$(declare -p HTML_DOCS 2>/dev/null 2>&1)" == "declare -a"* ]]; then
+        for x in "${HTML_DOCS[@]}"; do
+            debug-print "$FUNCNAME: docs: creating html document from ${x}"
+            dohtml -r "${x}" || die "dohtml failed"
+        done
+    fi
 
 	# Backward compatibility, for non-array variables
 	if [[ -n "${DOCS}" ]] && [[ "$(declare -p DOCS 2>/dev/null 2>&1)" != "declare -a"* ]]; then
@@ -564,6 +581,8 @@ enable_cmake-utils_src_install() {
 	if [[ -n "${HTML_DOCS}" ]] && [[ "$(declare -p HTML_DOCS 2>/dev/null 2>&1)" != "declare -a"* ]]; then
 		dohtml -r ${HTML_DOCS} || die "dohtml failed"
 	fi
+
+	popd > /dev/null
 }
 
 enable_cmake-utils_src_test() {
@@ -599,7 +618,7 @@ enable_cmake-utils_src_test() {
 
 # @FUNCTION: cmake-utils_src_prepare
 # @DESCRIPTION:
-# Wrapper function around base_src_prepare, just to expand the eclass API.
+# Apply ebuild and user patches.
 cmake-utils_src_prepare() {
 	_execute_optionaly "src_prepare" "$@"
 }
