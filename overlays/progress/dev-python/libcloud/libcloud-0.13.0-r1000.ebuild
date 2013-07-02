@@ -24,7 +24,10 @@ RDEPEND="$(python_abi_depend -i "2.*" dev-python/lockfile)
 	$(python_abi_depend virtual/python-json[external])
 	ssh? ( $(python_abi_depend -i "2.*-cpython" dev-python/paramiko) )"
 DEPEND="${RDEPEND}
-	test? ( $(python_abi_depend dev-python/mock) )"
+	test? (
+		$(python_abi_depend dev-python/mock)
+		$(python_abi_depend -i "2.6" dev-python/unittest2)
+	)"
 
 S="${WORKDIR}/apache-${P}"
 
