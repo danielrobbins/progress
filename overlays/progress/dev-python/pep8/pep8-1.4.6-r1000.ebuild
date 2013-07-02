@@ -8,7 +8,7 @@ PYTHON_MULTIPLE_ABIS="1"
 inherit distutils
 
 DESCRIPTION="Python style guide checker"
-HOMEPAGE="https://github.com/jcrocholl/pep8 http://pypi.python.org/pypi/pep8"
+HOMEPAGE="https://github.com/jcrocholl/pep8 https://pypi.python.org/pypi/pep8"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
