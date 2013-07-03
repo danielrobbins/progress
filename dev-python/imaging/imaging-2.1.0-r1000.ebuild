@@ -47,22 +47,12 @@ src_prepare() {
 
 	epatch "${FILESDIR}/${P}-delete_hardcoded_paths.patch"
 	epatch "${FILESDIR}/${P}-libm_linking.patch"
-	epatch "${FILESDIR}/${P}-use_xdg-open.patch"
-
-	# https://github.com/python-imaging/Pillow/issues/166
-	sed -e "s/#if PY_VERSION_HEX >= 0x03000000/#if PY_VERSION_HEX >= 0x03020000/" -i path.c
-
-	# https://github.com/python-imaging/Pillow/issues/237
-	sed -e "s/#if PY_VERSION_HEX >= 0x03020000/#if (PY_VERSION_HEX >= 0x02070000 \\&\\& PY_VERSION_HEX < 0x03000000) || PY_VERSION_HEX >= 0x03010000/" -i _imaging.c
-
-	# Add shebang.
-	# https://github.com/python-imaging/Pillow/issues/167
-	sed -e "1i#!/usr/bin/python" -i Scripts/pilfont.py || die "sed failed"
+	epatch "${FILESDIR}/${PN}-2.0.0-use_xdg-open.patch"
 
 	local feature
 	for feature in jpeg lcms tiff truetype:freetype webp zlib; do
 		if ! use ${feature%:*}; then
-			sed -e "s/\(^[[:space:]]*feature\.${feature#*:} =\).*/\1 None/" -i setup.py
+			sed -e "s/if feature\.want('${feature#*:}'):/if False:/" -i setup.py
 		fi
 	done
 
@@ -77,7 +67,7 @@ src_compile() {
 	if use doc; then
 		einfo "Generation of documentation"
 		pushd docs > /dev/null
-		emake html
+		PYTHONPATH="$(ls -d ../build-$(PYTHON -f --ABI)/lib*)" emake html
 		popd > /dev/null
 	fi
 
@@ -90,7 +80,7 @@ src_compile() {
 
 src_test() {
 	tests() {
-		python_execute PYTHONPATH="$(ls -d build-${PYTHON_ABI}/lib.*)" "$(PYTHON)" selftest.py || return
+		python_execute PYTHONPATH="$(ls -d build-${PYTHON_ABI}/lib.*)" "$(PYTHON)" selftest.py --installed || return
 		python_execute PYTHONPATH="$(ls -d build-${PYTHON_ABI}/lib.*)" "$(PYTHON)" Tests/run.py --installed || return
 	}
 	python_execute_function tests
