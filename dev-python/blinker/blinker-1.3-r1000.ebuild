@@ -4,13 +4,12 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
 
 DESCRIPTION="Fast, simple object-to-object and broadcast signaling"
-HOMEPAGE="http://discorporate.us/projects/Blinker/ https://pypi.python.org/pypi/blinker"
+HOMEPAGE="https://pythonhosted.org/blinker/ https://github.com/jek/blinker https://pypi.python.org/pypi/blinker"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
@@ -25,6 +24,6 @@ src_install() {
 	distutils_src_install
 
 	if use doc; then
-		dohtml -r docs/html/*
+		dohtml -r docs/html/
 	fi
 }
