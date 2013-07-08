@@ -10,7 +10,7 @@ DISTUTILS_SRC_TEST="nosetests"
 inherit distutils
 
 DESCRIPTION="Highly concurrent networking library"
-HOMEPAGE="http://eventlet.net/ http://pypi.python.org/pypi/eventlet"
+HOMEPAGE="http://eventlet.net/ https://pypi.python.org/pypi/eventlet"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
@@ -36,6 +36,10 @@ src_prepare() {
 		-e "s/test_incomplete_headers_76/_&/" \
 		-e "s/test_incorrect_headers/_&/" \
 		-i tests/websocket_test.py
+	sed -e "s/test_multiple_readers/_&/" -i tests/greenio_test.py
+
+	# https://bitbucket.org/birkenfeld/sphinx/issue/1185
+	sed -e "1i\\# -*- coding: utf-8 -*-" -i eventlet/green/zmq.py
 }
 
 src_compile() {
