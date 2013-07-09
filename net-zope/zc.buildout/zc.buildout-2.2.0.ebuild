@@ -3,12 +3,12 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.*"
+PYTHON_RESTRICTED_ABIS="2.5"
 
 inherit distutils
 
 DESCRIPTION="System for managing development buildouts"
-HOMEPAGE="https://pypi.python.org/pypi/zc.buildout"
+HOMEPAGE="http://www.buildout.org/ https://github.com/buildout/buildout https://pypi.python.org/pypi/zc.buildout"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="ZPL"
@@ -17,8 +17,8 @@ KEYWORDS="*"
 IUSE=""
 
 RDEPEND="$(python_abi_depend net-zope/namespaces-zc[zc])
-	$(python_abi_depend dev-python/setuptools)"
+	$(python_abi_depend ">=dev-python/setuptools-0.7")"
 DEPEND="${RDEPEND}"
 
-DOCS="CHANGES.txt README.txt SYSTEM_PYTHON_HELP.txt todo.txt"
+DOCS="CHANGES.rst README.rst"
 PYTHON_MODULES="${PN/.//}"
