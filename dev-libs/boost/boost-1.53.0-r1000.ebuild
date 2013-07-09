@@ -24,6 +24,7 @@ IUSE="c++11 context debug doc icu mpi +nls python static-libs +threads tools"
 RDEPEND="icu? ( >=dev-libs/icu-3.6:0=::${REPOSITORY}[c++11(-)=] )
 	!icu? ( virtual/libiconv )
 	mpi? ( || ( sys-cluster/openmpi[cxx] sys-cluster/mpich2[cxx,threads] ) )
+	app-arch/bzip2:0=
 	sys-libs/zlib:0=
 	!app-admin/eselect-boost"
 DEPEND="${RDEPEND}
@@ -133,6 +134,15 @@ src_configure() {
 		# We need to add the prefix, and in two cases this exceeds, so prepare
 		# for the largest possible space allocation.
 		append-ldflags -Wl,-headerpad_max_install_names
+	elif [[ ${CHOST} == *-winnt* ]]; then
+		compiler=parity
+		if [[ $($(tc-getCXX) -v) == *trunk* ]]; then
+			compilerVersion=trunk
+		else
+			compilerVersion=$($(tc-getCXX) -v | sed '1q' \
+				| sed -e 's,\([a-z]*\) \([0-9]\.[0-9]\.[0-9][^ \t]*\) .*,\2,')
+		fi
+		compilerExecutable=$(tc-getCXX)
 	fi
 
 	# bug 298489
@@ -147,7 +157,9 @@ src_configure() {
 	use nls || OPTIONS+=(--without-locale)
 	use python || OPTIONS+=(--without-python)
 
-	OPTIONS+=(pch=off --boost-build=/usr/share/boost-build --prefix="${ED}usr" --layout=system threading=$(usex threads multi single) link=$(usex static-libs shared,static shared))
+	OPTIONS+=(pch=off --boost-build=${EPREFIX}/usr/share/boost-build --prefix="${ED}usr" --layout=system threading=$(usex threads multi single) link=$(usex static-libs shared,static shared))
+
+	[[ ${CHOST} == *-winnt* ]] && OPTIONS+=(-sNO_BZIP2=1)
 }
 
 src_compile() {
@@ -220,8 +232,8 @@ src_install () {
 		fi
 
 		ejam "${OPTIONS[@]}" \
-			--includedir="${D}usr/include" \
-			--libdir="${D}usr/$(get_libdir)" \
+			--includedir="${ED}usr/include" \
+			--libdir="${ED}usr/$(get_libdir)" \
 			$(use python && echo --python-buildid=${PYTHON_ABI}) \
 			install || die "Installation of Boost libraries failed"
 
@@ -232,8 +244,8 @@ src_install () {
 			# https://svn.boost.org/trac/boost/ticket/2838
 			if use mpi; then
 				dodir $(python_get_sitedir)/boost
-				mv "${D}usr/$(get_libdir)/mpi.so" "${D}$(python_get_sitedir)/boost" || die
-				cat << EOF > "${D}$(python_get_sitedir)/boost/__init__.py" || die
+				mv "${ED}usr/$(get_libdir)/mpi.so" "${ED}$(python_get_sitedir)/boost" || die
+				cat << EOF > "${ED}$(python_get_sitedir)/boost/__init__.py" || die
 import sys
 if sys.platform.startswith('linux'):
 	import DLFCN
@@ -256,15 +268,15 @@ EOF
 	fi
 
 	if ! use context; then
-		rm -r "${D}usr/include/boost/context" || die
+		rm -r "${ED}usr/include/boost/context" || die
 	fi
 
 	if ! use nls; then
-		rm -r "${D}usr/include/boost/locale"* || die
+		rm -r "${ED}usr/include/boost/locale"* || die
 	fi
 
 	if ! use python; then
-		rm -r "${D}usr/include/boost/python"* || die
+		rm -r "${ED}usr/include/boost/python"* || die
 	fi
 
 	if use doc; then
@@ -285,7 +297,7 @@ EOF
 		dosym /usr/include/boost /usr/share/doc/${PF}/html/boost
 	fi
 
-	pushd "${D}usr/$(get_libdir)" > /dev/null || die
+	pushd "${ED}usr/$(get_libdir)" > /dev/null || die
 
 	local ext=$(get_libname)
 	if use threads; then

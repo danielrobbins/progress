@@ -24,6 +24,7 @@ IUSE="debug doc elibc_glibc icu mpi python static-libs tools"
 RDEPEND="elibc_glibc? ( <sys-libs/glibc-2.16 )
 	icu? ( >=dev-libs/icu-3.6:0= )
 	mpi? ( || ( sys-cluster/openmpi[cxx] sys-cluster/mpich2[cxx,threads] ) )
+	app-arch/bzip2:0=
 	sys-libs/zlib:0=
 	!app-admin/eselect-boost"
 DEPEND="${RDEPEND}
