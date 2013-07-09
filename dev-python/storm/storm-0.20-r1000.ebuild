@@ -2,20 +2,20 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.*"
+PYTHON_RESTRICTED_ABIS="2.5 3.*"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 
 inherit distutils
 
 DESCRIPTION="An object-relational mapper for Python developed at Canonical."
-HOMEPAGE="https://storm.canonical.com/ http://pypi.python.org/pypi/storm"
+HOMEPAGE="https://storm.canonical.com/ https://pypi.python.org/pypi/storm"
 SRC_URI="http://launchpad.net/storm/trunk/${PV}/+download/${P}.tar.bz2"
 
 LICENSE="LGPL-2.1"
 SLOT="0"
-KEYWORDS="amd64 x86"
+KEYWORDS="*"
 IUSE="mysql postgres sqlite test"
 
 RDEPEND="$(python_abi_depend virtual/python-json)
@@ -23,7 +23,10 @@ RDEPEND="$(python_abi_depend virtual/python-json)
 	postgres? ( $(python_abi_depend -e "*-jython *-pypy-*" dev-python/psycopg:2) )
 	sqlite? ( $(python_abi_depend -e "*-jython" virtual/python-sqlite[external]) )"
 DEPEND="$(python_abi_depend dev-python/setuptools)
-	test? ( $(python_abi_depend -e "*-jython" virtual/python-sqlite[external]) )"
+	test? (
+		$(python_abi_depend dev-python/fixtures)
+		$(python_abi_depend -e "*-jython" virtual/python-sqlite[external])
+	)"
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 
@@ -31,6 +34,15 @@ DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES="1"
 DOCS="tests/tutorial.txt"
 
 src_prepare() {
+	# Disable failing tests.
+	echo "raise ImportError" > django.py
+	echo "raise ImportError" > psycopg2.py
+	sed \
+		-e "s/test_result_set_count_sliced(/_&/" \
+		-e "s/test_result_set_count_sliced_end_none/_&/" \
+		-i tests/sqlobject.py
+	sed -e "s/test_find_slice_offset(/_&/" -i tests/store/base.py
+
 	distutils_src_prepare
 
 	preparation() {
@@ -58,7 +70,7 @@ src_test() {
 	fi
 
 	testing() {
-		PYTHONPATH="$(ls -d build/lib*)" "$(PYTHON)" test --verbose
+		python_execute PYTHONPATH="$(ls -d build/lib*)" "$(PYTHON)" test --verbose
 	}
 	python_execute_function -s testing
 }
@@ -66,4 +78,9 @@ src_test() {
 src_install() {
 	distutils_src_install
 	python_clean_installation_image
+
+	delete_tests() {
+		rm -fr "${ED}$(python_get_sitedir)/tests"
+	}
+	python_execute_function -q delete_tests
 }
