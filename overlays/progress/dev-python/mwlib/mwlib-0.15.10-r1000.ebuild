@@ -58,6 +58,9 @@ src_prepare() {
 	rm -f tests/test_nuwiki.py
 	rm -f tests/test_redirect.py
 
+	# Disable tests requiring wsgi_intercept.
+	rm -f tests/test_nserve.py
+
 	# https://github.com/pediapress/mwlib/issues/30
 	sed -e "s/test_getTemplate/_&/" -i tests/test_zipwiki.py
 }
