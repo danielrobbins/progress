@@ -45,7 +45,7 @@ QT_PV="4.8.0:4"
 RDEPEND="$(python_abi_depend ">=dev-python/sip-4.14.3:0=")
 	>=dev-qt/qtcore-${QT_PV}
 	X? (
-		>=dev-qt/qtgui-${QT_PV}[dbus?]
+		>=dev-qt/qtgui-${QT_PV}
 		>=dev-qt/qttest-${QT_PV}
 	)
 	dbus? (
