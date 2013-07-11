@@ -337,5 +337,21 @@ multilib_install_wrappers() {
 	fi
 }
 
+# @FUNCTION: multilib_is_native_abi
+# @DESCRIPTION:
+# Determine whether the currently built ABI is the profile native.
+# Return true status (0) if that is true, otherwise false (1).
+#
+# This is often useful for configure calls when some of the options are
+# supposed to be disabled for multilib ABIs (like those used for
+# executables only).
+multilib_is_native_abi() {
+	debug-print-function ${FUNCNAME} "${@}"
+
+	[[ ${#} -eq 0 ]] || die "${FUNCNAME}: too many arguments"
+
+	[[ ${ABI} == ${DEFAULT_ABI} ]]
+}
+
 _MULTILIB_BUILD=1
 fi

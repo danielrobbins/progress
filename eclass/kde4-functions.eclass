@@ -16,9 +16,16 @@ ___ECLASS_ONCE_KDE4_FUNCTIONS="recur -_+^+_- spank"
 
 # @ECLASS-VARIABLE: EAPI
 # @DESCRIPTION:
-# Currently kde4 eclasses support EAPI 3 and 4.
+# Currently kde4 eclasses support EAPI 4 and 5.
 case ${EAPI:-0} in
-	3|4|4-python|5|5-progress) : ;;
+	3)
+		eqawarn "${CATEGORY}/${PF}: EAPI 3 support is now deprecated."
+		eqawarn "If you are the package maintainer, please"
+		eqawarn "update this package to a newer EAPI."
+		eqawarn "Support for EAPI 3 for kde-*.eclass will be dropped"
+		eqawarn "at the beginning August."
+	;;
+	4|4-python|5|5-progress) : ;;
 	*) die "EAPI=${EAPI} is not supported" ;;
 esac
 
