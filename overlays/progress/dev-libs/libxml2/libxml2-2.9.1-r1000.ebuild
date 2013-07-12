@@ -5,7 +5,7 @@
 EAPI="5-progress"
 PYTHON_DEPEND="python? ( <<[xml]>> )"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 
 inherit libtool flag-o-matic eutils python autotools prefix
 
@@ -69,21 +69,15 @@ src_prepare() {
 
 	# epunt_cxx
 
-	epatch "${FILESDIR}/${PN}-2.9.0-disable_static_modules.patch"
+	epatch "${FILESDIR}/${PN}-2.9.1-disable_static_modules.patch"
 
-	# Important patches from 2.9.1
-	epatch "${FILESDIR}/${P}-rand_seed.patch" \
-		"${FILESDIR}/${P}-thread-portability.patch" \
-		"${FILESDIR}/${P}-streaming-validation.patch" \
-		"${FILESDIR}/${P}-nsclean.patch" \
-		"${FILESDIR}/${P}-large-file-parse.patch" \
-		"${FILESDIR}/${P}-thread-alloc.patch"
-
-	# Buffer underflow in xmlParseAttValueComplex, bug #444836; fixed in 2.9.1
-	epatch "${FILESDIR}/${PN}-2.8.0-xmlParseAttValueComplex-underflow.patch"
-
-	# Entity expansion DoS, bug #458430; fixed in 2.9.1
-	epatch "${FILESDIR}/${PN}-2.9.0-excessive-entity-expansion.patch"
+	# Important patches from 2.9.2
+	epatch "${FILESDIR}/${P}-missing-break.patch" \
+		"${FILESDIR}/${P}-python-2.6.patch" \
+		"${FILESDIR}/${P}-compression-detection.patch" \
+		"${FILESDIR}/${P}-non-ascii-cr-lf.patch" \
+		"${FILESDIR}/${P}-python3.patch" \
+		"${FILESDIR}/${P}-python3a.patch"
 
 	# Python bindings are built/tested/installed manually.
 	sed -e 's/$(PYTHON_SUBDIR)//' -i Makefile.am || die "sed failed"
