@@ -19,7 +19,7 @@ IUSE="doc python"
 
 DEPEND="
 	dev-qt/qtcore:4
-	dev-qt/qtgui:4
+	|| ( ( >=dev-qt/qtgui-4.8.5:4 dev-qt/designer ) <dev-qt/qtgui-4.8.5:4 )
 "
 RDEPEND="${DEPEND}"
 PDEPEND="python? ( ~dev-python/qscintilla-python-${PV} )"
