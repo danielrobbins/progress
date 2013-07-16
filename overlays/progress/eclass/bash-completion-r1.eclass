@@ -8,37 +8,85 @@
 # @EXAMPLE:
 #
 # @CODE
-# EAPI=4
+# EAPI=5
+#
+# src_configure() {
+# 	econf \
+#		--with-bash-completion-dir="$(get_bashcompdir)"
+#	}
 #
 # src_install() {
 # 	default
 #
 # 	newbashcomp contrib/${PN}.bash-completion ${PN}
-# }
+#	}
 # @CODE
+
+inherit toolchain-funcs
 
 case ${EAPI:-0} in
 	0|1|2|3|4|4-python|5|5-progress) ;;
 	*) die "EAPI ${EAPI} unsupported (yet)."
 esac
 
+# @FUNCTION: _bash-completion-r1_get_bashdir
+# @INTERNAL
+# @DESCRIPTION:
+# First argument is name of the string in bash-completion.pc
+# Second argument is the fallback directory if the string is not found
+# @EXAMPLE:
+# _bash-completion-r1_get_bashdir completionsdir /usr/share/bash-completion/completions
+_bash-completion-r1_get_bashdir() {
+	debug-print-function ${FUNCNAME} "${@}"
+
+	if $($(tc-getPKG_CONFIG) --exists bash-completion); then
+	echo "$($(tc-getPKG_CONFIG) --variable=$1 bash-completion)"
+	else
+		echo $2
+	fi
+}
+
 # @FUNCTION: _bash-completion-r1_get_bashcompdir
 # @INTERNAL
 # @DESCRIPTION:
-# Get unprefixed bash-completion directory.
+# Get unprefixed bash-completion completions directory.
 _bash-completion-r1_get_bashcompdir() {
 	debug-print-function ${FUNCNAME} "${@}"
 
-	echo /usr/share/bash-completion
+	if has_version '<app-shells/bash-completion-2.1-r1'; then
+		_bash-completion-r1_get_bashdir completionsdir /usr/share/bash-completion
+	else
+		_bash-completion-r1_get_bashdir completionsdir /usr/share/bash-completion/completions
+	fi
+}
+
+# @FUNCTION: _bash-completion-r1_get_helpersdir
+# @INTERNAL
+# @DESCRIPTION:
+# Get unprefixed bash-completion helpers directory.
+_bash-completion-r1_get_bashhelpersdir() {
+    debug-print-function ${FUNCNAME} "${@}"
+
+	 _bash-completion-r1_get_bashdir helpersdir /usr/share/bash-completion/helpers
 }
 
 # @FUNCTION: get_bashcompdir
 # @DESCRIPTION:
-# Get the bash-completion directory.
+# Get the bash-completion completions directory.
 get_bashcompdir() {
 	debug-print-function ${FUNCNAME} "${@}"
 
 	echo "${EPREFIX}$(_bash-completion-r1_get_bashcompdir)"
+}
+
+# @FUNCTION: get_bashhelpersdir
+# @INTERNAL
+# @DESCRIPTION:
+# Get the bash-completion helpers directory.
+get_bashhelpersdir() {
+	debug-print-function ${FUNCNAME} "${@}"
+
+	echo "${EPREFIX}$(_bash-completion-r1_get_bashhelpersdir)"
 }
 
 # @FUNCTION: dobashcomp
