@@ -12,7 +12,7 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="7ecca1a98220"
+	EHG_REVISION="a0bb8a1b71e0"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
