@@ -13,13 +13,13 @@
 # src_configure() {
 # 	econf \
 #		--with-bash-completion-dir="$(get_bashcompdir)"
-#	}
+# }
 #
 # src_install() {
 # 	default
 #
 # 	newbashcomp contrib/${PN}.bash-completion ${PN}
-#	}
+# }
 # @CODE
 
 inherit toolchain-funcs
@@ -39,8 +39,11 @@ esac
 _bash-completion-r1_get_bashdir() {
 	debug-print-function ${FUNCNAME} "${@}"
 
-	if $($(tc-getPKG_CONFIG) --exists bash-completion); then
-	echo "$($(tc-getPKG_CONFIG) --variable=$1 bash-completion)"
+	if $(tc-getPKG_CONFIG) --exists bash-completion; then
+		local pcbc="$($(tc-getPKG_CONFIG) --variable=$1 bash-completion)"
+		# we need to return unprefixed, so strip from what pkg-config returns
+		# to us, bug #477692
+		echo "${pcdb#${EPREFIX}}"
 	else
 		echo $2
 	fi
@@ -65,9 +68,9 @@ _bash-completion-r1_get_bashcompdir() {
 # @DESCRIPTION:
 # Get unprefixed bash-completion helpers directory.
 _bash-completion-r1_get_bashhelpersdir() {
-    debug-print-function ${FUNCNAME} "${@}"
+	debug-print-function ${FUNCNAME} "${@}"
 
-	 _bash-completion-r1_get_bashdir helpersdir /usr/share/bash-completion/helpers
+	_bash-completion-r1_get_bashdir helpersdir /usr/share/bash-completion/helpers
 }
 
 # @FUNCTION: get_bashcompdir
