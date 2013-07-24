@@ -40,10 +40,10 @@ _bash-completion-r1_get_bashdir() {
 	debug-print-function ${FUNCNAME} "${@}"
 
 	if $(tc-getPKG_CONFIG) --exists bash-completion; then
-		local pcbc="$($(tc-getPKG_CONFIG) --variable=$1 bash-completion)"
+		local path="$($(tc-getPKG_CONFIG) --variable=$1 bash-completion)"
 		# we need to return unprefixed, so strip from what pkg-config returns
 		# to us, bug #477692
-		echo "${pcdb#${EPREFIX}}"
+		echo "${path#${EPREFIX}}"
 	else
 		echo $2
 	fi
