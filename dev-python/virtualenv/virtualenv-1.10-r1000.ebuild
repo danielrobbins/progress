@@ -4,13 +4,14 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
+PYTHON_RESTRICTED_ABIS="2.5"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
 
 DESCRIPTION="Virtual Python Environment builder"
-HOMEPAGE="http://www.virtualenv.org https://github.com/pypa/virtualenv http://pypi.python.org/pypi/virtualenv"
+HOMEPAGE="http://www.virtualenv.org https://github.com/pypa/virtualenv https://pypi.python.org/pypi/virtualenv"
 SRC_URI="https://github.com/pypa/${PN}/tarball/${PV} -> ${P}.tar.gz"
 
 LICENSE="MIT"
@@ -23,7 +24,7 @@ DEPEND="${RDEPEND}
 	doc? ( $(python_abi_depend dev-python/sphinx) )
 	test? ( $(python_abi_depend dev-python/mock) )"
 
-DOCS="docs/index.txt docs/news.txt"
+DOCS="docs/index.rst docs/news.rst"
 PYTHON_MODULES="virtualenv.py virtualenv_support"
 
 src_unpack() {
