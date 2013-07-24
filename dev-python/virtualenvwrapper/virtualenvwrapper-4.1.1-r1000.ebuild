@@ -17,11 +17,13 @@ LICENSE="MIT"
 SLOT="0"
 KEYWORDS="*"
 IUSE=""
+RESTRICT="test"
 
 RDEPEND="$(python_abi_depend dev-python/stevedore)
 	$(python_abi_depend dev-python/virtualenv)
 	dev-python/virtualenv-clone"
 DEPEND="${RDEPEND}
+	$(python_abi_depend dev-python/pbr)
 	$(python_abi_depend dev-python/setuptools)"
 
 S="${WORKDIR}/${P}"
