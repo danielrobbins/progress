@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5 3.*"
+PYTHON_RESTRICTED_ABIS="2.5"
 
 inherit distutils
 
@@ -19,6 +19,13 @@ IUSE=""
 
 DEPEND="$(python_abi_depend dev-python/setuptools)"
 RDEPEND="${DEPEND}"
+
+src_prepare() {
+	distutils_src_prepare
+
+	# https://github.com/openstack-dev/pbr/commit/aa7a6fd3270710e533f84e04c84a94d46fa15266
+	sed -e "s/integer_types = int/integer_types = (int,)/" -i pbr/core.py
+}
 
 src_install() {
 	distutils_src_install
