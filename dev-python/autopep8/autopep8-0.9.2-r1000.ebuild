@@ -19,7 +19,7 @@ SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
-DEPEND="$(python_abi_depend ">=dev-python/pep8-1.4.5")
+DEPEND="$(python_abi_depend ">=dev-python/pep8-1.4.6")
 	$(python_abi_depend dev-python/setuptools)"
 RDEPEND="${DEPEND}"
 
