@@ -5,14 +5,13 @@
 EAPI="5-progress"
 PYTHON_DEPEND="<<[xml]>>"
 PYTHON_MULTIPLE_ABIS="1"
-# 2.7, 3.2, 3.3, 3.4: http://sourceforge.net/tracker/?func=detail&aid=3596641&group_id=38414&atid=422030
-# 3.3, 3.4: http://sourceforge.net/tracker/?func=detail&aid=3555164&group_id=38414&atid=422030
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.7 3.2 3.3 3.4 *-jython"
+# 3.3, 3.4: http://sourceforge.net/p/docutils/bugs/200/
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.3 3.4 *-jython"
 
 inherit distutils
 
 DESCRIPTION="Docutils - Python Documentation Utilities"
-HOMEPAGE="http://docutils.sourceforge.net/ http://pypi.python.org/pypi/docutils"
+HOMEPAGE="http://docutils.sourceforge.net/ https://pypi.python.org/pypi/docutils"
 if [[ "${PV}" == *_pre* ]]; then
 	SRC_URI="http://people.apache.org/~Arfrever/gentoo/${P}.tar.xz"
 else
@@ -29,19 +28,6 @@ DEPEND="$(python_abi_depend dev-python/pygments)
 RDEPEND="${DEPEND}"
 
 DOCS="*.txt"
-
-src_prepare() {
-	distutils_src_prepare
-
-	# http://docutils.svn.sourceforge.net/viewvc/docutils?view=revision&revision=7578
-	sed \
-		-e "s/from docutils.io import FileOutput/import docutils.io/" \
-		-e "s/FileOutput/docutils.io.FileOutput/" \
-		-i docutils/utils/__init__.py
-
-	# http://sourceforge.net/tracker/?func=detail&aid=3598893&group_id=38414&atid=422030
-	sed -e "s/isinstance(value, unicode)/not isinstance(value, list)/" -i docutils/frontend.py
-}
 
 src_compile() {
 	distutils_src_compile
