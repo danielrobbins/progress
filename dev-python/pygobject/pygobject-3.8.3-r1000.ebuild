@@ -24,6 +24,7 @@ COMMON_DEPEND=">=dev-libs/glib-2.31.0:2
 	virtual/libffi:=
 	cairo? ( $(python_abi_depend ">=dev-python/pycairo-1.10.0") )"
 DEPEND="${COMMON_DEPEND}
+	gnome-base/gnome-common
 	x11-libs/cairo[glib]
 	virtual/pkgconfig
 	test? (
@@ -34,6 +35,7 @@ DEPEND="${COMMON_DEPEND}
 		x11-libs/gdk-pixbuf:2[introspection]
 		x11-libs/gtk+:3[introspection]
 		x11-libs/pango[introspection] )"
+# gnome-base/gnome-common required by eautoreconf
 
 # We now disable introspection support in slot 2 per upstream recommendation
 # (see https://bugzilla.gnome.org/show_bug.cgi?id=642048#c9); however,
