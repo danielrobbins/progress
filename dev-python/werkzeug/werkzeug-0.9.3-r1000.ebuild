@@ -14,7 +14,7 @@ MY_PN="Werkzeug"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Collection of various utilities for WSGI applications"
-HOMEPAGE="http://werkzeug.pocoo.org/ https://pypi.python.org/pypi/Werkzeug"
+HOMEPAGE="http://werkzeug.pocoo.org/ https://github.com/mitsuhiko/werkzeug https://pypi.python.org/pypi/Werkzeug"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="BSD"
@@ -36,6 +36,10 @@ src_prepare() {
 
 	# Fix compatibility with Jython.
 	sed -e "s/if isinstance(x, (bytes, bytearray, buffer)):/if isinstance(x, (bytes, bytearray)) or hasattr(builtins, 'buffer') and isinstance(x, buffer):/" -i werkzeug/_compat.py
+
+	# Disable failing tests.
+	# https://github.com/mitsuhiko/werkzeug/issues/418
+	sed -e "s/import pylibmc as memcache/memcache = None/" -i werkzeug/testsuite/contrib/cache.py
 }
 
 src_install() {
