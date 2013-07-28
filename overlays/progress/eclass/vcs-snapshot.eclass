@@ -48,6 +48,8 @@ EXPORT_FUNCTIONS src_unpack
 # local names. Other archive types will be passed down to regular
 # unpack.
 vcs-snapshot_src_unpack() {
+	debug-print-function ${FUNCNAME} "${@}"
+
 	local f
 
 	for f in ${A}
@@ -56,6 +58,8 @@ vcs-snapshot_src_unpack() {
 			*.tar|*.tar.gz|*.tar.bz2|*.tar.xz)
 				local destdir=${WORKDIR}/${f%.tar*}
 
+				debug-print "${FUNCNAME}: unpacking ${f} to ${destdir}"
+
 				# XXX: check whether the directory structure inside is
 				# fine? i.e. if the tarball has actually a parent dir.
 				mkdir "${destdir}" || die
@@ -63,6 +67,8 @@ vcs-snapshot_src_unpack() {
 					-f "${DISTDIR}/${f}" || die
 				;;
 			*)
+				debug-print "${FUNCNAME}: falling back to unpack for ${f}"
+
 				# fall back to the default method
 				unpack "${f}"
 				;;

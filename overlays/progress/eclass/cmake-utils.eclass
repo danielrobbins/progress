@@ -530,7 +530,7 @@ ninja_src_make() {
 	fi
 }
 
-# @FUNCTION: make_src_make
+# @FUNCTION: emake_src_make
 # @INTERNAL
 # @DESCRIPTION:
 # Build the package using make generator
