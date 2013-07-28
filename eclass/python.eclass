@@ -128,11 +128,11 @@ _python_check_python_abi_matching() {
 }
 
 _python_implementation() {
-	if [[ "${CATEGORY}/${PN}" == "dev-lang/python" ]]; then
+	if [[ "${CATEGORY}/${PN}" =~ ^dev-lang/python$ ]]; then
 		return 0
-	elif [[ "${CATEGORY}/${PN}" == "dev-lang/jython" ]]; then
+	elif [[ "${CATEGORY}/${PN}" =~ ^dev-lang/jython$ ]]; then
 		return 0
-	elif [[ "${CATEGORY}/${PN}" == "dev-python/pypy" ]]; then
+	elif [[ "${CATEGORY}/${PN}" =~ ^(dev-python/pypy|dev-python/pypy-bin)$ ]]; then
 		return 0
 	else
 		return 1
@@ -513,7 +513,7 @@ _python_parse_dependencies_in_new_EAPIs() {
 						elif [[ "${PYTHON_ABI}" =~ ^[[:digit:]]+\.[[:digit:]]+-jython$ ]]; then
 							output_value+="${output_value:+ }python_abis_${PYTHON_ABI}? ( dev-lang/jython:${PYTHON_ABI%-jython}$(_get_matched_USE_dependencies) )"
 						elif [[ "${PYTHON_ABI}" =~ ^[[:digit:]]+\.[[:digit:]]+-pypy-[[:digit:]]+\.[[:digit:]]+$ ]]; then
-							output_value+="${output_value:+ }python_abis_${PYTHON_ABI}? ( dev-python/pypy:${PYTHON_ABI#*-pypy-}$(_get_matched_USE_dependencies) )"
+							output_value+="${output_value:+ }python_abis_${PYTHON_ABI}? ( virtual/pypy:${PYTHON_ABI#*-pypy-}$(_get_matched_USE_dependencies) )"
 						fi
 					fi
 				done
@@ -2855,7 +2855,7 @@ python_get_implementational_package() {
 		elif [[ "$(_python_get_implementation "${PYTHON_ABI}")" == "Jython" ]]; then
 			echo "=dev-lang/jython-${PYTHON_ABI%-jython}*"
 		elif [[ "$(_python_get_implementation "${PYTHON_ABI}")" == "PyPy" ]]; then
-			echo "=dev-python/pypy-${PYTHON_ABI#*-pypy-}*"
+			echo "=virtual/pypy-${PYTHON_ABI#*-pypy-}*"
 		fi
 	else
 		if [[ "$(_python_get_implementation "${PYTHON_ABI}")" == "CPython" ]]; then
@@ -2863,7 +2863,7 @@ python_get_implementational_package() {
 		elif [[ "$(_python_get_implementation "${PYTHON_ABI}")" == "Jython" ]]; then
 			echo "dev-lang/jython:${PYTHON_ABI%-jython}"
 		elif [[ "$(_python_get_implementation "${PYTHON_ABI}")" == "PyPy" ]]; then
-			echo "dev-python/pypy:${PYTHON_ABI#*-pypy-}"
+			echo "virtual/pypy:${PYTHON_ABI#*-pypy-}"
 		fi
 	fi
 }
