@@ -65,7 +65,7 @@ src_compile() {
 src_install() {
 	distutils_src_install
 
-	newbashcomp contrib/bash_completion ${PN} || die
+	newbashcomp contrib/bash_completion hg
 
 	if use emacs; then
 		elisp-install ${PN} contrib/mercurial.el* || die "elisp-install failed!"
