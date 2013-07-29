@@ -96,7 +96,7 @@ each_ruby_install() {
 	local RUBYLIBVER=$(${RUBY} -e 'print RUBY_VERSION.split(".")[0..1].join(".")')
 
 	cd "${WORKDIR}/${P}/src-ruby-${RUBYLIBVER}"
-	emake RUBY="${RUBY}" DESTDIR="${D}" install-rubywrap
+	emake DESTDIR="${D}" RUBY="${RUBY}" RUBYINSTALL="${D}$(ruby_rbconfig_value sitearchdir)" install-rubywrap
 }
 
 src_install() {
