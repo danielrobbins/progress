@@ -34,6 +34,9 @@ _MULTILIB_FLAGS=(
 	abi_x86_x32:x32
 	abi_x86_32:x86_fbsd
 	abi_x86_64:amd64_fbsd
+	abi_mips_n32:n32
+	abi_mips_n64:n64
+	abi_mips_o32:o32
 )
 
 # @ECLASS-VARIABLE: MULTILIB_USEDEP
@@ -285,6 +288,14 @@ multilib_prepare_wrappers() {
 #	endif
 #elif defined(__i386__) /* plain x86 */
 #	error "abi_x86_32 not supported by the package."
+#elif defined(__mips__)
+#   if(_MIPS_SIM == _ABIN32) /* n32 */
+#       error "abi_mips_n32 not supported by the package."
+#   elif(_MIPS_SIM == _ABI64) /* n64 */
+#       error "abi_mips_n64 not supported by the package."
+#   elif(_MIPS_SIM == _ABIO32) /* o32 */
+#       error "abi_mips_o32 not supported by the package."
+#   endif
 #else
 #	error "No ABI matched, please report a bug to bugs.gentoo.org"
 #endif
@@ -300,6 +311,12 @@ _EOF_
 				abi_flag=abi_x86_32;;
 			x32)
 				abi_flag=abi_x86_x32;;
+			n32)
+				abi_flag=abi_mips_n32;;
+			n64)
+				abi_flag=abi_mips_n64;;
+			o32)
+				abi_flag=abi_mips_o32;;
 			*)
 				die "Header wrapping for ${ABI} not supported yet";;
 		esac
