@@ -20,18 +20,10 @@ IUSE=""
 DEPEND="$(python_abi_depend dev-python/setuptools)"
 RDEPEND="${DEPEND}"
 
-src_prepare() {
-	distutils_src_prepare
-
-	# https://github.com/openstack-dev/pbr/commit/aa7a6fd3270710e533f84e04c84a94d46fa15266
-	sed -e "s/integer_types = int/integer_types = (int,)/" -i pbr/core.py
-}
-
 src_install() {
 	distutils_src_install
 
 	delete_tests() {
-		rm -fr "${ED}$(python_get_sitedir)/pbr/d2to1/tests"
 		rm -fr "${ED}$(python_get_sitedir)/pbr/tests"
 	}
 	python_execute_function -q delete_tests
