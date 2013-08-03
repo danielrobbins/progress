@@ -15,7 +15,7 @@ HOMEPAGE="http://www.gtk.org/"
 
 LICENSE="LGPL-2+"
 SLOT="0"
-KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd ~amd64-linux ~x86-linux"
+KEYWORDS="~*"
 IUSE=""
 
 DEPEND=""
@@ -26,7 +26,7 @@ PDEPEND=">=dev-libs/glib-${PV}:2"
 
 S="${WORKDIR}/glib-${PV}/gio/gdbus-2.0/codegen"
 
-PYTHON_MODNAME="gdbus_codegen"
+PYTHON_MODULES="gdbus_codegen"
 
 src_prepare() {
 	epatch "${FILESDIR}/${PN}-2.32.4-sitedir.patch"
@@ -39,8 +39,8 @@ src_prepare() {
 }
 
 src_test() {
-	elog "Skipping tests. This package is tested by dev-libs/glib"
-	elog "when merged with FEATURES=test"
+	einfo "Skipping tests. This package is tested by dev-libs/glib"
+	einfo "when merged with FEATURES=test"
 }
 
 src_install() {
