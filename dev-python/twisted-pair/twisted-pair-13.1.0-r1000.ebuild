@@ -14,7 +14,7 @@ DESCRIPTION="Twisted Pair contains low-level networking support"
 KEYWORDS="*"
 IUSE=""
 
-DEPEND="$(python_abi_depend "=dev-python/twisted-$(get_version_component_range 1-2)*")
+DEPEND="$(python_abi_depend "=dev-python/twisted-core-$(get_version_component_range 1-2)*")
 	$(python_abi_depend dev-python/eunuchs)"
 RDEPEND="${DEPEND}"
 

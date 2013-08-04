@@ -22,7 +22,7 @@ RDEPEND="$(python_abi_depend dev-python/coverage)
 	$(python_abi_depend dev-python/setuptools)"
 DEPEND="${RDEPEND}
 	doc? ( $(python_abi_depend dev-python/sphinx) )
-	test? ( $(python_abi_depend -e "2.5 3.* *-jython" dev-python/twisted) )"
+	test? ( $(python_abi_depend -e "2.5 3.* *-jython" dev-python/twisted-core) )"
 
 DOCS="AUTHORS"
 

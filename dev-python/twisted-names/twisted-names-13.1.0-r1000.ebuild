@@ -14,7 +14,7 @@ DESCRIPTION="A Twisted DNS implementation"
 KEYWORDS="*"
 IUSE=""
 
-DEPEND="$(python_abi_depend "=dev-python/twisted-$(get_version_component_range 1-2)*")"
+DEPEND="$(python_abi_depend "=dev-python/twisted-core-$(get_version_component_range 1-2)*")"
 RDEPEND="${DEPEND}"
 
 PYTHON_MODULES="twisted/names twisted/plugins"

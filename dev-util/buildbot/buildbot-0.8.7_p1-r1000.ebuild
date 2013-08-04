@@ -14,12 +14,12 @@ MY_PV="${PV/_p/p}"
 MY_P="${PN}-${MY_PV}"
 
 DESCRIPTION="BuildBot build automation system"
-HOMEPAGE="http://trac.buildbot.net/ https://github.com/buildbot/buildbot http://pypi.python.org/pypi/buildbot"
+HOMEPAGE="http://trac.buildbot.net/ https://github.com/buildbot/buildbot https://pypi.python.org/pypi/buildbot"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${MY_P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~s390 ~sh sparc x86 ~x86-interix ~amd64-linux ~x86-linux ~x64-macos ~x86-macos ~sparc-solaris ~sparc64-solaris ~x64-solaris"
+KEYWORDS="*"
 IUSE="doc examples irc mail manhole test"
 
 RDEPEND="$(python_abi_depend ">=dev-python/jinja-2.1")
@@ -29,7 +29,7 @@ RDEPEND="$(python_abi_depend ">=dev-python/jinja-2.1")
 		$(python_abi_depend "=dev-python/sqlalchemy-migrate-0.7*")
 		$(python_abi_depend "=dev-python/sqlalchemy-migrate-0.6*")
 	)
-	$(python_abi_depend dev-python/twisted)
+	$(python_abi_depend dev-python/twisted-core)
 	$(python_abi_depend dev-python/twisted-web)
 	$(python_abi_depend virtual/python-json[external])
 	$(python_abi_depend virtual/python-sqlite[external])
@@ -100,6 +100,13 @@ src_install() {
 
 	newconfd "${FILESDIR}/buildmaster.confd" buildmaster
 	newinitd "${FILESDIR}/buildmaster.initd" buildmaster
+
+	local config_protect_paths=()
+	add_config_protect_path() {
+		config_protect_paths+=("${EPREFIX}$(python_get_sitedir)/${PN}/status/web")
+	}
+	python_execute_function -q add_config_protect_path
+	newenvd - 85${PN} <<< "CONFIG_PROTECT=\"${config_protect_paths[@]}\""
 }
 
 pkg_postinst() {
