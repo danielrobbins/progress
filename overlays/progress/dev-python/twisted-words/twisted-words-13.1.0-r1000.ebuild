@@ -14,7 +14,7 @@ DESCRIPTION="Twisted Words contains Instant Messaging implementations"
 KEYWORDS="*"
 IUSE=""
 
-DEPEND="$(python_abi_depend "=dev-python/twisted-$(get_version_component_range 1-2)*")
+DEPEND="$(python_abi_depend "=dev-python/twisted-core-$(get_version_component_range 1-2)*")
 	$(python_abi_depend "=dev-python/twisted-web-$(get_version_component_range 1-2)*")"
 RDEPEND="${DEPEND}"
 

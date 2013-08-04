@@ -14,16 +14,16 @@ MY_PV="${PV/_p/p}"
 MY_P="${PN}-${MY_PV}"
 
 DESCRIPTION="BuildBot Slave Daemon"
-HOMEPAGE="http://trac.buildbot.net/ https://github.com/buildbot/buildbot http://pypi.python.org/pypi/buildbot-slave"
+HOMEPAGE="http://trac.buildbot.net/ https://github.com/buildbot/buildbot https://pypi.python.org/pypi/buildbot-slave"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${MY_P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 ~s390 ~sh sparc x86 ~x86-interix ~amd64-linux"
+KEYWORDS="*"
 IUSE="test"
 
 RDEPEND="$(python_abi_depend dev-python/setuptools)
-	$(python_abi_depend dev-python/twisted)
+	$(python_abi_depend dev-python/twisted-core)
 	!!<dev-util/buildbot-0.8.1
 	!<dev-util/buildbot-0.8.3"
 DEPEND="${RDEPEND}

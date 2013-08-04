@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_DEPEND="<<[ncurses]>>"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython"
@@ -12,17 +12,17 @@ DISTUTILS_SRC_TEST="setup.py"
 inherit distutils
 
 DESCRIPTION="Urwid is a curses-based user interface library for Python"
-HOMEPAGE="http://excess.org/urwid/ http://pypi.python.org/pypi/urwid"
+HOMEPAGE="http://excess.org/urwid/ https://pypi.python.org/pypi/urwid"
 SRC_URI="http://excess.org/urwid/${P}.tar.gz"
 
 LICENSE="LGPL-2.1"
 SLOT="0"
-KEYWORDS="amd64 ~arm ~ia64 ~mips ~ppc ~ppc64 sparc x86 ~x86-interix ~amd64-linux ~ia64-linux ~x86-linux"
+KEYWORDS="*"
 IUSE="doc examples glib test twisted"
 REQUIRED_USE="test? ( glib twisted )"
 
 RDEPEND="glib? ( $(python_abi_depend -i "2.*" dev-python/pygobject:2) )
-	twisted? ( $(python_abi_depend -i "2.*" dev-python/twisted) )"
+	twisted? ( $(python_abi_depend -i "2.*" dev-python/twisted-core) )"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
