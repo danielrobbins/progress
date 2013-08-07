@@ -4,12 +4,12 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.*"
+PYTHON_RESTRICTED_ABIS="2.5 3.*"
 
 inherit distutils eutils
 
 DESCRIPTION="Python interface to Graphviz's Dot language"
-HOMEPAGE="http://code.google.com/p/pydot/ http://pypi.python.org/pypi/pydot"
+HOMEPAGE="http://code.google.com/p/pydot/ https://pypi.python.org/pypi/pydot"
 SRC_URI="http://pydot.googlecode.com/files/${P}.tar.gz"
 
 LICENSE="MIT"
