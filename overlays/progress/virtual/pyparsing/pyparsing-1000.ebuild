@@ -15,6 +15,7 @@ LICENSE=""
 SLOT="0"
 KEYWORDS="*"
 IUSE=""
+REQUIRED_USE="!python_abis_2.5 !python_abis_2.5-jython"
 
 DEPEND=""
-RDEPEND="$(python_abi_depend dev-python/pyparsing)"
+RDEPEND="$(python_abi_depend -e "2.5" dev-python/pyparsing)"
