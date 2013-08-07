@@ -63,6 +63,9 @@ src_prepare() {
 
 	# https://github.com/pediapress/mwlib/issues/30
 	sed -e "s/test_getTemplate/_&/" -i tests/test_zipwiki.py
+
+	# https://github.com/pediapress/mwlib/issues/36
+	sed -e "s/pyparsing>=1.4.11,<1.6/pyparsing>=1.4.11,!=2.0.0/" -i setup.py
 }
 
 src_compile() {
