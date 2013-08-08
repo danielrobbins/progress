@@ -3,7 +3,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_DEPEND="<<[xml]>>"
+PYTHON_DEPEND="<<[{*-cpython}xml]>>"
 PYTHON_MULTIPLE_ABIS="1"
 # 3.3, 3.4: http://sourceforge.net/p/docutils/bugs/200/
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.3 3.4 *-jython"
