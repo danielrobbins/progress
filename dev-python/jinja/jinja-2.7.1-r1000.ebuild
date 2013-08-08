@@ -24,7 +24,7 @@ IUSE="doc examples i18n vim-syntax"
 
 RDEPEND="$(python_abi_depend dev-python/markupsafe)
 	$(python_abi_depend dev-python/setuptools)
-	i18n? ( $(python_abi_depend -i "2.*" dev-python/Babel) )"
+	i18n? ( $(python_abi_depend -e "2.5 3.1 3.2" dev-python/Babel) )"
 DEPEND="${RDEPEND}
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
 
@@ -44,18 +44,18 @@ src_prepare() {
 
 		cd "${S}-${PYTHON_ABI}"
 
-		if [[ "$(python_get_version -l)" != "2.5" ]]; then
+		if ! has "$(python_get_version -l)" 2.5; then
 			# https://github.com/mitsuhiko/jinja2/commit/da94a8b504d981cb5f877219811d169823a2095e
 			# https://github.com/mitsuhiko/jinja2/commit/b89d1a8fe3fcbd73a8f4cebd4358eadebc2d8a9d
 			sed -e "/from jinja2.utils import next/d" -i docs/jinjaext.py
 		fi
 
-		if [[ "$(python_get_version -l)" == "3.1" ]]; then
+		if has "$(python_get_version -l)" 3.1; then
 			sed -e "s/callable(\(.*\))/isinstance(\1, __import__('collections').Callable)/" -i jinja2/nodes.py
 			sed -e "s/test_callable = callable/test_callable = lambda x: isinstance(x, __import__('collections').Callable)/" -i jinja2/tests.py
 		fi
 
-		if [[ "$(python_get_version -l --major)" -eq 3 && "$(python_get_version -l --minor)" -le 2 ]]; then
+		if has "$(python_get_version -l)" 3.1 3.2; then
 			2to3-${PYTHON_ABI} -f unicode -nw --no-diffs jinja2
 		fi
 	}
