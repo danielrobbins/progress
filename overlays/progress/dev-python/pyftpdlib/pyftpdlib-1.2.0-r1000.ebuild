@@ -3,7 +3,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_DEPEND="<<[ssl?]>>"
+PYTHON_DEPEND="<<[{*-cpython}ssl?]>>"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
 
