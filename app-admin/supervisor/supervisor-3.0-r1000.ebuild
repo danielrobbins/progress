@@ -3,7 +3,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_DEPEND="<<[xml]>>"
+PYTHON_DEPEND="<<[{*-cpython}xml]>>"
 PYTHON_MULTIPLE_ABIS="1"
 # *-jython: resource module required.
 PYTHON_RESTRICTED_ABIS="3.* *-jython"
@@ -12,12 +12,9 @@ PYTHON_NAMESPACES="supervisor"
 
 inherit distutils python-namespaces
 
-MY_PV="${PV/_beta/b}"
-MY_P="${PN}-${MY_PV}"
-
 DESCRIPTION="A system for controlling process state under UNIX"
 HOMEPAGE="http://supervisord.org/ https://pypi.python.org/pypi/supervisor"
-SRC_URI="mirror://pypi/${P:0:1}/${PN}/${MY_P}.tar.gz"
+SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD GPL-2 HPND repoze ZPL"
 SLOT="0"
@@ -30,7 +27,7 @@ DEPEND="${RDEPEND}
 	doc? ( $(python_abi_depend dev-python/sphinx) )
 	test? ( $(python_abi_depend dev-python/mock) )"
 
-S="${WORKDIR}/${MY_P}"
+S="${WORKDIR}/${P}"
 
 DOCS="CHANGES.txt TODO.txt"
 
