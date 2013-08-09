@@ -89,12 +89,12 @@ if [[ -z "${DISTUTILS_DISABLE_TEST_DEPENDENCY}" ]]; then
 	elif [[ "${DISTUTILS_SRC_TEST}" =~ ^trial(\ .*)?$ ]]; then
 		IUSE="test"
 		if has "${EAPI:-0}" 2 3 4 5; then
-			DEPEND+="${DEPEND:+ }test? ( dev-python/twisted )"
+			DEPEND+="${DEPEND:+ }test? ( dev-python/twisted-core )"
 		else
 			if [[ -n "${PYTHON_TESTS_RESTRICTED_ABIS}" ]]; then
-				DEPEND+="${DEPEND:+ }test? ( $(python_abi_depend -e "${PYTHON_TESTS_RESTRICTED_ABIS}" dev-python/twisted) )"
+				DEPEND+="${DEPEND:+ }test? ( $(python_abi_depend -e "${PYTHON_TESTS_RESTRICTED_ABIS}" dev-python/twisted-core) )"
 			else
-				DEPEND+="${DEPEND:+ }test? ( $(python_abi_depend dev-python/twisted) )"
+				DEPEND+="${DEPEND:+ }test? ( $(python_abi_depend dev-python/twisted-core) )"
 			fi
 		fi
 	fi
