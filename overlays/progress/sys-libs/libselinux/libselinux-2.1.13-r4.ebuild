@@ -119,7 +119,8 @@ src_install() {
 pkg_postinst() {
 	local policy_type
 	for policy_type in ${POLICY_TYPES}; do
-		touch /etc/selinux/${policy_type}/contexts/files/file_contexts.local
+		mkdir -p "${EROOT}etc/selinux/${policy_type}/contexts/files"
+		touch "${EROOT}etc/selinux/${policy_type}/contexts/files/file_contexts.local"
 	done
 
 	if use python; then
