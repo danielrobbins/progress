@@ -23,7 +23,7 @@ SRC_URI="http://oligarchy.co.uk/xapian/${PV}/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="*"
+KEYWORDS="~*"
 IUSE="java lua mono perl php python ruby tcl"
 REQUIRED_USE="|| ( java lua mono perl php python ruby tcl )"
 
@@ -48,11 +48,6 @@ pkg_setup() {
 
 src_prepare() {
 	java-pkg-opt-2_src_prepare
-	if use java; then
-		sed \
-			-e 's/$(JAVAC)/$(JAVAC) $(JAVACFLAGS)/' \
-			-i java{/,/org/xapian/errors/,/org/xapian/}Makefile.in || die "sed failed"
-	fi
 
 	if use python; then
 		sed \
