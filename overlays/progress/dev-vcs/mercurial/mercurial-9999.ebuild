@@ -77,8 +77,7 @@ src_install() {
 		newins contrib/zsh_completion _hg
 	fi
 
-	rm -f doc/*.[[:digit:]]{,.*}.txt || die
-	dodoc CONTRIBUTORS README doc/*.txt
+	dodoc CONTRIBUTORS README
 	cp hgweb*.cgi "${ED}"/usr/share/doc/${PF}/ || die
 
 	dobin hgeditor
