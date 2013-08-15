@@ -13,7 +13,7 @@ MY_PN="Pyro4"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Advanced and powerful Distributed Object Technology system written entirely in Python"
-HOMEPAGE="https://pythonhosted.org/Pyro4/ https://pypi.python.org/pypi/Pyro4"
+HOMEPAGE="https://pythonhosted.org/Pyro4/ https://github.com/irmen/Pyro4 https://pypi.python.org/pypi/Pyro4"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="MIT"
@@ -21,7 +21,7 @@ SLOT="4"
 KEYWORDS="*"
 IUSE="doc examples test"
 
-RDEPEND="$(python_abi_depend dev-python/serpent)
+RDEPEND="$(python_abi_depend ">=dev-python/serpent-1.3")
 	!dev-python/pyro:0"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
@@ -40,8 +40,8 @@ src_prepare() {
 
 	sed -e '/sys.path.insert/a sys.path.insert(1,"PyroTests")' -i tests/run_suite.py
 
-	# Fix compatibility with Python 2.6.
-	sed -e "s/import unittest/unittest = __import__('unittest2') if __import__('sys').version_info\[:2\] == (2, 6) else __import__('unittest')/" -i tests/PyroTests/*.py
+	# Fix compatibility with Python 3.1
+	sed -e "s/self.assertIsInstance(\([^,)]\+\), \([^,)]\+\))/self.assertTrue(isinstance(\1, \2))/" -i tests/PyroTests/test_serialize.py
 
 	# Disable tests requiring network connection.
 	sed \
@@ -61,7 +61,11 @@ src_prepare() {
 		-e "s/testBroadcast/_&/" \
 		-e "s/testGetIP(/_&/" \
 		-i tests/PyroTests/test_socket.py
-	
+
+	# Disable hanging tests.
+	sed -e "s/testPingMessage/_&/" -i tests/PyroTests/test_server.py
+	sed -e "s/testInvalidMessageCrash/_&/" -i tests/PyroTests/test_socket.py
+
 	# Disable failing test.
 	sed -e "s/testGetIpVersion/_&/" -i tests/PyroTests/test_socket.py
 }
