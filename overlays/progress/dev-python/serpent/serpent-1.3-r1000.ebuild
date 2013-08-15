@@ -8,7 +8,7 @@ PYTHON_RESTRICTED_ABIS="2.5"
 inherit distutils
 
 DESCRIPTION="Serialization based on ast.literal_eval"
-HOMEPAGE="https://pypi.python.org/pypi/serpent"
+HOMEPAGE="https://github.com/irmen/Serpent https://pypi.python.org/pypi/serpent"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
