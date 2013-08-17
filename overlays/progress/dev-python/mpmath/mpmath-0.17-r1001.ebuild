@@ -13,7 +13,7 @@ MY_PN="${PN}-all"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Python library for arbitrary-precision floating-point arithmetic"
-HOMEPAGE="http://code.google.com/p/mpmath/ https://pypi.python.org/pypi/mpmath"
+HOMEPAGE="https://github.com/fredrik-johansson/mpmath http://code.google.com/p/mpmath/ https://pypi.python.org/pypi/mpmath"
 SRC_URI="http://mpmath.googlecode.com/files/${MY_P}.tar.gz"
 
 LICENSE="BSD"
@@ -35,6 +35,7 @@ src_prepare() {
 
 	epatch "${FILESDIR}/${P}-avoid_tests_installation.patch"
 	epatch "${FILESDIR}/${P}-python-3.2.patch"
+	epatch "${FILESDIR}/${P}-gmpy-2.patch"
 
 	# mpmath/conftest.py is incompatible with current versions of dev-python/py.
 	rm -f mpmath/conftest.py
