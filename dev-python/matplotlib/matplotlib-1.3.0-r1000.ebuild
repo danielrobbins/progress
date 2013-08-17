@@ -56,9 +56,9 @@ DEPEND="${RDEPEND}
 	virtual/pkgconfig
 	doc? (
 		app-text/dvipng
-		$(python_abi_depend dev-python/ipython)
-		$(python_abi_depend dev-python/numpydoc)
-		$(python_abi_depend dev-python/sphinx)
+		$(python_abi_depend -e "3.1" dev-python/ipython)
+		$(python_abi_depend -e "3.1" dev-python/numpydoc)
+		$(python_abi_depend -e "3.1" dev-python/sphinx)
 		dev-texlive/texlive-fontsrecommended
 		dev-texlive/texlive-latexextra
 		dev-texlive/texlive-latexrecommended
@@ -116,6 +116,9 @@ src_compile() {
 
 	if use doc; then
 		einfo "Generation of documentation"
+		if [[ "$(python_get_version -f -l)" == "3.1" ]]; then
+			die "Generation of documentation not supported with Python 3.1"
+		fi
 		pushd doc > /dev/null
 		python_execute PYTHONPATH="$(ls -d ../build-$(PYTHON -f --ABI)/lib*)" VARTEXFONTS="${T}/fonts" "$(PYTHON -f)" make.py --small all || die "Generation of documentation failed"
 		[[ -e build/latex/Matplotlib.pdf ]] || die "Generation of documentation failed"
