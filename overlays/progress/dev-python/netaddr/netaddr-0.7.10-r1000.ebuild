@@ -2,22 +2,22 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 
 inherit distutils
 
 DESCRIPTION="Network address representation and manipulation library"
-HOMEPAGE="https://github.com/drkjam/netaddr http://pypi.python.org/pypi/netaddr"
+HOMEPAGE="https://github.com/drkjam/netaddr https://pypi.python.org/pypi/netaddr"
 SRC_URI="mirror://github/drkjam/${PN}/${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="amd64 x86"
+KEYWORDS="*"
 IUSE="cli"
 
-DEPEND="cli? ( $(python_abi_depend -e "2.5 *-jython" dev-python/ipython) )"
+DEPEND="cli? ( $(python_abi_depend -e "2.5 3.1 *-jython" dev-python/ipython) )"
 RDEPEND="${DEPEND}"
 
 src_test() {
