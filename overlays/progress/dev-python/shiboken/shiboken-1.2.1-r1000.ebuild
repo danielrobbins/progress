@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 3.1 *-jython *-pypy-*"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
@@ -10,12 +10,12 @@ PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 inherit cmake-utils multilib python
 
 DESCRIPTION="A tool for creating Python bindings for C++ libraries"
-HOMEPAGE="http://www.pyside.org/"
-SRC_URI="http://www.pyside.org/files/${P}.tar.bz2"
+HOMEPAGE="https://qt-project.org/wiki/PySide"
+SRC_URI="http://download.qt-project.org/official_releases/pyside/${P}.tar.bz2"
 
 LICENSE="LGPL-2.1"
 SLOT="0"
-KEYWORDS="amd64 ~arm x86 ~amd64-linux ~x86-linux"
+KEYWORDS="*"
 IUSE="test"
 
 RDEPEND="
