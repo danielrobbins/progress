@@ -9,7 +9,7 @@ PYTHON_RESTRICTED_ABIS="2.5 *-jython *-pypy-*"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 WX_GTK_VER="2.8"
 
-inherit distutils
+inherit distutils eutils
 
 DESCRIPTION="Python plotting package"
 HOMEPAGE="http://matplotlib.org/ https://github.com/matplotlib/matplotlib https://pypi.python.org/pypi/matplotlib"
@@ -82,6 +82,8 @@ use_setup() {
 
 src_prepare() {
 	distutils_src_prepare
+
+	epatch "${FILESDIR}/${P}-gtk_check.patch"
 
 	# Create setup.cfg. (See setup.cfg.template and setupext.py for any changes.)
 	cat > setup.cfg <<-EOF
