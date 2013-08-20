@@ -44,7 +44,7 @@ S="${WORKDIR}/${MY_P}"
 PYTHON_VERSIONED_EXECUTABLES=("/usr/bin/.*")
 
 src_prepare() {
-	epatch "${FILESDIR}/${PN}-5.0.2-remove_coverage.patch"
+	epatch "${FILESDIR}/${PN}-5.3.6-remove_coverage.patch"
 
 	# Avoid file collisions between different slots of Eric.
 	sed -e "s/^Icon=eric$/&${SLOT}/" -i eric/${MY_PN}.desktop || die "sed failed"
