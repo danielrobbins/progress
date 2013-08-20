@@ -28,7 +28,7 @@ RDEPEND="$(python_abi_depend dev-python/beautifulsoup:4)
 	$(python_abi_depend dev-python/pastedeploy)
 	$(python_abi_depend -e "*-jython *-pypy-*" dev-python/pyquery)
 	$(python_abi_depend dev-python/six)
-	$(python_abi_depend dev-python/waitress)
+	$(python_abi_depend ">=dev-python/waitress-0.8.5")
 	$(python_abi_depend ">=dev-python/webob-1.2")
 	$(python_abi_depend dev-python/wsgiproxy2)
 	$(python_abi_depend virtual/python-json)"
