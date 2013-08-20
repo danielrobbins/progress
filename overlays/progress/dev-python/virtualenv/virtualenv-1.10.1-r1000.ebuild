@@ -11,8 +11,8 @@ DISTUTILS_SRC_TEST="nosetests"
 inherit distutils
 
 DESCRIPTION="Virtual Python Environment builder"
-HOMEPAGE="http://www.virtualenv.org https://github.com/pypa/virtualenv https://pypi.python.org/pypi/virtualenv"
-SRC_URI="https://github.com/pypa/${PN}/tarball/${PV} -> ${P}.tar.gz"
+HOMEPAGE="http://www.virtualenv.org/ https://github.com/pypa/virtualenv https://pypi.python.org/pypi/virtualenv"
+SRC_URI="https://github.com/pypa/${PN}/archive/${PV}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
@@ -26,11 +26,6 @@ DEPEND="${RDEPEND}
 
 DOCS="docs/index.rst docs/news.rst"
 PYTHON_MODULES="virtualenv.py virtualenv_support"
-
-src_unpack() {
-	unpack ${A}
-	mv pypa-virtualenv-* ${P}
-}
 
 src_prepare() {
 	distutils_src_prepare
