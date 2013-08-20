@@ -44,7 +44,4 @@ src_prepare() {
 
 	# Disable minimum percentage of coverage for tests to pass.
 	sed -e "/cover-min-percentage = 100/d" -i setup.cfg
-
-	# https://github.com/shazow/urllib3/issues/177
-	sed -e "s/DOMAIN\\\\username/DOMAIN\\\\\\\\username/" -i urllib3/contrib/ntlmpool.py
 }
