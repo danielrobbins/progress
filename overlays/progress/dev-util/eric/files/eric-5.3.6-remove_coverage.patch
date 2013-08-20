@@ -1,17 +1,19 @@
 --- eric/DataViews/PyCoverageDialog.py
 +++ eric/DataViews/PyCoverageDialog.py
-@@ -15,7 +15,7 @@
+@@ -18,8 +18,8 @@
  from .Ui_PyCoverageDialog import Ui_PyCoverageDialog
  
  import Utilities
 -from DebugClients.Python3.coverage import coverage
+-from DebugClients.Python3.coverage.misc import CoverageException
 +from coverage import coverage
++from coverage.misc import CoverageException
+ 
  
  class PyCoverageDialog(QDialog, Ui_PyCoverageDialog):
-     """
 --- eric/eric5.e4p
 +++ eric/eric5.e4p
-@@ -542,12 +542,6 @@
+@@ -531,12 +531,6 @@
      <Source>Helpviewer/HelpTopicDialog.py</Source>
      <Source>Helpviewer/HelpSearchWidget.py</Source>
      <Source>Helpviewer/HelpDocsInstaller.py</Source>
@@ -24,7 +26,7 @@
      <Source>Debugger/DebuggerInterfacePython3.py</Source>
      <Source>Preferences/ConfigurationPages/DebuggerPython3Page.py</Source>
      <Source>DebugClients/Python3/AsyncFile.py</Source>
-@@ -568,15 +562,6 @@
+@@ -557,15 +551,6 @@
      <Source>Helpviewer/HelpWebSearchWidget.py</Source>
      <Source>Helpviewer/HelpClearPrivateDataDialog.py</Source>
      <Source>Helpviewer/HelpLanguagesDialog.py</Source>
@@ -40,7 +42,7 @@
      <Source>Helpviewer/CookieJar/__init__.py</Source>
      <Source>Helpviewer/CookieJar/CookiesExceptionsDialog.py</Source>
      <Source>Helpviewer/CookieJar/CookieModel.py</Source>
-@@ -631,23 +616,6 @@
+@@ -619,23 +604,6 @@
      <Source>IconEditor/IconEditorWindow.py</Source>
      <Source>IconEditor/IconZoomDialog.py</Source>
      <Source>IconEditor/IconEditorPalette.py</Source>
@@ -64,8 +66,8 @@
      <Source>ThirdParty/Pygments/pygments/lexers/parsers.py</Source>
      <Source>Helpviewer/Passwords/__init__.py</Source>
      <Source>Helpviewer/Passwords/PasswordManager.py</Source>
-@@ -700,14 +668,6 @@
-     <Source>eric5-api.py</Source>
+@@ -668,14 +636,6 @@
+     <Source>eric5.pyw</Source>
      <Source>DebugClients/Python/eric5dbgstub.py</Source>
      <Source>DebugClients/Python3/eric5dbgstub.py</Source>
 -    <Source>DebugClients/Python3/coverage/bytecode.py</Source>
@@ -78,8 +80,8 @@
 -    <Source>DebugClients/Python/coverage/results.py</Source>
      <Source>E5XML/ProjectWriter.py</Source>
      <Source>E5XML/SessionWriter.py</Source>
-     <Source>E5XML/ProjectHandler.py</Source>
-@@ -1082,15 +1042,11 @@
+     <Source>E5XML/ShortcutsWriter.py</Source>
+@@ -1444,15 +1404,11 @@
      <Other>ThirdParty/Pygments/pygments/AUTHORS</Other>
      <Other>ThirdParty/Pygments/pygments/PKG-INFO</Other>
      <Other>Documentation/Help</Other>
@@ -97,7 +99,7 @@
      <Other>README-eric5-doc.txt</Other>
 --- eric/PyUnit/UnittestDialog.py
 +++ eric/PyUnit/UnittestDialog.py
-@@ -23,7 +23,7 @@
+@@ -25,7 +25,7 @@
  from .Ui_UnittestDialog import Ui_UnittestDialog
  from .Ui_UnittestStacktraceDialog import Ui_UnittestStacktraceDialog
  
@@ -108,7 +110,7 @@
  
 --- eric/QScintilla/Editor.py
 +++ eric/QScintilla/Editor.py
-@@ -27,7 +27,7 @@
+@@ -29,7 +29,7 @@
  
  from Debugger.EditBreakpointDialog import EditBreakpointDialog
  
