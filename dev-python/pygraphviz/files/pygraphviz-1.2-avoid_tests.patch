@@ -1,10 +1,10 @@
 --- pygraphviz/agraph.py
 +++ pygraphviz/agraph.py
-@@ -1767,29 +1767,3 @@
+@@ -1771,28 +1771,3 @@
                         value.decode(self.encoding))
              except KeyError: # gv.agxget returned KeyError, skip
                  continue
--    
+-
 -
 -
 -def _test_suite():
@@ -29,7 +29,6 @@
 -    nxbase=sys.path[0]+os.sep+os.pardir
 -    sys.path.insert(0,nxbase) # prepend to search path
 -    unittest.TextTestRunner().run(_test_suite())
--    
 --- pygraphviz/__init__.py
 +++ pygraphviz/__init__.py
 @@ -67,6 +67,3 @@

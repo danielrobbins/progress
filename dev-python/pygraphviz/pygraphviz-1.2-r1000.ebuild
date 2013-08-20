@@ -8,9 +8,9 @@ PYTHON_RESTRICTED_ABIS="3.* *-jython"
 
 inherit distutils eutils
 
-DESCRIPTION="Python wrapper for the Graphviz Agraph data structure"
-HOMEPAGE="http://networkx.lanl.gov/pygraphviz/ https://pypi.python.org/pypi/pygraphviz"
-SRC_URI="http://networkx.lanl.gov/download/${PN}/${P}.tar.gz"
+DESCRIPTION="Python interface to Graphviz"
+HOMEPAGE="https://pygraphviz.github.io/ https://github.com/pygraphviz/pygraphviz https://pypi.python.org/pypi/pygraphviz"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
