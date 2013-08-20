@@ -9,7 +9,7 @@ PYTHON_RESTRICTED_ABIS="2.5"
 inherit bash-completion-r1 distutils
 
 DESCRIPTION="A tool for installing and managing Python packages."
-HOMEPAGE="http://www.pip-installer.org https://github.com/pypa/pip https://pypi.python.org/pypi/pip"
+HOMEPAGE="http://www.pip-installer.org/ https://github.com/pypa/pip https://pypi.python.org/pypi/pip"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
@@ -20,7 +20,7 @@ IUSE="zsh-completion"
 DEPEND="$(python_abi_depend dev-python/setuptools)"
 RDEPEND="${DEPEND}"
 
-DOCS="AUTHORS.txt docs/*.rst"
+DOCS="AUTHORS.txt CHANGES.txt docs/*.rst"
 
 src_prepare() {
 	distutils_src_prepare
