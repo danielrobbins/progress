@@ -4,13 +4,14 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
+# 3.*: https://github.com/jsonpickle/jsonpickle/issues/50
 PYTHON_RESTRICTED_ABIS="3.*"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 
 inherit distutils
 
 DESCRIPTION="Python library for serializing any arbitrary object graph into JSON"
-HOMEPAGE="http://jsonpickle.github.io/ https://pypi.python.org/pypi/jsonpickle"
+HOMEPAGE="https://jsonpickle.github.io/ https://pypi.python.org/pypi/jsonpickle"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD"
@@ -20,6 +21,7 @@ IUSE="test"
 
 RDEPEND="$(python_abi_depend virtual/python-json[external])"
 DEPEND="${RDEPEND}
+	$(python_abi_depend dev-python/setuptools)
 	test? ( $(python_abi_depend dev-python/feedparser) )"
 
 src_test() {
