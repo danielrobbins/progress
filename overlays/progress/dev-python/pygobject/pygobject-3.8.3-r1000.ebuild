@@ -19,8 +19,8 @@ KEYWORDS="~*"
 IUSE="+cairo examples test +threads"
 REQUIRED_USE="test? ( cairo )"
 
-COMMON_DEPEND=">=dev-libs/glib-2.31.0:2
-	>=dev-libs/gobject-introspection-1.34.1.1
+COMMON_DEPEND=">=dev-libs/glib-2.34.2:2
+	>=dev-libs/gobject-introspection-1.34.2
 	virtual/libffi:=
 	cairo? ( $(python_abi_depend ">=dev-python/pycairo-1.10.0") )"
 DEPEND="${COMMON_DEPEND}
