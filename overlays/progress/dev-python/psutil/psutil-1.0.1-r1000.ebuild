@@ -25,21 +25,8 @@ DOCS="CREDITS HISTORY README"
 src_prepare() {
 	distutils_src_prepare
 
-	# Disable failing tests.
-	# http://code.google.com/p/psutil/issues/detail?id=369
-	# http://code.google.com/p/psutil/issues/detail?id=377
-	# http://code.google.com/p/psutil/issues/detail?id=378
-	sed \
-		-e "s/test_as_dict/_&/" \
-		-e "s/test_get_memory_maps/_&/" \
-		-e "s/test_terminal/_&/" \
-		-e "s/test_disk_partitions/_&/" \
-		-e "s/test_fetch_all/_&/" \
-		-i test/test_psutil.py
-	sed -e "s/test_memory_maps/_&/" -i test/_linux.py
-
-	# http://code.google.com/p/psutil/issues/detail?id=404
-	sed -e "/#include <Python.h>/i\\#define _GNU_SOURCE" -i- psutil/_psutil_linux.c
+	# http://code.google.com/p/psutil/issues/detail?id=420
+	sed -e "s/\\\\d.\\\\d.\\\\d/\\\\d+\\\\.\\\\d+\\\\.\\\\d+/" -i test/_linux.py
 }
 
 src_test() {
