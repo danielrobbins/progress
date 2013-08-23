@@ -25,10 +25,3 @@ DEPEND="${RDEPEND}
 		$(python_abi_depend dev-python/mock)
 		$(python_abi_depend -i "2.6" dev-python/unittest2)
 	)"
-
-src_prepare() {
-	distutils_src_prepare
-
-	# multiprocessing module is missing in Jython.
-	sed -e "/^import multiprocessing$/d" -i setup.py
-}
