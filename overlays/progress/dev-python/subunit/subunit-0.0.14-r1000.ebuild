@@ -5,8 +5,8 @@
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5"
-# 3.[3-9]: https://bugs.launchpad.net/subunit/+bug/1025392
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.[3-9] *-jython"
+# 3.1, 3.2: https://bugs.launchpad.net/subunit/+bug/1216246
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.1 3.2 *-jython"
 
 inherit distutils
 
