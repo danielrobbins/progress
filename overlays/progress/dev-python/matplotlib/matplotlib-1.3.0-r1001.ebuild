@@ -7,9 +7,9 @@ PYTHON_DEPEND="<<[tk?]>>"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 *-jython *-pypy-*"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
-WX_GTK_VER="2.8"
+PYTHON_NAMESPACES="mpl_toolkits"
 
-inherit distutils eutils
+inherit distutils eutils python-namespaces
 
 DESCRIPTION="Python plotting package"
 HOMEPAGE="http://matplotlib.org/ https://github.com/matplotlib/matplotlib https://pypi.python.org/pypi/matplotlib"
@@ -65,6 +65,8 @@ DEPEND="${RDEPEND}
 		media-gfx/graphviz[cairo]
 	)
 	test? ( $(python_abi_depend dev-python/nose) )"
+
+S="${WORKDIR}/${P}"
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 PYTHON_CXXFLAGS=("2.* + -fno-strict-aliasing")
@@ -140,6 +142,7 @@ src_test() {
 
 src_install() {
 	distutils_src_install
+	python-namespaces_src_install
 
 	delete_tests() {
 		rm -fr "${ED}$(python_get_sitedir)/matplotlib/tests"
@@ -155,4 +158,14 @@ src_install() {
 		insinto /usr/share/doc/${PF}/examples
 		doins -r examples/*
 	fi
+}
+
+pkg_postinst() {
+	distutils_pkg_postinst
+	python-namespaces_pkg_postinst
+}
+
+pkg_postrm() {
+	distutils_pkg_postrm
+	python-namespaces_pkg_postrm
 }
