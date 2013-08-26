@@ -6,10 +6,11 @@ EAPI="5-progress"
 PYTHON_DEPEND="<<[tk?]>>"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.5 *-jython *-pypy-*"
+# https://github.com/matplotlib/matplotlib/issues/2343
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 PYTHON_NAMESPACES="mpl_toolkits"
 
-inherit distutils eutils python-namespaces
+inherit distutils eutils python-namespaces virtualx
 
 DESCRIPTION="Python plotting package"
 HOMEPAGE="http://matplotlib.org/ https://github.com/matplotlib/matplotlib https://pypi.python.org/pypi/matplotlib"
@@ -137,7 +138,7 @@ src_test() {
 		python_execute "$(PYTHON)" -c "import matplotlib, sys; sys.exit(not matplotlib.test(verbosity=${PYTHON_TEST_VERBOSITY}))" || return
 		popd > /dev/null || die
 	}
-	python_execute_function testing
+	VIRTUALX_COMMAND="python_execute_function" virtualmake testing
 }
 
 src_install() {
