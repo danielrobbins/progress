@@ -40,6 +40,9 @@ src_prepare() {
 	# Disable failing tests.
 	# https://github.com/mitsuhiko/werkzeug/issues/418
 	sed -e "s/import pylibmc as memcache/memcache = None/" -i werkzeug/testsuite/contrib/cache.py
+
+	# https://github.com/mitsuhiko/werkzeug/issues/426
+	sed -e "s/test_iri_safe_quoting/_&/" -i werkzeug/testsuite/urls.py
 }
 
 src_install() {
