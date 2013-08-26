@@ -4,8 +4,8 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-# 3.*: https://github.com/jsonpickle/jsonpickle/issues/51
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.* *-jython"
+PYTHON_RESTRICTED_ABIS="3.1"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.6 *-jython"
 
 inherit distutils
 
@@ -22,6 +22,13 @@ RDEPEND="$(python_abi_depend virtual/python-json[external])"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	test? ( $(python_abi_depend dev-python/feedparser) )"
+
+src_prepare() {
+	distutils_src_prepare
+
+	# https://github.com/jsonpickle/jsonpickle/issues/51
+	sed -e "s/self.fail/getattr(self, 'skipTest', self.fail)/" -i tests/backends_tests.py tests/thirdparty_tests.py
+}
 
 src_test() {
 	testing() {
