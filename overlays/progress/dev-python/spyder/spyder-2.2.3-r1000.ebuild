@@ -35,7 +35,7 @@ PYTHON_MODULES="spyderlib spyderplugins"
 
 src_prepare() {
 	distutils_src_prepare
-	epatch "${FILESDIR}/${PN}-2.2.0-build.patch"
+	epatch "${FILESDIR}/${PN}-2.2.3-build.patch"
 }
 
 src_compile() {
