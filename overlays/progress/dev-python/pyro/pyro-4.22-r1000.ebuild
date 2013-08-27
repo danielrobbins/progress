@@ -41,7 +41,8 @@ src_prepare() {
 	sed -e '/sys.path.insert/a sys.path.insert(1,"PyroTests")' -i tests/run_suite.py
 
 	# Fix compatibility with Python 3.1
-	sed -e "s/self.assertIsInstance(\([^,)]\+\), \([^,)]\+\))/self.assertTrue(isinstance(\1, \2))/" -i tests/PyroTests/test_serialize.py
+	sed -e "s/self.assertIsInstance(\([^,)]\+\), \([^,)]\+\))/self.assertTrue(isinstance(\1, \2))/" -i tests/PyroTests/test_daemon.py tests/PyroTests/test_serialize.py
+	sed -e "s/data = msg.data.decode(\"ascii\", errors=\"ignore\")/data = msg.data.decode(\"ascii\", \"ignore\")/" -i tests/PyroTests/test_socket.py
 
 	# Disable tests requiring network connection.
 	sed \
@@ -62,12 +63,8 @@ src_prepare() {
 		-e "s/testGetIP(/_&/" \
 		-i tests/PyroTests/test_socket.py
 
-	# Disable hanging tests.
-	sed -e "s/testPingMessage/_&/" -i tests/PyroTests/test_server.py
-	sed -e "s/testInvalidMessageCrash/_&/" -i tests/PyroTests/test_socket.py
-
 	# Disable failing test.
-	sed -e "s/testGetIpVersion/_&/" -i tests/PyroTests/test_socket.py
+	sed -e "s/testGetIpVersion6/_&/" -i tests/PyroTests/test_socket.py
 }
 
 src_compile() {
