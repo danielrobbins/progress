@@ -2,22 +2,22 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 
 inherit distutils
 
 DESCRIPTION="DB-API 2.0 interface for SQLite 3.x"
-HOMEPAGE="http://code.google.com/p/pysqlite/ http://pypi.python.org/pypi/pysqlite"
+HOMEPAGE="http://code.google.com/p/pysqlite/ https://pypi.python.org/pypi/pysqlite"
 SRC_URI="http://${PN}.googlecode.com/files/${P}.tar.gz"
 
 LICENSE="pysqlite"
 SLOT="2"
-KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~ppc ~ppc64 sparc x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~x86-solaris"
+KEYWORDS="*"
 IUSE="examples"
 
-DEPEND=">=dev-db/sqlite-3.3.8:3[extensions]"
+DEPEND=">=dev-db/sqlite-3.3.8:3"
 RDEPEND=${DEPEND}
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
