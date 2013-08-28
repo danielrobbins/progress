@@ -19,10 +19,10 @@ SRC_URI="http://apsw.googlecode.com/files/${PN}-${MY_PV}.zip"
 
 LICENSE="ZLIB"
 SLOT="0"
-KEYWORDS="~*"
+KEYWORDS="*"
 IUSE="doc"
 
-DEPEND=">=dev-db/sqlite-${SQLITE_PV}[extensions]"
+DEPEND=">=dev-db/sqlite-${SQLITE_PV}"
 RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/${PN}-${MY_PV}"
