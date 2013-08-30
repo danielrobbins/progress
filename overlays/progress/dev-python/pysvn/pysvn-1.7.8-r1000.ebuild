@@ -2,7 +2,7 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
@@ -19,21 +19,18 @@ fi
 
 LICENSE="Apache-1.1"
 SLOT="0"
-KEYWORDS="amd64 ~arm ~ppc x86 ~x86-freebsd ~x86-linux ~ppc-macos ~x86-solaris"
+KEYWORDS="*"
 IUSE="doc examples"
 
 RDEPEND="dev-vcs/subversion"
 DEPEND="${RDEPEND}
-	$(python_abi_depend ">=dev-python/pycxx-6.2.0")"
+	$(python_abi_depend ">=dev-python/pycxx-6.2.4")"
 
 src_prepare() {
-	# Don't use internal copy of dev-python/pycxx.
+	# Delete internal copy of dev-python/pycxx.
 	rm -fr Import
 
-	epatch "${FILESDIR}/${PN}-1.7.6_pre1437-respect_flags.patch"
-
-	# http://pysvn.tigris.org/source/browse/pysvn?view=rev&revision=1469
-	sed -e "s/PYSVN_HAS_SVN_CLIENT_CTX_T__CONFLICT_FUNC_16/PYSVN_HAS_SVN_CLIENT_CTX_T__CONFLICT_FUNC_1_6/" -i Source/pysvn_svnenv.hpp
+	epatch "${FILESDIR}/${PN}-1.7.8-respect_flags.patch"
 
 	python_copy_sources
 
@@ -77,10 +74,10 @@ src_test() {
 src_install() {
 	installation() {
 		cd Source/pysvn
-		exeinto "$(python_get_sitedir)/pysvn"
-		doexe _pysvn*$(get_modname)
 		insinto "$(python_get_sitedir)/pysvn"
 		doins __init__.py
+		exeinto "$(python_get_sitedir)/pysvn"
+		doexe _pysvn*.so
 	}
 	python_execute_function -s installation
 
