@@ -1,6 +1,6 @@
 --- Source/setup_configure.py
 +++ Source/setup_configure.py
-@@ -821,8 +821,8 @@
+@@ -836,8 +836,8 @@
      def __init__( self, setup ):
          Compiler.__init__( self, setup )
  
@@ -11,16 +11,7 @@
  
      def getPythonExtensionFileExt( self ):
          return '.so'
-@@ -864,7 +864,7 @@
- 
-         rules.append( '%s : %s' % (target_filename, ' '.join( all_objects )) )
-         rules.append( '\t@echo Link %s' % (target_filename,) )
--        rules.append( '\t@%%(LDSHARED)s -o %s %%(CCCFLAGS)s %s' % (target_filename, ' '.join( all_objects )) )
-+        rules.append( '\t@%%(LDSHARED)s -o %s %%(CCCFLAGS)s %s %%(LDLIBS)s' % (target_filename, ' '.join( all_objects )) )
- 
-         self.makePrint( self.expand( '\n'.join( rules ) ) )
- 
-@@ -939,8 +939,8 @@
+@@ -957,8 +957,8 @@
          else:
              arch_options = ''
  
@@ -31,7 +22,7 @@
  
          self._find_paths_pycxx_dir = [
                          '../Import/pycxx-%d.%d.%d' % pycxx_version,
-@@ -1004,12 +1004,12 @@
+@@ -1023,12 +1023,12 @@
  
      def setupUtilities( self ):
          self._addVar( 'CCCFLAGS',
@@ -46,7 +37,7 @@
  
      def setupPySvn( self ):
          self._pysvnModuleSetup()
-@@ -1022,7 +1022,7 @@
+@@ -1040,7 +1040,7 @@
          self._addVar( 'PYTHON_INC',         distutils.sysconfig.get_python_inc() )
  
          py_cflags_list = [
@@ -55,7 +46,7 @@
                      '-no-long-double',
                      '-Wall -fPIC -fexceptions -frtti',
                      '-I. -I%(APR_INC)s -I%(SVN_INC)s',
-@@ -1049,13 +1049,12 @@
+@@ -1067,13 +1067,12 @@
  
          self._addVar( 'CCCFLAGS', ' '.join( py_cflags_list ) )
          self._addVar( 'LDLIBS', ' '.join( py_ld_libs ) )
@@ -71,7 +62,7 @@
  
  class UnixCompilerGCC(CompilerGCC):
      def __init__( self, setup ):
-@@ -1115,11 +1114,11 @@
+@@ -1133,11 +1132,11 @@
  
      def setupUtilities( self ):
          self._addVar( 'CCCFLAGS',
@@ -85,19 +76,19 @@
  
      def setupPySvn( self ):
          self._pysvnModuleSetup()
-@@ -1129,6 +1128,7 @@
-         self._addVar( 'PYTHON_INC',     distutils.sysconfig.get_python_inc() )
+@@ -1148,6 +1147,7 @@
+         self._addVar( 'PYTHON_ARCH_SPECIFIC_INC',     distutils.sysconfig.get_python_inc( True ) )
  
          py_cflags_list = [
 +                    '$(CXXFLAGS)',
                      '-Wall -fPIC -fexceptions -frtti',
                      '-I. -I%(APR_INC)s -I%(SVN_INC)s',
                      '-DPYCXX_PYTHON_2TO3 -I%(PYCXX)s -I%(PYCXX_SRC)s -I%(PYTHON_INC)s',
-@@ -1145,7 +1145,7 @@
+@@ -1165,7 +1165,7 @@
  
          self._addVar( 'CCCFLAGS',   ' '.join( py_cflags_list ) )
          self._addVar( 'LDLIBS',     ' '.join( self._getLdLibs() ) )
--        self._addVar( 'LDSHARED',   '%(CCC)s -shared -g %(LDLIBS)s' )
+-        self._addVar( 'LDSHARED',   '%(CCC)s -shared -g' )
 +        self._addVar( 'LDSHARED',   '$(CXX) $(LDFLAGS) -shared' )
  
  #--------------------------------------------------------------------------------
