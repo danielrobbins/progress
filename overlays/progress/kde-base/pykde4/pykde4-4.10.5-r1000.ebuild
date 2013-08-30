@@ -25,6 +25,8 @@ RDEPEND="
 	)
 "
 DEPEND="${RDEPEND}
+	<dev-python/PyQt4-4.10.3
+	<dev-python/sip-4.15
 	sys-devel/libtool
 "
 
