@@ -9,7 +9,7 @@ PYTHON_RESTRICTED_ABIS="2.5 *-jython"
 inherit distutils
 
 DESCRIPTION="http request/response parser"
-HOMEPAGE="https://github.com/benoitc/http-parser http://pypi.python.org/pypi/http-parser"
+HOMEPAGE="https://github.com/benoitc/http-parser https://pypi.python.org/pypi/http-parser"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
