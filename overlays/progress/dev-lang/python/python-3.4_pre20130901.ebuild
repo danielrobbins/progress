@@ -12,13 +12,13 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="1b4772ab420f"
+	EHG_REVISION="4d604f1f0219"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
 fi
 
-PATCHSET_REVISION="20130714"
+PATCHSET_REVISION="20130901"
 
 DESCRIPTION="Python is an interpreted, interactive, object-oriented programming language."
 HOMEPAGE="http://www.python.org/"
@@ -48,7 +48,7 @@ RDEPEND="app-arch/bzip2
 				>=sys-libs/ncurses-5.2
 				readline? ( >=sys-libs/readline-4.1 )
 			)
-			sqlite? ( >=dev-db/sqlite-3.3.8:3[extensions] )
+			sqlite? ( >=dev-db/sqlite-3.3.8:3 )
 			ssl? ( dev-libs/openssl )
 			tk? (
 				>=dev-lang/tk-8.0
