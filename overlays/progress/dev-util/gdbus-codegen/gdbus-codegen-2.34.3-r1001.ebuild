@@ -30,6 +30,7 @@ PYTHON_MODULES="gdbus_codegen"
 
 src_prepare() {
 	epatch "${FILESDIR}/${PN}-2.32.4-sitedir.patch"
+	epatch "${FILESDIR}/${PN}-2.36.4-input-encoding.patch"
 	sed -e "s:\"/usr/local\":\"${EPREFIX}/usr\":" \
 		-i config.py || die "sed config.py failed"
 
