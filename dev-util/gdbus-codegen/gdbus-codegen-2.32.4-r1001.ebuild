@@ -15,7 +15,7 @@ HOMEPAGE="http://www.gtk.org/"
 
 LICENSE="LGPL-2+"
 SLOT="0"
-KEYWORDS="~*"
+KEYWORDS="*"
 IUSE=""
 
 DEPEND=""
@@ -29,7 +29,8 @@ S="${WORKDIR}/glib-${PV}/gio/gdbus-2.0/codegen"
 PYTHON_MODULES="gdbus_codegen"
 
 src_prepare() {
-	epatch "${FILESDIR}/${PN}-2.36.0-sitedir.patch"
+	epatch "${FILESDIR}/${PN}-2.32.4-sitedir.patch"
+	epatch "${FILESDIR}/${PN}-2.36.4-input-encoding.patch"
 	sed -e "s:\"/usr/local\":\"${EPREFIX}/usr\":" \
 		-i config.py || die "sed config.py failed"
 
