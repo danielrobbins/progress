@@ -17,8 +17,8 @@ KEYWORDS="*"
 IUSE=""
 
 DEPEND="$(python_abi_depend dev-python/manifestdestiny)
-	$(python_abi_depend dev-python/mozfile)
+	$(python_abi_depend ">=dev-python/mozfile-0.11")
 	$(python_abi_depend dev-python/setuptools)
-	$(python_abi_depend virtual/python-json[external])
+	$(python_abi_depend virtual/python-json)
 	$(python_abi_depend virtual/python-sqlite)"
 RDEPEND="${DEPEND}"
