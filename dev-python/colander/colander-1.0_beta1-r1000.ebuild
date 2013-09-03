@@ -9,7 +9,7 @@ DISTUTILS_SRC_TEST="setup.py"
 
 inherit distutils
 
-MY_P="${PN}-${PV/_alpha/a}"
+MY_P="${PN}-${PV/_beta/b}"
 
 DESCRIPTION="A simple schema-based serialization and deserialization library"
 HOMEPAGE="https://docs.pylonsproject.org/projects/colander https://github.com/Pylons/colander https://pypi.python.org/pypi/colander"
