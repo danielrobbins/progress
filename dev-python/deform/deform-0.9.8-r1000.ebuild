@@ -10,7 +10,7 @@ DISTUTILS_SRC_TEST="setup.py"
 inherit distutils
 
 DESCRIPTION="Another form generation library"
-HOMEPAGE="http://docs.repoze.org/deform http://pypi.python.org/pypi/deform"
+HOMEPAGE="https://docs.pylonsproject.org/projects/deform https://pypi.python.org/pypi/deform"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="repoze"
