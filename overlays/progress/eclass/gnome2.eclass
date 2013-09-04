@@ -265,6 +265,7 @@ gnome2_pkg_preinst() {
 	gnome2_icon_savelist
 	gnome2_schemas_savelist
 	gnome2_scrollkeeper_savelist
+	gnome2_gdk_pixbuf_savelist
 }
 
 # @FUNCTION: gnome2_pkg_postinst
@@ -278,6 +279,7 @@ gnome2_pkg_postinst() {
 	gnome2_icon_cache_update
 	gnome2_schemas_update
 	gnome2_scrollkeeper_update
+	gnome2_gdk_pixbuf_update
 }
 
 # # FIXME Handle GConf schemas removal
