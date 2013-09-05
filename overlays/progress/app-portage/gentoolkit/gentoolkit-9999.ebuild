@@ -55,10 +55,6 @@ src_install() {
 		rm -rf "${ED}"/etc/revdep-rebuild
 		rm -rf "${ED}"/var
 	fi
-
-	# Can distutils handle this?
-	dosym eclean /usr/bin/eclean-dist
-	dosym eclean /usr/bin/eclean-pkg
 }
 
 pkg_postinst() {
