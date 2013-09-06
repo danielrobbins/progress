@@ -28,11 +28,6 @@ RDEPEND="${DEPEND}
 	sys-apps/grep
 	$(python_abi_depend virtual/python-argparse)"
 
-src_prepare() {
-	epatch "${FILESDIR}/${PV}-root.patch"
-	epatch "${FILESDIR}/${PV}-configroot.patch"
-}
-
 distutils_src_compile_pre_hook() {
 	python_execute VERSION="${PVR}" "$(PYTHON)" setup.py set_version || die "setup.py set_version failed"
 }
@@ -62,10 +57,6 @@ src_install() {
 		rm -rf "${ED}"/etc/revdep-rebuild
 		rm -rf "${ED}"/var
 	fi
-
-	# Can distutils handle this?
-	dosym eclean /usr/bin/eclean-dist
-	dosym eclean /usr/bin/eclean-pkg
 }
 
 pkg_postinst() {
