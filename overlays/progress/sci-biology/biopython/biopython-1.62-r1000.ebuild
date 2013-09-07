@@ -8,7 +8,7 @@ PYTHON_MULTIPLE_ABIS="1"
 inherit distutils
 
 DESCRIPTION="Python modules for computational molecular biology"
-HOMEPAGE="http://biopython.org http://pypi.python.org/pypi/biopython"
+HOMEPAGE="http://biopython.org/ https://pypi.python.org/pypi/biopython"
 SRC_URI="http://www.biopython.org/DIST/${P}.tar.gz"
 
 LICENSE="HPND"
@@ -16,12 +16,11 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="mysql postgres reportlab"
 
-RDEPEND="$(python_abi_depend -e "*-jython *-pypy-*" dev-python/numpy)
+DEPEND="$(python_abi_depend -e "*-jython *-pypy-*" dev-python/numpy)
 	mysql? ( $(python_abi_depend -e "3.* *-jython" dev-python/mysql-python) )
 	postgres? ( $(python_abi_depend -e "*-jython *-pypy-*" dev-python/psycopg:2) )
 	reportlab? ( $(python_abi_depend -e "3.* *-jython" dev-python/reportlab) )"
-DEPEND="${RDEPEND}
-	$(python_abi_depend dev-python/setuptools)"
+RDEPEND="${DEPEND}"
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 
