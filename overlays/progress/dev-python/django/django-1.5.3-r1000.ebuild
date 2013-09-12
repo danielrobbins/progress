@@ -51,6 +51,12 @@ src_prepare() {
 	# Fix generation of documentation with Python 3.
 	# https://github.com/django/django/commit/a5733fcd7be7adb8b236825beff4ccda19900f9e
 	sed -e "s/with open(outfilename, 'wb') as fp:/with open(outfilename, 'w') as fp:/" -i docs/_ext/djangodocs.py
+
+	# Disable failing tests.
+	# https://code.djangoproject.com/ticket/21092
+	sed -e "s/test_runner_deprecation_verbosity_zero/_&/" -i tests/regressiontests/test_runner/tests.py
+	# https://code.djangoproject.com/ticket/21093
+	sed -e "s/test_dont_base64_encode/_&/" -i tests/regressiontests/mail/tests.py
 }
 
 src_compile() {
