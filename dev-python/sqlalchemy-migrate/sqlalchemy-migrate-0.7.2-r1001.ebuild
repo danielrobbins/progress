@@ -20,8 +20,15 @@ IUSE=""
 DEPEND="$(python_abi_depend dev-python/decorator)
 	$(python_abi_depend dev-python/setuptools)
 	$(python_abi_depend ">=dev-python/sqlalchemy-0.6")
-	$(python_abi_depend "<dev-python/sqlalchemy-0.8")
 	$(python_abi_depend dev-python/tempita)"
 RDEPEND="${DEPEND}"
 
 PYTHON_MODULES="migrate"
+
+src_prepare() {
+	distutils_src_prepare
+
+	# Fix compatibility with SQLAlchemy >=0.8.
+	# http://code.google.com/p/sqlalchemy-migrate/issues/detail?id=156
+	sed -e "s/from sqlalchemy import exceptions as sa_exceptions/from sqlalchemy import exc as sa_exceptions/" -i migrate/versioning/schema.py
+}
