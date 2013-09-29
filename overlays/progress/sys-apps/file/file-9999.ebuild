@@ -12,7 +12,7 @@ inherit distutils eutils libtool toolchain-funcs
 
 if [[ ${PV} == "9999" ]] ; then
 	EGIT_REPO_URI="git://github.com/glensc/file.git"
-	inherit autotools git-2
+	inherit autotools git-r3
 else
 	SRC_URI="ftp://ftp.astron.com/pub/file/${P}.tar.gz
 		ftp://ftp.gw.com/mirrors/pub/unix/file/${P}.tar.gz"
@@ -44,6 +44,7 @@ src_prepare() {
 }
 
 wd() { echo "${WORKDIR}"/build-${CHOST}; }
+
 do_configure() {
 	ECONF_SOURCE=${S}
 
@@ -54,6 +55,7 @@ do_configure() {
 
 	popd >/dev/null
 }
+
 src_configure() {
 	# when cross-compiling, we need to build up our own file
 	# because people often don't keep matching host/target
@@ -79,6 +81,7 @@ src_configure() {
 do_make() {
 	emake -C "$(wd)" "$@"
 }
+
 src_compile() {
 	if tc-is-cross-compiler && ! ROOT=/ has_version ~${CATEGORY}/${P} ; then
 		CHOST=${CBUILD} do_make -C src file
