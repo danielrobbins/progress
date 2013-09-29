@@ -10,14 +10,20 @@ PYTHON_RESTRICTED_ABIS="*-jython"
 
 inherit distutils eutils libtool toolchain-funcs
 
+if [[ ${PV} == "9999" ]] ; then
+	EGIT_REPO_URI="git://github.com/glensc/file.git"
+	inherit autotools git-r3
+else
+	SRC_URI="ftp://ftp.astron.com/pub/file/${P}.tar.gz
+		ftp://ftp.gw.com/mirrors/pub/unix/file/${P}.tar.gz"
+	KEYWORDS="*"
+fi
+
 DESCRIPTION="identify a file's format by scanning binary data for patterns"
 HOMEPAGE="http://www.darwinsys.com/file/"
-SRC_URI="ftp://ftp.astron.com/pub/file/${P}.tar.gz
-	ftp://ftp.gw.com/mirrors/pub/unix/file/${P}.tar.gz"
 
 LICENSE="BSD-2"
 SLOT="0"
-KEYWORDS=""
 IUSE="python static-libs zlib"
 
 RDEPEND="zlib? ( sys-libs/zlib:0= )"
@@ -30,6 +36,7 @@ pkg_setup() {
 }
 
 src_prepare() {
+	[[ ${PV} == "9999" ]] && eautoreconf
 	elibtoolize
 
 	# don't let python README kill main README #60043
@@ -37,6 +44,7 @@ src_prepare() {
 }
 
 wd() { echo "${WORKDIR}"/build-${CHOST}; }
+
 do_configure() {
 	ECONF_SOURCE=${S}
 
@@ -47,6 +55,7 @@ do_configure() {
 
 	popd >/dev/null
 }
+
 src_configure() {
 	# when cross-compiling, we need to build up our own file
 	# because people often don't keep matching host/target
@@ -72,6 +81,7 @@ src_configure() {
 do_make() {
 	emake -C "$(wd)" "$@"
 }
+
 src_compile() {
 	if tc-is-cross-compiler && ! ROOT=/ has_version ~${CATEGORY}/${P} ; then
 		CHOST=${CBUILD} do_make -C src file
