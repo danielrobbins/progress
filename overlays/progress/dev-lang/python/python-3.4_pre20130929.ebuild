@@ -12,13 +12,13 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="4d604f1f0219"
+	EHG_REVISION="d6e35146ae53"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
 fi
 
-PATCHSET_REVISION="20130901"
+PATCHSET_REVISION="20130908"
 
 DESCRIPTION="Python is an interpreted, interactive, object-oriented programming language."
 HOMEPAGE="http://www.python.org/"
@@ -181,11 +181,6 @@ src_configure() {
 
 	# Export CXX so it ends up in /usr/lib/python3.X/config/Makefile.
 	tc-export CXX
-
-	# Set LDFLAGS so we link modules with -lpython3.4 correctly.
-	# Needed on FreeBSD unless Python 3.4 is already installed.
-	# Please query BSD team before removing this!
-	append-ldflags "-L."
 
 	local dbmliborder
 	if use gdbm; then
