@@ -79,10 +79,8 @@ multilib_get_enabled_abis() {
 
 			# split on ,; we can't switch IFS for function scope because
 			# paludis is broken (bug #486592), and switching it locally
-			# for the split is more complex than tricking like this
-			m_abis=( ${m_abis/,/ } )
-
-			for m_abi in ${m_abis[@]}; do
+			# for the split is more complex than cheating like this
+			for m_abi in ${m_abis//,/ }; do
 				if [[ ${m_abi} == ${abi} ]] && use "${m_flag}"; then
 					echo "${abi}"
 					found=1
