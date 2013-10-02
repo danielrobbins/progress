@@ -17,7 +17,8 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="doc examples"
 
-RDEPEND="$(python_abi_depend ">=dev-python/pycrypto-2.1")"
+RDEPEND="$(python_abi_depend dev-python/ecdsa)
+	$(python_abi_depend ">=dev-python/pycrypto-2.1")"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
