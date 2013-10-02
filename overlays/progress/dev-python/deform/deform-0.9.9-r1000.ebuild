@@ -4,13 +4,13 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5 *-jython"
+PYTHON_RESTRICTED_ABIS="*-jython"
 DISTUTILS_SRC_TEST="setup.py"
 
 inherit distutils
 
 DESCRIPTION="Another form generation library"
-HOMEPAGE="https://docs.pylonsproject.org/projects/deform https://pypi.python.org/pypi/deform"
+HOMEPAGE="https://docs.pylonsproject.org/projects/deform https://github.com/Pylons/deform https://pypi.python.org/pypi/deform"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="repoze"
