@@ -8,7 +8,7 @@ PYTHON_MULTIPLE_ABIS="1"
 inherit distutils eutils
 
 DESCRIPTION="World timezone definitions for Python"
-HOMEPAGE="https://pypi.python.org/pypi/pytz http://pytz.sourceforge.net/"
+HOMEPAGE="http://pytz.sourceforge.net/ https://pythonhosted.org/pytz/ https://pypi.python.org/pypi/pytz"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.bz2"
 
 LICENSE="MIT"
