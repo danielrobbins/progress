@@ -3,7 +3,6 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
@@ -14,7 +13,8 @@ MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Beautiful Soup is a Python library for pulling data out of HTML and XML files"
 HOMEPAGE="http://www.crummy.com/software/BeautifulSoup/ https://launchpad.net/beautifulsoup https://pypi.python.org/pypi/beautifulsoup4"
-SRC_URI="http://www.crummy.com/software/BeautifulSoup/bs4/download/4.3/${MY_P}.tar.gz"
+# SRC_URI="http://www.crummy.com/software/BeautifulSoup/bs4/download/4.3/${MY_P}.tar.gz"
+SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="4"
@@ -30,14 +30,6 @@ S="${WORKDIR}/${MY_P}"
 
 DOCS="AUTHORS.txt NEWS.txt README.txt TODO.txt"
 PYTHON_MODULES="bs4"
-
-src_prepare() {
-	distutils_src_prepare
-
-	# Disable failing test.
-	# https://bugs.launchpad.net/beautifulsoup/+bug/1212445
-	sed -e "s/test_beautifulstonesoup/_&/" -i bs4/tests/test_soup.py
-}
 
 src_compile() {
 	distutils_src_compile
