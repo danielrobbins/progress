@@ -3,12 +3,13 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
+PYTHON_DEPEND="<<[sqlite]>>"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5 3.* *-jython"
+PYTHON_RESTRICTED_ABIS="3.* *-jython"
 DISTUTILS_SRC_TEST="trial"
 DISTUTILS_DISABLE_TEST_DEPENDENCY="1"
 
-inherit distutils user
+inherit distutils systemd user
 
 MY_PV="${PV/_p/p}"
 MY_P="${PN}-${MY_PV}"
@@ -31,8 +32,6 @@ RDEPEND="$(python_abi_depend ">=dev-python/jinja-2.1")
 	)
 	$(python_abi_depend dev-python/twisted-core)
 	$(python_abi_depend dev-python/twisted-web)
-	$(python_abi_depend virtual/python-json[external])
-	$(python_abi_depend virtual/python-sqlite[external])
 	irc? ( $(python_abi_depend dev-python/twisted-words) )
 	mail? ( $(python_abi_depend dev-python/twisted-mail) )
 	manhole? ( $(python_abi_depend -e "*-pypy-*" dev-python/twisted-conch) )"
@@ -56,16 +55,10 @@ pkg_setup() {
 src_prepare() {
 	distutils_src_prepare
 	sed \
-		-e "s/sqlalchemy-migrate ==0.6.1, ==0.7.0, ==0.7.1, ==0.7.2/sqlalchemy-migrate ==0.6, ==0.7/" \
+		-e "s/sqlalchemy >= 0.6, <= 0.7.9/sqlalchemy/" \
+		-e "s/sqlalchemy-migrate ==0.6.1, ==0.7.0, ==0.7.1, ==0.7.2/sqlalchemy-migrate/" \
 		-e "s/python-dateutil==1.5/python-dateutil/" \
 		-i setup.py
-
-	# http://trac.buildbot.net/ticket/2403
-	sed \
-		-e "s/test_start(/_&/" \
-		-e "s/test_start_no_daemon/_&/" \
-		-e "s/test_start_quiet/_&/" \
-		-i buildbot/test/unit/test_scripts_start.py
 }
 
 src_compile() {
@@ -100,6 +93,7 @@ src_install() {
 
 	newconfd "${FILESDIR}/buildmaster.confd" buildmaster
 	newinitd "${FILESDIR}/buildmaster.initd" buildmaster
+	systemd_dounit "${FILESDIR}/${PN}.service"
 
 	local config_protect_paths=()
 	add_config_protect_path() {
