@@ -5,7 +5,7 @@
 EAPI="5-progress"
 PYTHON_DEPEND="<<[{*-cpython}readline?,{*-cpython}sqlite?]>>"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5 3.1 *-jython"
+PYTHON_RESTRICTED_ABIS="3.1 *-jython"
 
 inherit distutils elisp-common eutils virtualx
 
