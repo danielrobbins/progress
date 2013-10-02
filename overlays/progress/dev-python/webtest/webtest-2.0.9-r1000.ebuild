@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5 3.1"
+PYTHON_RESTRICTED_ABIS="3.1"
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-pypy-*"
 DISTUTILS_SRC_TEST="nosetests"
@@ -30,8 +30,7 @@ RDEPEND="$(python_abi_depend dev-python/beautifulsoup:4)
 	$(python_abi_depend dev-python/six)
 	$(python_abi_depend ">=dev-python/waitress-0.8.5")
 	$(python_abi_depend ">=dev-python/webob-1.2")
-	$(python_abi_depend dev-python/wsgiproxy2)
-	$(python_abi_depend virtual/python-json)"
+	$(python_abi_depend dev-python/wsgiproxy2)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	doc? ( $(python_abi_depend dev-python/sphinx) )
