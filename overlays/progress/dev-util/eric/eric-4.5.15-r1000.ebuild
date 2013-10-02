@@ -5,7 +5,7 @@
 EAPI="5-progress"
 PYTHON_DEPEND="<<[xml]>>"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5 3.* *-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 
 inherit eutils python
 
@@ -30,8 +30,7 @@ DEPEND="$(python_abi_depend ">=dev-python/sip-4.12.4")
 RDEPEND="${DEPEND}
 	$(python_abi_depend ">=dev-python/chardet-2.0.1")
 	$(python_abi_depend dev-python/coverage)
-	$(python_abi_depend ">=dev-python/pygments-1.1")
-	$(python_abi_depend virtual/python-json)"
+	$(python_abi_depend ">=dev-python/pygments-1.1")"
 PDEPEND="spell? ( $(python_abi_depend dev-python/pyenchant) )"
 
 LANGS="cs de en es fr it ru tr zh_CN"
