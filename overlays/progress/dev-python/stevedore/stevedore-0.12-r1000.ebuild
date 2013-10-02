@@ -3,7 +3,6 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
@@ -20,6 +19,7 @@ IUSE="doc test"
 RDEPEND="$(python_abi_depend dev-python/setuptools)
 	$(python_abi_depend virtual/python-argparse)"
 DEPEND="${RDEPEND}
+	$(python_abi_depend dev-python/pbr)
 	doc? ( $(python_abi_depend dev-python/sphinx) )
 	test? ( $(python_abi_depend dev-python/mock) )"
 
@@ -28,7 +28,7 @@ src_compile() {
 
 	if use doc; then
 		einfo "Generation of documentation"
-		python_execute "$(PYTHON -f)" setup.py build_sphinx || die "Generation of documentation failed"
+		python_execute PYTHONPATH="build-$(PYTHON -f --ABI)/lib" sphinx-build docs/source html || die "Generation of documentation failed"
 	fi
 }
 
@@ -45,6 +45,6 @@ src_install() {
 	python_execute_function -q delete_tests
 
 	if use doc; then
-		dohtml -r build/sphinx/html/
+		dohtml -r html/
 	fi
 }
