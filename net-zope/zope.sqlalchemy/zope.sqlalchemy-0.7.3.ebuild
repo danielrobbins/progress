@@ -3,7 +3,6 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5"
 # *-jython: http://bugs.jython.org/issue1682864
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
 DISTUTILS_SRC_TEST="setup.py"
@@ -11,7 +10,7 @@ DISTUTILS_SRC_TEST="setup.py"
 inherit distutils
 
 DESCRIPTION="Minimal Zope/SQLAlchemy transaction integration"
-HOMEPAGE="http://pypi.python.org/pypi/zope.sqlalchemy"
+HOMEPAGE="https://pypi.python.org/pypi/zope.sqlalchemy"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.zip"
 
 LICENSE="ZPL"
