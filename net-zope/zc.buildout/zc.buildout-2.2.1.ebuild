@@ -3,7 +3,6 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5"
 
 inherit distutils
 
@@ -15,6 +14,7 @@ LICENSE="ZPL"
 SLOT="0"
 KEYWORDS="*"
 IUSE=""
+RESTRICT="test"
 
 RDEPEND="$(python_abi_depend net-zope/namespaces-zc[zc])
 	$(python_abi_depend ">=dev-python/setuptools-0.7")"
