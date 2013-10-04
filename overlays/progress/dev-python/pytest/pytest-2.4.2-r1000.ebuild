@@ -18,7 +18,7 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="doc"
 
-RDEPEND="$(python_abi_depend ">=dev-python/py-1.4.16")
+RDEPEND="$(python_abi_depend ">=dev-python/py-1.4.17")
 	$(python_abi_depend virtual/python-argparse)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
