@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5 *-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 DISTUTILS_SRC_TEST="setup.py"
 
 inherit distutils
@@ -21,7 +21,6 @@ IUSE="examples test"
 RDEPEND="sci-libs/hdf5:=
 	$(python_abi_depend dev-python/numpy)"
 DEPEND="${RDEPEND}
-	$(python_abi_depend dev-python/setuptools)
 	test? ( $(python_abi_depend -i "2.6 3.1" dev-python/unittest2) )"
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
