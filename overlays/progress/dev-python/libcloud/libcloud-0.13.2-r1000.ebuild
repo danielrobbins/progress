@@ -5,7 +5,7 @@
 EAPI="5-progress"
 PYTHON_DEPEND="<<[{*-cpython}ssl]>>"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5 *-jython"
+PYTHON_RESTRICTED_ABIS="*-jython"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.1"
 DISTUTILS_SRC_TEST="setup.py"
 
@@ -20,8 +20,7 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="examples ssh test"
 
-RDEPEND="$(python_abi_depend -i "2.*" dev-python/lockfile)
-	$(python_abi_depend virtual/python-json[external])
+RDEPEND="$(python_abi_depend dev-python/lockfile)
 	ssh? ( $(python_abi_depend -i "2.*-cpython" dev-python/paramiko) )"
 DEPEND="${RDEPEND}
 	test? (
