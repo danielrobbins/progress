@@ -1,6 +1,6 @@
 --- setup.py
 +++ setup.py
-@@ -59,11 +59,6 @@
+@@ -67,11 +67,6 @@
              self.compiler.library_dirs, library)
  
  
@@ -12,7 +12,7 @@
  def _read(file):
      return open(file, 'rb').read()
  
-@@ -149,101 +144,14 @@
+@@ -157,122 +152,14 @@
              _add_directory(include_dirs, include_root)
  
          #
@@ -36,7 +36,17 @@
 -            # freetype2 ships with X11
 -            _add_directory(library_dirs, "/usr/X11/lib")
 -            _add_directory(include_dirs, "/usr/X11/include")
--
+-            # if homebrew is installed, use its lib and include directories
+-            import subprocess
+-            try:
+-                prefix = subprocess.check_output(['brew', '--prefix'])
+-                if prefix:
+-                    prefix = prefix.strip()
+-                    _add_directory(library_dirs, os.path.join(prefix, 'lib'))
+-                    _add_directory(include_dirs, os.path.join(prefix, 'include'))
+-            except:
+-                pass # homebrew not installed
+-                    
 -        elif sys.platform.startswith("linux"):
 -            for platform_ in (plat.processor(), plat.architecture()[0]):
 -
@@ -62,6 +72,17 @@
 -
 -        _add_directory(library_dirs, "/usr/local/lib")
 -        # FIXME: check /opt/stuff directories here?
+-
+-        # include, rpath, if set as environment variables:
+-        for k in 'C_INCLUDE_PATH INCLUDE'.split():
+-            if k in os.environ:
+-                for d in os.environ[k].split(os.path.pathsep):
+-                    _add_directory(include_dirs, d)
+-
+-        for k in 'LD_RUN_PATH LIBRARY_PATH LIB'.split():
+-            if k in os.environ:
+-                for d in os.environ[k].split(os.path.pathsep):
+-                    _add_directory(library_dirs, d)
 -
 -        prefix = sysconfig.get_config_var("prefix")
 -        if prefix:
@@ -114,9 +135,9 @@
          _add_directory(include_dirs, "/usr/include")
  
          #
-@@ -389,29 +297,7 @@
+@@ -432,29 +319,7 @@
              exts.append(Extension(
-                 "PIL._webp", ["_webp.c"], libraries=["webp"]))
+                 "PIL._webp", ["_webp.c"], libraries=libs, define_macros=defs))
  
 -        if sys.platform == "darwin":
 -            # locate Tcl/Tk frameworks
@@ -145,7 +166,7 @@
              exts.append(Extension(
                  "PIL._imagingtk", ["_imagingtk.c", "Tk/tkImaging.c"],
                  libraries=[feature.tcl, feature.tk]))
-@@ -501,30 +387,6 @@
+@@ -545,30 +410,6 @@
              if m.group(1) < "1.2.3":
                  return m.group(1)
  
