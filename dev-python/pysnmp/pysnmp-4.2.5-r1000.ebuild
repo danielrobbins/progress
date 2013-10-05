@@ -9,10 +9,10 @@ PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 inherit distutils
 
 DESCRIPTION="A pure-Python SNMPv1/v2c/v3 library"
-HOMEPAGE="http://pysnmp.sourceforge.net/ http://pypi.python.org/pypi/pysnmp"
+HOMEPAGE="http://pysnmp.sourceforge.net/ https://pypi.python.org/pypi/pysnmp"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
-LICENSE="BSD"
+LICENSE="BSD-2"
 SLOT="0"
 KEYWORDS="*"
 IUSE="examples"
