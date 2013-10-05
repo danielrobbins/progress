@@ -5,7 +5,7 @@
 EAPI="5-progress"
 PYTHON_DEPEND="<<[{*-cpython}tk?]>>"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5 *-jython"
+PYTHON_RESTRICTED_ABIS="*-jython"
 
 inherit distutils eutils multilib
 
@@ -27,7 +27,7 @@ RDEPEND="X? ( x11-misc/xdg-utils )
 	scanner? ( media-gfx/sane-backends:0= )
 	tiff? ( media-libs/tiff:0= )
 	truetype? ( media-libs/freetype:2= )
-	webp? ( media-libs/libwebp:0= )
+	webp? ( >=media-libs/libwebp-0.3:0= )
 	zlib? ( sys-libs/zlib:0= )"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
@@ -35,7 +35,7 @@ DEPEND="${RDEPEND}
 
 S="${WORKDIR}/${MY_P}"
 
-DOCS="README.rst docs/CONTRIBUTORS.txt docs/HISTORY.txt"
+DOCS="CHANGES.rst CONTRIBUTORS.rst README.rst"
 
 pkg_setup() {
 	PYTHON_MODULES="PIL $(use scanner && echo sane.py)"
@@ -46,11 +46,11 @@ src_prepare() {
 	distutils_src_prepare
 
 	epatch "${FILESDIR}/${P}-delete_hardcoded_paths.patch"
-	epatch "${FILESDIR}/${P}-libm_linking.patch"
+	epatch "${FILESDIR}/${PN}-2.1.0-libm_linking.patch"
 	epatch "${FILESDIR}/${PN}-2.0.0-use_xdg-open.patch"
 
 	local feature
-	for feature in jpeg lcms tiff truetype:freetype webp zlib; do
+	for feature in jpeg lcms tiff truetype:freetype webp webp:webpmux zlib; do
 		if ! use ${feature%:*}; then
 			sed -e "s/if feature\.want('${feature#*:}'):/if False:/" -i setup.py
 		fi
@@ -89,11 +89,16 @@ src_test() {
 src_install() {
 	distutils_src_install
 
+	delete_tests() {
+		rm -f "${ED}$(python_get_sitedir)/PIL/tests.py"
+	}
+	python_execute_function -q delete_tests
+
 	local module
 	for module in PIL/*.py; do
 		module="${module#PIL/}"
 		module="${module%.py}"
-		[[ "${module}" =~ ^(__init__|_binary|JpegPresets|WebPImagePlugin)$ ]] && continue
+		[[ "${module}" =~ ^(__init__|_binary|JpegPresets|WebPImagePlugin|tests)$ ]] && continue
 		PYTHON_MODULES+=" ${module}.py"
 	done
 
@@ -102,7 +107,7 @@ src_install() {
 		for module in PIL/*.py; do
 			module="${module#PIL/}"
 			module="${module%.py}"
-			[[ "${module}" =~ ^(__init__|_binary|JpegPresets|WebPImagePlugin)$ ]] && continue
+			[[ "${module}" =~ ^(__init__|_binary|JpegPresets|WebPImagePlugin|tests)$ ]] && continue
 			dodir "$(python_get_sitedir)"
 			cat << EOF > "${ED}$(python_get_sitedir)/${module}.py"
 def _warning():
