@@ -13,19 +13,20 @@ MY_PN="Fabric"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Fabric is a simple, Pythonic tool for remote execution and deployment."
-HOMEPAGE="http://fabfile.org https://pypi.python.org/pypi/Fabric"
+HOMEPAGE="http://fabfile.org/ https://github.com/fabric/fabric https://pypi.python.org/pypi/Fabric"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="BSD-2"
 SLOT="0"
 KEYWORDS="*"
-IUSE="doc"
+# IUSE="doc"
+IUSE=""
 
 RDEPEND="$(python_abi_depend dev-python/pycrypto)
 	$(python_abi_depend ">=dev-python/paramiko-1.10.0")"
 DEPEND="${RDEPEND}
-	$(python_abi_depend dev-python/setuptools)
-	doc? ( $(python_abi_depend dev-python/sphinx) )"
+	$(python_abi_depend dev-python/setuptools)"
+#	doc? ( $(python_abi_depend dev-python/sphinx) )
 #	test? ( $(python_abi_depend dev-python/fudge) )
 
 # Tests broken.
@@ -38,12 +39,12 @@ PYTHON_MODULES="fabfile fabric"
 src_compile() {
 	distutils_src_compile
 
-	if use doc; then
-		einfo "Generation of documentation"
-		pushd docs > /dev/null
-		emake html
-		popd > /dev/null
-	fi
+#	if use doc; then
+#		einfo "Generation of documentation"
+#		pushd docs > /dev/null
+#		emake html
+#		popd > /dev/null
+#	fi
 }
 
 src_test() {
@@ -53,7 +54,7 @@ src_test() {
 src_install() {
 	distutils_src_install
 
-	if use doc; then
-		dohtml -r docs/_build/html/
-	fi
+#	if use doc; then
+#		dohtml -r docs/_build/html/
+#	fi
 }
