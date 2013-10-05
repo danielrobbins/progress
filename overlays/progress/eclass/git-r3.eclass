@@ -28,6 +28,8 @@ EXPORT_FUNCTIONS src_unpack
 
 if [[ ! ${_GIT_R3} ]]; then
 
+DEPEND=">=dev-vcs/git-1.8.2.1"
+
 # @ECLASS-VARIABLE: EGIT3_STORE_DIR
 # @DESCRIPTION:
 # Storage directory for git sources.
