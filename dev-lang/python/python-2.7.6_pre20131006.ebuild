@@ -12,13 +12,13 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="d5c5ac33b9a1"
+	EHG_REVISION="101bf827611a"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
 fi
 
-PATCHSET_REVISION="20130310"
+PATCHSET_REVISION="20131006"
 
 DESCRIPTION="Python is an interpreted, interactive, object-oriented programming language."
 HOMEPAGE="http://www.python.org/"
@@ -203,11 +203,6 @@ src_configure() {
 
 	# Export CXX so it ends up in /usr/lib/python2.X/config/Makefile.
 	tc-export CXX
-
-	# Set LDFLAGS so we link modules with -lpython2.7 correctly.
-	# Needed on FreeBSD unless Python 2.7 is already installed.
-	# Please query BSD team before removing this!
-	append-ldflags "-L."
 
 	local dbmliborder
 	if use gdbm; then
