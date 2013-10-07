@@ -3,7 +3,6 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.*"
 DISTUTILS_SRC_TEST="nosetests"
 
@@ -31,6 +30,9 @@ src_prepare() {
 
 	# Delete deprecated module.
 	rm -f numpydoc/plot_directive.py numpydoc/tests/test_plot_directive.py
+
+	# https://github.com/numpy/numpydoc/pull/1
+	sed -e "s/doc = str(doc).decode('utf-8')/doc = unicode(doc)/" -i numpydoc/numpydoc.py
 }
 
 src_install() {
