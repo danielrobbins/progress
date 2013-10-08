@@ -28,7 +28,9 @@ EXPORT_FUNCTIONS src_unpack
 
 if [[ ! ${_GIT_R3} ]]; then
 
-DEPEND=">=dev-vcs/git-1.8.2.1"
+if [[ ! ${_INHERITED_BY_GIT_2} ]]; then
+	DEPEND=">=dev-vcs/git-1.8.2.1"
+fi
 
 # @ECLASS-VARIABLE: EGIT3_STORE_DIR
 # @DESCRIPTION:
