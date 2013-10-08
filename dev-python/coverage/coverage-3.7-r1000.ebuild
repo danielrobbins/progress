@@ -8,7 +8,7 @@ PYTHON_MULTIPLE_ABIS="1"
 inherit distutils
 
 DESCRIPTION="Code coverage measurement for Python"
-HOMEPAGE="http://nedbatchelder.com/code/coverage/ http://pypi.python.org/pypi/coverage"
+HOMEPAGE="http://nedbatchelder.com/code/coverage/ https://bitbucket.org/ned/coveragepy https://pypi.python.org/pypi/coverage"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD"
