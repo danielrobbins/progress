@@ -10,7 +10,7 @@ DISTUTILS_SRC_TEST="nosetests"
 inherit distutils
 
 MY_PN="Sphinx"
-MY_P="${MY_PN}-${PV}"
+MY_P="${MY_PN}-${PV/_beta/b}"
 
 DESCRIPTION="Python documentation generator"
 HOMEPAGE="http://sphinx-doc.org/ https://bitbucket.org/birkenfeld/sphinx https://pypi.python.org/pypi/Sphinx"
@@ -42,6 +42,16 @@ DOCS="CHANGES"
 
 src_prepare() {
 	distutils_src_prepare
+
+	# Accept new versions of Jinja with Python 3.1 and 3.2.
+	sed -e "s/requires.append('Jinja2>=2.3,<2.7')/requires.append('Jinja2>=2.3')/" -i setup.py
+
+	# Disable failing test.
+	# https://bitbucket.org/birkenfeld/sphinx/issue/1268
+	sed \
+		-e "s/from util import .*/&, skip_if/" \
+		-e "/test_build_sphinx_with_nonascii_path/i\\@skip_if(sys.version_info[0] == 2)" \
+		-i tests/test_setup_command.py
 
 	prepare_tests() {
 		cp -r tests tests-${PYTHON_ABI}
