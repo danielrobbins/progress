@@ -5,12 +5,14 @@
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
+# https://bitbucket.org/eventlet/eventlet/issue/159
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
 
 DESCRIPTION="Highly concurrent networking library"
-HOMEPAGE="http://eventlet.net/ https://pypi.python.org/pypi/eventlet"
+HOMEPAGE="http://eventlet.net/ https://bitbucket.org/eventlet/eventlet https://github.com/eventlet/eventlet https://pypi.python.org/pypi/eventlet"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
@@ -18,7 +20,8 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="doc examples"
 
-RDEPEND="$(python_abi_depend dev-python/greenlet)"
+RDEPEND="$(python_abi_depend dev-python/greenlet)
+	$(python_abi_depend dev-python/pyopenssl)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
@@ -26,11 +29,11 @@ DEPEND="${RDEPEND}
 src_prepare() {
 	distutils_src_prepare
 
-	# Ignore potential AttributeError caused by gnutls module.
-	sed -e "227s/except ImportError:/except (AttributeError, ImportError):/" -i tests/test__twistedutil_protocol.py
+	# Ignore potential AttributeError and RuntimeError caused by gnutls module.
+	sed -e "227s/except ImportError:/except (AttributeError, ImportError, RuntimeError):/" -i tests/test__twistedutil_protocol.py
 
 	# Disable failing tests.
-	rm -f tests/saranwrap_test.py
+	rm tests/saranwrap_test.py
 	sed \
 		-e "s/test_incomplete_headers_75/_&/" \
 		-e "s/test_incomplete_headers_76/_&/" \
