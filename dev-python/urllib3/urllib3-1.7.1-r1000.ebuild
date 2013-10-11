@@ -3,7 +3,6 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.1 *-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
@@ -21,7 +20,10 @@ IUSE="test"
 RDEPEND="$(python_abi_depend dev-python/six)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
-	test? ( $(python_abi_depend -e "3.1 *-jython" www-servers/tornado) )"
+	test? (
+		$(python_abi_depend dev-python/mock)
+		$(python_abi_depend -e "3.1 *-jython" www-servers/tornado)
+	)"
 
 DOCS="CHANGES.rst CONTRIBUTORS.txt README.rst"
 
