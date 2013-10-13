@@ -32,10 +32,6 @@ DOCS="CHANGES.rst README.rst"
 src_prepare() {
 	distutils_src_prepare
 
-	# Disable doctests.
-	# https://github.com/gawel/pyquery/issues/54
-	sed -e "/with-doctest = True/d" -i setup.cfg
-
 	# Disable tests failing with libxml2 >=2.9.0.
 	sed -e "s/test_replaceWith/_&/" -i tests/test_pyquery.py
 }
