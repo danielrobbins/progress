@@ -251,6 +251,11 @@ _git-r3_set_submodules() {
 		l=${l#submodule.}
 		local subname=${l%%.url=*}
 
+		# skip modules that have 'update = none', bug #487262.
+		local upd=$(echo "${data}" | git config -f /dev/fd/0 \
+			submodule."${subname}".update)
+		[[ ${upd} == none ]] && continue
+
 		submodules+=(
 			"${subname}"
 			"$(echo "${data}" | git config -f /dev/fd/0 \
@@ -378,6 +383,8 @@ _git-r3_smart_fetch() {
 # recursively.
 git-r3_fetch() {
 	debug-print-function ${FUNCNAME} "$@"
+
+	[[ ${EVCS_OFFLINE} ]] && return
 
 	local repos
 	if [[ ${1} ]]; then
@@ -688,8 +695,6 @@ git-r3_peek_remote_ref() {
 
 git-r3_src_fetch() {
 	debug-print-function ${FUNCNAME} "$@"
-
-	[[ ${EVCS_OFFLINE} ]] && return
 
 	if [[ ! ${EGIT3_STORE_DIR} && ${EGIT_STORE_DIR} ]]; then
 		ewarn "You have set EGIT_STORE_DIR but not EGIT3_STORE_DIR. Please consider"
