@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5 3.* *-jython"
+PYTHON_RESTRICTED_ABIS="3.1 3.2 *-jython"
 DISTUTILS_SRC_TEST="setup.py"
 
 inherit distutils
@@ -21,11 +21,18 @@ SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
-RDEPEND="$(python_abi_depend dev-python/flask)
+RDEPEND="$(python_abi_depend ">=dev-python/flask-0.10")
 	$(python_abi_depend dev-python/sqlalchemy)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
 S="${WORKDIR}/${MY_P}"
 
-PYTHON_MODULES="flask_sqlalchemy.py"
+PYTHON_MODULES="flask_sqlalchemy"
+
+src_prepare() {
+	distutils_src_prepare
+
+	# https://github.com/mitsuhiko/flask-sqlalchemy/issues/160
+	sed -e "s/self.assertTrue(isinstance(changes, list))/self.assertTrue(isinstance(changes, type({}.values())))/" -i test_sqlalchemy.py
+}
