@@ -9,7 +9,7 @@ PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 
 inherit distutils eutils flag-o-matic fortran-2 multilib toolchain-funcs
 
-MY_P="${PN}-${PV/_beta/b}"
+MY_P="${PN}-${PV/_/}"
 DOC_P="${PN}-0.12.0"
 
 DESCRIPTION="Scientific algorithms library for Python"
@@ -23,7 +23,7 @@ SRC_URI="mirror://sourceforge/${PN}/${MY_P}.tar.gz
 LICENSE="BSD LGPL-2"
 SLOT="0"
 IUSE="doc sparse test"
-KEYWORDS="~*"
+KEYWORDS="*"
 
 CDEPEND="$(python_abi_depend dev-python/numpy[lapack])
 	sci-libs/arpack
@@ -70,9 +70,6 @@ pc_libs() {
 }
 
 src_prepare() {
-	# https://github.com/scipy/scipy/issues/2963
-	sed -e "10a\\from scipy.lib.six import callable" -i scipy/integrate/quadpack.py
-
 	# scipy automatically detects libraries by default
 	export {FFTW,FFTW3,UMFPACK}=None
 	use sparse && unset UMFPACK

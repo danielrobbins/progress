@@ -23,7 +23,7 @@ SRC_URI="mirror://sourceforge/${PN}/${MY_P}.tar.gz
 LICENSE="BSD LGPL-2"
 SLOT="0"
 IUSE="doc sparse test"
-KEYWORDS="*"
+KEYWORDS="~*"
 
 CDEPEND="$(python_abi_depend dev-python/numpy[lapack])
 	sci-libs/arpack
@@ -39,7 +39,7 @@ RDEPEND="${CDEPEND}
 
 S="${WORKDIR}/${MY_P}"
 
-DOCS="THANKS.txt LATEST.txt TOCHANGE.txt"
+DOCS="THANKS.txt"
 
 pkg_setup() {
 	fortran-2_pkg_setup
