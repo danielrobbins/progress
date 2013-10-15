@@ -3,6 +3,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
+PYTHON_DEPEND="<<[sqlite?]>>"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.* *-jython"
 
@@ -23,8 +24,7 @@ IUSE="doc firebird mysql postgres sqlite"
 RDEPEND="$(python_abi_depend dev-python/formencode)
 		firebird? ( $(python_abi_depend -e "*-pypy-*" dev-python/kinterbasdb) )
 		mysql? ( $(python_abi_depend dev-python/mysql-python) )
-		postgres? ( $(python_abi_depend -e "*-pypy-*" dev-python/psycopg:2) )
-		sqlite? ( $(python_abi_depend virtual/python-sqlite[external]) )"
+		postgres? ( $(python_abi_depend -e "*-pypy-*" dev-python/psycopg:2) )"
 DEPEND="${RDEPEND}
 		$(python_abi_depend dev-python/setuptools)"
 
