@@ -70,7 +70,7 @@ pc_libs() {
 }
 
 src_prepare() {
-	epatch "${FILESDIR}/${PN}-1.8.0-atlas.patch"
+	epatch "${FILESDIR}/${PN}-1.8.0-system_info.patch"
 
 	# Support Python 3.1.
 	sed -e "/sys.version_info/s/(3, 2)/(3, 1)/" -i setup.py
