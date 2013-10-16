@@ -9,7 +9,7 @@ inherit distutils
 
 DESCRIPTION="Library for printing stack traces from minidumps left behind by crashed processes"
 HOMEPAGE="https://pypi.python.org/pypi/mozcrash"
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.zip"
 
 LICENSE="MPL-2.0"
 SLOT="0"
