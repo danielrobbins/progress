@@ -5,12 +5,13 @@
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython"
+DISTUTILS_SRC_TEST="setup.py"
 
 inherit distutils
 
 DESCRIPTION="A process and system utilities module for Python"
 HOMEPAGE="http://code.google.com/p/psutil/ https://pypi.python.org/pypi/psutil"
-SRC_URI="http://psutil.googlecode.com/files/${P}.tar.gz"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
@@ -21,17 +22,3 @@ DEPEND="$(python_abi_depend dev-python/setuptools)"
 RDEPEND=""
 
 DOCS="CREDITS HISTORY README"
-
-src_prepare() {
-	distutils_src_prepare
-
-	# http://code.google.com/p/psutil/issues/detail?id=420
-	sed -e "s/\\\\d.\\\\d.\\\\d/\\\\d+\\\\.\\\\d+\\\\.\\\\d+/" -i test/_linux.py
-}
-
-src_test() {
-	testing() {
-		python_execute PYTHONPATH="$(ls -d build-${PYTHON_ABI}/lib.*)" "$(PYTHON)" test/test_psutil.py
-	}
-	python_execute_function testing
-}
