@@ -10,8 +10,8 @@ PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 inherit distutils
 
 DESCRIPTION="Simple database interface to MS-SQL for Python"
-HOMEPAGE="http://pymssql.sourceforge.net/ http://code.google.com/p/pymssql/ https://pypi.python.org/pypi/pymssql"
-SRC_URI="mirror://sourceforge/${PN}/${P}.tar.gz"
+HOMEPAGE="http://code.google.com/p/pymssql/ https://github.com/pymssql/pymssql https://pypi.python.org/pypi/pymssql"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="LGPL-2.1"
 SLOT="0"
