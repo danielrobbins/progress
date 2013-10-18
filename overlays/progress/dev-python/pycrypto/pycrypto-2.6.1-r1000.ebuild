@@ -10,7 +10,7 @@ DISTUTILS_SRC_TEST="setup.py"
 inherit distutils
 
 DESCRIPTION="Python Cryptography Toolkit"
-HOMEPAGE="http://www.dlitz.net/software/pycrypto/ https://pypi.python.org/pypi/pycrypto"
+HOMEPAGE="https://www.dlitz.net/software/pycrypto/ https://github.com/dlitz/pycrypto https://pypi.python.org/pypi/pycrypto"
 SRC_URI="http://ftp.dlitz.net/pub/dlitz/crypto/pycrypto/${P}.tar.gz"
 
 LICENSE="PSF-2 public-domain"
