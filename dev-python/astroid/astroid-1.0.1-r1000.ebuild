@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.* *-jython"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.1 3.2 *-jython"
 
 inherit distutils
 
@@ -22,6 +22,14 @@ RDEPEND="$(python_abi_depend ">=dev-python/logilab-common-0.60.0")"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	test? ( $(python_abi_depend -e "3.* *-jython *-pypy-*" dev-python/egenix-mx-base) )"
+
+src_prepare() {
+	distutils_src_prepare
+
+	# Disable failing test.
+	# https://bitbucket.org/logilab/astroid/issue/8
+	sed -e "s/test_numpy_crash/_&/" -i test/unittest_regrtest.py
+}
 
 src_test() {
 	testing() {
