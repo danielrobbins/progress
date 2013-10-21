@@ -10,7 +10,7 @@ PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 inherit distutils eutils flag-o-matic fortran-2 multilib toolchain-funcs
 
 MY_P="${PN}-${PV/_/}"
-DOC_P="${PN}-0.12.0"
+DOC_P="${PN}-0.13.0"
 
 DESCRIPTION="Scientific algorithms library for Python"
 HOMEPAGE="http://www.scipy.org/ https://github.com/scipy/scipy https://pypi.python.org/pypi/scipy"
@@ -23,7 +23,7 @@ SRC_URI="mirror://sourceforge/${PN}/${MY_P}.tar.gz
 LICENSE="BSD LGPL-2"
 SLOT="0"
 IUSE="doc sparse test"
-KEYWORDS="~*"
+KEYWORDS="*"
 
 CDEPEND="$(python_abi_depend dev-python/numpy[lapack])
 	sci-libs/arpack
@@ -124,7 +124,7 @@ src_install() {
 	distutils_src_install ${SCIPY_FCONFIG}
 
 	if use doc; then
-		dohtml -r "${WORKDIR}/html/"*
+		dohtml -r "${WORKDIR}/html/"
 		dodoc "${DISTDIR}/${DOC_P}-ref.pdf"
 	fi
 }
