@@ -211,7 +211,7 @@ _git-r3_set_gitdir() {
 	if [[ ! -d ${EGIT3_STORE_DIR} ]]; then
 		(
 			addwrite /
-			mkdir -m0755 -p "${EGIT3_STORE_DIR}"
+			mkdir -m0755 -p "${EGIT3_STORE_DIR}" || die
 		) || die "Unable to create ${EGIT3_STORE_DIR}"
 	fi
 
@@ -259,11 +259,11 @@ _git-r3_set_submodules() {
 		submodules+=(
 			"${subname}"
 			"$(echo "${data}" | git config -f /dev/fd/0 \
-				submodule."${subname}".url)"
+				submodule."${subname}".url || die)"
 			"$(echo "${data}" | git config -f /dev/fd/0 \
-				submodule."${subname}".path)"
+				submodule."${subname}".path || die)"
 		)
-	done < <(echo "${data}" | git config -f /dev/fd/0 -l)
+	done < <(echo "${data}" | git config -f /dev/fd/0 -l || die)
 }
 
 # @FUNCTION: _git-r3_smart_fetch
@@ -560,7 +560,7 @@ git-r3_checkout() {
 	local -x GIT_DIR GIT_WORK_TREE
 	_git-r3_set_gitdir "${repos[0]}"
 	GIT_WORK_TREE=${out_dir}
-	mkdir -p "${GIT_WORK_TREE}"
+	mkdir -p "${GIT_WORK_TREE}" || die
 
 	einfo "Checking out ${repos[0]} to ${out_dir} ..."
 
