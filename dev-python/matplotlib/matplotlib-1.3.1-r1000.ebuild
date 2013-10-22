@@ -10,7 +10,7 @@ PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 PYTHON_NAMESPACES="mpl_toolkits"
 
-inherit distutils eutils python-namespaces virtualx
+inherit distutils python-namespaces virtualx
 
 DESCRIPTION="Python plotting package"
 HOMEPAGE="http://matplotlib.org/ https://github.com/matplotlib/matplotlib https://pypi.python.org/pypi/matplotlib"
@@ -86,8 +86,6 @@ use_setup() {
 src_prepare() {
 	distutils_src_prepare
 
-	epatch "${FILESDIR}/${P}-gtk_check.patch"
-
 	# Create setup.cfg. (See setup.cfg.template and setupext.py for any changes.)
 	cat > setup.cfg <<-EOF
 		[directories]
@@ -99,12 +97,8 @@ src_prepare() {
 	EOF
 
 	# Use system PyCXX.
-	sed \
-		-e "676s/if sys.version_info\[0\] >= 3:/if False:/" \
-		-e "s/sys.stdout = io.BytesIO()/sys.stdout = (io.StringIO() if sys.version_info[0] >= 3 else io.BytesIO())/" \
-		-e "/if has_include_file(base_include_dirs, 'CXX\/Extensions.hxx'):/i\\\\            base_include_dirs += [sysconfig.get_python_inc()]" \
-		-i setupext.py
-	rm -fr CXX
+	sed -e "771s/if sys.version_info\[0\] >= 3:/if False:/" -i setupext.py
+	rm -r CXX
 
 	# Disable building of extension modules incompatible with Python 3.
 	sed -e "/raise CheckFailed(\"Requires pygtk\")/i\\\\            if sys.version_info[0] >= 3: self.optional = True" -i setupext.py
@@ -148,7 +142,7 @@ src_install() {
 	python-namespaces_src_install
 
 	delete_tests() {
-		rm -fr "${ED}$(python_get_sitedir)/matplotlib/tests"
+		rm -r "${ED}$(python_get_sitedir)/matplotlib/tests"
 	}
 	python_execute_function -q delete_tests
 
