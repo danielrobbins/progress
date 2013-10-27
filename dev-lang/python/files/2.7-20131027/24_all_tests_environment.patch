@@ -2,8 +2,8 @@ http://bugs.python.org/issue1674555
 
 --- Lib/site.py
 +++ Lib/site.py
-@@ -542,8 +542,9 @@
-         addbuilddir()
+@@ -527,8 +527,9 @@
+     known_paths = removeduppaths()
      if ENABLE_USER_SITE is None:
          ENABLE_USER_SITE = check_enableusersite()
 -    known_paths = addusersitepackages(known_paths)
@@ -158,7 +158,7 @@ http://bugs.python.org/issue1674555
  
 --- Makefile.pre.in
 +++ Makefile.pre.in
-@@ -783,7 +783,7 @@
+@@ -793,7 +793,7 @@
  
  TESTOPTS=	-l $(EXTRATESTOPTS)
  TESTPROG=	$(srcdir)/Lib/test/regrtest.py

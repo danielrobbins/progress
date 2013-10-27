@@ -73,7 +73,7 @@ http://bugs.python.org/issue1762561
 +"match the underlying C reality.  Note that the ARM mixed-endian\n"
 +"format can only be set for the 'double' type, not for 'float'.\n"
  "\n"
- "Overrides the automatic determination of C-level floating point type.\n"
+ "Override the automatic determination of C-level floating point type.\n"
  "This affects how floats are converted to and from binary strings.");
 @@ -2163,7 +2181,11 @@
         Note that if we're on some whacked-out platform which uses
