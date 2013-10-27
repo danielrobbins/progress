@@ -31,7 +31,7 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
  
 --- Modules/posixmodule.c
 +++ Modules/posixmodule.c
-@@ -608,6 +608,10 @@
+@@ -604,6 +604,10 @@
          char *p = strchr(*e, '=');
          if (p == NULL)
              continue;

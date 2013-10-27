@@ -26,9 +26,9 @@
      def detect_modules(self):
 +        global disable_ssl
          # Ensure that /usr/local is always used
-         add_dir_to_list(self.compiler.library_dirs, '/usr/local/lib')
-         add_dir_to_list(self.compiler.include_dirs, '/usr/local/include')
-@@ -787,7 +799,7 @@
+         if not cross_compiling:
+             add_dir_to_list(self.compiler.library_dirs, '/usr/local/lib')
+@@ -791,7 +803,7 @@
          ssl_incs = find_file('openssl/ssl.h', inc_dirs,
                               search_for_ssl_incs_in
                               )
@@ -37,7 +37,7 @@
              krb5_h = find_file('krb5.h', inc_dirs,
                                 ['/usr/kerberos/include'])
              if krb5_h:
-@@ -798,7 +810,8 @@
+@@ -802,7 +814,8 @@
                                       ] )
  
          if (ssl_incs is not None and
@@ -47,7 +47,7 @@
              exts.append( Extension('_ssl', ['_ssl.c'],
                                     include_dirs = ssl_incs,
                                     library_dirs = ssl_libs,
-@@ -830,7 +843,7 @@
+@@ -834,7 +847,7 @@
                  pass
  
          min_openssl_ver = 0x00907000
@@ -56,7 +56,7 @@
          have_usable_openssl = (have_any_openssl and
                                 openssl_ver >= min_openssl_ver)
  
-@@ -846,21 +859,20 @@
+@@ -850,21 +863,20 @@
                  print ("warning: openssl 0x%08x is too old for _hashlib" %
                         openssl_ver)
                  missing.append('_hashlib')

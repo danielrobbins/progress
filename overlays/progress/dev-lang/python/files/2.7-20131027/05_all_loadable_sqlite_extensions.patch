@@ -3,9 +3,9 @@ http://bugs.python.org/issue10268
 
 --- configure.ac
 +++ configure.ac
-@@ -2289,6 +2289,15 @@
- 
- AC_MSG_RESULT($with_system_ffi)
+@@ -2317,6 +2317,15 @@
+   TCLTK_LIBS="$with_tcltk_libs"
+ fi
  
 +# Check for support for loadable sqlite extensions
 +AC_MSG_CHECKING(for --enable-loadable-sqlite-extensions)
@@ -21,7 +21,7 @@ http://bugs.python.org/issue10268
  AC_ARG_WITH(dbmliborder,
 --- setup.py
 +++ setup.py
-@@ -1176,8 +1176,10 @@
+@@ -1184,8 +1184,10 @@
              else:
                  sqlite_defines.append(('MODULE_NAME', '\\"sqlite3\\"'))
  

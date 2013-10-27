@@ -71,7 +71,7 @@
          'data': '{userbase}',
 --- Lib/test/test_site.py
 +++ Lib/test/test_site.py
-@@ -240,10 +240,10 @@
+@@ -249,10 +249,10 @@
          elif os.sep == '/':
              # OS X non-framwework builds, Linux, FreeBSD, etc
              self.assertEqual(len(dirs), 2)

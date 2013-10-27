@@ -4,7 +4,7 @@ http://bugs.python.org/issue6103
 
 --- Makefile.pre.in
 +++ Makefile.pre.in
-@@ -959,6 +959,19 @@
+@@ -964,6 +964,19 @@
  		fi; \
  	else	true; \
  	fi
@@ -24,7 +24,7 @@ http://bugs.python.org/issue6103
  
  bininstall: altbininstall
  	-if test -f $(DESTDIR)$(BINDIR)/python3$(EXE) -o -h $(DESTDIR)$(BINDIR)/python3$(EXE); \
-@@ -1191,18 +1204,6 @@
+@@ -1197,18 +1210,6 @@
  		else	true; \
  		fi; \
  	done
