@@ -25,7 +25,7 @@ SRC_URI="mirror://sourceforge/numpy/${MY_P}.tar.gz
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="~*"
+KEYWORDS="*"
 IUSE="doc lapack test"
 
 RDEPEND="
@@ -55,18 +55,18 @@ src_unpack() {
 
 pc_incdir() {
 	$(tc-getPKG_CONFIG) --cflags-only-I $@ | \
-		sed -e 's/^-I//' -e 's/[ ]*-I/:/g'
+		sed -e 's/^-I//' -e 's/[ ]*-I/:/g' -e 's/[ ]*$//'
 }
 
 pc_libdir() {
 	$(tc-getPKG_CONFIG) --libs-only-L $@ | \
-		sed -e 's/^-L//' -e 's/[ ]*-L/:/g'
+		sed -e 's/^-L//' -e 's/[ ]*-L/:/g' -e 's/[ ]*$//'
 }
 
 pc_libs() {
 	$(tc-getPKG_CONFIG) --libs-only-l $@ | \
 		sed -e 's/[ ]-l*\(pthread\|m\)[ ]*//g' \
-		-e 's/^-l//' -e 's/[ ]*-l/,/g'
+		-e 's/^-l//' -e 's/[ ]*-l/,/g' -e 's/[ ]*$//'
 }
 
 src_prepare() {
@@ -144,8 +144,7 @@ src_install() {
 	doman numpy/f2py/f2py.1
 
 	if use doc; then
-		insinto /usr/share/doc/${PF}
-		doins -r "${WORKDIR}/html"
-		doins "${DISTDIR}/${PN}"-{ref,user}-${DOC_PV}.pdf
+		dohtml -r "${WORKDIR}/html/"
+		dodoc "${DISTDIR}/${PN}"-{ref,user}-${DOC_PV}.pdf
 	fi
 }
