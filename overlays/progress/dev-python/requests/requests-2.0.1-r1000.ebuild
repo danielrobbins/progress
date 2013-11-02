@@ -17,9 +17,9 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="test"
 
-# $(python_abi_depend dev-python/urllib3)
 RDEPEND="app-misc/ca-certificates
-	$(python_abi_depend dev-python/charade)"
+	$(python_abi_depend dev-python/charade)
+	$(python_abi_depend dev-python/urllib3)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	test? ( $(python_abi_depend dev-python/pytest) )"
@@ -43,13 +43,6 @@ src_prepare() {
 
 	# Disable installation of deleted internal copies of dev-python/charade and dev-python/urllib3.
 	sed -e "/requests\.packages\./d" -i setup.py
-
-	# Disable failing tests.
-	# https://github.com/kennethreitz/requests/issues/1663
-	sed \
-		-e "s/test_DIGEST_AUTH_RETURNS_COOKIE/_&/" \
-		-e "s/test_DIGEST_AUTH_SETS_SESSION_COOKIES/_&/" \
-		-i test_requests.py
 
 	preparation() {
 		cp test_requests.py test_requests-${PYTHON_ABI}.py
