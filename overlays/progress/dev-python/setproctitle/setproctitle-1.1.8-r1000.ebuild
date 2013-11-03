@@ -10,7 +10,7 @@ DISTUTILS_SRC_TEST="nosetests"
 inherit distutils toolchain-funcs
 
 DESCRIPTION="A library to allow customization of the process title."
-HOMEPAGE="http://code.google.com/p/py-setproctitle/ http://pypi.python.org/pypi/setproctitle"
+HOMEPAGE="http://code.google.com/p/py-setproctitle/ https://pypi.python.org/pypi/setproctitle"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD"
