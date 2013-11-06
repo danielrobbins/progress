@@ -132,7 +132,6 @@ src_test() {
 		python_execute "$(PYTHON)" setup.py build -b build-${PYTHON_ABI} install --root="${testdir}"
 		cd tests || die
 		rm -fr "${testdir}/tests"
-		die
 		python_execute PYTHONPATH="${testdir}$(python_get_sitedir)" "$(PYTHON)" run-tests.py \
 			--tmpdir="${testdir}/tests" \
 			--verbose \
