@@ -13,7 +13,7 @@ SRC_URI="mirror://sourceforge/pyqt/${MY_P}.tar.gz"
 
 LICENSE="|| ( GPL-2 GPL-3 )"
 # Subslot based on first component of VERSION from Qt4Qt5/qscintilla.pro
-SLOT="0/9"
+SLOT="0/11"
 KEYWORDS="*"
 IUSE="doc python"
 
