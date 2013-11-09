@@ -24,6 +24,9 @@ DEPEND="${RDEPEND}
 	dev-libs/libxml2"
 
 src_prepare() {
+	# Fix TabError with Python 3.
+	sed -e "79s/\\t/    /" -i xcbgen/xtypes.py
+
 	python_clean_py-compile_files
 	xorg-2_src_prepare
 }
@@ -44,7 +47,7 @@ src_compile() {
 
 src_test() {
 	testing() {
-		BUILD_DIR="${S}-${PYTHON_ABI}" autotools-utils_src_test
+		BUILD_DIR="${S}-${PYTHON_ABI}-${ARCH}" autotools-utils_src_test
 	}
 	python_execute_function testing
 }
@@ -58,7 +61,6 @@ src_install() {
 
 pkg_postinst() {
 	python_mod_optimize xcbgen
-	ewarn "Please rebuild both libxcb and xcb-util if you are upgrading from version 1.6"
 }
 
 pkg_postrm() {
