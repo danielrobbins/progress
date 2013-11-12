@@ -4,18 +4,18 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5 3.* *-jython"
-MY_PACKAGE="News"
+PYTHON_RESTRICTED_ABIS="3.* *-jython"
+MY_PACKAGE="Mail"
 
 inherit twisted versionator
 
-DESCRIPTION="Twisted News is an NNTP server and programming library"
+DESCRIPTION="A Twisted Mail library, server and client"
 
 KEYWORDS="*"
 IUSE=""
 
 DEPEND="$(python_abi_depend "=dev-python/twisted-core-$(get_version_component_range 1-2)*")
-	$(python_abi_depend "=dev-python/twisted-mail-$(get_version_component_range 1-2)*")"
+	$(python_abi_depend "=dev-python/twisted-names-$(get_version_component_range 1-2)*")"
 RDEPEND="${DEPEND}"
 
-PYTHON_MODULES="twisted/news twisted/plugins"
+PYTHON_MODULES="twisted/mail twisted/plugins"
