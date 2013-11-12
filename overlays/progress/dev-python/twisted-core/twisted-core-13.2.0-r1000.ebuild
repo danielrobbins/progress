@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5 3.* *-jython"
+PYTHON_RESTRICTED_ABIS="3.* *-jython"
 MY_PACKAGE="Core"
 
 inherit eutils twisted versionator
@@ -37,9 +37,7 @@ src_prepare(){
 	# Respect TWISTED_DISABLE_WRITING_OF_PLUGIN_CACHE variable.
 	epatch "${FILESDIR}/${PN}-9.0.0-respect_TWISTED_DISABLE_WRITING_OF_PLUGIN_CACHE.patch"
 
-	# Disable failing test.
-	# https://twistedmatrix.com/trac/ticket/5703
-	sed -e "356s/test_isChecker/_&/" -i twisted/test/test_strcred.py
+	epatch "${FILESDIR}/${P}-tests.patch"
 
 	if [[ "${EUID}" -eq 0 ]]; then
 		# Disable tests failing with root permissions.
@@ -62,7 +60,7 @@ src_test() {
 		# https://twistedmatrix.com/trac/ticket/5375
 		sed -e "/class ZshIntegrationTestCase/,/^$/d" -i twisted/scripts/test/test_scripts.py || die "sed failed"
 
-		# Prevent it from pulling in plugins from already installed twisted packages.
+		# Avoid pulling in plugins from already installed twisted packages.
 		rm -f twisted/plugins/__init__.py
 
 		# An empty file does not work because the tests check for doc strings in all packages.
