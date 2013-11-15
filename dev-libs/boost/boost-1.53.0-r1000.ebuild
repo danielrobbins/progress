@@ -9,17 +9,18 @@ PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 
 inherit eutils flag-o-matic multilib multiprocessing python toolchain-funcs versionator
 
-MY_P=${PN}_$(replace_all_version_separators _)
+MY_P="${PN}_$(replace_all_version_separators _)"
+MAJOR_V="$(get_version_component_range 1-2)"
 
 DESCRIPTION="Boost Libraries for C++"
 HOMEPAGE="http://www.boost.org/"
 SRC_URI="mirror://sourceforge/boost/${MY_P}.tar.bz2"
 
 LICENSE="Boost-1.0"
-MAJOR_V="$(get_version_component_range 1-2)"
-SLOT="0/$(get_version_component_range 1-3)"
+SLOT="0/${PV}"
 KEYWORDS="*"
 IUSE="c++11 context debug doc icu mpi +nls python static-libs +threads tools"
+RESTRICT="test"
 
 RDEPEND="icu? ( >=dev-libs/icu-3.6:0=::${REPOSITORY}[c++11(-)=] )
 	!icu? ( virtual/libiconv )
@@ -30,7 +31,7 @@ RDEPEND="icu? ( >=dev-libs/icu-3.6:0=::${REPOSITORY}[c++11(-)=] )
 DEPEND="${RDEPEND}
 	=dev-util/boost-build-${MAJOR_V}*"
 
-S=${WORKDIR}/${MY_P}
+S="${WORKDIR}/${MY_P}"
 
 c++11_checks() {
 	if use c++11; then
@@ -158,7 +159,12 @@ src_configure() {
 	use nls || OPTIONS+=(--without-locale)
 	use python || OPTIONS+=(--without-python)
 
-	OPTIONS+=(pch=off --boost-build=${EPREFIX}/usr/share/boost-build --prefix="${ED}usr" --layout=system threading=$(usex threads multi single) link=$(usex static-libs shared,static shared))
+	OPTIONS+=(pch=off)
+	OPTIONS+=(--boost-build=${EPREFIX}/usr/share/boost-build)
+	OPTIONS+=(--prefix="${ED}usr")
+	OPTIONS+=(--layout=system)
+	OPTIONS+=(threading=$(usex threads multi single))
+	OPTIONS+=(link=$(usex static-libs shared,static shared))
 
 	[[ ${CHOST} == *-winnt* ]] && OPTIONS+=(-sNO_BZIP2=1)
 }
@@ -371,10 +377,3 @@ pkg_postrm() {
 		python_mod_cleanup boost
 	fi
 }
-
-# the tests will never fail because these are not intended as sanity
-# tests at all. They are more a way for upstream to check their own code
-# on new compilers. Since they would either be completely unreliable
-# (failing for no good reason) or completely useless (never failing)
-# there is no point in having them in the ebuild to begin with.
-src_test() { :; }
