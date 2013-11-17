@@ -4,7 +4,6 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5"
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
 
 inherit distutils
@@ -22,6 +21,13 @@ RDEPEND="$(python_abi_depend dev-python/extras)
 	$(python_abi_depend dev-python/mimeparse)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
+
+src_prepare() {
+	distutils_src_prepare
+
+	# https://bugs.launchpad.net/testtools/+bug/1251962
+	sed -e "s/test_bom/_&/" -i testtools/tests/test_compat.py
+}
 
 src_test() {
 	testing() {
