@@ -27,6 +27,7 @@ RDEPEND="${DEPEND}"
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 
 DOCS="CREDITS NEWS README"
+PYTHON_MODULES="twisted"
 
 src_prepare(){
 	distutils_src_prepare
