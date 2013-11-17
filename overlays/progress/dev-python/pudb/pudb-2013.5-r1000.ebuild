@@ -17,10 +17,10 @@ SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
-RDEPEND="$(python_abi_depend dev-python/pygments)
+DEPEND="$(python_abi_depend dev-python/pygments)
+	$(python_abi_depend dev-python/setuptools)
 	$(python_abi_depend dev-python/urwid)"
-DEPEND="${RDEPEND}
-	$(python_abi_depend dev-python/setuptools)"
+RDEPEND="${DEPEND}"
 
 src_prepare() {
 	distutils_src_prepare
