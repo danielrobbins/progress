@@ -9,7 +9,7 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
 
 --- Modules/main.c
 +++ Modules/main.c
-@@ -331,6 +331,7 @@
+@@ -360,6 +360,7 @@
      int version = 0;
      int saw_unbuffered_flag = 0;
      PyCompilerFlags cf;
@@ -17,7 +17,7 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
  
      cf.cf_flags = 0;
  
-@@ -551,7 +552,17 @@
+@@ -586,7 +587,17 @@
              filename = argv[_PyOS_optind];
  
  #else
@@ -38,7 +38,7 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
  
 --- Modules/posixmodule.c
 +++ Modules/posixmodule.c
-@@ -1158,6 +1158,10 @@
+@@ -1244,6 +1244,10 @@
          char *p = strchr(*e, '=');
          if (p == NULL)
              continue;
@@ -66,38 +66,40 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
  #ifdef MS_WINDOWS
  int
  wmain(int argc, wchar_t **argv)
-@@ -18,6 +26,11 @@
- int
- main(int argc, char **argv)
- {
+@@ -44,6 +52,11 @@
+     fpsetmask(m & ~FP_X_OFL);
+ #endif
+ 
 +    if (getenv("GENTOO_PYTHON_TARGET_SCRIPT_PATH_VERIFICATION")) {
 +        printf("GENTOO_PYTHON_TARGET_SCRIPT_PATH supported\n");
 +        return 0;
 +    }
 +
-     wchar_t **argv_copy;
-     /* We need a second copy, as Python might modify the first one. */
-     wchar_t **argv_copy2;
-@@ -59,6 +72,16 @@
+     oldloc = _PyMem_RawStrdup(setlocale(LC_ALL, NULL));
+     if (!oldloc) {
+         fprintf(stderr, "out of memory\n");
+@@ -66,6 +79,18 @@
  
      setlocale(LC_ALL, oldloc);
-     free(oldloc);
+     PyMem_RawFree(oldloc);
 +
 +#ifdef __linux__
-+    char *process_name = getenv("GENTOO_PYTHON_PROCESS_NAME");
++    {
++        char *process_name = getenv("GENTOO_PYTHON_PROCESS_NAME");
 +#ifdef HAVE_UNSETENV
-+    unsetenv("GENTOO_PYTHON_PROCESS_NAME");
++        unsetenv("GENTOO_PYTHON_PROCESS_NAME");
 +#endif
-+    if (process_name != NULL && *process_name != '\0')
-+        prctl(PR_SET_NAME, process_name);
++        if (process_name != NULL && *process_name != '\0')
++            prctl(PR_SET_NAME, process_name);
++    }
 +#endif
 +
      res = Py_Main(argc, argv_copy);
      for (i = 0; i < argc; i++) {
-         PyMem_Free(argv_copy2[i]);
+         PyMem_RawFree(argv_copy2[i]);
 --- Python/sysmodule.c
 +++ Python/sysmodule.c
-@@ -1774,6 +1774,10 @@
+@@ -1838,6 +1838,10 @@
  makeargvobject(int argc, wchar_t **argv)
  {
      PyObject *av;
@@ -108,7 +110,7 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
      if (argc <= 0 || argv == NULL) {
          /* Ensure at least one (empty) argument is seen */
          static wchar_t *empty_argv[1] = {L""};
-@@ -1798,7 +1802,16 @@
+@@ -1862,7 +1866,16 @@
              } else
                  v = PyUnicode_FromString(argv[i]);
  #else
@@ -126,21 +128,26 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
  #endif
              if (v == NULL) {
                  Py_DECREF(av);
-@@ -1818,7 +1831,12 @@
+@@ -1882,7 +1895,9 @@
  static void
  sys_update_path(int argc, wchar_t **argv)
  {
 -    wchar_t *argv0;
 +    char *target_script_name = getenv("GENTOO_PYTHON_TARGET_SCRIPT_PATH");
-+#ifdef HAVE_UNSETENV
-+    unsetenv("GENTOO_PYTHON_TARGET_SCRIPT_PATH");
-+#endif
 +    wchar_t *wcs_target_script_name = NULL;
 +    wchar_t *argv0 = NULL;
      wchar_t *p = NULL;
      Py_ssize_t n = 0;
      PyObject *a;
-@@ -1838,7 +1856,14 @@
+@@ -1897,12 +1912,22 @@
+ #elif defined(MS_WINDOWS) && !defined(MS_WINCE)
+     wchar_t fullpath[MAX_PATH];
+ #endif
++#ifdef HAVE_UNSETENV
++    unsetenv("GENTOO_PYTHON_TARGET_SCRIPT_PATH");
++#endif
+ 
+     path = _PySys_GetObjectId(&PyId_path);
      if (path == NULL)
          return;
  
@@ -156,7 +163,7 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
  
  #ifdef HAVE_READLINK
      if (_HAVE_SCRIPT_ARGUMENT(argc, argv))
-@@ -1915,6 +1940,7 @@
+@@ -1979,6 +2004,7 @@
      if (PyList_Insert(path, 0, a) < 0)
          Py_FatalError("sys.path.insert(0) failed");
      Py_DECREF(a);
