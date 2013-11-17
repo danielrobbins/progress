@@ -7,10 +7,9 @@ PYTHON_DEPEND="python? ( <<>> )"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 
-inherit eutils flag-o-matic multilib multiprocessing python toolchain-funcs versionator
+inherit eutils flag-o-matic multilib multiprocessing python toolchain-funcs
 
-MY_P="${PN}_$(replace_all_version_separators _)"
-MAJOR_V="$(get_version_component_range 1-2)"
+MY_P="${PN}_${PV//./_}"
 
 DESCRIPTION="Boost Libraries for C++"
 HOMEPAGE="http://www.boost.org/"
@@ -29,7 +28,7 @@ RDEPEND="icu? ( >=dev-libs/icu-3.6:0=::${REPOSITORY}[c++11(-)=] )
 	sys-libs/zlib:0=
 	!app-admin/eselect-boost"
 DEPEND="${RDEPEND}
-	=dev-util/boost-build-${MAJOR_V}*"
+	>=dev-util/boost-build-${PV}"
 
 S="${WORKDIR}/${MY_P}"
 
