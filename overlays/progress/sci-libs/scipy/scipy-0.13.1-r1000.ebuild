@@ -103,6 +103,9 @@ src_prepare() {
 			cython -v ${file%.c}.pyx || die "Cythonization of ${file%.c}.pyx failed"
 		done
 	fi
+
+	# https://github.com/scipy/scipy/issues/3079
+	sed -e "/^[[:space:]]*need_64bits =/s/</>=/" -i scipy/ndimage/measurements.py
 }
 
 src_compile() {
