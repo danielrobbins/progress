@@ -12,7 +12,7 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="55cba56a403e"
+	EHG_REVISION="f075a7178108"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
@@ -130,6 +130,11 @@ src_prepare() {
 		fi
 	fi
 
+	if [[ "${PV}" != *_pre* ]]; then
+		# Delete potential useless files.
+		find "(" -name __pycache__ -o -name "*.py[co]" ")" -print0 | xargs -0 rm -fr
+	fi
+
 	local patchset_dir
 	if [[ "${PV}" == *_pre* ]]; then
 		patchset_dir="${FILESDIR}/${SLOT}-${PATCHSET_REVISION}"
@@ -154,6 +159,9 @@ src_prepare() {
 
 	eautoconf
 	eautoheader
+
+	# Fix SyntaxError.
+	sed -e "263,266d;269d" -i Lib/lib-tk/test/test_tkinter/test_widgets.py
 }
 
 src_configure() {
