@@ -4,9 +4,9 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.* *-jython"
+PYTHON_RESTRICTED_ABIS="*-jython"
 
-inherit distutils flag-o-matic
+inherit distutils
 
 DESCRIPTION="Python bindings for libcups"
 HOMEPAGE="http://cyberelk.net/tim/software/pycups/ https://pypi.python.org/pypi/pycups"
@@ -16,19 +16,20 @@ LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="*"
 IUSE="doc examples"
+REQUIRED_USE="doc? ( python_abis_2.7 )"
 
 RDEPEND="net-print/cups"
 DEPEND="${RDEPEND}
-	doc? ( dev-python/epydoc )"
+	doc? ( dev-python/epydoc[python_abis_2.7] )"
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 
 src_compile() {
-	append-cflags -DVERSION=\\\"${PV}\\\"
 	distutils_src_compile
 
 	if use doc; then
-		emake doc
+		einfo "Generation of documentation"
+		epydoc-2.7 --html -o html build-2.7/lib*/cups.so || die "Generation of documentation failed"
 	fi
 }
 
