@@ -10,8 +10,7 @@ DISTUTILS_SRC_TEST="setup.py"
 inherit distutils
 
 MY_PN="Chameleon"
-# MY_P="${MY_PN}-${PV}"
-MY_P="${MY_PN}-2.13-1"
+MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Fast HTML/XML Template Compiler."
 HOMEPAGE="http://chameleon.repoze.org/ https://github.com/malthe/chameleon https://pypi.python.org/pypi/Chameleon"
