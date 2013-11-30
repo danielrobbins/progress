@@ -22,13 +22,6 @@ RDEPEND="$(python_abi_depend dev-python/extras)
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
-src_prepare() {
-	distutils_src_prepare
-
-	# https://bugs.launchpad.net/testtools/+bug/1251962
-	sed -e "s/test_bom/_&/" -i testtools/tests/test_compat.py
-}
-
 src_test() {
 	testing() {
 		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" -m testtools.run testtools.tests.test_suite
