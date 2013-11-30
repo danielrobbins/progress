@@ -4,9 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5"
-# 3.1, 3.2: https://bugs.launchpad.net/subunit/+bug/1216246
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.1 3.2 *-jython"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 
 inherit distutils
 
@@ -23,7 +21,7 @@ KEYWORDS="*"
 IUSE=""
 
 RDEPEND="$(python_abi_depend dev-python/extras)
-	$(python_abi_depend ">=dev-python/testtools-0.9.30")"
+	$(python_abi_depend ">=dev-python/testtools-0.9.34")"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
