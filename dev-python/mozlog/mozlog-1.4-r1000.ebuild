@@ -16,6 +16,5 @@ SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
-RDEPEND="$(python_abi_depend virtual/python-json)"
-DEPEND="${RDEPEND}
-	$(python_abi_depend dev-python/setuptools)"
+DEPEND="$(python_abi_depend dev-python/setuptools)"
+RDEPEND=""
