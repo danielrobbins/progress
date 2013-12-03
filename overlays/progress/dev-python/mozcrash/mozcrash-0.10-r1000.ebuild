@@ -9,14 +9,14 @@ inherit distutils
 
 DESCRIPTION="Library for printing stack traces from minidumps left behind by crashed processes"
 HOMEPAGE="https://pypi.python.org/pypi/mozcrash"
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.zip"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MPL-2.0"
 SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
-RDEPEND="$(python_abi_depend ">=dev-python/mozfile-0.3")
+RDEPEND="$(python_abi_depend ">=dev-python/mozfile-0.12")
 	$(python_abi_depend dev-python/mozlog)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
