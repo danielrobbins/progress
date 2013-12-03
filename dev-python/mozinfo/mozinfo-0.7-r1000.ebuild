@@ -16,7 +16,6 @@ SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
-DEPEND="$(python_abi_depend dev-python/mozfile)
-	$(python_abi_depend dev-python/setuptools)
-	$(python_abi_depend virtual/python-json)"
+DEPEND="$(python_abi_depend ">=dev-python/mozfile-0.12")
+	$(python_abi_depend dev-python/setuptools)"
 RDEPEND="${DEPEND}"
