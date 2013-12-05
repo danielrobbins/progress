@@ -4,14 +4,14 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5 *-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="2.6 *-jython *-pypy-*"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
 
 DESCRIPTION="Python to GNU Octave bridge"
-HOMEPAGE="http://pypi.python.org/pypi/oct2py"
+HOMEPAGE="https://pypi.python.org/pypi/oct2py"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
@@ -21,8 +21,9 @@ IUSE="doc examples"
 
 RDEPEND="$(python_abi_depend dev-python/numpy)
 	$(python_abi_depend sci-libs/scipy)
-	sci-mathematics/octave"
+	sci-mathematics/octave[gnuplot]"
 DEPEND="${RDEPEND}
+	$(python_abi_depend dev-python/setuptools)
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
 
 src_compile() {
@@ -30,7 +31,7 @@ src_compile() {
 
 	if use doc; then
 		einfo "Generation of documentation"
-		PYTHONPATH="build-$(PYTHON -f --ABI)/lib" sphinx-build doc html || die "Generation of documentation failed"
+		PYTHONPATH="build-$(PYTHON -f --ABI)/lib" sphinx-build docs html || die "Generation of documentation failed"
 	fi
 }
 
