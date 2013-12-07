@@ -20,7 +20,7 @@ IUSE="doc emacs examples matplotlib mongodb notebook octave qt4 readline +smp sq
 
 RDEPEND="$(python_abi_depend dev-python/decorator)
 	$(python_abi_depend -e "*-pypy-*" dev-python/numpy)
-	$(python_abi_depend -i "2.*" dev-python/pexpect)
+	$(python_abi_depend -e "*-pypy-*" dev-python/pexpect)
 	$(python_abi_depend dev-python/pyparsing)
 	$(python_abi_depend dev-python/setuptools)
 	$(python_abi_depend dev-python/simplegeneric)
