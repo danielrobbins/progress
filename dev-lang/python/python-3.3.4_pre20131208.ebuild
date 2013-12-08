@@ -12,13 +12,13 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="1ee45eb6aab9"
+	EHG_REVISION="78efa2c06447"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
 fi
 
-PATCHSET_REVISION="20131110"
+PATCHSET_REVISION="20131027"
 
 DESCRIPTION="Python is an interpreted, interactive, object-oriented programming language."
 HOMEPAGE="http://www.python.org/"
@@ -32,9 +32,9 @@ else
 fi
 
 LICENSE="PSF-2"
-SLOT="3.4"
+SLOT="3.3"
 PYTHON_ABI="${SLOT}"
-KEYWORDS="~*"
+KEYWORDS="*"
 IUSE="build doc elibc_uclibc examples gdbm ipv6 +ncurses +readline sqlite +ssl +threads tk wininst +xml"
 
 RDEPEND="app-arch/bzip2
@@ -105,6 +105,11 @@ src_prepare() {
 				-e "s/\(#define PY_VERSION[[:space:]]\+\"\)[^\"]\+\(\"\)/\1${version_string}\2/" \
 				-i Include/patchlevel.h || die "sed failed"
 		fi
+	fi
+
+	if [[ "${PV}" != *_pre* ]]; then
+		# Delete potential useless files.
+		find "(" -name __pycache__ -o -name "*.py[co]" ")" -print0 | xargs -0 rm -fr
 	fi
 
 	local patchset_dir
@@ -213,13 +218,6 @@ src_compile() {
 	else
 		pax-mark m python
 	fi
-
-	if use doc; then
-		einfo "Generation of documentation"
-		cd Doc
-		mkdir -p build/{doctrees,html}
-		sphinx-build -b html -d build/doctrees . build/html || die "Generation of documentation failed"
-	fi
 }
 
 src_test() {
@@ -289,12 +287,6 @@ src_install() {
 	use wininst || rm -f "${ED}$(python_get_libdir)/distutils/command/"wininst-*.exe
 
 	dodoc Misc/{ACKS,HISTORY,NEWS} || die "dodoc failed"
-
-	if use doc; then
-		dohtml -A xml -r Doc/build/html/
-		echo "PYTHONDOCS_${SLOT//./_}=\"${EPREFIX}/usr/share/doc/${PF}/html/library\"" > "60python-docs-${SLOT}"
-		doenvd "60python-docs-${SLOT}"
-	fi
 
 	if use examples; then
 		insinto /usr/share/doc/${PF}/examples
