@@ -71,9 +71,6 @@ pc_libs() {
 }
 
 src_prepare() {
-	# https://github.com/scipy/scipy/issues/3079
-	sed -e "/^[[:space:]]*need_64bits =/s/</>=/" -i scipy/ndimage/measurements.py
-
 	# scipy automatically detects libraries by default
 	export {FFTW,FFTW3,UMFPACK}=None
 	use sparse && unset UMFPACK
