@@ -4,6 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
+PYTHON_RESTRICTED_ABIS="3.1 3.2"
 
 inherit distutils
 
@@ -25,17 +26,12 @@ RDEPEND="${DEPEND}"
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 
 DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES="1"
-DOCS="CONTRIB DEPRECATED NEWS README"
+DOCS="CONTRIB DEPRECATED NEWS README Doc/"
 PYTHON_MODULES="Bio BioSQL"
 
 src_test() {
 	testing() {
-		if [[ "$(python_get_version -l --major)" == "3" ]]; then
-			cd build/py$(python_get_version -l)/Tests
-		else
-			cd Tests
-		fi
-
+		cd Tests
 		python_execute PYTHONPATH="$(ls -d ../build/lib*)" "$(PYTHON)" run_tests.py
 	}
 	python_execute_function --nonfatal -s testing
@@ -44,8 +40,6 @@ src_test() {
 src_install() {
 	distutils_src_install
 
-	insinto /usr/share/doc/${PF}
-	doins -r Doc/*
-	insinto /usr/share/${PN}
+	dodir /usr/share/${PN}
 	cp -r --preserve=mode Scripts Tests "${ED}usr/share/${PN}" || die "Installation of shared files failed"
 }
