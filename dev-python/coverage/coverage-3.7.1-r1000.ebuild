@@ -21,6 +21,8 @@ RDEPEND="${DEPEND}"
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 
+DOCS="AUTHORS.txt CHANGES.txt README.txt"
+
 src_prepare() {
 	distutils_src_prepare
 
