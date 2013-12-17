@@ -45,7 +45,7 @@ pkg_setup() {
 src_prepare() {
 	distutils_src_prepare
 
-	epatch "${FILESDIR}/${P}-delete_hardcoded_paths.patch"
+	epatch "${FILESDIR}/${PN}-2.2.1-delete_hardcoded_paths.patch"
 	epatch "${FILESDIR}/${PN}-2.1.0-libm_linking.patch"
 	epatch "${FILESDIR}/${PN}-2.0.0-use_xdg-open.patch"
 
