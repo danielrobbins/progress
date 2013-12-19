@@ -6,8 +6,10 @@ EAPI="5-progress"
 PYTHON_DEPEND="python? ( <<>> )"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
+DISTUTILS_SRC_TEST="nosetests"
+DISTUTILS_DISABLE_TEST_DEPENDENCY="1"
 
-inherit distutils eutils libtool toolchain-funcs
+inherit distutils libtool toolchain-funcs
 
 MY_P=${P/_}
 DESCRIPTION="Password Checking Library"
@@ -17,11 +19,14 @@ SRC_URI="mirror://sourceforge/cracklib/${MY_P}.tar.gz"
 LICENSE="LGPL-2.1"
 SLOT="0"
 KEYWORDS="*"
-IUSE="nls python static-libs zlib"
+IUSE="nls python static-libs test zlib"
 
 RDEPEND="zlib? ( sys-libs/zlib:0= )"
 DEPEND="${RDEPEND}
-	python? ( $(python_abi_depend dev-python/setuptools) )"
+	python? (
+		$(python_abi_depend dev-python/setuptools)
+		test? ( $(python_abi_depend dev-python/nose) )
+	)"
 
 S=${WORKDIR}/${MY_P}
 
@@ -29,16 +34,9 @@ PYTHON_MODULES="cracklib.py"
 
 do_python() {
 	use python || return 0
-	case ${EBUILD_PHASE} in
-	prepare|compile|install)
-		pushd python > /dev/null || die
-		distutils_src_${EBUILD_PHASE}
-		popd > /dev/null
-		;;
-	*)
-		distutils_pkg_${EBUILD_PHASE}
-		;;
-	esac
+	pushd python > /dev/null || die
+	distutils_src_${EBUILD_PHASE}
+	popd > /dev/null || die
 }
 
 pkg_setup() {
@@ -49,7 +47,9 @@ pkg_setup() {
 		die "Please run: FEATURES=-unmerge-orphans emerge cracklib"
 	fi
 
-	use python && python_pkg_setup
+	if use python; then
+		python_pkg_setup
+	fi
 }
 
 src_prepare() {
@@ -58,13 +58,12 @@ src_prepare() {
 }
 
 src_configure() {
-	export ac_cv_header_zlib_h=$(usex zlib)
-	export ac_cv_search_gzopen=$(usex zlib -lz no)
 	econf \
 		--with-default-dict='$(libdir)/cracklib_dict' \
 		--without-python \
 		$(use_enable nls) \
-		$(use_enable static-libs static)
+		$(use_enable static-libs static) \
+		$(use_with zlib)
 }
 
 src_compile() {
@@ -72,8 +71,12 @@ src_compile() {
 	do_python
 }
 
+src_test() {
+	do_python
+}
+
 src_install() {
-	emake DESTDIR="${D}" install
+	default
 	use static-libs || find "${ED}"/usr -name libcrack.la -delete
 	rm -r "${ED}"/usr/share/cracklib
 
@@ -91,8 +94,6 @@ src_install() {
 
 	insinto /usr/share/dict
 	doins dicts/cracklib-small
-
-	dodoc AUTHORS ChangeLog NEWS README*
 }
 
 pkg_postinst() {
@@ -102,9 +103,13 @@ pkg_postinst() {
 		eend $?
 	fi
 
-	do_python
+	if use python; then
+		distutils_pkg_postinst
+	fi
 }
 
 pkg_postrm() {
-	do_python
+	if use python; then
+		distutils_pkg_postrm
+	fi
 }
