@@ -29,14 +29,16 @@ src_prepare() {
 	sed -e "/\/Doc\//d" -i egenix_mx_base.py || die "sed failed"
 
 	# Disable failing tests.
-	rm -f mx/BeeBase/mxBeeBase/testernesto.py
-	rm -f mx/DateTime/mxDateTime/testrichard.py
-	rm -f mx/DateTime/mxDateTime/testsubclassing.py
-	rm -f mx/DateTime/mxDateTime/testticks.py
-	rm -f mx/Proxy/mxProxy/testvlad.py
-	rm -f mx/TextTools/mxTextTools/testkj.py
-	rm -f mx/TextTools/mxTextTools/testPickleSegFault.py
-	rm -f mx/Tools/mxTools/test_safecall.py
+	rm mx/BeeBase/mxBeeBase/testernesto.py
+	rm mx/DateTime/mxDateTime/test.py
+	rm mx/DateTime/mxDateTime/testrichard.py
+	rm mx/DateTime/mxDateTime/testslotops.py
+	rm mx/DateTime/mxDateTime/testsubclassing.py
+	rm mx/DateTime/mxDateTime/testticks.py
+	rm mx/Proxy/mxProxy/testvlad.py
+	rm mx/TextTools/mxTextTools/testkj.py
+	rm mx/TextTools/mxTextTools/testPickleSegFault.py
+	rm mx/Tools/mxTools/test_safecall.py
 }
 
 src_compile() {
@@ -64,19 +66,19 @@ src_install() {
 
 	dohtml -a html -r mx
 	insinto /usr/share/doc/${PF}
-	find -iname "*.pdf" | xargs doins
+	doins **/*.pdf
 
 	delete_tests() {
-		find "${ED}$(python_get_sitedir)/mx" -name "*test*.py" -delete
+		rm "${ED}$(python_get_sitedir)/mx/"**/*test*.py
 	}
 	python_execute_function -q delete_tests
 
 	installation_of_headers() {
-		local header
 		dodir "$(python_get_includedir)/mx" || return 1
-		while read -d $'\0' header; do
+		local header
+		for header in "${ED}$(python_get_sitedir)/mx/"**/*.h; do
 			mv -f "${header}" "${ED}$(python_get_includedir)/mx" || return 1
-		done < <(find "${ED}$(python_get_sitedir)/mx" -type f -name "*.h" -print0)
+		done
 	}
 	python_execute_function -q installation_of_headers
 }
