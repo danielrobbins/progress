@@ -22,11 +22,11 @@ KEYWORDS="*"
 IUSE="doc firebird mysql postgres sqlite"
 
 RDEPEND="$(python_abi_depend dev-python/formencode)
-		firebird? ( $(python_abi_depend -e "*-pypy-*" dev-python/kinterbasdb) )
-		mysql? ( $(python_abi_depend dev-python/mysql-python) )
-		postgres? ( $(python_abi_depend -e "*-pypy-*" dev-python/psycopg:2) )"
+	firebird? ( $(python_abi_depend -e "*-pypy-*" dev-python/kinterbasdb) )
+	mysql? ( $(python_abi_depend dev-python/mysql-python) )
+	postgres? ( $(python_abi_depend -e "*-pypy-*" dev-python/psycopg:2) )"
 DEPEND="${RDEPEND}
-		$(python_abi_depend dev-python/setuptools)"
+	$(python_abi_depend dev-python/setuptools)"
 
 S="${WORKDIR}/${MY_P}"
 
