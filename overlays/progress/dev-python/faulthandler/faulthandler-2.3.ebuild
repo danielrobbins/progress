@@ -21,7 +21,7 @@ RDEPEND=""
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 
-DOCS="README"
+DOCS="AUTHORS README"
 
 src_test() {
 	testing() {
