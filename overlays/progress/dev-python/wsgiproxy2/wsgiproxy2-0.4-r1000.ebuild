@@ -3,7 +3,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5 3.1"
+PYTHON_RESTRICTED_ABIS="3.1"
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
@@ -40,9 +40,6 @@ src_prepare() {
 	distutils_src_prepare
 
 	# Disable failing tests.
+	# https://github.com/gawel/WSGIProxy2/issues/6
 	sed -e "/^with-doctest = true$/d" -i setup.cfg
-
-	# Disable hanging tests.
-	# https://github.com/gawel/WSGIProxy2/issues/4
-	sed -e "/client = 'requests'/a\\\\    test_chunked = test_form = test_redirect = test_status = lambda self: None" -i wsgiproxy/tests.py
 }
