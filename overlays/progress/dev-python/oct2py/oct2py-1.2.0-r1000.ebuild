@@ -11,41 +11,45 @@ DISTUTILS_SRC_TEST="nosetests"
 inherit distutils
 
 DESCRIPTION="Python to GNU Octave bridge"
-HOMEPAGE="https://pypi.python.org/pypi/oct2py"
+HOMEPAGE="https://github.com/blink1073/oct2py https://pypi.python.org/pypi/oct2py"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
 KEYWORDS="*"
-IUSE="doc examples"
+# IUSE="doc examples ipython"
+IUSE="examples ipython"
 
 RDEPEND="$(python_abi_depend dev-python/numpy)
 	$(python_abi_depend sci-libs/scipy)
-	sci-mathematics/octave[gnuplot]"
+	sci-mathematics/octave[gnuplot]
+	ipython? ( $(python_abi_depend -e "3.1" dev-python/ipython) )"
 DEPEND="${RDEPEND}
-	$(python_abi_depend dev-python/setuptools)
-	doc? ( $(python_abi_depend dev-python/sphinx) )"
+	$(python_abi_depend dev-python/setuptools)"
+#	doc? ( $(python_abi_depend dev-python/sphinx) )
+
+DOCS="AUTHORS.rst HISTORY.rst README.rst thanks.txt"
 
 src_compile() {
 	distutils_src_compile
 
-	if use doc; then
-		einfo "Generation of documentation"
-		PYTHONPATH="build-$(PYTHON -f --ABI)/lib" sphinx-build docs html || die "Generation of documentation failed"
-	fi
+#	if use doc; then
+#		einfo "Generation of documentation"
+#		PYTHONPATH="build-$(PYTHON -f --ABI)/lib" sphinx-build docs html || die "Generation of documentation failed"
+#	fi
 }
 
 src_install() {
 	distutils_src_install
 
 	delete_tests() {
-		rm -fr "${ED}$(python_get_sitedir)/oct2py/tests"
+		rm -r "${ED}$(python_get_sitedir)/oct2py/"{ipython/tests,tests}
 	}
 	python_execute_function -q delete_tests
 
-	if use doc; then
-		dohtml -r html/
-	fi
+#	if use doc; then
+#		dohtml -r html/
+#	fi
 
 	if use examples; then
 		insinto /usr/share/doc/${PF}/examples
