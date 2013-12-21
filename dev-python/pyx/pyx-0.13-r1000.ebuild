@@ -4,14 +4,14 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.* *-jython"
+PYTHON_RESTRICTED_ABIS="2.* 3.1 *-jython"
 
 inherit distutils
 
 MY_PN="PyX"
 MY_P="${MY_PN}-${PV}"
 
-DESCRIPTION="Python package for the generation of encapsulated PostScript figures"
+DESCRIPTION="Python package for the generation of PostScript and PDF files"
 HOMEPAGE="http://pyx.sourceforge.net/ https://pypi.python.org/pypi/PyX"
 SRC_URI="mirror://sourceforge/${PN}/${MY_P}.tar.gz"
 
@@ -41,6 +41,7 @@ src_compile() {
 	distutils_src_compile
 
 	if use doc; then
+		einfo "Generation of documentation"
 		pushd faq > /dev/null
 		VARTEXFONTS="${T}/fonts" emake latexpdf
 		popd > /dev/null
