@@ -35,11 +35,3 @@ S="${WORKDIR}/${MY_P}"
 
 DOCS="CHANGES.rst"
 PYTHON_MODULES="wsgiproxy"
-
-src_prepare() {
-	distutils_src_prepare
-
-	# Disable failing tests.
-	# https://github.com/gawel/WSGIProxy2/issues/6
-	sed -e "/^with-doctest = true$/d" -i setup.cfg
-}
