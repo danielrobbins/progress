@@ -12,7 +12,7 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="f075a7178108"
+	EHG_REVISION="8b097d07488d"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
@@ -159,9 +159,6 @@ src_prepare() {
 
 	eautoconf
 	eautoheader
-
-	# Fix SyntaxError.
-	sed -e "263,266d;269d" -i Lib/lib-tk/test/test_tkinter/test_widgets.py
 }
 
 src_configure() {
