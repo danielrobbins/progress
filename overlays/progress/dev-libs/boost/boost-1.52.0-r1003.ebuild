@@ -158,7 +158,7 @@ src_configure() {
 	use python || OPTIONS+=(--without-python)
 
 	OPTIONS+=(pch=off)
-	OPTIONS+=(--boost-build=${EPREFIX}/usr/share/boost-build)
+	OPTIONS+=(--boost-build="${EPREFIX}/usr/share/boost-build")
 	OPTIONS+=(--prefix="${ED}usr")
 	OPTIONS+=(--layout=system)
 	OPTIONS+=(threading=$(usex threads multi single))
