@@ -43,8 +43,7 @@ src_prepare() {
 }
 
 src_configure() {
-	G2CONF="${G2CONF} --disable-tests"
-	python_execute_function -s gnome2_src_configure
+	python_execute_function -s gnome2_src_configure --disable-tests
 }
 
 src_compile() {
@@ -59,6 +58,9 @@ src_install() {
 	python_merge_intermediate_installation_images "${T}/images"
 
 	python_clean_installation_image
+
+	docinto examples
+	dodoc examples/*.py
 }
 
 pkg_postinst() {
