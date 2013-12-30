@@ -15,15 +15,14 @@ LICENSE="|| ( GPL-2 GPL-3 )"
 # Subslot based on first component of VERSION from Qt4Qt5/qscintilla.pro
 SLOT="0/11"
 KEYWORDS="*"
-IUSE="doc python"
+IUSE="doc"
 
 DEPEND="
-	|| ( dev-qt/designer:4 <dev-qt/qtgui-4.8.5:4 )
+	dev-qt/designer:4
 	dev-qt/qtcore:4
 	dev-qt/qtgui:4
 "
 RDEPEND="${DEPEND}"
-PDEPEND="python? ( ~dev-python/qscintilla-python-${PV} )"
 
 S="${WORKDIR}/${MY_P}"
 
