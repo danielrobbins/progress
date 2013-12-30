@@ -383,7 +383,7 @@ multilib_is_native_abi() {
 
 # @FUNCTION: multilib_build_binaries
 # @DESCRIPTION:
-# Determine wheter to build binaries for the current build ABI.
+# Determine whether to build binaries for the current build ABI.
 # Returns true status (0) if the current built ABI is the profile
 # native or COMPLETE_MULTILIB variable is set to yes, otherwise
 # false (1).
