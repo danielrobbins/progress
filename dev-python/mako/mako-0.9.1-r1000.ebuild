@@ -9,11 +9,12 @@ DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
 
-MY_P="Mako-${PV}"
+MY_PN="Mako"
+MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="A Python templating language"
-HOMEPAGE="http://www.makotemplates.org/ https://pypi.python.org/pypi/Mako"
-SRC_URI="http://www.makotemplates.org/downloads/${MY_P}.tar.gz"
+HOMEPAGE="http://www.makotemplates.org/ https://bitbucket.org/zzzeek/mako https://pypi.python.org/pypi/Mako"
+SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
@@ -31,7 +32,7 @@ src_install() {
 	distutils_src_install
 
 	if use doc; then
-		rm -fr doc/build
+		rm -r doc/build
 		dohtml -r doc/
 	fi
 }
