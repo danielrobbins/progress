@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5 3.1 *-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="3.1 *-jython *-pypy-*"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 
 VIRTUALX_COMMAND="cmake-utils_src_test"
@@ -20,7 +20,7 @@ SRC_URI="http://download.qt-project.org/official_releases/${PN}/${MY_P}.tar.bz2"
 LICENSE="LGPL-2.1"
 SLOT="0"
 KEYWORDS="*"
-IUSE="X declarative designer help kde multimedia opengl phonon script scripttools sql svg test webkit xmlpatterns"
+IUSE="X declarative designer help multimedia opengl phonon script scripttools sql svg test webkit xmlpatterns"
 
 REQUIRED_USE="
 	declarative? ( X )
@@ -51,10 +51,10 @@ RDEPEND="
 	help? ( >=dev-qt/qthelp-${QT_PV} )
 	multimedia? ( >=dev-qt/qtmultimedia-${QT_PV} )
 	opengl? ( >=dev-qt/qtopengl-${QT_PV} )
-	phonon? (
-		kde? ( media-libs/phonon )
-		!kde? ( || ( >=dev-qt/qtphonon-${QT_PV} media-libs/phonon ) )
-	)
+	phonon? ( || (
+		media-libs/phonon[qt4(+)]
+		>=dev-qt/qtphonon-${QT_PV}
+	) )
 	script? ( >=dev-qt/qtscript-${QT_PV} )
 	sql? ( >=dev-qt/qtsql-${QT_PV} )
 	svg? ( >=dev-qt/qtsvg-${QT_PV}[accessibility] )
@@ -76,10 +76,8 @@ src_prepare() {
 		libpyside/pyside.pc.in || die
 
 	if use prefix; then
-		cp "${FILESDIR}"/rpath.cmake .
-		sed \
-			-i '1iinclude(rpath.cmake)' \
-			CMakeLists.txt || die
+		cp "${FILESDIR}"/rpath.cmake . || die
+		sed -i -e '1iinclude(rpath.cmake)' CMakeLists.txt || die
 	fi
 }
 
@@ -104,6 +102,14 @@ src_configure() {
 			$(cmake-utils_use_disable webkit QtWebKit)
 			$(cmake-utils_use_disable xmlpatterns QtXmlPatterns)
 		)
+
+		if use phonon && has_version "media-libs/phonon[qt4(+)]"; then
+			mycmakeargs+=(
+				-DQT_PHONON_INCLUDE_DIR="${EPREFIX}/usr/include/phonon"
+				-DQT_PHONON_LIBRARY_RELEASE="${EPREFIX}/usr/$(get_libdir)/libphonon.so"
+			)
+		fi
+
 		BUILD_DIR="${S}_${PYTHON_ABI}" cmake-utils_src_configure
 	}
 	python_execute_function configuration
