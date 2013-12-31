@@ -7,7 +7,7 @@ PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 PYTHON_EXPORT_PHASE_FUNCTIONS="1"
 
-inherit eutils python qt4-r2 toolchain-funcs
+inherit eutils python qmake-utils toolchain-funcs
 
 DESCRIPTION="Python bindings for the Qt toolkit"
 HOMEPAGE="http://www.riverbankcomputing.co.uk/software/pyqt/intro https://pypi.python.org/pypi/PyQt4"
@@ -27,9 +27,10 @@ LICENSE="|| ( GPL-2 GPL-3 )"
 # http://pyqt.sourceforge.net/Docs/sip4/directives.html#directive-%Module
 SLOT="0/QtCore-1"
 KEYWORDS="*"
-IUSE="X dbus debug declarative doc examples help kde multimedia opengl phonon script scripttools sql svg webkit xmlpatterns"
+IUSE="X dbus debug declarative designer doc examples help kde multimedia opengl phonon script scripttools sql svg webkit xmlpatterns"
 REQUIRED_USE="
 	declarative? ( X )
+	designer? ( X )
 	help? ( X )
 	multimedia? ( X )
 	opengl? ( X )
@@ -45,7 +46,6 @@ QT_PV="4.8.0:4"
 RDEPEND="$(python_abi_depend ">=dev-python/sip-4.15:0=")
 	>=dev-qt/qtcore-${QT_PV}
 	X? (
-		|| ( dev-qt/designer:4 <dev-qt/qtgui-4.8.5:4 )
 		>=dev-qt/qtgui-${QT_PV}
 		>=dev-qt/qttest-${QT_PV}
 	)
@@ -54,6 +54,7 @@ RDEPEND="$(python_abi_depend ">=dev-python/sip-4.15:0=")
 		>=dev-qt/qtdbus-${QT_PV}
 	)
 	declarative? ( >=dev-qt/qtdeclarative-${QT_PV} )
+	designer? ( >=dev-qt/designer-${QT_PV} )
 	help? ( >=dev-qt/qthelp-${QT_PV} )
 	multimedia? ( >=dev-qt/qtmultimedia-${QT_PV} )
 	opengl? ( >=dev-qt/qtopengl-${QT_PV} )
@@ -74,10 +75,8 @@ S="${WORKDIR}/${MY_P}"
 PYTHON_VERSIONED_EXECUTABLES=("/usr/bin/pyuic4")
 
 src_prepare() {
-	qt4-r2_src_prepare
-
 	# Support qreal on arm architecture (bug 322349).
-	use arm && epatch "${FILESDIR}/${PN}-4.7.3-qreal_float_support.patch"
+	use arm && epatch "${FILESDIR}/${PN}-4.10.3-qreal_float_support.patch"
 
 	# Use proper include directory for phonon.
 	sed \
@@ -120,11 +119,11 @@ src_configure() {
 			--enable=QtCore
 			--enable=QtNetwork
 			--enable=QtXml
-			$(pyqt4_use_enable X QtDesigner) $(use X || echo --no-designer-plugin)
 			$(pyqt4_use_enable X QtGui)
 			$(pyqt4_use_enable X QtTest)
 			$(pyqt4_use_enable dbus QtDBus)
 			$(pyqt4_use_enable declarative)
+			$(pyqt4_use_enable designer) $(use designer || echo --no-designer-plugin)
 			$(pyqt4_use_enable help)
 			$(pyqt4_use_enable multimedia)
 			$(pyqt4_use_enable opengl QtOpenGL)
@@ -152,7 +151,7 @@ src_configure() {
 		python_execute "${myconf[@]}" || return
 
 		local mod
-		for mod in QtCore $(use X && echo QtDesigner QtGui) $(use dbus && echo QtDBus) $(use declarative && echo QtDeclarative) $(use opengl && echo QtOpenGL); do
+		for mod in QtCore $(use X && echo QtGui) $(use dbus && echo QtDBus) $(use declarative && echo QtDeclarative) $(use designer && echo QtDesigner) $(use opengl && echo QtOpenGL); do
 			# Run eqmake4 inside the qpy subdirectories to respect CC, CXX, CFLAGS, CXXFLAGS and LDFLAGS and avoid stripping.
 			pushd qpy/${mod} > /dev/null || return
 			eqmake4 $(ls w_qpy*.pro)
@@ -163,7 +162,7 @@ src_configure() {
 		done
 
 		# Avoid stripping of libpythonplugin.so.
-		if use X; then
+		if use designer; then
 			pushd designer > /dev/null || return
 			eqmake4 python.pro
 			popd > /dev/null || return

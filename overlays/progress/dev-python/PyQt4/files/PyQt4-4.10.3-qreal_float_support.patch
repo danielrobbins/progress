@@ -1,24 +1,11 @@
 Patch by Michael Casadevall <sonicmctails@gmail.com>
 
-Corrects a configure test, and adds explicate double handling
-to qlist.sip on architectures where qreal != double
+Corrects a configure test, and adds explicit double handling
+to qlist.sip on architectures where qreal != double.
 
---- configure.py
-+++ configure.py
-@@ -1915,8 +1915,9 @@
-     out << "PyQt_NoOpenGLES\\n";
- #endif
- 
--    if (sizeof (qreal) != sizeof (double))
-+#if defined(QT_NO_FPU) || defined(QT_ARCH_ARM) || defined(QT_ARCH_WINDOWSCE)
-         out << "PyQt_qreal_double\\n";
-+#endif
- 
-     return 0;
- }
 --- sip/QtCore/qlist.sip
 +++ sip/QtCore/qlist.sip
-@@ -749,3 +749,227 @@
+@@ -819,3 +819,227 @@
      return sipGetState(sipTransferObj);
  %End
  };
