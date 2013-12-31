@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5 3.1 *-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="3.1 *-jython *-pypy-*"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 
 inherit cmake-utils multilib python
@@ -42,20 +42,18 @@ src_prepare() {
 		cmake/Modules/FindPython3InterpWithDebug.cmake || die
 
 	if use prefix; then
-		cp "${FILESDIR}"/rpath.cmake .
-		sed \
-			-i '1iinclude(rpath.cmake)' \
-			CMakeLists.txt || die
+		cp "${FILESDIR}"/rpath.cmake . || die
+		sed -i -e '1iinclude(rpath.cmake)' CMakeLists.txt || die
 	fi
 }
 
 src_configure() {
 	configuration() {
 		local mycmakeargs=(
+			$(cmake-utils_use_build test TESTS)
 			-DPYTHON_EXECUTABLE="$(PYTHON -a)"
 			-DPYTHON_SITE_PACKAGES="${EPREFIX}$(python_get_sitedir)"
 			-DPYTHON_SUFFIX="-python${PYTHON_ABI}"
-			$(cmake-utils_use_build test TESTS)
 		)
 
 		if [[ $(python_get_version -l --major) == 3 ]]; then
