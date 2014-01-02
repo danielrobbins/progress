@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 
-inherit flag-o-matic toolchain-funcs versionator
+inherit flag-o-matic multilib-minimal toolchain-funcs versionator
 
 MAJOR_VERSION="$(get_version_component_range 1)"
 if [[ "${PV}" =~ ^[[:digit:]]+_rc[[:digit:]]*$ ]]; then
@@ -57,6 +57,8 @@ src_prepare() {
 		sed -e "/^${variable} =.*/s: *@${variable}@\( *$\)\?::" -i config/icu.pc.in config/Makefile.inc.in || die "sed failed"
 	done
 
+	tc-export CC CXX
+
 	if use c++11; then
 		if [[ "$(tc-getCXX)" == *g++* ]]; then
 			if test-flag-CXX -std=gnu++11; then
@@ -81,9 +83,11 @@ src_prepare() {
 	fi
 
 	sed -e "s/#define U_DISABLE_RENAMING 0/#define U_DISABLE_RENAMING 1/" -i common/unicode/uconfig.h || die "sed failed"
+
+	multilib_copy_sources
 }
 
-src_configure() {
+multilib_src_configure() {
 	econf \
 		--disable-renaming \
 		$(use_enable debug) \
@@ -91,11 +95,11 @@ src_configure() {
 		$(use_enable static-libs static)
 }
 
-src_compile() {
+multilib_src_compile() {
 	emake VERBOSE="1"
 }
 
-src_test() {
+multilib_src_test() {
 	# INTLTEST_OPTS: intltest options
 	#   -e: Exhaustive testing
 	#   -l: Reporting of memory leaks
@@ -109,9 +113,11 @@ src_test() {
 	emake -j1 VERBOSE="1" check
 }
 
-src_install() {
+multilib_src_install() {
 	emake DESTDIR="${D}" VERBOSE="1" install
+}
 
+multilib_src_install_all() {
 	dohtml ../readme.html
 	if use doc; then
 		insinto /usr/share/doc/${PF}/html/api
