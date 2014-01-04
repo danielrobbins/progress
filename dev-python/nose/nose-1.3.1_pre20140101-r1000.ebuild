@@ -11,7 +11,7 @@ inherit distutils vcs-snapshot
 DESCRIPTION="nose extends unittest to make testing easier"
 HOMEPAGE="https://nose.readthedocs.org/ https://github.com/nose-devs/nose https://pypi.python.org/pypi/nose"
 # SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
-SRC_URI="https://github.com/nose-devs/${PN}/archive/d130b78af07a606628003bcb2931ed7f55dcb7d0.tar.gz -> ${P}.tar.gz"
+SRC_URI="https://github.com/nose-devs/nose/archive/49aa9934d00596b6909facabec7cd0718ccfd910.tar.gz -> ${P}.tar.gz"
 
 LICENSE="LGPL-2.1"
 SLOT="0"
@@ -43,6 +43,9 @@ src_prepare() {
 		-e "s/test_raises_bad_return/_&/g" \
 		-e "s/test_raises_twisted_error/_&/g" \
 		-i unit_tests/test_twisted.py || die "sed failed"
+
+	# Disable failing doctest.
+	rm functional_tests/doc_tests/test_multiprocess/multiprocess.rst
 }
 
 src_compile() {
@@ -57,9 +60,6 @@ src_compile() {
 }
 
 src_test() {
-	# Disable failing doctest.
-	rm -f functional_tests/doc_tests/test_multiprocess/multiprocess.rst
-
 	testing() {
 		if [[ "$(python_get_version -l --major)" == "3" ]]; then
 			rm -fr build || return
