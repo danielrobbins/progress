@@ -40,9 +40,6 @@ SITEFILE="70${PN}-gentoo.el"
 src_prepare() {
 	distutils_src_prepare
 	sed -e "s|^if sys.platform == 'darwin' and os.path.exists('/usr/bin/xcodebuild'):$|if False:|" -i setup.py
-
-	# http://selenic.com/repo/hg/rev/1ddf4409229f
-	sed -e "/if 'TERM' in os.environ:/i\\        import os" -i i18n/check-translation.py
 }
 
 src_compile() {
