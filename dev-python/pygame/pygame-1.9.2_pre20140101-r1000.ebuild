@@ -9,11 +9,14 @@ PYTHON_TESTS_RESTRICTED_ABIS="3.1"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 
 inherit distutils virtualx
+if [[ "${PV}" == *_pre* ]]; then
+	inherit vcs-snapshot
+fi
 
 DESCRIPTION="Python bindings for SDL multimedia library"
 HOMEPAGE="http://www.pygame.org/ https://bitbucket.org/pygame/pygame"
 if [[ "${PV}" == *_pre* ]]; then
-	SRC_URI="http://people.apache.org/~Arfrever/gentoo/${P}.tar.xz"
+	SRC_URI="https://bitbucket.org/pygame/pygame/get/90f8019b31d294fc9264c0f3da66ceeb0e0fd154.tar.bz2 -> ${P}.tar.bz2"
 else
 	SRC_URI="http://www.pygame.org/ftp/pygame-${PV}release.tar.gz"
 fi
@@ -45,7 +48,7 @@ PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 DOCS="WHATSNEW"
 
 src_configure() {
-	"$(PYTHON -f)" config.py -auto
+	python_execute "$(PYTHON -f)" config.py -auto
 
 	if ! use X; then
 		sed -e "s:^scrap :#&:" -i Setup || die "sed failed"
@@ -78,8 +81,8 @@ src_install() {
 	distutils_src_install
 
 	delete_examples_and_tests() {
-		rm -fr "${ED}$(python_get_sitedir)/pygame/examples"
-		rm -fr "${ED}$(python_get_sitedir)/pygame/tests"
+		rm -r "${ED}$(python_get_sitedir)/pygame/examples"
+		rm -r "${ED}$(python_get_sitedir)/pygame/tests"
 	}
 	python_execute_function -q delete_examples_and_tests
 
