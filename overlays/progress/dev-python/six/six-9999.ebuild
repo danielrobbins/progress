@@ -17,7 +17,8 @@ SLOT="0"
 KEYWORDS=""
 IUSE="doc"
 
-DEPEND="doc? ( $(python_abi_depend dev-python/sphinx) )"
+DEPEND="$(python_abi_depend dev-python/setuptools)
+	doc? ( $(python_abi_depend dev-python/sphinx) )"
 RDEPEND=""
 
 DOCS="CHANGES README"
