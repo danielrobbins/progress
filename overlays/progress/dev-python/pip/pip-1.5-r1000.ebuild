@@ -4,7 +4,6 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5"
 
 inherit bash-completion-r1 distutils
 
@@ -26,7 +25,10 @@ src_prepare() {
 	distutils_src_prepare
 
 	# Disable versioning of pip script to avoid collision with versioning performed by python_merge_intermediate_installation_images().
-	sed -e "/console_scripts=/s/, 'pip-%s=pip:main' % sys.version\[:3\]//" -i setup.py || die "sed failed"
+	sed \
+		-e "s/, 'pip%s=pip:main' % sys.version\[:1\],//" \
+		-e "s/'pip%s=pip:main' % sys.version\[:3\]//" \
+		-i setup.py || die "sed failed"
 }
 
 src_install() {
