@@ -4,7 +4,6 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
@@ -32,6 +31,10 @@ src_prepare() {
 
 	# Disable versioning of virtualenv script to avoid collision with versioning performed by python_merge_intermediate_installation_images().
 	sed -e "/'virtualenv-%s.%s=virtualenv:main' % sys.version_info\[:2\]/d" -i setup.py
+
+	# Disable failing test.
+	# https://github.com/pypa/virtualenv/issues/530
+	sed -e "s/test_always_copy_option/_&/" -i tests/test_virtualenv.py
 }
 
 src_compile() {
