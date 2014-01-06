@@ -12,8 +12,8 @@ DISTUTILS_SRC_TEST="setup.py"
 inherit distutils
 
 DESCRIPTION="Urwid is a curses-based user interface library for Python"
-HOMEPAGE="http://excess.org/urwid/ https://pypi.python.org/pypi/urwid"
-SRC_URI="http://excess.org/urwid/${P}.tar.gz"
+HOMEPAGE="http://urwid.org/ https://pypi.python.org/pypi/urwid"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="LGPL-2.1"
 SLOT="0"
@@ -29,19 +29,21 @@ DEPEND="${RDEPEND}
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 
+DOCS="docs/changelog.rst"
+
 src_prepare() {
 	distutils_src_prepare
 
 	# urwid.str_util extension module is incompatible with PyPy.
 	sed \
 		-e "/import os/a import platform" \
-		-e "/'ext_modules':/s:\[Extension('urwid.str_util', sources=\['source/str_util.c'\])\]:& if not (hasattr(platform, \"python_implementation\") and platform.python_implementation() == \"PyPy\") else []:" \
+		-e "/'ext_modules':/s:\[Extension('urwid.str_util', sources=\['source/str_util.c'\])\]:& if platform.python_implementation() != \"PyPy\" else []:" \
 		-i setup.py
 
 	# Fix AttributeError during generation of documentation with Python 3.
 	sed -e "/^FILE_PATH =/s/\.decode('utf-8')//" -i docs/conf.py
 
-	if [[ "$(python_get_version -f --major)" == "3" ]]; then
+	if [[ "$(python_get_version -f -l --major)" == "3" ]]; then
 		2to3-$(PYTHON -f --ABI) -nw --no-diffs docs/conf.py
 	fi
 }
@@ -51,9 +53,7 @@ src_compile() {
 
 	if use doc; then
 		einfo "Generation of documentation"
-		pushd docs > /dev/null
-		python_execute PYTHONPATH="$(ls -d ../build-$(PYTHON -f --ABI)/lib*)" sphinx-build . _build/html || die "Generation of documentation failed"
-		popd > /dev/null
+		python_execute PYTHONPATH="$(ls -d build-$(PYTHON -f --ABI)/lib*)" sphinx-build docs html || die "Generation of documentation failed"
 	fi
 }
 
@@ -61,7 +61,7 @@ src_install() {
 	distutils_src_install
 
 	if use doc; then
-		dohtml -r docs/_build/html/
+		dohtml -r html/
 	fi
 
 	if use examples; then
