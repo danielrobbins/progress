@@ -7,7 +7,7 @@ PYTHON_DEPEND="python? ( <<[xml]>> )"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 
-inherit libtool flag-o-matic eutils python autotools prefix
+inherit autotools eutils flag-o-matic libtool multilib-minimal prefix python
 
 DESCRIPTION="Version 2 of the library to manipulate XML files"
 HOMEPAGE="http://www.xmlsoft.org/"
@@ -30,13 +30,14 @@ SRC_URI="ftp://xmlsoft.org/${PN}/${PN}-${PV/_rc/-rc}.tar.gz
 		${XSTS_HOME}/${XSTS_NAME_2}/${XSTS_TARBALL_2}
 		http://www.w3.org/XML/Test/${XMLCONF_TARBALL} )"
 
-RDEPEND="sys-libs/zlib:0=
-	icu? ( dev-libs/icu:0= )
-	lzma? ( app-arch/xz-utils:0= )
+RDEPEND="sys-libs/zlib:0=[${MULTILIB_USEDEP}]
+	icu? ( dev-libs/icu:0=[${MULTILIB_USEDEP}] )
+	lzma? ( app-arch/xz-utils:0=[${MULTILIB_USEDEP}] )
 	readline? ( sys-libs/readline:0= )"
 
 DEPEND="${RDEPEND}
 	dev-util/gtk-doc-am
+	virtual/pkgconfig
 	hppa? ( >=sys-devel/binutils-2.15.92.0.2 )"
 
 S="${WORKDIR}/${PN}-${PV%_rc*}"
@@ -61,6 +62,8 @@ src_unpack() {
 }
 
 src_prepare() {
+	DOCS=(AUTHORS ChangeLog NEWS README* TODO*)
+
 	# Patches needed for prefix support
 	epatch "${FILESDIR}"/${PN}-2.7.1-catalog_path.patch
 	epatch "${FILESDIR}"/${PN}-2.8.0_rc1-winnt.patch
@@ -82,13 +85,13 @@ src_prepare() {
 	# Python bindings are built/tested/installed manually.
 	sed -e 's/$(PYTHON_SUBDIR)//' -i Makefile.am || die "sed failed"
 
-	# Use Gentoo's python-config naming scheme
-	sed -e 's/python$PYTHON_VERSION-config/python-config-$PYTHON_VERSION/' -i configure.in || die "sed failed"
+	# Use pkgconfig to find icu to properly support multilib
+	epatch "${FILESDIR}/${PN}-2.9.1-icu-pkgconfig.patch"
 
 	eautoreconf
 }
 
-src_configure() {
+multilib_src_configure() {
 	# filter seemingly problematic CFLAGS (#26320)
 	filter-flags -fprefetch-loop-arrays -funroll-loops
 
@@ -100,36 +103,48 @@ src_configure() {
 	# switch (enabling the libxml2 debug module). See bug #100898.
 
 	# --with-mem-debug causes unusual segmentation faults (bug #105120).
-	econf \
+
+	local myconf=()
+
+	if multilib_build_binaries; then
+		myconf=($(use_with python)
+			$(use_with readline)
+			$(use_with readline history))
+	else
+		myconf=(--without-python
+			--without-readline
+			--without-history)
+	fi
+
+	ECONF_SOURCE="${S}" econf \
 		--with-html-subdir=${PF}/html \
 		--docdir="${EPREFIX}/usr/share/doc/${PF}" \
 		$(use_with debug run-debug) \
 		$(use_with icu) \
 		$(use_with lzma) \
-		$(use_with python) \
-		$(use_with readline) \
-		$(use_with readline history) \
 		$(use_enable ipv6) \
-		$(use_enable static-libs static)
+		$(use_enable static-libs static) \
+		"${myconf[@]}"
 }
 
-src_compile() {
+multilib_src_compile() {
 	default
 
-	if use python; then
+	if multilib_build_binaries && use python; then
 		python_copy_sources python
 		building() {
 			emake PYTHON_INCLUDES="${EPREFIX}$(python_get_includedir)" \
+				PYTHON_LIBS="$(python_get_library -l)" \
 				PYTHON_SITE_PACKAGES="${EPREFIX}$(python_get_sitedir)"
 		}
 		python_execute_function -s --source-dir python building
 	fi
 }
 
-src_test() {
+multilib_src_test() {
 	default
 
-	if use python; then
+	if multilib_build_binaries && use python; then
 		testing() {
 			emake test
 		}
@@ -137,22 +152,14 @@ src_test() {
 	fi
 }
 
-src_install() {
+multilib_src_install() {
 	emake DESTDIR="${D}" \
 		EXAMPLES_DIR="${EPREFIX}"/usr/share/doc/${PF}/examples install
 
-	# on windows, xmllint is installed by interix libxml2 in parent prefix.
-	# this is the version to use. the native winnt version does not support
-	# symlinks, which makes repoman fail if the portage tree is linked in
-	# from another location (which is my default). -- mduft
-	if [[ ${CHOST} == *-winnt* ]]; then
-		rm -rf "${ED}"/usr/bin/xmllint
-		rm -rf "${ED}"/usr/bin/xmlcatalog
-	fi
-
-	if use python; then
+	if multilib_build_binaries && use python; then
 		installation() {
 			emake DESTDIR="${D}" \
+				PYTHON_LIBS="$(python_get_library -l)" \
 				PYTHON_SITE_PACKAGES="${EPREFIX}$(python_get_sitedir)" \
 				docsdir="${EPREFIX}/usr/share/doc/${PF}/python" \
 				exampledir="${EPREFIX}/usr/share/doc/${PF}/python/examples" \
@@ -162,9 +169,20 @@ src_install() {
 
 		python_clean_installation_image
 	fi
+}
+
+multilib_src_install_all() {
+	# on windows, xmllint is installed by interix libxml2 in parent prefix.
+	# this is the version to use. the native winnt version does not support
+	# symlinks, which makes repoman fail if the portage tree is linked in
+	# from another location (which is my default). -- mduft
+	if [[ ${CHOST} == *-winnt* ]]; then
+		rm -rf "${ED}"/usr/bin/xmllint
+		rm -rf "${ED}"/usr/bin/xmlcatalog
+	fi
 
 	rm -rf "${ED}"/usr/share/doc/${P}
-	dodoc AUTHORS ChangeLog Copyright NEWS README* TODO*
+	einstalldocs
 
 	if ! use python; then
 		rm -rf "${ED}"/usr/share/doc/${PF}/python
