@@ -18,7 +18,7 @@ KEYWORDS="*"
 IUSE=""
 
 RDEPEND="$(python_abi_depend ">=dev-vcs/mercurial-1.9")
-	$(python_abi_depend ">=dev-python/dulwich-0.8")
+	$(python_abi_depend ">=dev-python/dulwich-0.9.4")
 	$(python_abi_depend -i "2.6" dev-python/ordereddict)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
