@@ -5,14 +5,15 @@
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
+DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils eutils
 
-DESCRIPTION="Python binding for curl/libcurl"
-HOMEPAGE="http://pycurl.sourceforge.net/ https://pypi.python.org/pypi/pycurl"
+DESCRIPTION="Python bindings for cURL library"
+HOMEPAGE="http://pycurl.sourceforge.net/ https://github.com/pycurl/pycurl https://pypi.python.org/pypi/pycurl"
 SRC_URI="http://pycurl.sourceforge.net/download/${P}.tar.gz"
 
-LICENSE="LGPL-2.1"
+LICENSE="|| ( LGPL-2.1 MIT )"
 SLOT="0"
 KEYWORDS="*"
 IUSE="curl_ssl_gnutls curl_ssl_nss +curl_ssl_openssl examples ssl"
@@ -27,17 +28,11 @@ PYTHON_MODULES="curl"
 
 src_prepare() {
 	distutils_src_prepare
-	epatch "${FILESDIR}/${P}-linking.patch"
-	epatch "${FILESDIR}/${P}-python3.patch"
-
-	sed -e "/data_files=/d" -i setup.py || die "sed failed"
+	sed -e "/setup_args\['data_files'\] = get_data_files()/d" -i setup.py || die "sed failed"
 }
 
 src_test() {
-	testing() {
-		python_execute PYTHONPATH="$(ls -d build-${PYTHON_ABI}/lib*)" "$(PYTHON)" tests/test_internals.py -q
-	}
-	python_execute_function testing
+	distutils_src_test tests/{easy_test.py,error_test.py,global_init_test.py,internals_test.py,memory_mgmt_test.py,option_constants_test.py,pycurl_object_test.py,unset_range_test.py,version_comparison_test.py,version_test.py,write_abort_test.py,write_cb_bogus_test.py}
 }
 
 src_install() {
