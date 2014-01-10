@@ -5,7 +5,8 @@
 EAPI="5-progress"
 PYTHON_DEPEND="<<[{*-cpython}tk?]>>"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.* *-jython"
+# 2.*: https://bitbucket.org/logilab/pylint/issue/134
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.* 3.* *-jython"
 
 inherit distutils
 
@@ -39,7 +40,7 @@ src_install() {
 	doman man/{pylint,pyreverse}.1
 
 	delete_tests() {
-		rm -fr "${ED}$(python_get_sitedir)/pylint/test"
+		rm -r "${ED}$(python_get_sitedir)/pylint/test"
 	}
 	python_execute_function -q delete_tests
 
@@ -49,6 +50,6 @@ src_install() {
 	fi
 
 	if ! use tk; then
-		rm -f "${ED}usr/bin/pylint-gui"*
+		rm "${ED}usr/bin/pylint-gui"*
 	fi
 }
