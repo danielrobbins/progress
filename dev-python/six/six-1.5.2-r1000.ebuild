@@ -23,13 +23,6 @@ RDEPEND=""
 DOCS="CHANGES README"
 PYTHON_MODULES="six.py"
 
-src_prepare() {
-	distutils_src_prepare
-
-	# https://bitbucket.org/gutworth/six/issue/52
-	sed -e "/tkinter_ttk/s/sys.version_info <= (2, 6)/sys.version_info < (2, 7)/" -i test_six.py
-}
-
 src_compile() {
 	distutils_src_compile
 
