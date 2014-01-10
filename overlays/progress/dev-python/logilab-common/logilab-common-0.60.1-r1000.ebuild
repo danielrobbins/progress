@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.3 3.4 *-jython"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.[3-9] *-jython"
 PYTHON_NAMESPACES="logilab"
 
 inherit distutils python-namespaces
