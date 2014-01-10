@@ -30,9 +30,14 @@ S="${WORKDIR}/${MY_P}"
 DOCS="README.rst CHANGES"
 PYTHON_MODULES="redis"
 
+src_prepare() {
+	distutils_src_prepare
+	rm -r **/__pycache__
+	rm **/*.py[co]
+}
+
 src_test() {
 	local sock="${T}/redis.sock"
-	sed -e "s:port=6379:unix_socket_path=\"${sock}\":" -i $(find tests -name "*.py" -not -name "encoding.py")
 
 	"${EPREFIX}/usr/sbin/redis-server" - <<- EOF
 		daemonize yes
