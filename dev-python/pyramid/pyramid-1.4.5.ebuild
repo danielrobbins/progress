@@ -3,7 +3,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5 3.1 *-jython"
+PYTHON_RESTRICTED_ABIS="3.1 *-jython"
 DISTUTILS_SRC_TEST="setup.py"
 
 inherit distutils
@@ -60,7 +60,7 @@ src_install() {
 	distutils_src_install
 
 	delete_tests() {
-		rm -fr "${ED}$(python_get_sitedir)/pyramid/tests"
+		rm -r "${ED}$(python_get_sitedir)/pyramid/tests"
 	}
 	python_execute_function -q delete_tests
 
