@@ -18,7 +18,7 @@ KEYWORDS="*"
 IUSE="test"
 
 RDEPEND="app-misc/ca-certificates
-	$(python_abi_depend dev-python/charade)
+	$(python_abi_depend dev-python/chardet)
 	$(python_abi_depend dev-python/urllib3)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
@@ -32,16 +32,16 @@ src_prepare() {
 	# Use app-misc/ca-certificates.
 	sed -e "19a\\    if os.path.exists('${EPREFIX}/etc/ssl/certs/ca-certificates.crt'):\n        return '${EPREFIX}/etc/ssl/certs/ca-certificates.crt'\n" -i requests/certs.py
 
-	# Use system version of dev-python/charade.
-	sed -e "s/from .packages import charade/import charade/" -i requests/compat.py
-	rm -r requests/packages/charade
+	# Use system version of dev-python/chardet.
+	sed -e "s/from .packages import chardet/import chardet/" -i requests/compat.py
+	rm -r requests/packages/chardet
 
 	# Use system version of dev-python/urllib3.
 	sed -e "s/from . import urllib3/import urllib3/" -i requests/packages/__init__.py
 	sed -e "s/\(from \).packages.\(urllib3.* import\)/\1\2/" -i requests/*.py
 	rm -r requests/packages/urllib3
 
-	# Disable installation of deleted internal copies of dev-python/charade and dev-python/urllib3.
+	# Disable installation of deleted internal copies of dev-python/chardet and dev-python/urllib3.
 	sed -e "/requests\.packages\./d" -i setup.py
 
 	preparation() {
