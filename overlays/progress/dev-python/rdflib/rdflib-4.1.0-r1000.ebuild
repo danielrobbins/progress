@@ -4,7 +4,6 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.1 *-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
@@ -33,14 +32,13 @@ DOCS="CHANGELOG.md CONTRIBUTORS"
 
 src_prepare() {
 	distutils_src_prepare
-	find -name "*.py~" -delete
+	rm **/*.py~
 
 	# Delete unconditional dependencies on dev-python/html5lib and dev-python/sparql-wrapper.
-	# Clean dependency on dev-python/pyparsing with Python 2.
 	sed \
 		-e "/kwargs\['tests_require'\] = \['html5lib'\]/d" \
-		-e "s/kwargs\['install_requires'\].append('html5lib')/pass/" \
-		-e "s/'pyparsing<=1.5.7', 'SPARQLWrapper'\]/'pyparsing']/" \
+		-e "s/kwargs\['install_requires'\].append('html5lib==0.95')/pass/" \
+		-e "s/'pyparsing', 'SPARQLWrapper'\]/'pyparsing']/" \
 		-i setup.py
 }
 
