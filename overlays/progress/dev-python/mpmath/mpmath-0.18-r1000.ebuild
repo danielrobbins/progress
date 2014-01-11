@@ -14,7 +14,7 @@ MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Python library for arbitrary-precision floating-point arithmetic"
 HOMEPAGE="https://github.com/fredrik-johansson/mpmath http://code.google.com/p/mpmath/ https://pypi.python.org/pypi/mpmath"
-SRC_URI="http://mpmath.googlecode.com/files/${MY_P}.tar.gz"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${MY_P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
@@ -33,15 +33,13 @@ DOCS="CHANGES"
 src_prepare() {
 	distutils_src_prepare
 
-	epatch "${FILESDIR}/${P}-avoid_tests_installation.patch"
-	epatch "${FILESDIR}/${P}-python-3.2.patch"
-	epatch "${FILESDIR}/${P}-gmpy-2.patch"
+	epatch "${FILESDIR}/${PN}-0.17-avoid_tests_installation.patch"
 
 	# mpmath/conftest.py is incompatible with current versions of dev-python/py.
-	rm -f mpmath/conftest.py
+	rm mpmath/conftest.py
 
-	# Disable test, which requires X.
-	rm -f mpmath/tests/test_visualization.py
+	# Disable test requiring X.
+	rm mpmath/tests/test_visualization.py
 }
 
 src_compile() {
@@ -58,17 +56,8 @@ src_compile() {
 src_install() {
 	distutils_src_install
 
-	delete_version-specific_modules() {
-		if [[ "$(python_get_version -l --major)" == "2" ]]; then
-			rm -f "${ED}$(python_get_sitedir)/${PN}/libmp/exec_py3.py"
-		else
-			rm -f "${ED}$(python_get_sitedir)/${PN}/libmp/exec_py2.py"
-		fi
-	}
-	python_execute_function -q delete_version-specific_modules
-
 	if use doc; then
-		dohtml -r doc/build/*
+		dohtml -r doc/build/
 	fi
 
 	if use examples; then
