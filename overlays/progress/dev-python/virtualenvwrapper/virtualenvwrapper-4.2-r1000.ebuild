@@ -4,7 +4,6 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5"
 PYTHON_NAMESPACES="virtualenvwrapper"
 
 inherit distutils python-namespaces
