@@ -8,7 +8,7 @@ PYTHON_RESTRICTED_ABIS="3.* *-jython"
 DISTUTILS_SRC_TEST="trial buildslave"
 DISTUTILS_DISABLE_TEST_DEPENDENCY="1"
 
-inherit distutils user
+inherit distutils systemd user
 
 MY_PV="${PV/_p/p}"
 MY_P="${PN}-${MY_PV}"
@@ -42,7 +42,7 @@ src_install() {
 	distutils_src_install
 
 	delete_tests() {
-		rm -fr "${ED}$(python_get_sitedir)/buildslave/test"
+		rm -r "${ED}$(python_get_sitedir)/buildslave/test"
 	}
 	python_execute_function -q delete_tests
 
@@ -50,6 +50,7 @@ src_install() {
 
 	newconfd "${FILESDIR}/buildslave.confd" buildslave
 	newinitd "${FILESDIR}/buildslave.initd" buildslave
+	systemd_dounit "${FILESDIR}/buildslave.service"
 }
 
 pkg_postinst() {
