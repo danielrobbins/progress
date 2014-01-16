@@ -13,7 +13,7 @@ MY_PN="Paver"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Easy build, distribution and deployment scripting"
-HOMEPAGE="http://paver.github.io/paver/ https://github.com/paver/paver https://pypi.python.org/pypi/Paver"
+HOMEPAGE="https://paver.github.io/paver/ https://github.com/paver/paver https://pypi.python.org/pypi/Paver"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="BSD"
@@ -26,13 +26,6 @@ DEPEND="$(python_abi_depend dev-python/setuptools)
 RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/${MY_P}"
-
-src_prepare() {
-	distutils_src_prepare
-
-	# Fix compatibility with Jython 2.5.
-	sed -e "1i\\from __future__ import with_statement" -i pavement.py
-}
 
 src_install() {
 	distutils_src_install
@@ -47,7 +40,7 @@ src_install() {
 	python_execute_function -q clean_incompatible_modules
 
 	delete_documentation() {
-		rm -fr "${ED}$(python_get_sitedir)/paver/docs"
+		rm -r "${ED}$(python_get_sitedir)/paver/docs"
 	}
 	python_execute_function -q delete_documentation
 
