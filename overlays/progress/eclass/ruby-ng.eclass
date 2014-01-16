@@ -456,7 +456,7 @@ _ruby_apply_patches() {
 _ruby_source_copy() {
 	# Until we actually find a reason not to, we use hardlinks, this
 	# should reduce the amount of disk space that is wasted by this.
-	cp -prl all ${_ruby_implementation} \
+	cp -prlP all ${_ruby_implementation} \
 		|| die "Unable to copy ${_ruby_implementation} environment"
 }
 
