@@ -2,18 +2,18 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 
 inherit distutils
 
-DESCRIPTION="Mozilla's SSL Certs."
-HOMEPAGE="http://python-requests.org/ http://pypi.python.org/pypi/certifi"
+DESCRIPTION="Python SSL Certificates"
+HOMEPAGE="http://python-requests.org/ https://pypi.python.org/pypi/certifi"
 SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="ISC"
 SLOT="0"
-KEYWORDS="amd64 ~arm x86"
+KEYWORDS="*"
 IUSE=""
 
 DEPEND=""
