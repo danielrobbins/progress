@@ -13,7 +13,7 @@ DESCRIPTION="SELinux policy tools"
 HOMEPAGE="http://www.tresys.com/selinux/selinux_policy_tools.shtml"
 SRC_URI="http://oss.tresys.com/projects/setools/chrome/site/dists/${P}/${P}.tar.bz2
 	http://dev.gentoo.org/~swift/patches/setools/${P}-01-fedora-patches.tar.gz
-	http://dev.gentoo.org/~swift/patches/setools/${P}-01-gentoo-patches.tar.gz"
+	http://dev.gentoo.org/~swift/patches/setools/${P}-02-gentoo-patches.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
