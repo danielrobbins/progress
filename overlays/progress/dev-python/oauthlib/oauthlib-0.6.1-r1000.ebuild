@@ -24,3 +24,10 @@ DEPEND="${RDEPEND}
 		$(python_abi_depend dev-python/mock)
 		$(python_abi_depend -i "2.6" dev-python/unittest2)
 	)"
+
+src_prepare() {
+	distutils_src_prepare
+
+	# Fix compatibility with Python 3.1.
+	sed -e "s/callable(\([^)]\+\))/(hasattr(\1, '__call__') if __import__('sys').version_info\[:2\] == (3, 1) else &)/" -i oauthlib/oauth2/rfc6749/tokens.py
+}
