@@ -77,7 +77,7 @@ src_install() {
 	python_generate_wrapper_scripts -E -f -q "${ED}usr/bin/sphinx-build"
 
 	delete_grammar_pickle() {
-		rm "${ED}$(python_get_sitedir)/sphinx/pycode/Grammar-py$(python_get_version -l --major)-sphinx$(get_version_component_range 1-2).pickle"
+		rm -f "${ED}$(python_get_sitedir)/sphinx/pycode/Grammar-py$(python_get_version -l --major)-sphinx$(get_version_component_range 1-2).pickle"
 	}
 	python_execute_function -q delete_grammar_pickle
 
