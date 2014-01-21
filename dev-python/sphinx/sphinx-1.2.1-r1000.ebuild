@@ -7,7 +7,7 @@ PYTHON_MULTIPLE_ABIS="1"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
-inherit distutils
+inherit distutils versionator
 
 MY_PN="Sphinx"
 MY_P="${MY_PN}-${PV}"
@@ -77,7 +77,7 @@ src_install() {
 	python_generate_wrapper_scripts -E -f -q "${ED}usr/bin/sphinx-build"
 
 	delete_grammar_pickle() {
-		rm -f "${ED}$(python_get_sitedir)/sphinx/pycode/Grammar$(python_get_version -l).pickle"
+		rm "${ED}$(python_get_sitedir)/sphinx/pycode/Grammar-py$(python_get_version -l --major)-sphinx$(get_version_component_range 1-2).pickle"
 	}
 	python_execute_function -q delete_grammar_pickle
 
@@ -91,7 +91,7 @@ pkg_postinst() {
 
 	# Generate the Grammar pickle to avoid sandbox violations.
 	generate_grammar_pickle() {
-		"$(PYTHON)" -c "import sys; sys.path.insert(0, '${EROOT}$(python_get_sitedir -b)'); from sphinx.pycode.pgen2.driver import load_grammar; load_grammar('${EROOT}$(python_get_sitedir -b)/sphinx/pycode/Grammar.txt')"
+		"$(PYTHON)" -c "import sys; sys.path.insert(0, '${EROOT}$(python_get_sitedir -b)'); from sphinx.pycode.pgen2.driver import load_grammar; load_grammar('${EROOT}$(python_get_sitedir -b)/sphinx/pycode/Grammar-py%d.txt' % sys.version_info[0])"
 	}
 	python_execute_function \
 		--action-message 'Generation of Grammar pickle with $(python_get_implementation_and_version)...' \
@@ -103,7 +103,7 @@ pkg_postrm() {
 	distutils_pkg_postrm
 
 	delete_grammar_pickle() {
-		rm -f "${EROOT}$(python_get_sitedir -b)/sphinx/pycode/Grammar$(python_get_version -l).pickle" || return
+		rm -f "${EROOT}$(python_get_sitedir -b)/sphinx/pycode/Grammar-py$(python_get_version -l --major)-sphinx$(get_version_component_range 1-2).pickle" || return
 
 		# Delete empty parent directories.
 		local dir="${EROOT}$(python_get_sitedir -b)/sphinx/pycode"
