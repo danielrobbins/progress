@@ -24,7 +24,7 @@ KEYWORDS="*"
 IUSE="doc examples irc mail manhole test"
 
 RDEPEND="$(python_abi_depend ">=dev-python/jinja-2.1")
-	dev-python/python-dateutil
+	$(python_abi_depend dev-python/python-dateutil)
 	$(python_abi_depend dev-python/sqlalchemy)
 	$(python_abi_depend dev-python/sqlalchemy-migrate)
 	$(python_abi_depend dev-python/twisted-core)
@@ -56,6 +56,9 @@ src_prepare() {
 		-e "s/sqlalchemy-migrate ==0.6.1, ==0.7.0, ==0.7.1, ==0.7.2/sqlalchemy-migrate/" \
 		-e "s/python-dateutil==1.5/python-dateutil/" \
 		-i setup.py
+
+	# https://github.com/buildbot/buildbot/issues/1056
+	sed -e "/.. option:: --allow-shutdown/a\\\\" -i- docs/manual/installation.rst
 }
 
 src_compile() {
@@ -73,7 +76,7 @@ src_install() {
 	distutils_src_install
 
 	delete_tests() {
-		rm -fr "${ED}$(python_get_sitedir)/buildbot/test"
+		rm -r "${ED}$(python_get_sitedir)/buildbot/test"
 	}
 	python_execute_function -q delete_tests
 
