@@ -24,9 +24,6 @@ DEPEND="${RDEPEND}
 	dev-libs/libxml2"
 
 src_prepare() {
-	# Fix TabError with Python 3.
-	sed -e "79s/\\t/    /" -i xcbgen/xtypes.py
-
 	python_clean_py-compile_files
 	xorg-2_src_prepare
 }
@@ -57,6 +54,8 @@ src_install() {
 		BUILD_DIR="${S}-${PYTHON_ABI}" xorg-2_src_install
 	}
 	python_execute_function installation
+
+	sed -e "/^pythondir=/s:\(^pythondir=\).*:\1/dev/null:" -i "${ED}"usr/lib*/pkgconfig/xcb-proto.pc || die "sed failed"
 }
 
 pkg_postinst() {
