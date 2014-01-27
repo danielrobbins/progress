@@ -10,7 +10,7 @@ PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 inherit autotools flag-o-matic linux-info pam python
 
 DESCRIPTION="eCryptfs userspace utilities"
-HOMEPAGE="https://launchpad.net/ecryptfs"
+HOMEPAGE="http://ecryptfs.org/ https://launchpad.net/ecryptfs"
 SRC_URI="http://launchpad.net/ecryptfs/trunk/${PV}/+download/${PN}_${PV}.orig.tar.gz"
 
 LICENSE="GPL-2"
@@ -23,10 +23,10 @@ RDEPEND=">=dev-libs/libgcrypt-1.2.0
 	>=sys-apps/keyutils-1.0
 	gpg? ( app-crypt/gpgme )
 	gtk? ( x11-libs/gtk+:2 )
-	openssl? ( >=dev-libs/openssl-0.9.7 )
+	openssl? ( dev-libs/openssl:0= )
 	pam? ( sys-libs/pam )
 	pkcs11? (
-		>=dev-libs/openssl-0.9.7
+		dev-libs/openssl:0=
 		>=dev-libs/pkcs11-helper-1.04
 	)
 	tpm? ( app-crypt/trousers )"
