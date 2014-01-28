@@ -3,6 +3,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
+GENTOO_DEPEND_ON_PERL="no"
 PYTHON_DEPEND="ctypes-python? ( <<>> ) python? ( <<>> )"
 if [[ "${PV}" == *_pre* ]]; then
 	# autogen.sh calls gen-make.py.
@@ -41,7 +42,7 @@ CDEPEND=">=dev-db/sqlite-3.6.18
 	gnome-keyring? ( dev-libs/glib:2 sys-apps/dbus gnome-base/gnome-keyring )
 	kde? ( dev-qt/qtcore:4 dev-qt/qtdbus:4 dev-qt/qtgui:4 sys-apps/dbus kde-base/kdelibs:4 )
 	magic? ( sys-apps/file )
-	perl? ( dev-lang/perl )
+	perl? ( dev-lang/perl:= )
 	ruby? ( >=dev-lang/ruby-1.8.2 )
 	sasl? ( dev-libs/cyrus-sasl )
 	webdav-neon? ( >=net-libs/neon-0.28 )
