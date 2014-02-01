@@ -9,7 +9,7 @@ PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 
 inherit distutils
 
-DESCRIPTION="py.test: simple powerful testing with Python"
+DESCRIPTION="pytest: simple powerful testing with Python"
 HOMEPAGE="http://pytest.org/ https://bitbucket.org/hpk42/pytest https://pypi.python.org/pypi/pytest"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
@@ -18,7 +18,7 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="doc"
 
-RDEPEND="$(python_abi_depend ">=dev-python/py-1.4.19")
+RDEPEND="$(python_abi_depend ">=dev-python/py-1.4.20")
 	$(python_abi_depend virtual/python-argparse)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
@@ -30,8 +30,11 @@ PYTHON_MODULES="pytest.py _pytest"
 src_prepare() {
 	distutils_src_prepare
 
-	# https://bitbucket.org/hpk42/pytest/issue/405
-	rm doc/en/plugins_index/test_plugins_index.py
+	# Fix compatibility with Python 3.1.
+	sed -e "s/callable(finalizer)/py.builtin.&/" -i _pytest/runner.py
+
+	# Disable tests failing with Python 3.1.
+	sed -e "s/\([[:space:]]*\)def test_exact_teardown_issue90(/\1@pytest.mark.skipif('sys.version_info[:2] == (3, 1)')\n&/" -i testing/test_runner.py
 
 	# Disable versioning of py.test script to avoid collision with versioning performed by python_merge_intermediate_installation_images().
 	sed -e "s/return points/return {'py.test': target}/" -i setup.py || die "sed failed"
