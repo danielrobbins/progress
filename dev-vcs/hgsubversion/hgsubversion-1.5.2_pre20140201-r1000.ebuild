@@ -6,11 +6,12 @@ EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 
-inherit distutils
+inherit distutils vcs-snapshot
 
 DESCRIPTION="hgsubversion is a Mercurial extension for working with Subversion repositories."
 HOMEPAGE="https://bitbucket.org/durin42/hgsubversion https://pypi.python.org/pypi/hgsubversion"
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
+# SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
+SRC_URI="https://bitbucket.org/durin42/hgsubversion/get/7635d30effa76969e4f6fd969106cfa6329c96a1.tar.bz2 -> ${P}.tar.bz2"
 
 LICENSE="GPL-2"
 SLOT="0"
