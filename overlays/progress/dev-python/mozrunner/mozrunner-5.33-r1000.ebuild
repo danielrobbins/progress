@@ -18,12 +18,13 @@ SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
-DEPEND="$(python_abi_depend ">=dev-python/mozcrash-0.10")
-	$(python_abi_depend ">=dev-python/mozdevice-0.28")
+DEPEND="$(python_abi_depend ">=dev-python/mozcrash-0.11")
+	$(python_abi_depend ">=dev-python/mozdevice-0.30")
+	$(python_abi_depend ">=dev-python/mozfile-1.0")
 	$(python_abi_depend ">=dev-python/mozinfo-0.7")
-	$(python_abi_depend ">=dev-python/mozlog-1.3")
-	$(python_abi_depend ">=dev-python/mozprocess-0.13")
-	$(python_abi_depend ">=dev-python/mozprofile-0.16")
+	$(python_abi_depend ">=dev-python/mozlog-1.5")
+	$(python_abi_depend ">=dev-python/mozprocess-0.15")
+	$(python_abi_depend ">=dev-python/mozprofile-0.18")
 	$(python_abi_depend dev-python/setuptools)"
 RDEPEND="${DEPEND}"
 
