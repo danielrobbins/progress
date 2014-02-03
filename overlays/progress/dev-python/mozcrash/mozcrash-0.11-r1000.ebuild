@@ -16,7 +16,7 @@ SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
-RDEPEND="$(python_abi_depend ">=dev-python/mozfile-0.12")
+RDEPEND="$(python_abi_depend ">=dev-python/mozfile-1.0")
 	$(python_abi_depend dev-python/mozlog)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
