@@ -15,7 +15,7 @@ PHP_EXT_NAME="xapian"
 PHP_EXT_INI="yes"
 PHP_EXT_OPTIONAL_USE="php"
 
-inherit java-pkg-opt-2 mono php-ext-source-r2 python
+inherit java-pkg-opt-2 mono-env php-ext-source-r2 python
 
 DESCRIPTION="SWIG and JNI bindings for Xapian"
 HOMEPAGE="http://www.xapian.org/"
@@ -40,6 +40,10 @@ RDEPEND+="
 
 pkg_setup() {
 	java-pkg-opt-2_pkg_setup
+
+	if use mono; then
+		mono-env_pkg_setup
+	fi
 
 	if use python; then
 		python_pkg_setup
