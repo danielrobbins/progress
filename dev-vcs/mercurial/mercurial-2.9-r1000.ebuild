@@ -10,7 +10,7 @@ PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 inherit bash-completion-r1 elisp-common eutils distutils
 
 DESCRIPTION="Scalable distributed SCM"
-HOMEPAGE="http://mercurial.selenic.com/"
+HOMEPAGE="http://mercurial.selenic.com/ https://pypi.python.org/pypi/Mercurial"
 SRC_URI="http://mercurial.selenic.com/release/${P}.tar.gz"
 
 LICENSE="GPL-2"
@@ -105,20 +105,6 @@ src_test() {
 	# Disable tests sometimes timing out.
 	rm -f test-largefiles.t
 	rm -f test-mq.t
-	if [[ "${EUID}" -eq 0 ]]; then
-		# https://bz.selenic.com/show_bug.cgi?id=4089
-		rm -f test-blackbox.t
-		rm -f test-clone.t
-		rm -f test-command-template.t
-		rm -f test-convert.t
-		rm -f test-journal-exists.t
-		rm -f test-lock-badness.t
-		rm -f test-permissions.t
-		rm -f test-phases-exchange.t
-		rm -f test-pull-permission.t
-		rm -f test-repair-strip.t
-		rm -f test-serve.t
-	fi
 	popd > /dev/null || die
 
 	testing() {
@@ -127,7 +113,7 @@ src_test() {
 		cd tests || die
 		rm -fr "${testdir}/tests"
 		python_execute PYTHONPATH="${testdir}$(python_get_sitedir)" "$(PYTHON)" run-tests.py \
-			--tmpdir="${testdir}/tests" \
+			--tmpdir="${testdir}/temp" \
 			--verbose \
 			--with-hg="${testdir}/usr/bin/hg"
 	}
