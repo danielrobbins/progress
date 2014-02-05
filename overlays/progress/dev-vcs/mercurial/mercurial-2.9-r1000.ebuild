@@ -40,6 +40,18 @@ SITEFILE="70${PN}-gentoo.el"
 src_prepare() {
 	distutils_src_prepare
 	sed -e "s|^if sys.platform == 'darwin' and os.path.exists('/usr/bin/xcodebuild'):$|if False:|" -i setup.py
+
+	# https://bz.selenic.com/show_bug.cgi?id=4083
+	rm tests/test-subrepo-svn.t
+	# https://bz.selenic.com/show_bug.cgi?id=4084
+	rm tests/test-clone-cgi.t
+	rm tests/test-hgweb-commands.t
+	rm tests/test-push-cgi.t
+	# https://bz.selenic.com/show_bug.cgi?id=4087
+	rm tests/test-check-pyflakes.t
+	# Disable tests sometimes timing out.
+	rm tests/test-largefiles.t
+	rm tests/test-mq.t
 }
 
 src_compile() {
@@ -55,7 +67,21 @@ src_compile() {
 		popd > /dev/null || die
 	fi
 
-	rm -rf contrib/{win32,macosx} || die
+	rm -r contrib/{macosx,win32} || die
+}
+
+src_test() {
+	testing() {
+		local testdir="${T}/tests-${PYTHON_ABI}"
+		python_execute "$(PYTHON)" setup.py build -b build-${PYTHON_ABI} install --root="${testdir}"
+		cd tests || die
+		rm -fr "${testdir}/tests"
+		python_execute PYTHONPATH="${testdir}$(python_get_sitedir)" "$(PYTHON)" run-tests.py \
+			--tmpdir="${testdir}/temp" \
+			--verbose \
+			--with-hg="${testdir}/usr/bin/hg"
+	}
+	python_execute_function testing
 }
 
 src_install() {
@@ -77,7 +103,7 @@ src_install() {
 	dobin contrib/hgk
 	python_install_executables contrib/hg-ssh
 
-	rm -fr contrib/{*.el,bash_completion,buildrpm,hg-ssh,hgk,mercurial.spec,plan9,wix,zsh_completion} || die
+	rm -r contrib/{*.el,bash_completion,buildrpm,hg-ssh,hgk,mercurial.spec,plan9,wix,zsh_completion} || die
 
 	dodoc -r contrib
 	docompress -x /usr/share/doc/${PF}/contrib
@@ -90,34 +116,6 @@ EOF
 
 	insinto /etc/mercurial/hgrc.d
 	doins "${FILESDIR}/cacerts.rc"
-}
-
-src_test() {
-	pushd tests > /dev/null || die
-	# https://bz.selenic.com/show_bug.cgi?id=4083
-	rm -f test-subrepo-svn.t
-	# https://bz.selenic.com/show_bug.cgi?id=4084
-	rm -f test-clone-cgi.t
-	rm -f test-hgweb-commands.t
-	rm -f test-push-cgi.t
-	# https://bz.selenic.com/show_bug.cgi?id=4087
-	rm -f test-check-pyflakes.t
-	# Disable tests sometimes timing out.
-	rm -f test-largefiles.t
-	rm -f test-mq.t
-	popd > /dev/null || die
-
-	testing() {
-		local testdir="${T}/tests-${PYTHON_ABI}"
-		python_execute "$(PYTHON)" setup.py build -b build-${PYTHON_ABI} install --root="${testdir}"
-		cd tests || die
-		rm -fr "${testdir}/tests"
-		python_execute PYTHONPATH="${testdir}$(python_get_sitedir)" "$(PYTHON)" run-tests.py \
-			--tmpdir="${testdir}/temp" \
-			--verbose \
-			--with-hg="${testdir}/usr/bin/hg"
-	}
-	python_execute_function testing
 }
 
 pkg_postinst() {

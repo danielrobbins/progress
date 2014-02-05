@@ -10,7 +10,7 @@ PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 inherit bash-completion-r1 elisp-common eutils distutils mercurial
 
 DESCRIPTION="Scalable distributed SCM"
-HOMEPAGE="http://mercurial.selenic.com/"
+HOMEPAGE="http://mercurial.selenic.com/ https://pypi.python.org/pypi/Mercurial"
 EHG_REPO_URI="http://selenic.com/repo/hg"
 EHG_REVISION="@"
 
@@ -41,6 +41,18 @@ SITEFILE="70${PN}-gentoo.el"
 src_prepare() {
 	distutils_src_prepare
 	sed -e "s|^if sys.platform == 'darwin' and os.path.exists('/usr/bin/xcodebuild'):$|if False:|" -i setup.py
+
+	# https://bz.selenic.com/show_bug.cgi?id=4083
+	rm tests/test-subrepo-svn.t
+	# https://bz.selenic.com/show_bug.cgi?id=4084
+	rm tests/test-clone-cgi.t
+	rm tests/test-hgweb-commands.t
+	rm tests/test-push-cgi.t
+	# https://bz.selenic.com/show_bug.cgi?id=4087
+	rm tests/test-check-pyflakes.t
+	# Disable tests sometimes timing out.
+	rm tests/test-largefiles.t
+	rm tests/test-mq.t
 }
 
 src_compile() {
@@ -56,7 +68,21 @@ src_compile() {
 		popd > /dev/null || die
 	fi
 
-	rm -rf contrib/{win32,macosx} || die
+	rm -r contrib/{macosx,win32} || die
+}
+
+src_test() {
+	testing() {
+		local testdir="${T}/tests-${PYTHON_ABI}"
+		python_execute "$(PYTHON)" setup.py build -b build-${PYTHON_ABI} install --root="${testdir}"
+		cd tests || die
+		rm -fr "${testdir}/tests"
+		python_execute PYTHONPATH="${testdir}$(python_get_sitedir)" "$(PYTHON)" run-tests.py \
+			--tmpdir="${testdir}/temp" \
+			--verbose \
+			--with-hg="${testdir}/usr/bin/hg"
+	}
+	python_execute_function testing
 }
 
 src_install() {
@@ -78,7 +104,7 @@ src_install() {
 	dobin contrib/hgk
 	python_install_executables contrib/hg-ssh
 
-	rm -fr contrib/{*.el,bash_completion,buildrpm,hg-ssh,hgk,mercurial.spec,plan9,wix,zsh_completion} || die
+	rm -r contrib/{*.el,bash_completion,buildrpm,hg-ssh,hgk,mercurial.spec,plan9,wix,zsh_completion} || die
 
 	dodoc -r contrib
 	docompress -x /usr/share/doc/${PF}/contrib
@@ -91,48 +117,6 @@ EOF
 
 	insinto /etc/mercurial/hgrc.d
 	doins "${FILESDIR}/cacerts.rc"
-}
-
-src_test() {
-	pushd tests > /dev/null || die
-	# https://bz.selenic.com/show_bug.cgi?id=4083
-	rm -f test-subrepo-svn.t
-	# https://bz.selenic.com/show_bug.cgi?id=4084
-	rm -f test-clone-cgi.t
-	rm -f test-hgweb-commands.t
-	rm -f test-push-cgi.t
-	# https://bz.selenic.com/show_bug.cgi?id=4087
-	rm -f test-check-pyflakes.t
-	# Disable tests sometimes timing out.
-	rm -f test-largefiles.t
-	rm -f test-mq.t
-	if [[ "${EUID}" -eq 0 ]]; then
-		# https://bz.selenic.com/show_bug.cgi?id=4089
-		rm -f test-blackbox.t
-		rm -f test-clone.t
-		rm -f test-command-template.t
-		rm -f test-convert.t
-		rm -f test-journal-exists.t
-		rm -f test-lock-badness.t
-		rm -f test-permissions.t
-		rm -f test-phases-exchange.t
-		rm -f test-pull-permission.t
-		rm -f test-repair-strip.t
-		rm -f test-serve.t
-	fi
-	popd > /dev/null || die
-
-	testing() {
-		local testdir="${T}/tests-${PYTHON_ABI}"
-		python_execute "$(PYTHON)" setup.py build -b build-${PYTHON_ABI} install --root="${testdir}"
-		cd tests || die
-		rm -fr "${testdir}/tests"
-		python_execute PYTHONPATH="${testdir}$(python_get_sitedir)" "$(PYTHON)" run-tests.py \
-			--tmpdir="${testdir}/tests" \
-			--verbose \
-			--with-hg="${testdir}/usr/bin/hg"
-	}
-	python_execute_function testing
 }
 
 pkg_postinst() {
