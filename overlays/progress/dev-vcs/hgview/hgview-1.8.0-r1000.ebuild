@@ -15,19 +15,19 @@ SRC_URI="http://download.logilab.org/pub/${PN}/${P}.tar.gz"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="*"
-IUSE="doc +qt4 urwid"
-REQUIRED_USE="|| ( qt4 urwid )"
+IUSE="doc ncurses +qt4"
+REQUIRED_USE="|| ( ncurses qt4 )"
 
 RDEPEND="$(python_abi_depend dev-vcs/mercurial)
+	ncurses? (
+		$(python_abi_depend dev-python/pygments)
+		$(python_abi_depend dev-python/pyinotify)
+		$(python_abi_depend dev-python/urwid)
+	)
 	qt4? (
 		$(python_abi_depend dev-python/docutils)
 		$(python_abi_depend dev-python/PyQt4[X])
 		$(python_abi_depend dev-python/qscintilla-python)
-	)
-	urwid? (
-		$(python_abi_depend dev-python/pygments)
-		$(python_abi_depend dev-python/pyinotify)
-		$(python_abi_depend dev-python/urwid)
 	)"
 DEPEND="${RDEPEND}
 	doc? (
@@ -50,11 +50,11 @@ src_prepare() {
 }
 
 src_compile() {
-	distutils_src_compile $(use doc || echo --no-doc) $(use qt4 || echo --no-qt) $(use urwid || echo --no-curses)
+	distutils_src_compile $(use doc || echo --no-doc) $(use ncurses || echo --no-curses) $(use qt4 || echo --no-qt)
 }
 
 src_install() {
-	distutils_src_install $(use doc || echo --no-doc) $(use qt4 || echo --no-qt) $(use urwid || echo --no-curses)
+	distutils_src_install $(use doc || echo --no-doc) $(use ncurses || echo --no-curses) $(use qt4 || echo --no-qt)
 
 	# Install Mercurial extension configuration file.
 	insinto /etc/mercurial/hgrc.d
