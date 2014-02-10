@@ -122,7 +122,7 @@ src_configure() {
 }
 
 src_compile() {
-	emake
+	emake LD="$(tc-getLD).bfd"
 
 	if use python; then
 		local dir
@@ -130,6 +130,7 @@ src_compile() {
 			python_copy_sources ${dir}
 			building() {
 				emake \
+					LD="$(tc-getLD).bfd" \
 					SWIG_PYTHON_CPPFLAGS="-I$(python_get_includedir)" \
 					PYTHON_LDFLAGS="$(python_get_library -l)" \
 					pyexecdir="$(python_get_sitedir)" \
