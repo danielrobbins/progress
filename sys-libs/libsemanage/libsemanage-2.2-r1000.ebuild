@@ -6,39 +6,53 @@ EAPI="5-progress"
 PYTHON_DEPEND="python? ( <<>> )"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
+RUBY_OPTIONAL="yes"
+USE_RUBY="ruby19 ruby20 ruby21"
 
-inherit eutils multilib python toolchain-funcs
+inherit eutils multilib multilib-minimal python ruby-ng toolchain-funcs
 
-SEPOL_VER="2.1.9"
-SELNX_VER="2.1.13"
+SEPOL_VER="2.2"
+SELNX_VER="2.2.2-r1"
 
 DESCRIPTION="SELinux kernel and policy management library"
-HOMEPAGE="http://userspace.selinuxproject.org"
-SRC_URI="http://userspace.selinuxproject.org/releases/20130423/${P}.tar.gz"
+HOMEPAGE="http://userspace.selinuxproject.org/"
+SRC_URI="http://userspace.selinuxproject.org/releases/20131030/${P}.tar.gz"
 
-LICENSE="GPL-2"
+LICENSE="LGPL-2.1"
 SLOT="0"
 KEYWORDS="*"
-IUSE="python ruby"
+IUSE="python ruby static-libs"
+RESTRICT="test"
 
 RDEPEND=">=sys-libs/libsepol-${SEPOL_VER}
 	>=sys-libs/libselinux-${SELNX_VER}
+	app-arch/bzip2
 	dev-libs/ustr
-	ruby? ( dev-lang/ruby )"
+	sys-process/audit
+	ruby? ( $(ruby_implementations_depend) )"
 DEPEND="${RDEPEND}
 	sys-devel/bison
 	sys-devel/flex
-	ruby? ( >=dev-lang/swig-2.0.4-r1 )
-	python? ( >=dev-lang/swig-2.0.4-r1 )"
+	python? ( >=dev-lang/swig-2.0.9 )
+	ruby? (
+		>=dev-lang/swig-2.0.9
+		virtual/pkgconfig
+	)"
 
-# tests are not meant to be run outside of the
-# full SELinux userland repo
-RESTRICT="test"
+S="${WORKDIR}/${P}"
 
 pkg_setup() {
 	if use python; then
 		python_pkg_setup
 	fi
+
+	if use ruby; then
+		ruby-ng_pkg_setup
+	fi
+}
+
+src_unpack() {
+	default
 }
 
 src_prepare() {
@@ -65,54 +79,101 @@ src_prepare() {
 	echo "# decompression of modules in the module store." >> "${S}/src/semanage.conf"
 	echo "bzip-small=true" >> "${S}/src/semanage.conf"
 
+	# Fix libsemanage.so symlink.
+	sed -e 's:cd $(LIBDIR) && ln -sf $(LIBSO) $(TARGET):cd $(LIBDIR) \&\& ln -sf ../../`basename $(SHLIBDIR)`/$(LIBSO) $(TARGET):' -i src/Makefile
+
 	sed -e "/^gcc/s:-aux-info:-I../include &:" -i src/exception.sh
 
 	epatch_user
+
+	multilib_copy_sources
+}
+
+src_configure() {
+	default
+}
+
+multilib_src_compile() {
+	emake \
+		AR="$(tc-getAR)" \
+		CC="$(tc-getCC)" \
+		LIBDIR="/usr/$(get_libdir)" \
+		RANLIB="$(tc-getRANLIB)" \
+		all
+
+	if multilib_is_native_abi && use python; then
+		building() {
+			emake \
+				CC="$(tc-getCC)" \
+				LIBDIR="/usr/$(get_libdir)" \
+				PYINC="-I$(python_get_includedir)" \
+				PYPREFIX="python-${PYTHON_ABI}-" \
+				pywrap
+		}
+		python_execute_function building
+	fi
+
+	if multilib_is_native_abi && use ruby; then
+		each_ruby_compile() {
+			cd "${WORKDIR}/${P}-${ABI}"
+			emake \
+				CC="$(tc-getCC)" \
+				LIBDIR="/usr/$(get_libdir)" \
+				RUBY="${RUBY}" \
+				RUBYPREFIX="ruby-$("${RUBY}" -e 'print RUBY_VERSION.split(".")[0..1].join(".")')-" \
+				rubywrap
+		}
+		ruby-ng_src_compile
+	fi
 }
 
 src_compile() {
-	emake AR="$(tc-getAR)" CC="$(tc-getCC)" all
-
-	if use python; then
-		python_copy_sources src
-		building() {
-			emake CC="$(tc-getCC)" PYINC="-I$(python_get_includedir)" PYLIBVER="python$(python_get_version)" PYPREFIX="python-$(python_get_version)" pywrap
-		}
-		python_execute_function -s --source-dir src building
-	fi
-
-	if use ruby; then
-		emake -C src CC="$(tc-getCC)" rubywrap
-	fi
+	multilib-minimal_src_compile
 }
 
-src_install() {
+src_test() {
+	default
+}
+
+multilib_src_install() {
 	emake \
 		DESTDIR="${D}" \
-		LIBDIR="${D}usr/$(get_libdir)" \
-		SHLIBDIR="${D}$(get_libdir)" \
+		LIBDIR="\$(PREFIX)/$(get_libdir)" \
+		SHLIBDIR="\$(DESTDIR)/$(get_libdir)" \
 		install
-	dosym "../../$(get_libdir)/libsemanage.so.1" "/usr/$(get_libdir)/libsemanage.so"
 
-	if use python; then
+	if multilib_is_native_abi && use python; then
 		installation() {
 			emake \
 				DESTDIR="${D}" \
-				PYLIBVER="python$(python_get_version)" \
-				PYPREFIX="python-$(python_get_version)" \
-				LIBDIR="${D}usr/$(get_libdir)" \
+				LIBDIR="\$(PREFIX)/$(get_libdir)" \
+				PYPREFIX="python-${PYTHON_ABI}-" \
 				install-pywrap
 		}
-		python_execute_function -s --source-dir src installation
+		python_execute_function installation
 	fi
 
-	if use ruby; then
-		emake -C src \
-			DESTDIR="${D}" \
-			LIBDIR="${D}usr/$(get_libdir)" \
-			RUBYINSTALL="${D}$(ruby -rrbconfig -e 'puts RbConfig::CONFIG["sitearchdir"]')" \
-			install-rubywrap
+	if multilib_is_native_abi && use ruby; then
+		each_ruby_install() {
+			cd "${WORKDIR}/${P}-${ABI}"
+			emake \
+				DESTDIR="${D}" \
+				LIBDIR="\$(PREFIX)/$(get_libdir)" \
+				RUBY="${RUBY}" \
+				RUBYINSTALL="${D}$(ruby_rbconfig_value sitearchdir)" \
+				RUBYPREFIX="ruby-$("${RUBY}" -e 'print RUBY_VERSION.split(".")[0..1].join(".")')-" \
+				install-rubywrap
+		}
+		ruby-ng_src_install
 	fi
+}
+
+multilib_src_install_all() {
+	use static-libs || rm "${D}"usr/lib*/*.a
+}
+
+src_install() {
+	multilib-minimal_src_install
 }
 
 pkg_postinst() {
