@@ -1,6 +1,6 @@
 --- PIL/ImageShow.py
 +++ PIL/ImageShow.py
-@@ -150,15 +150,10 @@
+@@ -155,14 +155,10 @@
  
      class XVViewer(UnixViewer):
          def get_command_ex(self, file, title=None, **options):
@@ -8,8 +8,7 @@
 -            # imagemagick's display command instead.
 -            command = executable = "xv"
 -            if title:
--                # FIXME: do full escaping
--                command = command + " -name \"%s\"" % title
+-                command = command + " -name %s" % quote(title)
 +            command = executable = "xdg-open"
              return command, executable
  
