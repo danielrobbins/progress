@@ -69,7 +69,7 @@ src_install() {
 	doman doc/pytest.1
 
 	delete_tests() {
-		rm -fr "${ED}$(python_get_sitedir)/${PN/-//}/test"
+		rm -r "${ED}$(python_get_sitedir)/${PN/-//}/test"
 	}
 	python_execute_function -q delete_tests
 
