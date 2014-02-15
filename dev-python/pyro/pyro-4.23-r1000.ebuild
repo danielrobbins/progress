@@ -4,10 +4,9 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5"
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
 
-inherit distutils
+inherit distutils eutils
 
 MY_PN="Pyro4"
 MY_P="${MY_PN}-${PV}"
@@ -40,9 +39,11 @@ src_prepare() {
 
 	sed -e '/sys.path.insert/a sys.path.insert(1,"PyroTests")' -i tests/run_suite.py
 
-	# Fix compatibility with Python 3.1
+	# Fix compatibility with Python 3.1.
 	sed -e "s/self.assertIsInstance(\([^,)]\+\), \([^,)]\+\))/self.assertTrue(isinstance(\1, \2))/" -i tests/PyroTests/test_daemon.py tests/PyroTests/test_serialize.py
 	sed -e "s/data = msg.data.decode(\"ascii\", errors=\"ignore\")/data = msg.data.decode(\"ascii\", \"ignore\")/" -i tests/PyroTests/test_socket.py
+
+	epatch "${FILESDIR}/${P}-python-3.4.patch"
 
 	# Disable tests requiring network connection.
 	sed \
