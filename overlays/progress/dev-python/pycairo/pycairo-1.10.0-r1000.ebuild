@@ -4,17 +4,19 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5 *-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 
 inherit eutils python waf-utils
 
 PYCAIRO_PYTHON2_VERSION="${PV}"
 PYCAIRO_PYTHON3_VERSION="${PV}"
+WAF_VERSION="1.7.15"
 
 DESCRIPTION="Python bindings for the cairo library"
-HOMEPAGE="http://cairographics.org/pycairo/ http://pypi.python.org/pypi/pycairo"
+HOMEPAGE="http://cairographics.org/pycairo/ https://pypi.python.org/pypi/pycairo"
 SRC_URI="http://cairographics.org/releases/py2cairo-${PYCAIRO_PYTHON2_VERSION}.tar.bz2
-	http://cairographics.org/releases/pycairo-${PYCAIRO_PYTHON3_VERSION}.tar.bz2"
+	http://cairographics.org/releases/pycairo-${PYCAIRO_PYTHON3_VERSION}.tar.bz2
+	http://waf.googlecode.com/files/waf-${WAF_VERSION}.tar.bz2"
 
 # Pycairo 1.10.0 for Python 2: || ( LGPL-2.1 MPL-1.1 )
 # Pycairo 1.10.0 for Python 3: LGPL-3
@@ -33,23 +35,42 @@ PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 
 src_prepare() {
 	pushd "${WORKDIR}/py2cairo-${PYCAIRO_PYTHON2_VERSION}" > /dev/null
+
 	epatch "${FILESDIR}/py2cairo-1.10.0-xpyb_detection.patch"
 	epatch "${FILESDIR}/py2cairo-1.10.0-svg_check.patch"
 	epatch "${FILESDIR}/py2cairo-1.10.0-xpyb_check.patch"
+
 	rm -f src/config.h
+
+	# Use newer Waf.
+	cp "${WORKDIR}/waf-${WAF_VERSION}/waf" .
+
+	# Fix compatibility with newer Waf.
+	# http://cgit.freedesktop.org/pycairo/commit/?id=c57cd129407c904f8c2f752a59d0183df7b01a5e
+	sed -e "s/ctx.\(tool_options\|check_tool\)(/ctx.load(/" -i wscript
+
 	popd > /dev/null
 
 	pushd "${WORKDIR}/pycairo-${PYCAIRO_PYTHON3_VERSION}" > /dev/null
+
 	epatch "${FILESDIR}/${PN}-1.10.0-xpyb_detection.patch"
 	epatch "${FILESDIR}/${PN}-1.10.0-svg_check.patch"
 	epatch "${FILESDIR}/${PN}-1.10.0-xpyb_check.patch"
+
+	# Use newer Waf.
+	cp "${WORKDIR}/waf-${WAF_VERSION}/waf" .
+
+	# Fix compatibility with newer Waf.
+	# http://cgit.freedesktop.org/pycairo/commit/?id=c57cd129407c904f8c2f752a59d0183df7b01a5e
+	sed -e "s/ctx.\(tool_options\|check_tool\)(/ctx.load(/" -i wscript
+
 	popd > /dev/null
 
 	preparation() {
 		if [[ "$(python_get_version -l --major)" == "3" ]]; then
-			cp -r "${WORKDIR}/pycairo-${PYCAIRO_PYTHON3_VERSION}" "${WORKDIR}/${P}-${PYTHON_ABI}"
+			cp -r "${WORKDIR}/pycairo-${PYCAIRO_PYTHON3_VERSION}" "${S}-${PYTHON_ABI}"
 		else
-			cp -r "${WORKDIR}/py2cairo-${PYCAIRO_PYTHON2_VERSION}" "${WORKDIR}/${P}-${PYTHON_ABI}"
+			cp -r "${WORKDIR}/py2cairo-${PYCAIRO_PYTHON2_VERSION}" "${S}-${PYTHON_ABI}"
 		fi
 	}
 	python_execute_function preparation
@@ -64,11 +85,11 @@ src_configure() {
 		export PYCAIRO_DISABLE_XPYB="1"
 	fi
 
-	python_execute_function -s waf-utils_src_configure --nopyc --nopyo
+	WAF_BINARY="./waf" python_execute_function -s waf-utils_src_configure --nopyc --nopyo
 }
 
 src_compile() {
-	python_execute_function -s waf-utils_src_compile
+	WAF_BINARY="./waf" python_execute_function -s waf-utils_src_compile
 }
 
 src_test() {
@@ -81,7 +102,7 @@ src_test() {
 }
 
 src_install() {
-	python_execute_function -s waf-utils_src_install
+	WAF_BINARY="./waf" python_execute_function -s waf-utils_src_install
 
 	dodoc AUTHORS NEWS README
 
