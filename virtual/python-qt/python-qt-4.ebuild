@@ -14,7 +14,7 @@ SRC_URI=""
 LICENSE=""
 SLOT="4"
 KEYWORDS="*"
-IUSE="X declarative help kde multimedia opengl phonon script scripttools sql svg webkit xmlpatterns"
+IUSE="X declarative designer help kde multimedia opengl phonon script scripttools sql svg webkit xmlpatterns"
 
 DEPEND=""
 RDEPEND="$(for PYTHON_ABI in "${_PYTHON_LOCALLY_SUPPORTED_ABIS[@]}"; do
