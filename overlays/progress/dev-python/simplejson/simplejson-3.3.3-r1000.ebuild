@@ -38,7 +38,7 @@ src_test() {
 		if [[ "$(python_get_implementation)" != "Jython" ]]; then
 			ln -fs ../$(ls -d build-${PYTHON_ABI}/lib*)/simplejson/_speedups$(python_get_extension_module_suffix) simplejson/_speedups$(python_get_extension_module_suffix) || return 1
 		fi
-		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" simplejson/tests/__init__.py
+		python_execute PYTHONPATH="$([[ -d build-${PYTHON_ABI}/lib ]] && echo build-${PYTHON_ABI}/lib || ls -d build-${PYTHON_ABI}/lib*)" "$(PYTHON)" simplejson/tests/__init__.py
 	}
 	python_execute_function testing
 }
