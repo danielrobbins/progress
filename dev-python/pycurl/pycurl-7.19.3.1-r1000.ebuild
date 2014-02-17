@@ -7,7 +7,7 @@ PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 DISTUTILS_SRC_TEST="nosetests"
 
-inherit distutils eutils
+inherit distutils
 
 DESCRIPTION="Python bindings for cURL library"
 HOMEPAGE="http://pycurl.sourceforge.net/ https://github.com/pycurl/pycurl https://pypi.python.org/pypi/pycurl"
@@ -32,7 +32,7 @@ src_prepare() {
 }
 
 src_test() {
-	distutils_src_test tests/{easy_test.py,error_test.py,global_init_test.py,internals_test.py,memory_mgmt_test.py,option_constants_test.py,pycurl_object_test.py,unset_range_test.py,version_comparison_test.py,version_test.py,write_abort_test.py,write_cb_bogus_test.py}
+	distutils_src_test tests/{easy_test.py,error_test.py,global_init_test.py,internals_test.py,memory_mgmt_test.py,multi_option_constants_test.py,option_constants_test.py,pycurl_object_test.py,setup_test.py,unset_range_test.py,version_comparison_test.py,version_test.py,write_abort_test.py,write_cb_bogus_test.py}
 }
 
 src_install() {
