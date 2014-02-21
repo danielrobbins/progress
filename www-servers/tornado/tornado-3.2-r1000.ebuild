@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5 3.1 *-jython"
+PYTHON_RESTRICTED_ABIS="3.1 *-jython"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.6"
 
 inherit distutils
@@ -18,8 +18,8 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="curl test"
 
-RDEPEND="curl? ( $(python_abi_depend -e "*-pypy-*" dev-python/pycurl) )
-	$(python_abi_depend virtual/python-json)"
+RDEPEND="$(python_abi_depend -i "2.* 3.1" dev-python/backports.ssl_match_hostname)
+	curl? ( $(python_abi_depend -e "*-pypy-*" dev-python/pycurl) )"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	test? ( $(python_abi_depend -i "2.6" dev-python/unittest2) )"
@@ -32,10 +32,6 @@ src_prepare() {
 		-e "51s/try:/if __import__(\"sys\").version_info < (2, 7):/" \
 		-e "53s/except ImportError:/else:/" \
 		-i tornado/testing.py
-	
-	# Disable tests failing with PycURL and Python 3.
-	sed -e "/^    def test_body_encoding(/a \\        if __import__(\"sys\").version_info >= (3, 0): self.skipTest(\"test broken with PycURL and Python 3\")" -i tornado/test/httpclient_test.py
-	sed -e "/^    def test_digest_auth(/a \\        if __import__(\"sys\").version_info >= (3, 0): self.skipTest(\"test broken with PycURL and Python 3\")" -i tornado/test/curl_httpclient_test.py
 }
 
 src_test() {
@@ -49,7 +45,7 @@ src_install() {
 	distutils_src_install
 
 	delete_tests() {
-		rm -fr "${ED}$(python_get_sitedir)/tornado/test"
+		rm -r "${ED}$(python_get_sitedir)/tornado/test"
 	}
 	python_execute_function -q delete_tests
 }
