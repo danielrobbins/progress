@@ -11,24 +11,30 @@ inherit distutils
 MY_PN="${PN}2"
 MY_P="${MY_PN}-${PV}"
 
-DESCRIPTION="Python bindings for GMP, MPC and MPFR libraries"
+DESCRIPTION="Python bindings for GMP, MPC, MPFR and MPIR libraries"
 HOMEPAGE="http://code.google.com/p/gmpy/ https://pypi.python.org/pypi/gmpy2"
 SRC_URI="http://${PN}.googlecode.com/files/${MY_P}.zip"
 
 LICENSE="LGPL-2.1"
 SLOT="2"
 KEYWORDS="*"
-IUSE="doc"
+IUSE="doc mpir"
 
-RDEPEND="dev-libs/gmp:0=
-	>=dev-libs/mpc-1.0:0=
-	>=dev-libs/mpfr-3.1:0="
+RDEPEND=">=dev-libs/mpc-1.0:0=
+	>=dev-libs/mpfr-3.1:0=
+	!mpir? ( dev-libs/gmp:0= )
+	mpir? ( sci-libs/mpir:0= )"
 DEPEND="${RDEPEND}
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
 
 S="${WORKDIR}/${MY_P}"
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
+
+pkg_setup() {
+	python_pkg_setup
+	DISTUTILS_GLOBAL_OPTIONS=("* $(usex mpir --mpir --gmp)")
+}
 
 src_prepare() {
 	distutils_src_prepare
