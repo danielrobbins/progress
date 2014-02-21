@@ -10,7 +10,7 @@ inherit distutils eutils
 
 DESCRIPTION="Interfaces for Python"
 HOMEPAGE="https://pypi.python.org/pypi/zope.interface"
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.zip"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="ZPL"
 SLOT="0"
@@ -35,6 +35,7 @@ PYTHON_MODULES="${PN/.//}"
 src_prepare() {
 	distutils_src_prepare
 	epatch "${FILESDIR}/${PN}-4.0.1-python-3.1.patch"
+	rm -r docs/_build
 }
 
 src_compile() {
@@ -43,7 +44,7 @@ src_compile() {
 	if use doc; then
 		einfo "Generation of documentation"
 		pushd docs > /dev/null
-		emake html
+		PYTHONPATH="$(ls -d ../build-$(PYTHON -f --ABI)/lib*)" emake html
 		popd > /dev/null
 	fi
 }
