@@ -8,7 +8,7 @@ DISTUTILS_SRC_TEST="nosetests"
 inherit distutils
 
 DESCRIPTION="Very basic event publishing system"
-HOMEPAGE="http://pypi.python.org/pypi/zope.event"
+HOMEPAGE="https://pypi.python.org/pypi/zope.event"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="ZPL"
@@ -24,13 +24,24 @@ DEPEND="${RDEPEND}
 DOCS="CHANGES.txt README.txt"
 PYTHON_MODULES="${PN/.//}"
 
+src_prepare() {
+	distutils_src_prepare
+
+	# Fix generation of documentation with zope.event not installed.
+	sed \
+		-e "/^rqmt = pkg_resources.require('zope.event')\[0\]$/d" \
+		-e "s/^version = '%s.%s' % tuple(map(int, rqmt.version.split('.')\[:2\]))$/version = '%s.%s' % tuple('${PV}'.split('.')[:2])/" \
+		-e "s/^release = rqmt.version$/release = '${PV}'/" \
+		-i docs/conf.py
+}
+
 src_compile() {
 	distutils_src_compile
 
 	if use doc; then
 		einfo "Generation of documentation"
 		pushd docs > /dev/null
-		emake html
+		PYTHONPATH="../build-$(PYTHON -f --ABI)/lib" emake html
 		popd > /dev/null
 	fi
 }
