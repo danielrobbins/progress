@@ -329,6 +329,8 @@ git-r3_fetch() {
 			"refs/heads/*:refs/heads/*"
 			# pull tags explicitly in order to prune them properly
 			"refs/tags/*:refs/tags/*"
+			# notes in case something needs them
+			"refs/notes/*:refs/notes/*"
 		)
 
 		set -- "${fetch_command[@]}"
@@ -446,8 +448,12 @@ git-r3_checkout() {
 	"${@}" || die "git clone (for checkout) failed"
 
 	git-r3_sub_checkout() {
+		local orig_repo=${GIT_DIR}
 		local -x GIT_DIR=${out_dir}/.git
 		local -x GIT_WORK_TREE=${out_dir}
+
+		# pull notes
+		git fetch "${orig_repo}" "refs/notes/*:refs/notes/*" || die
 
 		set -- git checkout --quiet
 		if [[ ${remote_ref} ]]; then
