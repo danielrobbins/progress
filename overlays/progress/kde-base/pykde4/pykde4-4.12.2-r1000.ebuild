@@ -128,7 +128,7 @@ src_install() {
 	# As we don't call the eclass's src_install, we have to install the docs manually
 	DOCS=("${S}"/{AUTHORS,NEWS,README})
 	use doc && HTML_DOCS=("${S}/docs/html/")
-	base_src_install_docs
+	einstalldocs
 
 	if ${have_python2}; then
 		pushd "${WORKDIR}/wrapper" > /dev/null
