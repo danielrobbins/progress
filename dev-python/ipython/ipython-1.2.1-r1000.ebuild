@@ -94,7 +94,7 @@ src_compile() {
 }
 
 src_test() {
-	# https://github.com/ipython/ipython/issues/4051
+	# https://github.com/ipython/ipython/issues/5218
 	unset PYTHONWARNINGS
 
 	if use mongodb; then
