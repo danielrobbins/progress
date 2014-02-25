@@ -443,17 +443,24 @@ git-r3_checkout() {
 		git rev-parse --verify refs/git-r3/"${local_id}"/__main__
 	)
 
-	set -- git clone --quiet --shared --no-checkout "${GIT_DIR}" "${out_dir}"/
-	echo "${@}" >&2
-	"${@}" || die "git clone (for checkout) failed"
-
 	git-r3_sub_checkout() {
 		local orig_repo=${GIT_DIR}
 		local -x GIT_DIR=${out_dir}/.git
 		local -x GIT_WORK_TREE=${out_dir}
 
-		# pull notes
-		git fetch "${orig_repo}" "refs/notes/*:refs/notes/*" || die
+		mkdir -p "${out_dir}" || die
+
+		# use git init+fetch instead of clone since the latter doesn't like
+		# non-empty directories.
+
+		git init --quiet || die
+		set -- git fetch --update-head-ok "${orig_repo}" \
+			"refs/heads/*:refs/heads/*" \
+			"refs/tags/*:refs/tags/*" \
+			"refs/notes/*:refs/notes/*"
+
+		echo "${@}" >&2
+		"${@}" || die "git fetch into checkout dir failed"
 
 		set -- git checkout --quiet
 		if [[ ${remote_ref} ]]; then
