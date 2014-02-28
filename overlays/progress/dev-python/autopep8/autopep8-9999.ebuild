@@ -20,7 +20,8 @@ KEYWORDS=""
 IUSE=""
 
 DEPEND="$(python_abi_depend ">=dev-python/pep8-1.4.6")
-	$(python_abi_depend dev-python/setuptools)"
+	$(python_abi_depend dev-python/setuptools)
+	$(python_abi_depend virtual/python-argparse)"
 RDEPEND="${DEPEND}"
 
 PYTHON_MODULES="${PN}.py"
