@@ -236,6 +236,7 @@ pkg_setup() {
 
 src_prepare() {
 	epatch "${FILESDIR}/${PN}-1.7.1-perl_CFLAGS.patch"
+	sed -e '/LDFLAGS="$LDFLAGS -L$serf_prefix\/lib"/d' -i build/ac-macros/serf.m4
 
 	if ! use test; then
 		sed -i \
