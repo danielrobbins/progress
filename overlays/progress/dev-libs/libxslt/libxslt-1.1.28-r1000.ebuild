@@ -19,7 +19,7 @@ KEYWORDS="*"
 IUSE="crypt debug python static-libs"
 
 RDEPEND=">=dev-libs/libxml2-2.8.0:2
-	crypt?  ( >=dev-libs/libgcrypt-1.1.42:= )
+	crypt?  ( >=dev-libs/libgcrypt-1.1.42:0= )
 	python? ( $(python_abi_depend ">=dev-libs/libxml2-2.8.0:2[python]") )"
 DEPEND="${RDEPEND}"
 
@@ -32,9 +32,6 @@ src_prepare() {
 	epatch "${FILESDIR}"/${PN}.m4-${PN}-1.1.26.patch
 
 	epatch "${FILESDIR}"/${PN}-1.1.26-disable_static_modules.patch
-
-	# Use python-config, not python2.7-config
-	epatch "${FILESDIR}"/${PN}-1.1.27-python-config.patch
 
 	# Python bindings are built/tested/installed manually.
 	sed -i -e 's/$(PYTHON_SUBDIR)//' Makefile.am || die
@@ -69,6 +66,7 @@ src_compile() {
 		python_copy_sources python
 		building() {
 			emake PYTHON_INCLUDES="$(python_get_includedir)" \
+				PYTHON_LIBS="$(python_get_library -l)" \
 				PYTHON_SITE_PACKAGES="$(python_get_sitedir)" \
 				PYTHON_VERSION="$(python_get_version)"
 		}
@@ -94,6 +92,7 @@ src_install() {
 	if use python; then
 		installation() {
 			emake DESTDIR="${D}" \
+				PYTHON_LIBS="$(python_get_library -l)" \
 				PYTHON_SITE_PACKAGES="$(python_get_sitedir)" \
 				install
 		}
