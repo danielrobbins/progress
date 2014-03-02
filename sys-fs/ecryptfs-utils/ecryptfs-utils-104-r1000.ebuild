@@ -18,7 +18,7 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="doc gpg gtk openssl pam pkcs11 python suid tpm"
 
-RDEPEND=">=dev-libs/libgcrypt-1.2.0
+RDEPEND=">=dev-libs/libgcrypt-1.2.0:0=
 	dev-libs/nss
 	>=sys-apps/keyutils-1.0
 	gpg? ( app-crypt/gpgme )
