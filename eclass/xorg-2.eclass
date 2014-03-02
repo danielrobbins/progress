@@ -21,7 +21,7 @@
 
 GIT_ECLASS=""
 if [[ ${PV} == *9999* ]]; then
-	GIT_ECLASS="git-2"
+	GIT_ECLASS="git-r3"
 	XORG_EAUTORECONF="yes"
 fi
 
@@ -329,7 +329,7 @@ xorg-2_src_unpack() {
 	debug-print-function ${FUNCNAME} "$@"
 
 	if [[ -n ${GIT_ECLASS} ]]; then
-		git-2_src_unpack
+		git-r3_src_unpack
 	else
 		unpack ${A}
 	fi
