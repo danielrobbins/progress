@@ -59,6 +59,8 @@ src_prepare() {
 
 	# https://github.com/buildbot/buildbot/issues/1056
 	sed -e "/.. option:: --allow-shutdown/a\\\\" -i- docs/manual/installation.rst
+	# https://github.com/buildbot/buildbot/issues/1086
+	sed -e "s/html_favicon = 'buildbot.ico'/html_favicon = os.path.join('_static', 'buildbot.ico')/" -i docs/conf.py
 }
 
 src_compile() {
