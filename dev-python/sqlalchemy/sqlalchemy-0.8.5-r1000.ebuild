@@ -42,26 +42,22 @@ src_prepare() {
 	distutils_src_prepare
 
 	# Disable tests hardcoding function call counts specific to Python versions.
-	rm -fr test/aaa_profiling
+	rm -r test/aaa_profiling
 
-	# Not needed in SQLAlchemy >=0.9.
-	if [[ "${PV}" == 0.8.* ]]; then
-		sed -e "/^where = test$/d" -i setup.cfg
+	sed -e "/^where = test$/d" -i setup.cfg
 
-		preparation() {
-			cp -r test test-${PYTHON_ABI} || return
-			if [[ "$(python_get_version -l --major)" == "3" ]]; then
-				"$(PYTHON)" sa2to3.py -nw --no-diffs test-${PYTHON_ABI} || return
-			fi
-		}
-		python_execute_function preparation
-	fi
+	preparation() {
+		cp -r test test-${PYTHON_ABI} || return
+		if [[ "$(python_get_version -l --major)" == "3" ]]; then
+			"$(PYTHON)" sa2to3.py -nw --no-diffs test-${PYTHON_ABI} || return
+		fi
+	}
+	python_execute_function preparation
 }
 
 src_test() {
 	testing() {
 		# Based on sqla_nose.py.
-		# '-w test-${PYTHON_ABI}' not needed in SQLAlchemy >=0.9.
 		python_execute PYTHONPATH="$(ls -d build-${PYTHON_ABI}/lib*):$(ls -d build-${PYTHON_ABI}/lib*/sqlalchemy/testing/plugin)" "$(PYTHON)" -c "import nose, noseplugin; nose.main(addplugins=[noseplugin.NoseSQLAlchemy()])" -w test-${PYTHON_ABI}
 	}
 	python_execute_function testing
@@ -71,7 +67,7 @@ src_install() {
 	distutils_src_install
 
 	if use doc; then
-		rm -fr doc/build
+		rm -r doc/build
 		dohtml -r doc/
 	fi
 
