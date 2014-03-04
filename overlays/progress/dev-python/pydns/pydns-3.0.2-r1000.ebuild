@@ -27,7 +27,6 @@ DEPEND="${RDEPEND}
 
 S="${WORKDIR}/${MY_P}"
 
-DOCS="CHANGES CREDITS"
 PYTHON_MODULES="DNS"
 
 src_prepare() {
@@ -36,7 +35,7 @@ src_prepare() {
 	# Clean documentation.
 	mv CREDITS.txt CREDITS
 	mv README.txt README
-	rm -f README-guido.txt
+	rm README-guido.txt
 }
 
 src_install(){
