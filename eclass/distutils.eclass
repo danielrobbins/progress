@@ -365,8 +365,8 @@ distutils_src_test() {
 # The distutils src_install function. This function is exported.
 # In ebuilds of packages supporting installation for multiple versions of Python, this function
 # calls distutils_src_install_pre_hook() and distutils_src_install_post_hook(), if they are defined.
-# It also installs some standard documentation files (AUTHORS, Change*, CHANGELOG, CONTRIBUTORS,
-# KNOWN_BUGS, MAINTAINERS, NEWS, README*, TODO).
+# It also installs some standard documentation files (AUTHORS, BUGS, Change*, CHANGELOG, CHANGES,
+# CONTRIBUTORS, CREDITS, KNOWN_BUGS, MAINTAINERS, NEWS, README*, THANKS, TODO).
 distutils_src_install() {
 	if [[ "${EBUILD_PHASE}" != "install" ]]; then
 		die "${FUNCNAME}() can be used only in src_install() phase"
@@ -438,7 +438,7 @@ distutils_src_install() {
 
 
 	if [[ -z "$(declare -p DOCS 2> /dev/null)" ]]; then
-		for doc in AUTHORS Change* CHANGELOG CONTRIBUTORS KNOWN_BUGS MAINTAINERS NEWS README* TODO; do
+		for doc in AUTHORS BUGS Change* CHANGELOG CHANGES CONTRIBUTORS CREDITS KNOWN_BUGS MAINTAINERS NEWS README* THANKS TODO; do
 			[[ -s "${doc}" ]] && dodoc "${doc}"
 		done
 	elif [[ -n "${DOCS}" ]]; then
