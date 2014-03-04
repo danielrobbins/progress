@@ -22,7 +22,6 @@ RDEPEND="!dev-python/pydns:0
 DEPEND="${RDEPEND}
 	virtual/libiconv"
 
-DOCS="CREDITS"
 PYTHON_MODULES="DNS"
 
 src_prepare() {
@@ -40,7 +39,7 @@ src_prepare() {
 	# Clean documentation.
 	mv CREDITS.txt CREDITS
 	mv README.txt README
-	rm -f README-guido.txt
+	rm README-guido.txt
 }
 
 src_install(){
