@@ -4,7 +4,6 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5"
 
 inherit distutils versionator
 
@@ -18,7 +17,8 @@ KEYWORDS="*"
 IUSE=""
 
 DEPEND="$(python_abi_depend dev-python/authres)
-	$(python_abi_depend ">=dev-python/pyspf-2.0")"
+	$(python_abi_depend ">=dev-python/pyspf-2.0")
+	$(python_abi_depend virtual/python-ipaddress)"
 RDEPEND="${DEPEND}"
 
 PYTHON_MODULES="policydspfsupp.py policydspfuser.py"
