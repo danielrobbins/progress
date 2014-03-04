@@ -577,6 +577,10 @@ git-r3_fetch() {
 	done
 	[[ ${success} ]] || die "Unable to fetch from any of EGIT_REPO_URI"
 
+	# submodules can reference commits in any branch
+	# always use the 'clone' mode to accomodate that, bug #503332
+	local EGIT_CLONE_TYPE=mirror
+
 	# recursively fetch submodules
 	if git cat-file -e "${local_ref}":.gitmodules &>/dev/null; then
 		local submodules
