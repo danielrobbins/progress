@@ -9,7 +9,7 @@ inherit distutils
 
 DESCRIPTION="Python IP address manipulation library"
 HOMEPAGE="http://code.google.com/p/ipaddr-py/ https://pypi.python.org/pypi/ipaddr"
-SRC_URI="http://ipaddr-py.googlecode.com/files/${P}.tar.gz"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="Apache-2.0"
 SLOT="0"
