@@ -31,6 +31,9 @@ DOCS="CHANGES.rst CONTRIBUTORS.txt README.rst"
 src_prepare() {
 	distutils_src_prepare
 
+	# Fix compatibility with Python 3.1.
+	sed -e "s/if sys.version_info < (2, 7):/if sys.version_info < (2, 7) or sys.version_info[:2] == (3, 1):/" -i urllib3/connection.py
+
 	# Install not dummyserver.
 	sed -e "s/, 'dummyserver'//" -i setup.py
 
