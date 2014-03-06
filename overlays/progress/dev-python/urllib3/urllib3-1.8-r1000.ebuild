@@ -17,7 +17,8 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="test"
 
-RDEPEND="$(python_abi_depend dev-python/six)"
+RDEPEND="$(python_abi_depend -i "2.* 3.1" dev-python/backports.ssl_match_hostname)
+	$(python_abi_depend dev-python/six)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	test? (
@@ -30,7 +31,7 @@ DOCS="CHANGES.rst CONTRIBUTORS.txt README.rst"
 src_prepare() {
 	distutils_src_prepare
 
-	# Do not install dummyserver.
+	# Install not dummyserver.
 	sed -e "s/, 'dummyserver'//" -i setup.py
 
 	# Use system version of dev-python/six.
@@ -42,7 +43,7 @@ src_prepare() {
 		-e "s/from urllib3.packages import six/import six/" \
 		-e "s/from urllib3.packages.six import/from six import/" \
 		-i test/*.py
-	rm -f urllib3/packages/six.py
+	rm urllib3/packages/six.py
 
 	# Disable minimum percentage of coverage for tests to pass.
 	sed -e "/cover-min-percentage = 100/d" -i setup.cfg
