@@ -73,10 +73,11 @@ src_install() {
 
 	if use doc; then
 		docinto developers
-		dodoc doc/developers/*
-		for doc in mini-tutorial tutorials user-{guide,reference}; do
-			docinto ${doc}
-			dodoc doc/en/${doc}/*
+		dodoc -r doc/developers/*
+		local dir
+		for dir in mini-tutorial tutorials user-{guide,reference}; do
+			docinto ${dir}
+			dodoc -r doc/en/${dir}/*
 		done
 	fi
 
