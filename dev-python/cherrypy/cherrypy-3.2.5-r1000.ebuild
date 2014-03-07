@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_TESTS_RESTRICTED_ABIS="3.3 3.4 *-jython"
+PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
@@ -37,6 +37,17 @@ src_prepare() {
 	# https://bitbucket.org/cherrypy/cherrypy/issue/1234
 	sed -e "s/assertIsInstance(res, bytestr)/assertTrue(isinstance(res, bytestr))/" -i cherrypy/test/test_tools.py
 
+	# Disable hanging tests.
+	sed -e "s/testCookies/_&/" -i cherrypy/test/test_core.py
+	sed -e "s/testEncoding/_&/" -i cherrypy/test/test_encoding.py
+	sed -e "s/test_multipart_decoding(/_&/" -i cherrypy/test/test_encoding.py
+	sed -e "s/test_multipart_decoding_no_charset/_&/" -i cherrypy/test/test_encoding.py
+	sed -e "s/test_json_output/_&/" -i cherrypy/test/test_json.py
+	sed -e "s/testErrorHandling/_&/" -i cherrypy/test/test_request_obj.py
+	sed -e "s/testParams/_&/" -i cherrypy/test/test_request_obj.py
+	sed -e "135s/test_0_Session/_&/" -i cherrypy/test/test_session.py
+	sed -e "s/test_config_errors/_&/" -i cherrypy/test/test_static.py
+
 	# Disable failing test.
 	sed -e "s/test_file_stream(/_&/" -i cherrypy/test/test_static.py
 }
@@ -49,7 +60,7 @@ src_install() {
 	distutils_src_install
 
 	delete_tests() {
-		rm -fr "${ED}$(python_get_sitedir)/cherrypy/test"
+		rm -r "${ED}$(python_get_sitedir)/cherrypy/test"
 	}
 	python_execute_function -q delete_tests
 
