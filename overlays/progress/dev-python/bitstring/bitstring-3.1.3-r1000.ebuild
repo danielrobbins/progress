@@ -4,14 +4,14 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5 *-jython"
+PYTHON_RESTRICTED_ABIS="*-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
 
 DESCRIPTION="Simple construction, analysis and modification of binary data."
 HOMEPAGE="http://code.google.com/p/python-bitstring/ https://pypi.python.org/pypi/bitstring"
-SRC_URI="http://python-bitstring.googlecode.com/files/${P}.zip"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.zip"
 
 LICENSE="MIT"
 SLOT="0"
