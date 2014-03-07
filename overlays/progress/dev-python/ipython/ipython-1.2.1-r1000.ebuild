@@ -47,7 +47,7 @@ RDEPEND="$(python_abi_depend dev-python/decorator)
 	qt4? (
 		$(python_abi_depend -e "*-pypy-*" dev-python/pygments)
 		$(python_abi_depend -e "*-pypy-*" ">=dev-python/pyzmq-2.1.11")
-		$(python_abi_depend -e "*-pypy-*" virtual/python-qt:4)
+		$(python_abi_depend -e "*-pypy-*" virtual/python-qt:4[X,svg])
 	)
 	smp? ( $(python_abi_depend -e "*-pypy-*" ">=dev-python/pyzmq-2.1.11") )
 	wxwidgets? ( $(python_abi_depend -i "2.*-cpython" dev-python/wxpython) )"
