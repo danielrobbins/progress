@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5 3.*"
+PYTHON_RESTRICTED_ABIS="3.*"
 
 inherit distutils eutils
 
@@ -27,4 +27,5 @@ PYTHON_MODULES="dot_parser.py pydot.py"
 src_prepare() {
 	distutils_src_prepare
 	epatch "${FILESDIR}/${PN}-1.0.23-setup.patch"
+	epatch "${FILESDIR}/${PN}-1.0.28-pyparsing-2.patch"
 }
