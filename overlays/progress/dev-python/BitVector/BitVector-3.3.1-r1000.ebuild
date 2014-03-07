@@ -4,12 +4,11 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5"
 
 inherit distutils
 
 DESCRIPTION="A pure-Python memory-efficient packed representation for bit arrays"
-HOMEPAGE="https://engineering.purdue.edu/kak/dist/ http://pypi.python.org/pypi/BitVector"
+HOMEPAGE="https://engineering.purdue.edu/kak/dist/ https://pypi.python.org/pypi/BitVector"
 SRC_URI="https://engineering.purdue.edu/kak/dist/${P}.tar.gz"
 
 LICENSE="PSF-2"
