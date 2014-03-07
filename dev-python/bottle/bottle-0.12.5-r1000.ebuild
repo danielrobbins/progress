@@ -3,12 +3,13 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
+# 3.[4-9]: https://github.com/defnull/bottle/issues/567
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.[4-9] *-jython"
 
 inherit distutils
 
 DESCRIPTION="Fast and simple WSGI-framework for small web-applications."
-HOMEPAGE="http://bottlepy.org/ https://github.com/defnull/bottle http://pypi.python.org/pypi/bottle"
+HOMEPAGE="http://bottlepy.org/ https://github.com/defnull/bottle https://pypi.python.org/pypi/bottle"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
