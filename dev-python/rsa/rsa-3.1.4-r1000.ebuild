@@ -10,8 +10,7 @@ inherit distutils
 
 DESCRIPTION="Pure-Python RSA implementation"
 HOMEPAGE="http://stuvel.eu/rsa https://pypi.python.org/pypi/rsa"
-# SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
-SRC_URI="https://bitbucket.org/sybren/python-rsa/get/version-${PV}.tar.bz2 -> ${P}.tar.bz2"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="Apache-2.0"
 SLOT="0"
@@ -21,8 +20,3 @@ IUSE=""
 DEPEND="$(python_abi_depend ">=dev-python/pyasn1-0.1.3")
 	$(python_abi_depend dev-python/setuptools)"
 RDEPEND="${DEPEND}"
-
-src_unpack() {
-	default
-	mv sybren-python-rsa-* ${P}
-}
