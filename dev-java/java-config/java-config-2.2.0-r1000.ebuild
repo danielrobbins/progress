@@ -15,7 +15,7 @@ SRC_URI="http://dev.gentoo.org/~sera/distfiles/${P}.tar.bz2"
 
 LICENSE="GPL-2"
 SLOT="2"
-KEYWORDS="~*"
+KEYWORDS="~* amd64"
 IUSE=""
 
 # baselayout-java is added as a dep till it can be added to eclass.
