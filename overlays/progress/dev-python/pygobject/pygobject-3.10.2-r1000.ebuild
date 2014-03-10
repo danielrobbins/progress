@@ -17,7 +17,7 @@ SRC_URI+=" python_abis_2.6? ( mirror://gnome/sources/${PN}/3.8/${PN}-3.8.3.tar.x
 
 LICENSE="LGPL-2.1+"
 SLOT="3"
-KEYWORDS="~*"
+KEYWORDS="*"
 IUSE="+cairo examples test +threads"
 REQUIRED_USE="test? ( cairo )"
 
