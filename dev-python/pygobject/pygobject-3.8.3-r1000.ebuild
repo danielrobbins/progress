@@ -25,8 +25,8 @@ COMMON_DEPEND=">=dev-libs/glib-2.34.2:2
 	cairo? ( $(python_abi_depend ">=dev-python/pycairo-1.10.0") )"
 DEPEND="${COMMON_DEPEND}
 	gnome-base/gnome-common
-	x11-libs/cairo[glib]
 	virtual/pkgconfig
+	cairo? ( x11-libs/cairo[glib] )
 	test? (
 		dev-libs/atk[introspection]
 		$(python_abi_depend -i "2.6 3.1" dev-python/unittest2)
@@ -42,6 +42,7 @@ DEPEND="${COMMON_DEPEND}
 # older versions of slot 2 installed their own site-packages/gi, and
 # slot 3 will collide with them.
 RDEPEND="${COMMON_DEPEND}
+	cairo? ( x11-libs/cairo )
 	!<dev-python/pygtk-2.13
 	!<dev-python/pygobject-2.28.6-r50:2[introspection]"
 
