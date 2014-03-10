@@ -46,7 +46,6 @@ src_prepare() {
 		-i doc/conf.py
 
 	# Fix compatibility with Python 3.
-	sed -e "s/return map(int, gcc_version.split('.')\[0:2\])/return [int(x) for x in gcc_version.split('.')[0:2]]/" -i configure.py
 	sed -e "s/_botan/.&/" -i src/wrap/python/__init__.py || die "sed failed"
 }
 
@@ -98,7 +97,7 @@ src_compile() {
 
 	if use python; then
 		python_copy_sources build/python
-		rm -fr build/python
+		rm -r build/python
 
 		building() {
 			rm -f build/python || return
