@@ -26,7 +26,7 @@ src_prepare() {
 	distutils_src_prepare
 
 	# Disable failing test.
-	rm -f test/tm-cases/issue52_hang.*
+	rm test/tm-cases/issue52_hang.*
 }
 
 src_test() {
