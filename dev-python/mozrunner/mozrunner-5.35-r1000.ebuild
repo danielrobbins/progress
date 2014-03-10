@@ -23,7 +23,7 @@ DEPEND="$(python_abi_depend ">=dev-python/mozcrash-0.11")
 	$(python_abi_depend ">=dev-python/mozfile-1.0")
 	$(python_abi_depend ">=dev-python/mozinfo-0.7")
 	$(python_abi_depend ">=dev-python/mozlog-1.5")
-	$(python_abi_depend ">=dev-python/mozprocess-0.15")
+	$(python_abi_depend ">=dev-python/mozprocess-0.17")
 	$(python_abi_depend ">=dev-python/mozprofile-0.18")
 	$(python_abi_depend dev-python/setuptools)"
 RDEPEND="${DEPEND}"
