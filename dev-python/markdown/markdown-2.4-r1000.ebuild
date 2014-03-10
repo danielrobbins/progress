@@ -5,7 +5,8 @@
 EAPI="5-progress"
 PYTHON_DEPEND="<<[{*-cpython}xml]>>"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5"
+# 3.1, 3.2: https://github.com/waylan/Python-Markdown/issues/295
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.1 3.2"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
@@ -26,6 +27,13 @@ DEPEND=""
 RDEPEND="pygments? ( $(python_abi_depend dev-python/pygments) )"
 
 S="${WORKDIR}/${MY_P}"
+
+src_prepare() {
+	distutils_src_prepare
+
+	# https://github.com/waylan/Python-Markdown/issues/294
+	sed -e "s/self.assertIs(markdown.util.parseBoolValue(value, False), result)/self.assertTrue(markdown.util.parseBoolValue(value, False) is result)/" -i tests/test_apis.py
+}
 
 src_install() {
 	distutils_src_install
