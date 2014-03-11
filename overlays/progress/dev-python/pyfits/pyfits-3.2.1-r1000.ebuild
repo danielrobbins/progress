@@ -20,7 +20,7 @@ IUSE=""
 
 RDEPEND="$(python_abi_depend dev-python/numpy)
 	$(python_abi_depend dev-python/setuptools)
-	sci-libs/cfitsio
+	sci-libs/cfitsio:0=
 	!dev-python/astropy"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/d2to1)
@@ -34,7 +34,7 @@ src_prepare() {
 	# Delete internal copy of sci-libs/cfitsio.
 	rm -r cextern
 
-	epatch "${FILESDIR}/${P}-use_system_libraries.patch"
+	epatch "${FILESDIR}/${PN}-3.2-use_system_libraries.patch"
 }
 
 src_test() {
