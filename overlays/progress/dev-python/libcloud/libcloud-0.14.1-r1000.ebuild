@@ -23,12 +23,15 @@ IUSE="examples ssh test"
 RDEPEND="$(python_abi_depend dev-python/lockfile)
 	ssh? ( $(python_abi_depend -i "2.*-cpython" dev-python/paramiko) )"
 DEPEND="${RDEPEND}
+	$(python_abi_depend dev-python/setuptools)
 	test? (
 		$(python_abi_depend dev-python/mock)
 		$(python_abi_depend -i "2.6" dev-python/unittest2)
 	)"
 
 S="${WORKDIR}/apache-${P}"
+
+DOCS="CHANGES.rst"
 
 src_prepare() {
 	distutils_src_prepare
@@ -39,7 +42,7 @@ src_install() {
 	distutils_src_install
 
 	delete_tests() {
-		rm -fr "${ED}$(python_get_sitedir)/libcloud/test"
+		rm -r "${ED}$(python_get_sitedir)/libcloud/test"
 	}
 	python_execute_function -q delete_tests
 
