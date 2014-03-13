@@ -19,7 +19,8 @@ IUSE="doc"
 
 RDEPEND="$(python_abi_depend dev-python/decorator)
 	$(python_abi_depend dev-python/setuptools)
-	$(python_abi_depend ">=dev-python/sqlalchemy-0.6")
+	$(python_abi_depend dev-python/six)
+	$(python_abi_depend ">=dev-python/sqlalchemy-0.7.8")
 	$(python_abi_depend dev-python/tempita)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/pbr)
