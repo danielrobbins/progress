@@ -34,7 +34,7 @@ src_install() {
 
 	delete_version-specific_modules() {
 		if [[ "$(python_get_version -l --major)" == "2" ]]; then
-			rm -f "${ED}$(python_get_sitedir)/testtools/_compat3x.py"
+			rm "${ED}$(python_get_sitedir)/testtools/_compat3x.py"
 		fi
 	}
 	python_execute_function -q delete_version-specific_modules
