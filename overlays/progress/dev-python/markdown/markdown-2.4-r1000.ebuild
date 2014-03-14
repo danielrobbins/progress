@@ -5,8 +5,6 @@
 EAPI="5-progress"
 PYTHON_DEPEND="<<[{*-cpython}xml]>>"
 PYTHON_MULTIPLE_ABIS="1"
-# 3.1, 3.2: https://github.com/waylan/Python-Markdown/issues/295
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.1 3.2"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
@@ -33,6 +31,10 @@ src_prepare() {
 
 	# https://github.com/waylan/Python-Markdown/issues/294
 	sed -e "s/self.assertIs(markdown.util.parseBoolValue(value, False), result)/self.assertTrue(markdown.util.parseBoolValue(value, False) is result)/" -i tests/test_apis.py
+
+	# https://github.com/waylan/Python-Markdown/issues/295
+	# https://github.com/waylan/Python-Markdown/commit/4ca11effd18372dc6b5e8cf852130a7e75c27eb6
+	sed -e "s/^closeClass = r/closeClass = /" -i markdown/extensions/smarty.py
 }
 
 src_install() {
