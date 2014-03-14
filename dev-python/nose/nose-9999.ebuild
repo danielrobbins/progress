@@ -4,7 +4,10 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.6 *-jython"
+# 2.6: https://github.com/nose-devs/nose/issues/781
+# 3.[3-9]: https://github.com/nose-devs/nose/issues/782
+# 3.[4-9]: https://github.com/nose-devs/nose/issues/783
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.6 3.[3-9] *-jython"
 
 inherit distutils git-2
 
@@ -43,9 +46,6 @@ src_prepare() {
 		-e "s/test_raises_bad_return/_&/g" \
 		-e "s/test_raises_twisted_error/_&/g" \
 		-i unit_tests/test_twisted.py || die "sed failed"
-
-	# Disable failing doctest.
-	rm functional_tests/doc_tests/test_multiprocess/multiprocess.rst
 }
 
 src_compile() {
@@ -60,16 +60,18 @@ src_compile() {
 }
 
 src_test() {
+	# Some test failures result in leaving of some files causing test failures with other Python ABIs.
+	python_copy_sources
+
 	testing() {
 		if [[ "$(python_get_version -l --major)" == "3" ]]; then
-			rm -fr build || return
 			python_execute "$(PYTHON)" setup.py build_tests || return
 		fi
 
 		python_execute "$(PYTHON)" setup.py egg_info || return
 		python_execute PATH="$(pwd)/bin:${PATH}" PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" selftest.py -v
 	}
-	python_execute_function testing
+	python_execute_function -s testing
 }
 
 src_install() {
