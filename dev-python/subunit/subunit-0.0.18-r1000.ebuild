@@ -18,14 +18,22 @@ SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 LICENSE="|| ( Apache-2.0 BSD )"
 SLOT="0"
 KEYWORDS="*"
-IUSE=""
+IUSE="test"
 
 RDEPEND="$(python_abi_depend dev-python/extras)
 	$(python_abi_depend ">=dev-python/testtools-0.9.34")"
 DEPEND="${RDEPEND}
-	$(python_abi_depend dev-python/setuptools)"
+	$(python_abi_depend dev-python/setuptools)
+	test? ( $(python_abi_depend dev-python/testscenarios) )"
 
 S="${WORKDIR}/${MY_P}"
+
+src_prepare() {
+	distutils_src_prepare
+
+	# https://bugs.launchpad.net/subunit/+bug/1292757
+	sed -e "/testscenarios/d" -i setup.py
+}
 
 src_test() {
 	testing() {
