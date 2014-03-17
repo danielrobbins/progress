@@ -43,7 +43,7 @@ REQUIRED_USE="
 # Minimal supported version of Qt.
 QT_PV="4.8.0:4"
 
-RDEPEND="$(python_abi_depend ">=dev-python/sip-4.15:0=")
+RDEPEND="$(python_abi_depend ">=dev-python/sip-4.15.5:0=")
 	>=dev-qt/qtcore-${QT_PV}
 	X? (
 		>=dev-qt/qtgui-${QT_PV}
@@ -92,9 +92,9 @@ src_prepare() {
 
 	preparation() {
 		if [[ "$(python_get_version -l --major)" == "3" ]]; then
-			rm -fr pyuic/uic/port_v2
+			rm -r pyuic/uic/port_v2
 		else
-			rm -fr pyuic/uic/port_v3
+			rm -r pyuic/uic/port_v3
 		fi
 	}
 	python_execute_function -s preparation
