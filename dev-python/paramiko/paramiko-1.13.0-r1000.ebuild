@@ -4,12 +4,14 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
+# 3.[4-9]: https://github.com/paramiko/paramiko/issues/286
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.[4-9]"
 
 inherit distutils
 
 DESCRIPTION="SSH2 protocol library"
-HOMEPAGE="https://github.com/paramiko/paramiko https://pypi.python.org/pypi/paramiko"
+HOMEPAGE="http://www.paramiko.org/ https://github.com/paramiko/paramiko https://pypi.python.org/pypi/paramiko"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="LGPL-2.1"
@@ -22,6 +24,13 @@ RDEPEND="$(python_abi_depend dev-python/ecdsa)
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
+src_prepare() {
+	distutils_src_prepare
+
+	# Fix compatibility with Python 3.1.
+	sed -e "52s/if PY2:/if PY2 or __import__('sys').version_info[:2] == (3, 1):/" -i paramiko/buffered_pipe.py
+}
+
 src_test() {
 	testing() {
 		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" test.py --verbose
@@ -33,7 +42,7 @@ src_install() {
 	distutils_src_install
 
 	if use doc; then
-		dohtml docs/*
+		dohtml -r docs/
 	fi
 
 	if use examples; then
