@@ -28,7 +28,7 @@ fi
 
 LICENSE="|| ( GPL-2 GPL-3 sip )"
 # Subslot based on SIP_API_MAJOR_NR from siplib/sip.h.in
-SLOT="0/10"
+SLOT="0/11"
 KEYWORDS="*"
 IUSE="debug doc"
 
@@ -51,7 +51,7 @@ src_prepare() {
 		fi
 	fi
 
-	epatch "${FILESDIR}/${PN}-4.9.3-darwin.patch"
+	epatch "${FILESDIR}/${PN}-4.15.5-darwin.patch"
 	python_src_prepare
 }
 
