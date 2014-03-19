@@ -25,11 +25,13 @@ IUSE=""
 
 KEYWORDS=""
 
+# DEPEND="$(python_abi_depend sys-apps/portage)"
 DEPEND="sys-apps/portage"
 RDEPEND="${DEPEND}
 	!<=app-portage/gentoolkit-dev-0.2.7
 	|| ( >=sys-apps/coreutils-8.15 sys-freebsd/freebsd-bin )
 	sys-apps/gawk
+	sys-apps/gentoo-functions
 	sys-apps/grep
 	$(python_abi_depend virtual/python-argparse)"
 
