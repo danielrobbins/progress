@@ -20,6 +20,7 @@ IUSE=""
 
 KEYWORDS="*"
 
+# DEPEND="$(python_abi_depend sys-apps/portage)"
 DEPEND="sys-apps/portage"
 RDEPEND="${DEPEND}
 	!<=app-portage/gentoolkit-dev-0.2.7
@@ -27,6 +28,13 @@ RDEPEND="${DEPEND}
 	sys-apps/gawk
 	sys-apps/grep
 	$(python_abi_depend virtual/python-argparse)"
+# sys-apps/gentoo-functions
+
+src_prepare() {
+	distutils_src_prepare
+	epatch "${FILESDIR}/${PV}-revdep-rebuild-py-504654-1.patch"
+	epatch "${FILESDIR}/${PV}-revdep-rebuild-py-504654-2.patch"
+}
 
 distutils_src_compile_pre_hook() {
 	python_execute VERSION="${PVR}" "$(PYTHON)" setup.py set_version || die "setup.py set_version failed"
