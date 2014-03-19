@@ -44,10 +44,10 @@ src_install() {
 	distutils_src_install
 
 	delete_tests_and_incompatible_modules() {
-		rm -fr "${ED}$(python_get_sitedir)/chameleon/tests"
+		rm -r "${ED}$(python_get_sitedir)/chameleon/tests"
 
 		if [[ "$(python_get_version -l --major)" == "3" ]]; then
-			rm -f "${ED}$(python_get_sitedir)/chameleon/"{benchmark.py,py25.py}
+			rm "${ED}$(python_get_sitedir)/chameleon/"{benchmark.py,py25.py}
 		fi
 	}
 	python_execute_function -q delete_tests_and_incompatible_modules
