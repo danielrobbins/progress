@@ -21,18 +21,9 @@ RDEPEND=""
 
 PYTHON_MODULES="BitVector.py"
 
-src_prepare() {
-	distutils_src_prepare
-
-	# Do not install test.py.
-	rm -f test.py
-}
-
 src_test() {
-	cd Test${PN}
-
 	testing() {
-		python_execute PYTHONPATH="../build-${PYTHON_ABI}/lib" "$(PYTHON)" Test.py
+		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" TestBitVector/Test.py
 	}
 	python_execute_function testing
 }
