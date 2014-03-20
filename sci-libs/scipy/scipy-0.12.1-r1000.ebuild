@@ -67,7 +67,7 @@ pc_libs() {
 	$(tc-getPKG_CONFIG) --libs-only-l $@ | \
 		sed -e 's/[ ]-l*\(pthread\|m\)\([ ]\|$\)//g' \
 		-e 's/^-l//' -e 's/[ ]*-l/,/g' -e 's/[ ]*$//' \
-		| sort | uniq | tr '\n' ','
+		| tr ',' '\n' | sort | uniq | tr '\n' ','
 }
 
 src_prepare() {
