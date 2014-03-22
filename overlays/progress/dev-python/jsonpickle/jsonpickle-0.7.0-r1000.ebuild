@@ -5,7 +5,8 @@
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.1"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.6 *-jython"
+# 3.[4-9]: https://github.com/jsonpickle/jsonpickle/issues/68
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.6 3.[4-9] *-jython"
 
 inherit distutils
 
@@ -18,16 +19,15 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="test"
 
-RDEPEND="$(python_abi_depend virtual/python-json[external])"
-DEPEND="${RDEPEND}
-	$(python_abi_depend dev-python/setuptools)
+DEPEND="$(python_abi_depend dev-python/setuptools)
 	test? ( $(python_abi_depend dev-python/feedparser) )"
+RDEPEND=""
 
 src_prepare() {
 	distutils_src_prepare
 
-	# https://github.com/jsonpickle/jsonpickle/issues/51
-	sed -e "s/self.fail/getattr(self, 'skipTest', self.fail)/" -i tests/backends_tests.py tests/thirdparty_tests.py
+	# Work around bug in libxml2 or feedparser.
+	sed -e "s/^\([[:space:]]*\)self.doc = feedparser.parse(RSS_DOC)$/\1if 'drv_libxml2' in feedparser.PREFERRED_XML_PARSERS: feedparser.PREFERRED_XML_PARSERS.remove('drv_libxml2')\n&/" -i tests/thirdparty_tests.py
 }
 
 src_test() {
