@@ -40,7 +40,7 @@ src_install() {
 	distutils_src_install
 
 	delete_zoneinfo() {
-		rm -fr "${ED}$(python_get_sitedir)/pytz/zoneinfo"
+		rm -r "${ED}$(python_get_sitedir)/pytz/zoneinfo"
 	}
 	python_execute_function -q delete_zoneinfo
 }
