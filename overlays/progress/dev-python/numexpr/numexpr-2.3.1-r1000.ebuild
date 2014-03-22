@@ -9,8 +9,8 @@ PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 inherit distutils
 
 DESCRIPTION="Fast numerical expression evaluator for NumPy"
-HOMEPAGE="http://code.google.com/p/numexpr/ https://pypi.python.org/pypi/numexpr"
-SRC_URI="http://${PN}.googlecode.com/files/${P}.tar.gz"
+HOMEPAGE="https://github.com/pydata/numexpr https://pypi.python.org/pypi/numexpr"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
@@ -22,7 +22,7 @@ RDEPEND="$(python_abi_depend dev-python/numpy)
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
-DOCS="ANNOUNCE.txt AUTHORS.txt README.txt RELEASE_NOTES.txt"
+DOCS="ANNOUNCE.rst AUTHORS.txt README.rst RELEASE_NOTES.rst"
 
 src_prepare() {
 	if use mkl; then
