@@ -10,7 +10,7 @@ inherit distutils
 
 DESCRIPTION="Network address representation and manipulation library"
 HOMEPAGE="https://github.com/drkjam/netaddr https://pypi.python.org/pypi/netaddr"
-SRC_URI="mirror://github/drkjam/${PN}/${P}.tar.gz"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
@@ -31,6 +31,6 @@ src_install() {
 	distutils_src_install
 
 	if ! use cli; then
-		rm -f "${ED}usr/bin/netaddr"*
+		rm -r "${ED}usr/bin"
 	fi
 }
