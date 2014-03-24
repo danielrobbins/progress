@@ -25,7 +25,8 @@ RDEPEND="$(python_abi_depend dev-python/cssselect)
 	requests? ( $(python_abi_depend dev-python/requests) )
 	restkit? ( $(python_abi_depend -i "2.*" dev-python/restkit) )"
 DEPEND="${RDEPEND}
-	$(python_abi_depend dev-python/setuptools)"
+	$(python_abi_depend dev-python/setuptools)
+	test? ( $(python_abi_depend dev-python/webtest) )"
 
 DOCS="CHANGES.rst README.rst"
 
