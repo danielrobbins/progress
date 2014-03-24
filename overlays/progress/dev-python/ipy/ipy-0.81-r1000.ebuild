@@ -4,8 +4,6 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-# 2.5: https://github.com/haypo/python-ipy/issues/16
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.5"
 
 inherit distutils
 
@@ -26,7 +24,7 @@ RDEPEND=""
 
 S="${WORKDIR}/${MY_P}"
 
-DOCS="ChangeLog README"
+DOCS="AUTHORS ChangeLog README"
 PYTHON_MODULES="IPy.py"
 
 src_test() {
