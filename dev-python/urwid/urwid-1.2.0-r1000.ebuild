@@ -6,13 +6,12 @@ EAPI="5-progress"
 PYTHON_DEPEND="<<[ncurses]>>"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.1 *-pypy-*"
 DISTUTILS_SRC_TEST="setup.py"
 
 inherit distutils
 
 DESCRIPTION="Urwid is a curses-based user interface library for Python"
-HOMEPAGE="http://urwid.org/ https://pypi.python.org/pypi/urwid"
+HOMEPAGE="http://urwid.org/ https://github.com/wardi/urwid https://pypi.python.org/pypi/urwid"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="LGPL-2.1"
@@ -46,6 +45,13 @@ src_prepare() {
 	if [[ "$(python_get_version -f -l --major)" == "3" ]]; then
 		2to3-$(PYTHON -f --ABI) -nw --no-diffs docs/conf.py
 	fi
+
+	# Disable failing tests.
+	# https://github.com/wardi/urwid/issues/62
+	sed \
+		-e "90a\\        def test_run(self): pass" \
+		-e "128a\\        def test_run(self): pass" \
+		-i urwid/tests/test_event_loops.py
 }
 
 src_compile() {
@@ -59,6 +65,11 @@ src_compile() {
 
 src_install() {
 	distutils_src_install
+
+	delete_tests() {
+		rm -r "${ED}$(python_get_sitedir)/urwid/tests"
+	}
+	python_execute_function -q delete_tests
 
 	if use doc; then
 		dohtml -r html/
