@@ -44,6 +44,13 @@ S="${WORKDIR}/${MY_P}"
 
 DOCS="CHANGELOG.rst README.rst"
 
+src_prepare() {
+	distutils_src_prepare
+
+	# Fix generation of documentation with WebTest not installed.
+	sed -e "s/^version = pkg_resources.get_distribution(project).version$/version = '${PV}'/" -i docs/conf.py
+}
+
 src_compile() {
 	distutils_src_compile
 
