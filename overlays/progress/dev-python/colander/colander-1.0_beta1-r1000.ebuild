@@ -4,7 +4,6 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5"
 DISTUTILS_SRC_TEST="setup.py"
 
 inherit distutils
@@ -51,7 +50,7 @@ src_install() {
 	distutils_src_install
 
 	delete_tests() {
-		rm -fr "${ED}$(python_get_sitedir)/colander/tests.py"
+		rm -r "${ED}$(python_get_sitedir)/colander/tests"
 	}
 	python_execute_function -q delete_tests
 
