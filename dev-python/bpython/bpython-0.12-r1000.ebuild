@@ -29,7 +29,7 @@ DEPEND="${RDEPEND}
 	doc? ( $(python_abi_depend dev-python/sphinx) )
 	nls? ( $(python_abi_depend -e "3.1 3.2" dev-python/Babel) )"
 
-DOCS="sample-config sample.theme light.theme"
+DOCS="AUTHORS CHANGELOG TODO sample-config sample.theme light.theme"
 PYTHON_MODULES="bpdb bpython"
 
 src_prepare() {
@@ -55,21 +55,21 @@ src_install() {
 
 	if use gtk; then
 		# pygtk does not support Python 3.
-		rm -f "${ED}"usr/bin/bpython-gtk-3.*
+		rm "${ED}"usr/bin/bpython-gtk-3.*
 	else
-		rm -f "${ED}"usr/bin/bpython-gtk*
+		rm "${ED}"usr/bin/bpython-gtk*
 
 		delete_unneeded_modules() {
-			rm -f "${ED}$(python_get_sitedir)/bpython/gtk_.py"
+			rm "${ED}$(python_get_sitedir)/bpython/gtk_.py"
 		}
 		python_execute_function -q delete_unneeded_modules
 	fi
 
 	if ! use urwid; then
-		rm -f "${ED}"usr/bin/bpython-urwid*
+		rm "${ED}"usr/bin/bpython-urwid*
 
 		delete_urwid() {
-			rm -f "${ED}$(python_get_sitedir)/bpython/urwid.py"
+			rm "${ED}$(python_get_sitedir)/bpython/urwid.py"
 		}
 		python_execute_function -q delete_urwid
 	fi
