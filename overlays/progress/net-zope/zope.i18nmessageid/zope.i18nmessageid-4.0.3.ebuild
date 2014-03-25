@@ -3,12 +3,12 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-DISTUTILS_SRC_TEST="nosetests"
+DISTUTILS_SRC_TEST="setup.py"
 
 inherit distutils
 
 DESCRIPTION="Message Identifiers for internationalization"
-HOMEPAGE="http://pypi.python.org/pypi/zope.i18nmessageid"
+HOMEPAGE="https://pypi.python.org/pypi/zope.i18nmessageid"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="ZPL"
@@ -23,8 +23,13 @@ DEPEND="${RDEPEND}
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 
-DOCS="CHANGES.txt README.txt"
+DOCS="CHANGES.rst README.rst"
 PYTHON_MODULES="${PN/.//}"
+
+src_prepare() {
+	distutils_src_prepare
+	rm -r docs/_build
+}
 
 src_compile() {
 	distutils_src_compile
