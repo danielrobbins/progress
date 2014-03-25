@@ -3,14 +3,13 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 
 inherit distutils
 
 DESCRIPTION="Zope Exceptions"
-HOMEPAGE="http://pypi.python.org/pypi/zope.exceptions"
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.zip"
+HOMEPAGE="https://pypi.python.org/pypi/zope.exceptions"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="ZPL"
 SLOT="0"
@@ -29,6 +28,11 @@ DEPEND="${RDEPEND}
 
 DOCS="CHANGES.rst README.rst"
 PYTHON_MODULES="${PN/.//}"
+
+src_prepare() {
+	distutils_src_prepare
+	rm -r docs/_build
+}
 
 src_compile() {
 	distutils_src_compile
