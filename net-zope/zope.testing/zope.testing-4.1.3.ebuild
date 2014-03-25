@@ -3,7 +3,6 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5"
 # zope.testing.server module requires webbrowser module.
 # http://bugs.jython.org/issue1762054
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
@@ -12,8 +11,8 @@ DISTUTILS_SRC_TEST="setup.py"
 inherit distutils
 
 DESCRIPTION="Zope testing helpers"
-HOMEPAGE="http://pypi.python.org/pypi/zope.testing"
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.zip"
+HOMEPAGE="https://pypi.python.org/pypi/zope.testing"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="ZPL"
 SLOT="0"
