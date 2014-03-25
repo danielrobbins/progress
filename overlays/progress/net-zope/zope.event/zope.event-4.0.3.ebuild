@@ -26,7 +26,7 @@ PYTHON_MODULES="${PN/.//}"
 
 src_prepare() {
 	distutils_src_prepare
-	rm -r docs/_build/html
+	rm -r docs/_build
 
 	# Fix generation of documentation with zope.event not installed.
 	sed \
