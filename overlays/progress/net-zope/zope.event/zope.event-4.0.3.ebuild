@@ -3,7 +3,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-DISTUTILS_SRC_TEST="nosetests"
+DISTUTILS_SRC_TEST="setup.py"
 
 inherit distutils
 
