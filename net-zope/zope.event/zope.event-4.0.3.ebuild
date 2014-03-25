@@ -21,11 +21,12 @@ DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
 
-DOCS="CHANGES.txt README.txt"
+DOCS="CHANGES.rst README.rst"
 PYTHON_MODULES="${PN/.//}"
 
 src_prepare() {
 	distutils_src_prepare
+	rm -r docs/_build/html
 
 	# Fix generation of documentation with zope.event not installed.
 	sed \
