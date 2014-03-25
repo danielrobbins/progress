@@ -36,6 +36,13 @@ S="${WORKDIR}/${MY_P}"
 
 PYTHON_MODULES="fabfile fabric"
 
+src_prepare() {
+	distutils_src_prepare
+
+	# https://github.com/fabric/fabric/issues/1105
+	sed -e "s/'paramiko>=1.10,<1.13'/'paramiko>=1.10'/" -i setup.py
+}
+
 src_compile() {
 	distutils_src_compile
 
