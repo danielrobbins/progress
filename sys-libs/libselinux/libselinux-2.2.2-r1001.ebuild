@@ -16,7 +16,7 @@ SEPOL_VER="2.2"
 DESCRIPTION="SELinux userland library"
 HOMEPAGE="http://userspace.selinuxproject.org/"
 SRC_URI="http://userspace.selinuxproject.org/releases/20131030/${P}.tar.gz
-	http://dev.gentoo.org/~swift/patches/${PN}/patchbundle-${P}-r1.tar.gz"
+	http://dev.gentoo.org/~swift/patches/${PN}/patchbundle-${P}-r4.tar.gz"
 
 LICENSE="GPL-2 public-domain"
 SLOT="0"
@@ -61,10 +61,7 @@ src_prepare() {
 	sed -e 's/SWIGRUBYLOBJ:= $(patsubst %.c,%.lo,$(SWIGRUBYCOUT))/SWIGRUBYLOBJ:= $(patsubst %.c,$(RUBYPREFIX)%.lo,$(SWIGRUBYCOUT))/' -i src/Makefile
 
 	# Link libselinux.so against libpthread.so.
-	sed -e "s/-lpcre -ldl/& -lpthread/" -i src/Makefile
-
-	# Link audit2why.so against libsepol.so instead of libsepol.a.
-	sed -e 's:$(LIBDIR)/libsepol.a:-lsepol:' -i src/Makefile
+	sed -e "s/-ldl/& -lpthread/" -i src/Makefile
 
 	epatch_user
 
@@ -80,6 +77,8 @@ multilib_src_compile() {
 		AR="$(tc-getAR)" \
 		CC="$(tc-getCC)" \
 		LIBDIR="/usr/$(get_libdir)" \
+		PCRE_CFLAGS="$("$(tc-getPKG_CONFIG)" libpcre --cflags)" \
+		PCRE_LIBS="$("$(tc-getPKG_CONFIG)" libpcre --libs)" \
 		RANLIB="$(tc-getRANLIB)" \
 		all
 
