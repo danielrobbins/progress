@@ -95,7 +95,7 @@ esac
 # @ECLASS-VARIABLE: AUTOTOOLS_AUTORECONF
 # @DEFAULT_UNSET
 # @DESCRIPTION:
-# Set to a non-empty value in order to enable running autoreconf
+# Set to a non-empty value before calling inherit to enable running autoreconf
 # in src_prepare() and adding autotools dependencies.
 #
 # This is usually necessary when using live sources or applying patches
