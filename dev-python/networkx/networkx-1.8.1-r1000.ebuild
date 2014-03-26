@@ -37,7 +37,7 @@ DEPEND="${RDEPEND}
 src_prepare() {
 	distutils_src_prepare
 
-	# Do not use internal copy of dev-python/decorator.
+	# Use not internal copy of dev-python/decorator.
 	rm -r networkx/external/decorator/{decorator2,decorator3}
 	echo "from decorator import *" > networkx/external/decorator/__init__.py
 	sed -e "s/packages.append('networkx.external.decorator.decorator.')/pass/" -i setup.py
@@ -65,6 +65,7 @@ src_compile() {
 
 src_install() {
 	distutils_src_install
+	rm -r "${ED}usr/share/doc/${P}"
 
 	delete_tests() {
 		rm -r "${ED}$(python_get_sitedir)/networkx/"**/tests
