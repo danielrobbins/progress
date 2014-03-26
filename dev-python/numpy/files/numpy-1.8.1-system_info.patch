@@ -1,6 +1,6 @@
 --- numpy/distutils/system_info.py
 +++ numpy/distutils/system_info.py
-@@ -1369,19 +1369,12 @@
+@@ -1368,19 +1368,12 @@
  
      def calc_info(self):
  
@@ -21,7 +21,7 @@
  
          if sys.platform == 'darwin' and not atlas_info:
              # Use the system lapack from Accelerate or vecLib under OSX
-@@ -1476,9 +1469,7 @@
+@@ -1475,9 +1468,7 @@
              self.set_info(**openblas_info)
              return
  
@@ -30,5 +30,5 @@
 -            atlas_info = get_info('atlas_blas')
 +        atlas_info = {}
  
-         if sys.platform == 'darwin'and not atlas_info:
+         if sys.platform == 'darwin' and not atlas_info:
              # Use the system BLAS from Accelerate or vecLib under OSX
