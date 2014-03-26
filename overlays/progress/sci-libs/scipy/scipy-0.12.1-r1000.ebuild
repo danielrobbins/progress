@@ -55,19 +55,19 @@ src_unpack() {
 
 pc_incdir() {
 	$(tc-getPKG_CONFIG) --cflags-only-I $@ | \
-		sed -e 's/^-I//' -e 's/[ ]*-I/:/g' -e 's/[ ]*$//'
+		sed -e 's/^-I//' -e 's/[ ]*-I/:/g' -e 's/[ ]*$//' -e 's|^:||'
 }
 
 pc_libdir() {
 	$(tc-getPKG_CONFIG) --libs-only-L $@ | \
-		sed -e 's/^-L//' -e 's/[ ]*-L/:/g' -e 's/[ ]*$//'
+		sed -e 's/^-L//' -e 's/[ ]*-L/:/g' -e 's/[ ]*$//' -e 's|^:||'
 }
 
 pc_libs() {
 	$(tc-getPKG_CONFIG) --libs-only-l $@ | \
 		sed -e 's/[ ]-l*\(pthread\|m\)\([ ]\|$\)//g' \
 		-e 's/^-l//' -e 's/[ ]*-l/,/g' -e 's/[ ]*$//' \
-		| tr ',' '\n' | sort | uniq | tr '\n' ','
+		| tr ',' '\n' | sort -u | tr '\n' ',' | sed -e 's|,$||'
 }
 
 src_prepare() {
