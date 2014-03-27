@@ -15,15 +15,16 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 LICENSE="PSF-2"
 SLOT="0"
 KEYWORDS="*"
-IUSE="doc examples sasl ssl"
+# IUSE="doc examples sasl ssl"
+IUSE="examples sasl ssl"
 
 RDEPEND="$(python_abi_depend dev-python/pyasn1)
 	$(python_abi_depend dev-python/pyasn1-modules)
 	>=net-nds/openldap-2.4.11[sasl?]
 	sasl? ( dev-libs/cyrus-sasl )"
 DEPEND="${RDEPEND}
-	$(python_abi_depend dev-python/setuptools)
-	doc? ( $(python_abi_depend dev-python/sphinx) )"
+	$(python_abi_depend dev-python/setuptools)"
+#	doc? ( $(python_abi_depend dev-python/sphinx) )
 
 DOCS="CHANGES README"
 PYTHON_MODULES="dsml.py ldap ldapurl.py ldif.py"
@@ -60,20 +61,20 @@ src_prepare() {
 src_compile() {
 	distutils_src_compile
 
-	if use doc; then
-		einfo "Generation of documentation"
-		pushd Doc > /dev/null
-		PYTHONPATH="$(ls -d ../build-$(PYTHON -f --ABI)/lib*)" emake html
-		popd > /dev/null
-	fi
+#	if use doc; then
+#		einfo "Generation of documentation"
+#		pushd Doc > /dev/null
+#		PYTHONPATH="$(ls -d ../build-$(PYTHON -f --ABI)/lib*)" emake html
+#		popd > /dev/null
+#	fi
 }
 
 src_install() {
 	distutils_src_install
 
-	if use doc; then
-		dohtml -r Doc/.build/html/
-	fi
+#	if use doc; then
+#		dohtml -r Doc/.build/html/
+#	fi
 
 	if use examples; then
 		insinto /usr/share/doc/${PF}/examples
