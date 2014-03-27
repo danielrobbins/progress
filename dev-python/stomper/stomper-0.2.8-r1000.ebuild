@@ -25,7 +25,7 @@ src_install() {
 	distutils_src_install
 
 	delete_examples_and_tests() {
-		rm -fr "${ED}$(python_get_sitedir)/${PN}/"{examples,tests}
+		rm -r "${ED}$(python_get_sitedir)/${PN}/"{examples,tests}
 	}
 	python_execute_function -q delete_examples_and_tests
 
