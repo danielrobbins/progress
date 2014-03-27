@@ -4,10 +4,10 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5 *-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 PYTHON_EXPORT_PHASE_FUNCTIONS="1"
 
-inherit autotools eutils python
+inherit python
 
 MY_PN="PythonMagick"
 MY_P="${MY_PN}-${PV}"
@@ -31,10 +31,6 @@ S="${WORKDIR}/${MY_P}"
 PYTHON_CXXFLAGS=("2.* + -fno-strict-aliasing")
 
 src_prepare() {
-	epatch "${FILESDIR}/${PN}-0.9.1-use_active_python_version.patch"
-	epatch "${FILESDIR}/${PN}-0.9.2-fix_detection_of_python_includedir.patch"
-
-	eautoreconf
 	python_clean_py-compile_files
 	python_src_prepare
 }
