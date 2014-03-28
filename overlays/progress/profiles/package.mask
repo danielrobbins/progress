@@ -10,4 +10,6 @@ dev-lang/python:3.5
 
 ->=dev-libs/libxslt-1.1.28-r2
 >=dev-libs/libxslt-1.1.28-r1001
+->=sys-apps/file-5.18-r1
+>=sys-apps/file-5.18-r1001
 -dev-python/certifi
