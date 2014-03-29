@@ -90,8 +90,6 @@ check_reqs() {
 check-reqs_pkg_setup() {
 	debug-print-function ${FUNCNAME} "$@"
 
-	[[ ${MERGE_TYPE} == binary ]] && return
-
 	check-reqs_prepare
 	check-reqs_run
 	check-reqs_output
@@ -131,30 +129,35 @@ check-reqs_run() {
 	# some people are *censored*
 	unset CHECKREQS_FAILED
 
-	[[ -n ${CHECKREQS_MEMORY} ]] && \
-		check-reqs_memory \
-			${CHECKREQS_MEMORY}
+	# use != in test, because MERGE_TYPE only exists in EAPI 4 and later
+	if [[ ${MERGE_TYPE} != binary ]]; then
+		[[ -n ${CHECKREQS_MEMORY} ]] && \
+			check-reqs_memory \
+				${CHECKREQS_MEMORY}
 
-	[[ -n ${CHECKREQS_DISK_BUILD} ]] && \
-		check-reqs_disk \
-			"${T}" \
-			"${CHECKREQS_DISK_BUILD}"
+		[[ -n ${CHECKREQS_DISK_BUILD} ]] && \
+			check-reqs_disk \
+				"${T}" \
+				"${CHECKREQS_DISK_BUILD}"
+	fi
 
-	[[ -n ${CHECKREQS_DISK_USR} ]] && \
-		check-reqs_disk \
-			"${EROOT}/usr" \
-			"${CHECKREQS_DISK_USR}"
+	if [[ ${MERGE_TYPE} != buildonly ]]; then
+		[[ -n ${CHECKREQS_DISK_USR} ]] && \
+			check-reqs_disk \
+				"${EROOT}/usr" \
+				"${CHECKREQS_DISK_USR}"
 
-	[[ -n ${CHECKREQS_DISK_VAR} ]] && \
-		check-reqs_disk \
-			"${EROOT}/var" \
-			"${CHECKREQS_DISK_VAR}"
+		[[ -n ${CHECKREQS_DISK_VAR} ]] && \
+			check-reqs_disk \
+				"${EROOT}/var" \
+				"${CHECKREQS_DISK_VAR}"
+	fi
 }
 
 # @FUNCTION: check-reqs_get_mebibytes
 # @DESCRIPTION:
 # Internal function that returns number in mebibytes.
-# Converts from 1G=1024 or 1T=1048576
+# Returns 1024 for 1G or 1048576 for 1T.
 check-reqs_get_mebibytes() {
 	debug-print-function ${FUNCNAME} "$@"
 
@@ -175,8 +178,8 @@ check-reqs_get_mebibytes() {
 
 # @FUNCTION: check-reqs_get_number
 # @DESCRIPTION:
-# Internal function that returns number without the unit.
-# Converts from 1G=1 or 150T=150.
+# Internal function that returns the numerical value without the unit.
+# Returns "1" for "1G" or "150" for "150T".
 check-reqs_get_number() {
 	debug-print-function ${FUNCNAME} "$@"
 
@@ -198,8 +201,8 @@ check-reqs_get_number() {
 
 # @FUNCTION: check-reqs_get_unit
 # @DESCRIPTION:
-# Internal function that returns number without the unit.
-# Converts from 1G=1 or 150T=150.
+# Internal function that return the unit without the numerical value.
+# Returns "GiB" for "1G" or "TiB" for "150T".
 check-reqs_get_unit() {
 	debug-print-function ${FUNCNAME} "$@"
 
@@ -208,9 +211,9 @@ check-reqs_get_unit() {
 	local unit=${1:(-1)}
 
 	case ${unit} in
-		G) echo "gibibytes" ;;
-		[M0-9]) echo "mebibytes" ;;
-		T) echo "tebibytes" ;;
+		G) echo "GiB" ;;
+		[M0-9]) echo "MiB" ;;
+		T) echo "TiB" ;;
 		*)
 			die "${FUNCNAME}: Unknown unit: ${unit}"
 		;;
@@ -349,4 +352,3 @@ check-reqs_unsatisfied() {
 	# Internal, do not set yourself.
 	CHECKREQS_FAILED="true"
 }
-
