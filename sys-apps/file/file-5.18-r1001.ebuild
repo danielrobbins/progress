@@ -42,6 +42,9 @@ src_prepare() {
 
 	# don't let python README kill main README #60043
 	mv python/README{,.python}
+
+	# https://github.com/file/file/commit/e14d88d8df2aafb74ba0c0b3d0116fc84b68cbd8
+	sed -e "s/bi = bytes(filename, 'utf-8')/bi = filename if isinstance(filename, bytes) else bytes(filename, 'utf-8')/" -i python/magic.py
 }
 
 multilib_src_configure() {
