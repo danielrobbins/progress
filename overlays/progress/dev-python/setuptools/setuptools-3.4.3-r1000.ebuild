@@ -27,9 +27,6 @@ PYTHON_MODULES="_markerlib easy_install.py pkg_resources.py setuptools"
 src_prepare() {
 	distutils_src_prepare
 
-	# Fix compatibility with Python 3.1.
-	sed -e "s/testRunner=self._resolve_as_ep(self.test_runner),/**({'testRunner': self._resolve_as_ep(self.test_runner)} if self.test_runner is not None else {})/" -i setuptools/command/test.py
-
 	# Disable tests requiring network connection.
 	rm setuptools/tests/test_packageindex.py
 }
