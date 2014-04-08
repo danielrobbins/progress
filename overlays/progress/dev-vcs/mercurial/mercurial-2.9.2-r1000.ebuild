@@ -54,6 +54,8 @@ src_prepare() {
 	# Disable tests sometimes timing out.
 	rm tests/test-largefiles.t
 	rm tests/test-mq.t
+	# Disable test failing due to DeprecationWarning in internal code in dev-vcs/bzr 2.6.0.
+	rm tests/test-convert-bzr-directories.t
 }
 
 src_compile() {
