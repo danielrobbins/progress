@@ -19,11 +19,12 @@ SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.zip"
 LICENSE="HPND"
 SLOT="0"
 KEYWORDS="*"
-IUSE="X doc examples jpeg lcms scanner test tiff tk truetype webp zlib"
+IUSE="X doc examples jpeg jpeg2k lcms scanner test tiff tk truetype webp zlib"
 REQUIRED_USE="test? ( jpeg )"
 
 RDEPEND="X? ( x11-misc/xdg-utils )
-	jpeg? ( virtual/jpeg )
+	jpeg? ( virtual/jpeg:0= )
+	jpeg2k? ( media-libs/openjpeg:2= )
 	lcms? ( media-libs/lcms:2= )
 	scanner? ( media-gfx/sane-backends:0= )
 	tiff? ( media-libs/tiff:0= )
@@ -49,18 +50,15 @@ pkg_setup() {
 src_prepare() {
 	distutils_src_prepare
 
-	epatch "${FILESDIR}/${PN}-2.3.0-delete_hardcoded_paths.patch"
+	epatch "${FILESDIR}/${PN}-2.4.0-delete_hardcoded_paths.patch"
 	epatch "${FILESDIR}/${PN}-2.1.0-libm_linking.patch"
 	epatch "${FILESDIR}/${PN}-2.3.0-use_xdg-open.patch"
-
-	# https://github.com/python-imaging/Pillow/commit/4de31b2693dcb76ce51744a986e8ac3598158c4c
-	sed -e "31s/assert_image_equal(image, target)/assert_image_similar(image, target, 20.0)/" -i Tests/test_file_webp.py
 
 	# Fix compatibility with Python 3.1.
 	sed -e "s/callable(\([^)]\+\))/(hasattr(\1, '__call__') if __import__('sys').version_info\[:2\] == (3, 1) else &)/" -i PIL/Image.py
 
 	local feature
-	for feature in jpeg lcms tiff truetype:freetype webp webp:webpmux zlib; do
+	for feature in jpeg jpeg2k:jpeg2000 lcms tiff truetype:freetype webp webp:webpmux zlib; do
 		if ! use ${feature%:*}; then
 			sed -e "s/if feature\.want('${feature#*:}'):/if False:/" -i setup.py
 		fi
