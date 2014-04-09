@@ -20,19 +20,6 @@ DEPEND="$(python_abi_depend dev-python/pip)
 	$(python_abi_depend dev-python/setuptools)"
 RDEPEND="${DEPEND}"
 
-DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES="1"
-
-src_prepare() {
-	distutils_src_prepare
-
-	preparation() {
-		if has "$(python_get_version -l)" 3.1 3.2; then
-			2to3-${PYTHON_ABI} -f unicode -nw --no-diffs pbr
-		fi
-	}
-	python_execute_function -s preparation
-}
-
 src_install() {
 	distutils_src_install
 
