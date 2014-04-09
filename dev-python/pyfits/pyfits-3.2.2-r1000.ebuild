@@ -45,7 +45,7 @@ src_install() {
 	distutils_src_install
 
 	delete_tests() {
-		rm -fr "${ED}$(python_get_sitedir)/pyfits/tests"
+		rm -r "${ED}$(python_get_sitedir)/pyfits/tests"
 	}
 	python_execute_function -q delete_tests
 }
