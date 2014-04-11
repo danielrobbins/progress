@@ -212,9 +212,16 @@ multibuild_copy_sources() {
 
 	einfo "Will copy sources from ${_MULTIBUILD_INITIAL_BUILD_DIR}"
 
+	local cp_args=()
+	if cp --reflink=auto --version &>/dev/null; then
+		# enable reflinking if possible to make this faster
+		cp_args+=( --reflink=auto )
+	fi
+
 	_multibuild_create_source_copy() {
 		einfo "${MULTIBUILD_VARIANT}: copying to ${BUILD_DIR}"
-		cp -pr "${_MULTIBUILD_INITIAL_BUILD_DIR}" "${BUILD_DIR}" || die
+		cp -pr "${cp_args[@]}" \
+			"${_MULTIBUILD_INITIAL_BUILD_DIR}" "${BUILD_DIR}" || die
 	}
 
 	multibuild_foreach_variant _multibuild_create_source_copy
@@ -264,23 +271,21 @@ multibuild_merge_root() {
 	done
 	rm "${lockfile_l}" || die
 
-	if use userland_BSD; then
-		# 'cp -a -n' is broken:
-		# http://www.freebsd.org/cgi/query-pr.cgi?pr=174489
-		# using tar instead which is universal but terribly slow.
+	local cp_args=()
 
-		tar -C "${src}" -f - -c . \
-			| tar -x -f - -C "${dest}"
-		[[ ${PIPESTATUS[*]} == '0 0' ]]
-		ret=${?}
-	elif use userland_GNU; then
-		# cp works with '-a -n'.
-
-		cp -a -l -n "${src}"/. "${dest}"/
-		ret=${?}
+	if cp -a --version &>/dev/null; then
+		cp_args+=( -a )
 	else
-		die "Unsupported userland (${USERLAND}), please report."
+		cp_args+=( -P -R -p )
 	fi
+
+	if cp --reflink=auto --version &>/dev/null; then
+		# enable reflinking if possible to make this faster
+		cp_args+=( --reflink=auto )
+	fi
+
+	cp "${cp_args[@]}" "${src}"/. "${dest}"/
+	ret=${?}
 
 	# Remove the lock.
 	rm "${lockfile}" || die
