@@ -3,7 +3,9 @@
 
 # @ECLASS: autotools-multilib.eclass
 # @MAINTAINER:
-# Michał Górny <mgorny@gentoo.org>
+# gx86-multilib team <multilib@gentoo.org>
+# @AUTHOR:
+# Author: Michał Górny <mgorny@gentoo.org>
 # @BLURB: autotools-utils wrapper for multilib builds
 # @DESCRIPTION:
 # The autotools-multilib.eclass is an autotools-utils.eclass(5) wrapper
