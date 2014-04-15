@@ -7,8 +7,7 @@ PYTHON_BDEPEND="test? ( <<[{*-cpython *-pypy-*}sqlite]>> )"
 PYTHON_DEPEND="<<[{*-cpython *-pypy-*}sqlite?]>>"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
-# 3.[3-9]: https://bitbucket.org/zzzeek/sqlalchemy/issue/2979
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.1 3.[3-9]"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.1"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
@@ -44,23 +43,10 @@ src_prepare() {
 
 	# Disable tests hardcoding function call counts specific to Python versions.
 	rm -r test/aaa_profiling
-
-	preparation() {
-		cp -r test test-${PYTHON_ABI} || return
-		if has "$(python_get_version -l)" 3.1 3.2; then
-			# https://bitbucket.org/zzzeek/sqlalchemy/issue/2980
-			2to3-${PYTHON_ABI} -f unicode -nw --no-diffs test-${PYTHON_ABI} || return
-		fi
-	}
-	python_execute_function preparation
 }
 
 src_test() {
 	testing() {
-		# Not needed after fixing https://bitbucket.org/zzzeek/sqlalchemy/issue/2980.
-		rm -fr test
-		ln -s test-${PYTHON_ABI} test
-
 		# Based on sqla_nose.py.
 		python_execute PYTHONPATH="$(ls -d build-${PYTHON_ABI}/lib*):$(ls -d build-${PYTHON_ABI}/lib*/sqlalchemy/testing/plugin)" "$(PYTHON)" -c "import nose, noseplugin; nose.main(addplugins=[noseplugin.NoseSQLAlchemy()])"
 	}
