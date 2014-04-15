@@ -3,7 +3,6 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5"
 
 inherit distutils
 
@@ -16,7 +15,7 @@ SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
-DEPEND=""
+DEPEND="$(python_abi_depend dev-python/setuptools)"
 RDEPEND=""
 
 PYTHON_MODULES="serpent.py"
