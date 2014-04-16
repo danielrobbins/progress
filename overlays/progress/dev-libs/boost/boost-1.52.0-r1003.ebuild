@@ -113,6 +113,8 @@ src_prepare() {
 #endif
 EOF
 	done
+
+	epatch_user
 }
 
 ejam() {
@@ -121,6 +123,7 @@ ejam() {
 }
 
 src_configure() {
+	[[ "$(makeopts_jobs)" -gt 64 ]] && MAKEOPTS+=" -j64"
 	OPTIONS=($(usex debug gentoodebug gentoorelease) -j$(makeopts_jobs) -q -d+2 --user-config="${S}/user-config.jam")
 
 	c++11_checks
