@@ -4,7 +4,6 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5"
 
 inherit distutils
 
@@ -29,7 +28,7 @@ src_install() {
 
 	if use doc; then
 		dodoc docs/*.pdf
-		dohtml -r htmldoc/*
+		dohtml -r htmldoc/
 	fi
 
 	if use examples; then
