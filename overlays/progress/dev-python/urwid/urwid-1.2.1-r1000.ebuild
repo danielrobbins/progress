@@ -46,12 +46,9 @@ src_prepare() {
 		2to3-$(PYTHON -f --ABI) -nw --no-diffs docs/conf.py
 	fi
 
-	# Disable failing tests.
-	# https://github.com/wardi/urwid/issues/62
-	sed \
-		-e "90a\\        def test_run(self): pass" \
-		-e "128a\\        def test_run(self): pass" \
-		-i urwid/tests/test_event_loops.py
+	# Fix tests with Python 2.6.
+	# https://github.com/wardi/urwid/commit/d68a468d86b4f7ec0385fe7cdf4c0aaf69e1e574
+	sed -e "s/assertIn(\(.*\), \(.*\))/assertTrue(\1 in \2)/" -i urwid/tests/test_event_loops.py
 }
 
 src_compile() {
