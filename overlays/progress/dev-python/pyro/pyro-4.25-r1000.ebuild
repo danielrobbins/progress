@@ -20,7 +20,7 @@ SLOT="4"
 KEYWORDS="*"
 IUSE="doc examples test"
 
-RDEPEND="$(python_abi_depend ">=dev-python/serpent-1.3")
+RDEPEND="$(python_abi_depend ">=dev-python/serpent-1.5")
 	!dev-python/pyro:0"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
