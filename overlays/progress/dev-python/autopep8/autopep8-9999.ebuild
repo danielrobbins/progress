@@ -19,11 +19,12 @@ SLOT="0"
 KEYWORDS=""
 IUSE=""
 
-DEPEND="$(python_abi_depend ">=dev-python/pep8-1.4.6")
+DEPEND="$(python_abi_depend ">=dev-python/pep8-1.5.5")
 	$(python_abi_depend dev-python/setuptools)
 	$(python_abi_depend virtual/python-argparse)"
 RDEPEND="${DEPEND}"
 
+DOCS="AUTHORS.rst README.rst"
 PYTHON_MODULES="${PN}.py"
 
 src_test() {
