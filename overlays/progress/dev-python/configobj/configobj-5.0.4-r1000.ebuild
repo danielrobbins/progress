@@ -25,8 +25,9 @@ PYTHON_MODULES="configobj.py validate.py"
 src_prepare() {
 	distutils_src_prepare
 
-	# https://github.com/DiffSK/configobj/commit/2d16e07d766958fb11c21e3274ed7022ccedb9f9
-	sed -e "s/'six==1.5.2'/'six'/" -i setup.py
+	# Install not _version.py.
+	sed -e "/^MODULES =/s/, '_version'//" -i setup.py
+	sed -e "s/^from _version import __version__$/__version__ = '${PV}'/" -i configobj.py
 }
 
 src_test() {
