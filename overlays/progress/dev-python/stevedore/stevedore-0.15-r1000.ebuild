@@ -8,7 +8,7 @@ DISTUTILS_SRC_TEST="nosetests"
 inherit distutils
 
 DESCRIPTION="Manage dynamic plugins for Python applications"
-HOMEPAGE="https://github.com/dreamhost/stevedore https://pypi.python.org/pypi/stevedore"
+HOMEPAGE="https://stevedore.readthedocs.org/ https://pypi.python.org/pypi/stevedore"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="Apache-2.0"
@@ -22,6 +22,8 @@ DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/pbr)
 	doc? ( $(python_abi_depend dev-python/sphinx) )
 	test? ( $(python_abi_depend dev-python/mock) )"
+
+DOCS="ChangeLog"
 
 src_compile() {
 	distutils_src_compile
