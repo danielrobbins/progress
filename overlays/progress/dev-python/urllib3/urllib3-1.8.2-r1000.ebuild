@@ -34,14 +34,12 @@ src_prepare() {
 	# Fix compatibility with Python 3.1.
 	sed -e "s/if sys.version_info < (2, 7):/if sys.version_info < (2, 7) or sys.version_info[:2] == (3, 1):/" -i urllib3/connection.py
 
-	# Install not dummyserver.
-	sed -e "s/, 'dummyserver'//" -i setup.py
-
 	# Use system version of dev-python/six.
 	sed \
 		-e "s/from .packages import six/import six/" \
 		-e "s/from .packages.six import/from six import/" \
 		-i urllib3/*.py
+	sed -e "s/from ..packages import six/import six/" -i urllib3/*/*.py
 	sed \
 		-e "s/from urllib3.packages import six/import six/" \
 		-e "s/from urllib3.packages.six import/from six import/" \
