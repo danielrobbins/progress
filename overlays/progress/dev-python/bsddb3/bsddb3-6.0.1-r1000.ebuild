@@ -8,7 +8,7 @@ PYTHON_RESTRICTED_ABIS="*-jython"
 
 inherit db-use distutils multilib
 
-DESCRIPTION="Python interface for Berkeley DB"
+DESCRIPTION="Python bindings for Oracle Berkeley DB"
 HOMEPAGE="http://www.jcea.es/programacion/pybsddb.htm https://pypi.python.org/pypi/bsddb3"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
@@ -36,7 +36,7 @@ src_configure() {
 }
 
 src_compile() {
-	distutils_src_compile \
+	YES_I_HAVE_THE_RIGHT_TO_USE_THIS_BERKELEY_DB_VERSION="1" distutils_src_compile \
 		--berkeley-db="${EPREFIX}/usr" \
 		--berkeley-db-incdir="${EPREFIX}$(db_includedir ${DB_VER})" \
 		--berkeley-db-libdir="${EPREFIX}/usr/$(get_libdir)"
@@ -53,10 +53,10 @@ src_test() {
 }
 
 src_install() {
-	distutils_src_install
+	YES_I_HAVE_THE_RIGHT_TO_USE_THIS_BERKELEY_DB_VERSION="1" distutils_src_install
 
 	delete_tests() {
-		rm -fr "${ED}$(python_get_sitedir)/bsddb3/tests"
+		rm -r "${ED}$(python_get_sitedir)/bsddb3/tests"
 	}
 	python_execute_function -q delete_tests
 
