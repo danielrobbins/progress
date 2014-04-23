@@ -4,6 +4,8 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
+# *-jython: http://bugs.jython.org/issue2028
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 DISTUTILS_SRC_TEST="setup.py"
 
 inherit distutils
@@ -26,7 +28,6 @@ RDEPEND=""
 S="${WORKDIR}/${MY_P}"
 
 DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES="1"
-DISTUTILS_GLOBAL_OPTIONS=("*-cpython --with-speedups")
 
 src_prepare() {
 	distutils_src_prepare
@@ -44,7 +45,7 @@ src_install() {
 	python_clean_installation_image
 
 	delete_tests() {
-		rm -f "${ED}$(python_get_sitedir)/markupsafe/tests.py"
+		rm "${ED}$(python_get_sitedir)/markupsafe/tests.py"
 	}
 	python_execute_function -q delete_tests
 }
