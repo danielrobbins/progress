@@ -55,18 +55,18 @@ waf-utils_src_configure() {
 	[[ -z ${NO_WAF_LIBDIR} ]] && libdir="--libdir=${EPREFIX}/usr/$(get_libdir)"
 
 	tc-export AR CC CPP CXX RANLIB
-	echo "CCFLAGS=\"${CFLAGS}\" LINKFLAGS=\"${LDFLAGS}\" \"${WAF_BINARY}\" --prefix=${EPREFIX}/usr ${libdir} $@ configure"
+	echo "CCFLAGS=\"${CFLAGS}\" LINKFLAGS=\"${CFLAGS} ${LDFLAGS}\" \"${WAF_BINARY}\" --prefix=${EPREFIX}/usr ${libdir} $@ configure"
 
 	# This condition is required because waf takes even whitespace as function
 	# calls, awesome isn't it?
 	if [[ -z ${NO_WAF_LIBDIR} ]]; then
-		CCFLAGS="${CFLAGS}" LINKFLAGS="${LDFLAGS}" "${WAF_BINARY}" \
+		CCFLAGS="${CFLAGS}" LINKFLAGS="${CFLAGS} ${LDFLAGS}" "${WAF_BINARY}" \
 			"--prefix=${EPREFIX}/usr" \
 			"${libdir}" \
 			"$@" \
 			configure || die "configure failed"
 	else
-		CCFLAGS="${CFLAGS}" LINKFLAGS="${LDFLAGS}" "${WAF_BINARY}" \
+		CCFLAGS="${CFLAGS}" LINKFLAGS="${CFLAGS} ${LDFLAGS}" "${WAF_BINARY}" \
 			"--prefix=${EPREFIX}/usr" \
 			"$@" \
 			configure || die "configure failed"
