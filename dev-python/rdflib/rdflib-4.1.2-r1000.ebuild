@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.1 *-jython"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
@@ -37,13 +37,16 @@ src_prepare() {
 	# Delete unconditional dependencies on dev-python/html5lib and dev-python/sparql-wrapper.
 	sed \
 		-e "/kwargs\['tests_require'\] = \['html5lib'\]/d" \
-		-e "s/kwargs\['install_requires'\].append('html5lib==0.95')/pass/" \
+		-e "s/kwargs\['install_requires'\].append('html5lib')/pass/" \
 		-e "s/'pyparsing', 'SPARQLWrapper'\]/'pyparsing']/" \
 		-i setup.py
+
+	# Fix compatibility with Python 3.1.
+	sed -e "s/if sys.version_info\[:2\] < (2, 7):/if sys.version_info[:2] < (2, 7) or sys.version_info[:2] == (3, 1):/" -i rdflib/compat.py rdflib/plugins/sparql/compat.py
 }
 
 src_test() {
-	python_execute_nosetests -e -P '$(ls -d build-${PYTHON_ABI}/lib)' -- -w '$([[ "$(python_get_version -l --major)" == "3" ]] && echo build/src || echo .)'
+	python_execute_nosetests -e -P '$(ls -d "${S}/build-${PYTHON_ABI}/lib")' -- -w '$([[ "$(python_get_version -l --major)" == "3" ]] && echo build/src || echo .)'
 }
 
 src_install() {
