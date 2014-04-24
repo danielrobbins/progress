@@ -8,6 +8,8 @@ PYTHON_DEPEND="<<[{*-cpython *-pypy-*}sqlite?]>>"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.1"
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
+# 3.[4-9]: https://code.djangoproject.com/ticket/21721
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.[4-9]"
 WEBAPP_NO_AUTO_INSTALL="yes"
 
 inherit bash-completion-r1 distutils versionator webapp
@@ -71,8 +73,7 @@ src_compile() {
 
 src_test() {
 	testing() {
-		# Tests have non-standard assumptions about PYTHONPATH and
-		# don't work with usual "build-${PYTHON_ABI}/lib".
+		# Tests have non-standard assumptions about PYTHONPATH and work not with usual "build-${PYTHON_ABI}/lib".
 		python_execute PYTHONPATH="." "$(PYTHON)" tests/runtests.py --settings=test_sqlite -v1
 	}
 	python_execute_function testing
