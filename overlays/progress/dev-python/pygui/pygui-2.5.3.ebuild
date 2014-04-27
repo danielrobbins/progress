@@ -2,9 +2,9 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5 3.* *-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 
 inherit distutils
 
@@ -14,9 +14,9 @@ DESCRIPTION="A cross-platform pythonic GUI API"
 HOMEPAGE="http://www.cosc.canterbury.ac.nz/greg.ewing/python_gui/"
 SRC_URI="http://www.cosc.canterbury.ac.nz/greg.ewing/python_gui/${MY_P}.tar.gz"
 
-LICENSE="as-is"
+LICENSE="PyGUI"
 SLOT="0"
-KEYWORDS="amd64 x86"
+KEYWORDS="*"
 IUSE="doc examples"
 
 DEPEND="$(python_abi_depend dev-python/pygtk)"
@@ -30,7 +30,7 @@ src_install() {
 	distutils_src_install
 
 	if use doc; then
-		dohtml Doc/*
+		dohtml -r Doc/
 	fi
 
 	if use examples; then
