@@ -5,8 +5,7 @@
 EAPI="5-progress"
 PYTHON_DEPEND="<<[{*-cpython}tk?]>>"
 PYTHON_MULTIPLE_ABIS="1"
-# 2.*: https://bitbucket.org/logilab/pylint/issue/134
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.* 3.* *-jython"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.* *-jython"
 
 inherit distutils
 
@@ -20,7 +19,7 @@ KEYWORDS="*"
 IUSE="examples tk"
 
 # Versions specified in __pkginfo__.py.
-RDEPEND="$(python_abi_depend dev-python/astroid)
+RDEPEND="$(python_abi_depend ">=dev-python/astroid-1.1")
 	$(python_abi_depend ">=dev-python/logilab-common-0.53.0")"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
