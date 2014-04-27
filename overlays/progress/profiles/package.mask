@@ -2,3 +2,6 @@
 # Python 3.5 contains many incompatible changes.
 # https://code.google.com/p/gentoo-progress/issues/detail?id=13
 dev-lang/python:3.5
+
+-dev-python/argparse
+-dev-python/ordereddict
