@@ -4,7 +4,9 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.1 3.2 *-jython"
+# 3.1 3.2: https://bitbucket.org/logilab/astroid/issue/29
+# 3.[4-9]: https://bitbucket.org/logilab/astroid/issue/28
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.1 3.2 3.[4-9] *-jython"
 
 inherit distutils
 
@@ -50,7 +52,7 @@ src_install() {
 	distutils_src_install
 
 	delete_tests() {
-		rm -fr "${ED}$(python_get_sitedir)/astroid/test"
+		rm -r "${ED}$(python_get_sitedir)/astroid/test"
 	}
 	python_execute_function -q delete_tests
 }
