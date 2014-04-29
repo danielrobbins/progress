@@ -393,7 +393,7 @@ _EOF_
 		mv "${root}/${f}" "${root}/${dir}/${CHOST}-${fn}" || die
 
 		# symlink the native one back
-		if multilib_build_binaries; then
+		if multilib_is_native_abi; then
 			ln -s "${CHOST}-${fn}" "${root}/${f}" || die
 		fi
 	done
@@ -438,7 +438,9 @@ multilib_install_wrappers() {
 multilib_is_native_abi() {
 	debug-print-function ${FUNCNAME} "${@}"
 
-	multilib_build_binaries "${@}"
+	[[ ${#} -eq 0 ]] || die "${FUNCNAME}: too many arguments"
+
+	[[ ${COMPLETE_MULTILIB} == yes || ${ABI} == ${DEFAULT_ABI} ]]
 }
 
 # @FUNCTION: multilib_build_binaries
@@ -454,20 +456,21 @@ multilib_is_native_abi() {
 multilib_build_binaries() {
 	debug-print-function ${FUNCNAME} "${@}"
 
-	[[ ${#} -eq 0 ]] || die "${FUNCNAME}: too many arguments"
+	eqawarn "QA warning: multilib_build_binaries is deprecated. Please use the equivalent"
+	eqawarn "multilib_is_native_abi function instead."
 
-	[[ ${COMPLETE_MULTILIB} == yes || ${ABI} == ${DEFAULT_ABI} ]]
+	multilib_is_native_abi "${@}"
 }
 
 # @FUNCTION: multilib_native_use_with
 # @USAGE: <flag> [<opt-name> [<opt-value>]]
 # @DESCRIPTION:
 # Output --with configure option alike use_with if USE <flag> is enabled
-# and executables are being built (multilib_build_binaries is true).
+# and executables are being built (multilib_is_native_abi is true).
 # Otherwise, outputs --without configure option. Arguments are the same
 # as for use_with in the EAPI.
 multilib_native_use_with() {
-	if multilib_build_binaries; then
+	if multilib_is_native_abi; then
 		use_with "${@}"
 	else
 		echo "--without-${2:-${1}}"
@@ -478,11 +481,11 @@ multilib_native_use_with() {
 # @USAGE: <flag> [<opt-name> [<opt-value>]]
 # @DESCRIPTION:
 # Output --enable configure option alike use_with if USE <flag>
-# is enabled and executables are being built (multilib_build_binaries
+# is enabled and executables are being built (multilib_is_native_abi
 # is true). Otherwise, outputs --disable configure option. Arguments are
 # the same as for use_enable in the EAPI.
 multilib_native_use_enable() {
-	if multilib_build_binaries; then
+	if multilib_is_native_abi; then
 		use_enable "${@}"
 	else
 		echo "--disable-${2:-${1}}"
@@ -494,13 +497,13 @@ multilib_native_use_enable() {
 # @DESCRIPTION:
 # Output the concatenation of <true1> (or 'yes' if unspecified)
 # and <true2> if USE <flag> is enabled and executables are being built
-# (multilib_build_binaries is true). Otherwise, output the concatenation
+# (multilib_is_native_abi is true). Otherwise, output the concatenation
 # of <false1> (or 'no' if unspecified) and <false2>. Arguments
 # are the same as for usex in the EAPI.
 #
 # Note: in EAPI 4 you need to inherit eutils to use this function.
 multilib_native_usex() {
-	if multilib_build_binaries; then
+	if multilib_is_native_abi; then
 		usex "${@}"
 	else
 		echo "${3-no}${5}"
