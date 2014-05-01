@@ -77,7 +77,7 @@ src_configure() {
 }
 
 multilib_src_compile() {
-	if multilib_build_binaries ; then
+	if multilib_is_native_abi ; then
 		emake
 	else
 		emake -C src libmagic.la
@@ -95,7 +95,7 @@ src_compile() {
 }
 
 multilib_src_install() {
-	if multilib_build_binaries ; then
+	if multilib_is_native_abi ; then
 		default
 	else
 		emake -C src install-{includeHEADERS,libLTLIBRARIES} DESTDIR="${D}"
