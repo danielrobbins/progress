@@ -55,7 +55,7 @@ multilib_src_configure() {
 		--with-html-dir="${EPREFIX}"/usr/share/doc/${PF} \
 		--with-html-subdir=html \
 		$(use_with crypt crypto) \
-		$(multilib_build_binaries && use_with python || echo --without-python) \
+		$(multilib_is_native_abi && use_with python || echo --without-python) \
 		$(use_with debug) \
 		$(use_with debug mem-debug)
 }
@@ -63,7 +63,7 @@ multilib_src_configure() {
 multilib_src_compile() {
 	default
 
-	if multilib_build_binaries && use python; then
+	if multilib_is_native_abi && use python; then
 		python_copy_sources python
 		building() {
 			emake PYTHON_INCLUDES="$(python_get_includedir)" \
@@ -78,7 +78,7 @@ multilib_src_compile() {
 multilib_src_test() {
 	default
 
-	if multilib_build_binaries && use python; then
+	if multilib_is_native_abi && use python; then
 		testing() {
 			emake test
 		}
@@ -89,7 +89,7 @@ multilib_src_test() {
 multilib_src_install() {
 	emake DESTDIR="${D}" install
 
-	if multilib_build_binaries && use python; then
+	if multilib_is_native_abi && use python; then
 		installation() {
 			emake DESTDIR="${D}" \
 				PYTHON_LIBS="$(python_get_library -l)" \
