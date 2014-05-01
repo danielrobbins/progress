@@ -106,7 +106,7 @@ multilib_src_configure() {
 
 	local myconf=()
 
-	if multilib_build_binaries; then
+	if multilib_is_native_abi; then
 		myconf=($(use_with python)
 			$(use_with readline)
 			$(use_with readline history))
@@ -130,7 +130,7 @@ multilib_src_configure() {
 multilib_src_compile() {
 	default
 
-	if multilib_build_binaries && use python; then
+	if multilib_is_native_abi && use python; then
 		python_copy_sources python
 		building() {
 			emake PYTHON_INCLUDES="${EPREFIX}$(python_get_includedir)" \
@@ -144,7 +144,7 @@ multilib_src_compile() {
 multilib_src_test() {
 	default
 
-	if multilib_build_binaries && use python; then
+	if multilib_is_native_abi && use python; then
 		testing() {
 			emake test
 		}
@@ -156,7 +156,7 @@ multilib_src_install() {
 	emake DESTDIR="${D}" \
 		EXAMPLES_DIR="${EPREFIX}"/usr/share/doc/${PF}/examples install
 
-	if multilib_build_binaries && use python; then
+	if multilib_is_native_abi && use python; then
 		installation() {
 			emake DESTDIR="${D}" \
 				PYTHON_LIBS="$(python_get_library -l)" \
