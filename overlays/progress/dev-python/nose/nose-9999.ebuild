@@ -5,9 +5,7 @@
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 # 2.6: https://github.com/nose-devs/nose/issues/781
-# 3.[3-9]: https://github.com/nose-devs/nose/issues/782
-# 3.[4-9]: https://github.com/nose-devs/nose/issues/783
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.6 3.[3-9] *-jython"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.6 *-jython"
 
 inherit distutils git-2
 
