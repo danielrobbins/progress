@@ -45,6 +45,23 @@ _MULTILIB_FLAGS=(
 	abi_mips_o32:o32
 )
 
+# @ECLASS-VARIABLE: MULTILIB_COMPAT
+# @DEFAULT_UNSET
+# @DESCRIPTION:
+# List of multilib ABIs supported by the ebuild. If unset, defaults to
+# all ABIs supported by the eclass.
+#
+# This variable is intended for use in prebuilt multilib packages that
+# can provide binaries only for a limited set of ABIs. If ABIs need to
+# be limited due to a bug in source code, package.use.mask is
+# recommended instead.
+#
+# Example use:
+# @CODE
+# # Upstream provides binaries for x86 & amd64 only
+# MULTILIB_COMPAT=( abi_x86_{32,64} )
+# @CODE
+
 # @ECLASS-VARIABLE: MULTILIB_USEDEP
 # @DESCRIPTION:
 # The USE-dependency to be used on dependencies (libraries) needing
@@ -58,6 +75,19 @@ _MULTILIB_FLAGS=(
 
 _multilib_build_set_globals() {
 	local flags=( "${_MULTILIB_FLAGS[@]%:*}" )
+
+	if [[ ${MULTILIB_COMPAT[@]} ]]; then
+		# Validate MULTILIB_COMPAT and filter out the flags.
+		local f
+		for f in "${MULTILIB_COMPAT[@]}"; do
+			if ! has "${f}" "${flags[@]}"; then
+				die "Invalid value in MULTILIB_COMPAT: ${f}"
+			fi
+		done
+
+		flags=( "${MULTILIB_COMPAT[@]}" )
+	fi
+
 	local usedeps=${flags[@]/%/(-)?}
 
 	IUSE=${flags[*]}
