@@ -29,14 +29,14 @@ pkg_setup() {
 }
 
 src_prepare() {
-	use python && python_clean_py-compile_files
-
 	sed -e "s/AM_CONFIG_HEADER/AC_CONFIG_HEADERS/" -i configure.ac || die "sed failed"
 
 	# Python bindings are built/tested/installed manually.
 	sed -e "/^SUBDIRS/s/ python//" -i bindings/Makefile.am || die "sed failed"
 
 	eautoreconf
+
+	use python && python_clean_py-compile_files
 
 	use sparc && replace-flags -O? -O0
 }
@@ -102,7 +102,7 @@ src_install() {
 		python_clean_installation_image
 	fi
 
-	rm -f "${ED}"/usr/lib*/${PN}.la
+	find "${ED}" -name "*.la" -delete
 }
 
 pkg_postinst() {
