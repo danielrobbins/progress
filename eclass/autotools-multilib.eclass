@@ -28,14 +28,6 @@ inherit autotools-utils eutils multilib-build multilib-minimal
 
 EXPORT_FUNCTIONS src_prepare src_configure src_compile src_test src_install
 
-# bug #485046
-_autotools-multilib_fix_multilib_minimal() {
-	src_conf=$(declare -f multilib-minimal_src_configure)
-	src_conf=${src_conf/multilib_foreach_abi/multilib_parallel_foreach_abi}
-	eval "${src_conf}"
-}
-_autotools-multilib_fix_multilib_minimal
-
 # Note: _at_args[@] passing is a backwards compatibility measure.
 # Don't use it in new packages.
 

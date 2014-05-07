@@ -453,6 +453,14 @@ _EOF_
 					# Note: match a space afterwards to avoid collision potential.
 					sed -e "/${abi_flag} /s&error.*&include <${CHOST}${f}>&" \
 						-i "${ED}/tmp/multilib-include${f}" || die
+
+					# Hack for emul-linux-x86 compatibility.
+					# It assumes amd64 will come after x86, and will use amd64
+					# headers if no specific x86 headers were installed.
+					if [[ ${ABI} == amd64 ]]; then
+						sed -e "/abi_x86_32 /s&error.*&include <${CHOST}${f}>&" \
+							-i "${ED}/tmp/multilib-include${f}" || die
+					fi
 				fi
 			done
 		fi
