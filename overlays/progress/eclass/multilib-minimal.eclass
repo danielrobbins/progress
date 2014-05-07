@@ -50,7 +50,7 @@ multilib-minimal_src_configure() {
 		popd >/dev/null || die
 	}
 
-	multilib_foreach_abi multilib-minimal_abi_src_configure
+	multilib_parallel_foreach_abi multilib-minimal_abi_src_configure
 }
 
 multilib-minimal_src_compile() {
