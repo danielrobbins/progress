@@ -82,6 +82,9 @@ src_prepare() {
 		"${FILESDIR}/${P}-python3.patch" \
 		"${FILESDIR}/${P}-python3a.patch"
 
+	# Security fixes from 2.9.2
+	epatch "${FILESDIR}/${P}-external-param-entities.patch"
+
 	# Python bindings are built/tested/installed manually.
 	sed -e 's/$(PYTHON_SUBDIR)//' -i Makefile.am || die "sed failed"
 
@@ -104,27 +107,17 @@ multilib_src_configure() {
 
 	# --with-mem-debug causes unusual segmentation faults (bug #105120).
 
-	local myconf=()
-
-	if multilib_is_native_abi; then
-		myconf=($(use_with python)
-			$(use_with readline)
-			$(use_with readline history))
-	else
-		myconf=(--without-python
-			--without-readline
-			--without-history)
-	fi
-
 	ECONF_SOURCE="${S}" econf \
 		--with-html-subdir=${PF}/html \
 		--docdir="${EPREFIX}/usr/share/doc/${PF}" \
 		$(use_with debug run-debug) \
 		$(use_with icu) \
-		$(use_with lzma) \
 		$(use_enable ipv6) \
-		$(use_enable static-libs static) \
-		"${myconf[@]}"
+		$(use_with lzma) \
+		$(multilib_native_use_with python) \
+		$(multilib_native_use_with readline) \
+		$(multilib_native_use_with readline history) \
+		$(use_enable static-libs static)
 }
 
 multilib_src_compile() {
