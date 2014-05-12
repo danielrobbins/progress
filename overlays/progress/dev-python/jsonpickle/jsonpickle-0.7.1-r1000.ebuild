@@ -5,8 +5,7 @@
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.1"
-# 3.[4-9]: https://github.com/jsonpickle/jsonpickle/issues/68
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.6 3.[4-9] *-jython"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.6 *-jython"
 
 inherit distutils
 
