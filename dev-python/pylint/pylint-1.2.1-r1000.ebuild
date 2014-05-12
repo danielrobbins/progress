@@ -5,7 +5,7 @@
 EAPI="5-progress"
 PYTHON_DEPEND="<<[{*-cpython}tk?]>>"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.* *-jython"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.* 3.* *-jython"
 
 inherit distutils
 
