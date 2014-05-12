@@ -3,8 +3,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-# 3.[4-9]: https://github.com/defnull/bottle/issues/567
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.[4-9] *-jython"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 
 inherit distutils
 
@@ -17,8 +16,8 @@ SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
-DEPEND="$(python_abi_depend virtual/python-json)"
-RDEPEND="${DEPEND}"
+DEPEND=""
+RDEPEND=""
 
 PYTHON_MODULES="bottle.py"
 
