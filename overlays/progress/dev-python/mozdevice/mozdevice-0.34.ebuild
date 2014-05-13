@@ -18,5 +18,6 @@ IUSE=""
 
 DEPEND="$(python_abi_depend ">=dev-python/mozfile-1.0")
 	$(python_abi_depend dev-python/mozlog)
+	$(python_abi_depend dev-python/moznetwork)
 	$(python_abi_depend dev-python/setuptools)"
 RDEPEND="${DEPEND}"
