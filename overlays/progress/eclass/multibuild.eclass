@@ -27,8 +27,6 @@ if [[ ! ${_MULTIBUILD} ]]; then
 
 inherit multiprocessing
 
-DEPEND="userland_GNU? ( >=sys-apps/coreutils-8.5 )"
-
 # @ECLASS-VARIABLE: MULTIBUILD_VARIANTS
 # @DESCRIPTION:
 # An array specifying all enabled variants which multibuild_foreach*
