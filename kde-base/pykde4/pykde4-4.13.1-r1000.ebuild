@@ -13,17 +13,15 @@ inherit eutils kde4-base multilib portability python toolchain-funcs
 DESCRIPTION="Python bindings for KDE4"
 HOMEPAGE="http://techbase.kde.org/Development/Languages/Python"
 
-KEYWORDS="*"
-IUSE="debug doc examples semantic-desktop"
+KEYWORDS="~*"
+IUSE="akonadi debug doc examples nepomuk"
 
 RDEPEND="
 	$(python_abi_depend ">=dev-python/PyQt4-4.9.5:0=[X,dbus,declarative,script,sql,svg,webkit]")
 	$(python_abi_depend ">=dev-python/sip-4.14:0=")
-	$(add_kdebase_dep kdelibs 'opengl,semantic-desktop?')
-	semantic-desktop? (
-		$(add_kdebase_dep kdepimlibs)
-		>=dev-libs/soprano-2.9.0
-	)
+	$(add_kdebase_dep kdelibs 'nepomuk?,opengl')
+	akonadi? ( $(add_kdebase_dep kdepimlibs) )
+	nepomuk? ( >=dev-libs/soprano-2.9.0 )
 "
 DEPEND="${RDEPEND}
 	sys-devel/libtool
@@ -75,9 +73,9 @@ src_configure() {
 		local mycmakeargs=(
 			-DWITH_PolkitQt=OFF
 			-DWITH_QScintilla=OFF
-			$(cmake-utils_use_with semantic-desktop Soprano)
-			$(cmake-utils_use_with semantic-desktop Nepomuk)
-			$(cmake-utils_use_with semantic-desktop KdepimLibs)
+			$(cmake-utils_use_with akonadi KdepimLibs)
+			$(cmake-utils_use_with nepomuk)
+			$(cmake-utils_use_with nepomuk Soprano)
 			-DPYTHON_EXECUTABLE=$(PYTHON -a)
 			-DPYKDEUIC4_ALTINSTALL=TRUE
 		)
