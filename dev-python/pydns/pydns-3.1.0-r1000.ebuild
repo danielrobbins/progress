@@ -5,22 +5,24 @@
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.*"
+DISTUTILS_SRC_TEST="nosetests"
 
-inherit distutils
+inherit distutils eutils
 
 MY_PN="py3dns"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Python module for DNS (Domain Name Service)"
-HOMEPAGE="http://pydns.sourceforge.net/ https://pypi.python.org/pypi/pydns"
-SRC_URI="mirror://sourceforge/pydns/${MY_P}.tar.gz"
+HOMEPAGE="http://pydns.sourceforge.net/ https://launchpad.net/py3dns https://pypi.python.org/pypi/py3dns"
+SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="CNRI"
 SLOT="3"
 KEYWORDS="*"
 IUSE="examples"
 
-RDEPEND="!dev-python/py3dns
+RDEPEND="$(python_abi_depend virtual/python-ipaddress)
+	!dev-python/py3dns
 	!dev-python/pydns:python-3"
 DEPEND="${RDEPEND}
 	virtual/libiconv"
@@ -31,6 +33,8 @@ PYTHON_MODULES="DNS"
 
 src_prepare() {
 	distutils_src_prepare
+
+	epatch "${FILESDIR}/${MY_P}-python-3.2.patch"
 
 	# Clean documentation.
 	mv CREDITS.txt CREDITS
