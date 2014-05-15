@@ -17,8 +17,9 @@ KEYWORDS="*"
 IUSE=""
 
 DEPEND="$(python_abi_depend dev-python/authres)
-	$(python_abi_depend ">=dev-python/pyspf-2.0")
+	$(python_abi_depend ">=dev-python/pyspf-2.0.9")
 	$(python_abi_depend virtual/python-ipaddress)"
 RDEPEND="${DEPEND}"
 
+DOCS="CHANGES policyd-spf.conf.commented README README.per_user_whitelisting"
 PYTHON_MODULES="policydspfsupp.py policydspfuser.py"
