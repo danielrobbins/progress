@@ -5,7 +5,7 @@
 EAPI="5-progress"
 PYTHON_DEPEND="python? ( <<2>> )"
 
-inherit eutils python toolchain-funcs versionator
+inherit eutils multilib python toolchain-funcs versionator
 
 MY_PV="$(replace_all_version_separators _)"
 
@@ -44,6 +44,9 @@ src_prepare() {
 
 	# Disable stripping.
 	sed -e 's/ -s\b//' -i engine/build.jam || die "sed failed"
+
+	# Use correct libdir.
+	sed -e "s/\[ .path \$(python-location) lib \]/[ .path \$(python-location) $(get_libdir) ]/" -i engine/build.jam || die "sed failed"
 
 	# Force regeneration.
 	rm engine/jambase.c || die
