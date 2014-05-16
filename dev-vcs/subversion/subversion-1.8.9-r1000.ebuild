@@ -29,7 +29,7 @@ fi
 
 LICENSE="Apache-2.0"
 SLOT="0"
-KEYWORDS="~*"
+KEYWORDS="*"
 IUSE="apache2 berkdb ctypes-python debug doc +dso extras gnome-keyring +http java kde +magic nls perl python ruby sasl static-libs test"
 REQUIRED_USE="extras? ( python ) test? ( http? ( apache2 ) )"
 
