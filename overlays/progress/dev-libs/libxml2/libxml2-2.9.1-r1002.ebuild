@@ -85,6 +85,9 @@ src_prepare() {
 	# Security fixes from 2.9.2
 	epatch "${FILESDIR}/${P}-external-param-entities.patch"
 
+	# https://bugzilla.gnome.org/show_bug.cgi?id=730290
+	epatch "${FILESDIR}/${PN}-2.9.1-xmllint-postvalid.patch"
+
 	# Python bindings are built/tested/installed manually.
 	sed -e 's/$(PYTHON_SUBDIR)//' -i Makefile.am || die "sed failed"
 
