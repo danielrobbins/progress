@@ -32,7 +32,10 @@ src_configure() {
 		fi
 	done
 
-	sed -e "s/dblib = 'db'/dblib = '$(db_libname ${DB_VER})'/" -i setup2.py setup3.py || die "sed failed"
+	sed \
+		-e "s/db_ver = None/db_ver = (${DB_VER%.*}, ${DB_VER#*.})/" \
+		-e "s/dblib = 'db'/dblib = '$(db_libname ${DB_VER})'/" \
+		-i setup2.py setup3.py || die "sed failed"
 }
 
 src_compile() {
