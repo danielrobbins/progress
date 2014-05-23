@@ -469,6 +469,15 @@ git-r3_fetch() {
 		local fetch_command=( git fetch "${r}" )
 		local clone_type=${EGIT_CLONE_TYPE}
 
+		if [[ ${r} == https://* ]] && ! has_version 'dev-vcs/git[curl]'; then
+			eerror "git-r3: fetching from https:// requested. In order to support https,"
+			eerror "dev-vcs/git needs to be built with USE=curl. Example solution:"
+			eerror
+			eerror "	echo dev-vcs/git curl >> /etc/portage/package.use"
+			eerror "	emerge -1v dev-vcs/git"
+			die "dev-vcs/git built with USE=curl required."
+		fi
+
 		if [[ ${r} == https://code.google.com/* ]]; then
 			# Google Code has special magic on top of git that:
 			# 1) can't handle shallow clones at all,
