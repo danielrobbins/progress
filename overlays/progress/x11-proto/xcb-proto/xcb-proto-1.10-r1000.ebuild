@@ -44,7 +44,7 @@ src_compile() {
 
 src_test() {
 	testing() {
-		BUILD_DIR="${S}-${PYTHON_ABI}-${ARCH}" autotools-utils_src_test
+		BUILD_DIR="${S}-${PYTHON_ABI}" autotools-multilib_src_test
 	}
 	python_execute_function testing
 }
