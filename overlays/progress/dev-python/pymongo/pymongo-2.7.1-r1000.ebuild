@@ -15,7 +15,7 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 LICENSE="Apache-2.0"
 SLOT="0"
 KEYWORDS="*"
-IUSE="doc gevent mod_wsgi"
+IUSE="doc gevent"
 
 RDEPEND="dev-db/mongodb
 	gevent? ( $(python_abi_depend -i "2.*-cpython" dev-python/gevent) )"
@@ -64,9 +64,7 @@ src_test() {
 }
 
 src_install() {
-	# Extension modules should be disabled for mod_wsgi.
-	# http://api.mongodb.org/python/current/faq.html#does-pymongo-work-with-mod-wsgi
-	distutils_src_install $(use mod_wsgi && echo --no_ext)
+	distutils_src_install
 
 	if use doc; then
 		dohtml -r html/
