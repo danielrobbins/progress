@@ -16,10 +16,14 @@ SRC_URI="http://www.bpython-interpreter.org/releases/${P}.tar.gz"
 LICENSE="MIT"
 SLOT="0"
 KEYWORDS="*"
-IUSE="doc gtk nls urwid"
+IUSE="curtsies doc gtk nls urwid"
 
 RDEPEND="$(python_abi_depend dev-python/pygments)
 	$(python_abi_depend dev-python/setuptools)
+	curtsies? (
+		$(python_abi_depend -e "*-pypy-*" dev-python/curtsies)
+		$(python_abi_depend -e "*-pypy-*" dev-python/greenlet)
+	)
 	gtk? (
 		$(python_abi_depend -e "3.* *-pypy-*" dev-python/pygobject:2)
 		$(python_abi_depend -e "3.* *-pypy-*" dev-python/pygtk:2)
@@ -49,12 +53,21 @@ src_compile() {
 src_install() {
 	distutils_src_install
 
+	if ! use curtsies; then
+		rm "${ED}"usr/bin/bpython-curtsies*
+
+		delete_curtsies() {
+			rm -r "${ED}$(python_get_sitedir)/bpython/"{curtsies.py,curtsiesfrontend}
+		}
+		python_execute_function -q delete_curtsies
+	fi
+
 	if use doc; then
 		dohtml -r doc/sphinx/html/
 	fi
 
 	if use gtk; then
-		# pygtk does not support Python 3.
+		# PyGTK supporteth not Python 3.
 		rm "${ED}"usr/bin/bpython-gtk-3.*
 	else
 		rm "${ED}"usr/bin/bpython-gtk*
