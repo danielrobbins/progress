@@ -14,7 +14,7 @@ MY_PN="WebOb"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="WSGI request and response object"
-HOMEPAGE="http://webob.org/ https://pypi.python.org/pypi/WebOb"
+HOMEPAGE="http://webob.org/ https://github.com/Pylons/webob https://pypi.python.org/pypi/WebOb"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="MIT"
@@ -27,6 +27,14 @@ DEPEND="$(python_abi_depend dev-python/setuptools)
 RDEPEND=""
 
 S="${WORKDIR}/${MY_P}"
+
+src_prepare() {
+	distutils_src_prepare
+	find -name "*.py[co]" -delete
+
+	# Fix generation of documentation with WebOb not installed.
+	sed -e "s/^version = release = pkg_resources.get_distribution('webob').version$/version = release = '${PV}'/" -i docs/conf.py
+}
 
 src_compile() {
 	distutils_src_compile
