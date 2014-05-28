@@ -10,7 +10,7 @@ DISTUTILS_SRC_TEST="nosetests"
 inherit distutils git-2
 
 DESCRIPTION="Filesystem extended attributes for python"
-HOMEPAGE="http://pyxattr.k1024.org/ https://github.com/iustin/pyxattr http://pypi.python.org/pypi/pyxattr"
+HOMEPAGE="http://pyxattr.k1024.org/ https://github.com/iustin/pyxattr https://pypi.python.org/pypi/pyxattr"
 SRC_URI=""
 EGIT_REPO_URI="https://github.com/iustin/pyxattr"
 
