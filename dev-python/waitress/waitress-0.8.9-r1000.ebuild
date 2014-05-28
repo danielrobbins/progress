@@ -33,10 +33,13 @@ src_prepare() {
 
 	# Fix Sphinx theme.
 	sed \
-		-e "22,+19d" \
+		-e "23,+19d" \
 		-e "s/html_theme = 'pylons'/html_theme = 'default'/" \
 		-e "/html_theme_options =/d" \
 		-i docs/conf.py
+
+	# Fix generation of documentation with Waitress not installed.
+	sed -e "s/^version = pkg_resources.get_distribution('waitress').version$/version = '${PV}'/" -i docs/conf.py
 }
 
 src_compile() {
@@ -54,7 +57,7 @@ src_install() {
 	distutils_src_install
 
 	delete_tests() {
-		rm -fr "${ED}$(python_get_sitedir)/waitress/tests"
+		rm -r "${ED}$(python_get_sitedir)/waitress/tests"
 	}
 	python_execute_function -q delete_tests
 
