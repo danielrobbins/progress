@@ -10,7 +10,7 @@ DISTUTILS_SRC_TEST="nosetests"
 inherit distutils
 
 DESCRIPTION="Filesystem extended attributes for python"
-HOMEPAGE="http://pyxattr.k1024.org/ https://github.com/iustin/pyxattr http://pypi.python.org/pypi/pyxattr"
+HOMEPAGE="http://pyxattr.k1024.org/ https://github.com/iustin/pyxattr https://pypi.python.org/pypi/pyxattr"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="LGPL-2.1"
