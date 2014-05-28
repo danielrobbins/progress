@@ -16,5 +16,6 @@ SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
-DEPEND="$(python_abi_depend dev-python/setuptools)"
-RDEPEND=""
+DEPEND="$(python_abi_depend dev-python/setuptools)
+	$(python_abi_depend virtual/python-argparse)"
+RDEPEND="${DEPEND}"
