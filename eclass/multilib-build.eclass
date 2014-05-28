@@ -124,7 +124,7 @@ multilib_get_enabled_abis() {
 	debug-print-function ${FUNCNAME} "${@}"
 
 	local pairs=( $(multilib_get_enabled_abi_pairs) )
-	echo "${pairs[@]#*:}"
+	echo "${pairs[@]#*.}"
 }
 
 # @FUNCTION: multilib_get_enabled_abi_pairs
