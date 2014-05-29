@@ -6,3 +6,5 @@ dev-lang/python:3.5
 -dev-lang/python:2.6
 -dev-python/argparse
 -dev-python/ordereddict
+
+->=sys-libs/cracklib-2.9.1-r1
