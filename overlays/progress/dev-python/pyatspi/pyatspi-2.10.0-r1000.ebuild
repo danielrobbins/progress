@@ -15,10 +15,8 @@ HOMEPAGE="http://live.gnome.org/Accessibility"
 # Note: only some of the tests are GPL-licensed, everything else is LGPL
 LICENSE="LGPL-2 GPL-2+"
 SLOT="0"
-KEYWORDS="~*"
-IUSE="" # test
-
-# test suite is obsolete (at-spi-1.x era) and unpassable
+KEYWORDS="*"
+IUSE=""
 RESTRICT="test"
 
 COMMON_DEPEND="$(python_abi_depend dev-python/dbus-python)
@@ -30,7 +28,8 @@ RDEPEND="${COMMON_DEPEND}
 	!<gnome-extra/at-spi-1.32.0-r1
 "
 DEPEND="${COMMON_DEPEND}
-	virtual/pkgconfig"
+	virtual/pkgconfig
+"
 
 src_prepare() {
 	# https://bugzilla.gnome.org/show_bug.cgi?id=689957

@@ -16,9 +16,7 @@ HOMEPAGE="http://live.gnome.org/Accessibility"
 LICENSE="LGPL-2 GPL-2+"
 SLOT="0"
 KEYWORDS="*"
-IUSE="" # test
-
-# test suite is obsolete (at-spi-1.x era) and unpassable
+IUSE=""
 RESTRICT="test"
 
 COMMON_DEPEND="$(python_abi_depend dev-python/dbus-python)
@@ -30,7 +28,8 @@ RDEPEND="${COMMON_DEPEND}
 	!<gnome-extra/at-spi-1.32.0-r1
 "
 DEPEND="${COMMON_DEPEND}
-	virtual/pkgconfig"
+	virtual/pkgconfig
+"
 
 src_prepare() {
 	# https://bugzilla.gnome.org/show_bug.cgi?id=689957
@@ -43,8 +42,7 @@ src_prepare() {
 }
 
 src_configure() {
-	G2CONF="${G2CONF} --disable-tests"
-	python_execute_function -s gnome2_src_configure
+	python_execute_function -s gnome2_src_configure --disable-tests
 }
 
 src_compile() {
@@ -59,6 +57,9 @@ src_install() {
 	python_merge_intermediate_installation_images "${T}/images"
 
 	python_clean_installation_image
+
+	docinto examples
+	dodoc examples/*.py
 }
 
 pkg_postinst() {
