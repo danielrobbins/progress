@@ -9,7 +9,7 @@ PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 DISTUTILS_SRC_TEST="nosetests"
 DISTUTILS_DISABLE_TEST_DEPENDENCY="1"
 
-inherit distutils libtool toolchain-funcs
+inherit distutils libtool multilib-minimal toolchain-funcs
 
 MY_P=${P/_}
 DESCRIPTION="Password Checking Library"
@@ -21,7 +21,7 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="nls python static-libs test zlib"
 
-RDEPEND="zlib? ( sys-libs/zlib:0= )"
+RDEPEND="zlib? ( sys-libs/zlib:0=[${MULTILIB_USEDEP}] )"
 DEPEND="${RDEPEND}
 	python? (
 		$(python_abi_depend dev-python/setuptools)
@@ -33,6 +33,7 @@ S=${WORKDIR}/${MY_P}
 PYTHON_MODULES="cracklib.py"
 
 do_python() {
+	multilib_is_native_abi || return 0
 	use python || return 0
 	pushd python > /dev/null || die
 	distutils_src_${EBUILD_PHASE}
@@ -55,45 +56,49 @@ pkg_setup() {
 src_prepare() {
 	elibtoolize #269003
 	do_python
+	multilib_copy_sources
 }
 
-src_configure() {
+multilib_src_configure() {
+	# use /usr/lib so that the dictionary is shared between ABIs
 	econf \
-		--with-default-dict='$(libdir)/cracklib_dict' \
+		--with-default-dict='/usr/lib/cracklib_dict' \
 		--without-python \
 		$(use_enable nls) \
 		$(use_enable static-libs static) \
 		$(use_with zlib)
 }
 
-src_compile() {
+multilib_src_compile() {
 	default
 	do_python
 }
 
-src_test() {
+multilib_src_test() {
 	do_python
 }
 
-src_install() {
+multilib_src_install() {
 	default
-	use static-libs || find "${ED}"/usr -name libcrack.la -delete
-	rm -r "${ED}"/usr/share/cracklib
-
-	do_python
-
-	if use python; then
-		delete_tests() {
-			rm -f "${ED}$(python_get_sitedir)/test_cracklib.py"
-		}
-		python_execute_function -q delete_tests
-	fi
-
 	# move shared libs to /
-	gen_usr_ldscript -a crack
+	multilib_is_native_abi && gen_usr_ldscript -a crack
+
+	do_python
+}
+
+multilib_src_install_all() {
+	prune_libtool_files
+	rm -r "${ED}"/usr/share/cracklib
 
 	insinto /usr/share/dict
 	doins dicts/cracklib-small
+
+	if use python; then
+		delete_tests() {
+			rm "${ED}$(python_get_sitedir)/test_cracklib.py"
+		}
+		python_execute_function -q delete_tests
+	fi
 }
 
 pkg_postinst() {
