@@ -132,6 +132,34 @@ systemd_newunit() {
 	)
 }
 
+# @FUNCTION: systemd_douserunit
+# @USAGE: <unit>...
+# @DESCRIPTION:
+# Install systemd user unit(s). Uses doins, thus it is fatal in EAPI 4
+# and non-fatal in earlier EAPIs.
+systemd_douserunit() {
+	debug-print-function ${FUNCNAME} "${@}"
+
+	(
+		insinto "$(_systemd_get_userunitdir)"
+		doins "${@}"
+	)
+}
+
+# @FUNCTION: systemd_newuserunit
+# @USAGE: <old-name> <new-name>
+# @DESCRIPTION:
+# Install systemd user unit with a new name. Uses newins, thus it
+# is fatal in EAPI 4 and non-fatal in earlier EAPIs.
+systemd_newuserunit() {
+	debug-print-function ${FUNCNAME} "${@}"
+
+	(
+		insinto "$(_systemd_get_userunitdir)"
+		newins "${@}"
+	)
+}
+
 # @FUNCTION: systemd_install_serviced
 # @USAGE: <conf-file> [<service.d>]
 # @DESCRIPTION:
