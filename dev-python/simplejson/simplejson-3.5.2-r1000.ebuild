@@ -29,7 +29,7 @@ src_prepare() {
 	# https://github.com/simplejson/simplejson/issues/70
 	sed \
 		-e "/'simplejson.tests.test_scanstring',/d" \
-		-e "64s/\])/] + ([] if sys.platform.startswith('java') else ['simplejson.tests.test_scanstring']))/" \
+		-e "65s/\])/] + ([] if sys.platform.startswith('java') else ['simplejson.tests.test_scanstring']))/" \
 		-i simplejson/tests/__init__.py
 }
 
