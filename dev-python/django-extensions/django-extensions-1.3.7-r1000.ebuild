@@ -21,6 +21,7 @@ IUSE="doc graphviz mysql postgres s3 sqlite test vcard"
 RDEPEND="$(python_abi_depend dev-python/django[mysql?,postgres?,sqlite?])
 	$(python_abi_depend dev-python/pygments)
 	$(python_abi_depend dev-python/python-dateutil)
+	$(python_abi_depend dev-python/shortuuid)
 	$(python_abi_depend dev-python/six)
 	$(python_abi_depend dev-python/werkzeug)
 	graphviz? ( $(python_abi_depend -e "3.* *-jython" dev-python/pygraphviz) )
