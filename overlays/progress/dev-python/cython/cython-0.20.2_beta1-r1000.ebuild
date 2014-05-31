@@ -34,15 +34,6 @@ PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 DOCS="CHANGES.rst README.txt ToDo.txt USAGE.txt"
 PYTHON_MODULES="Cython cython.py pyximport"
 
-src_prepare() {
-	distutils_src_prepare
-
-	# Fix Cython.Debugger.Tests.TestLibCython.TestAll.test_all().
-	# https://github.com/cython/cython/commit/1abea6400fe4b738fdbb70e9013a86bc00086f20
-	# https://github.com/cython/cython/commit/23ebf9cd405acaa75f727bbfd9bd5191718a5daf
-	sed -e "/cleanup_workdir=False,/a\\                tags=runtests.parse_tags(codefile)," -i Cython/Debugger/Tests/TestLibCython.py
-}
-
 src_test() {
 	testing() {
 		python_execute "$(PYTHON)" runtests.py -vv --work-dir tests-${PYTHON_ABI}
