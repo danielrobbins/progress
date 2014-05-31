@@ -8,3 +8,6 @@ dev-lang/python:3.5
 -dev-python/ordereddict
 
 ->=sys-libs/cracklib-2.9.1-r1
+
+->=dev-python/sip-4.15.5
+->=dev-python/PyQt4-4.11
