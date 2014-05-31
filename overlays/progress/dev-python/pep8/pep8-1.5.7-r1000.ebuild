@@ -14,13 +14,25 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 LICENSE="MIT"
 SLOT="0"
 KEYWORDS="*"
-IUSE=""
+IUSE="doc"
 
-DEPEND="$(python_abi_depend dev-python/setuptools)"
-RDEPEND="${DEPEND}"
+RDEPEND="$(python_abi_depend dev-python/setuptools)"
+DEPEND="${RDEPEND}
+	doc? ( $(python_abi_depend dev-python/sphinx) )"
 
 DOCS="CHANGES.txt"
 PYTHON_MODULES="${PN}.py"
+
+src_compile() {
+	distutils_src_compile
+
+	if use doc; then
+		einfo "Generation of documentation"
+		pushd docs > /dev/null
+		PYTHONPATH="../build-$(PYTHON -f --ABI)/lib" emake html
+		popd > /dev/null
+	fi
+}
 
 src_test() {
 	testing() {
@@ -28,4 +40,12 @@ src_test() {
 		python_execute "$(PYTHON)" pep8.py --testsuite=testsuite -v || return
 	}
 	python_execute_function testing
+}
+
+src_install() {
+	distutils_src_install
+
+	if use doc; then
+		dohtml -r docs/_build/html/
+	fi
 }
