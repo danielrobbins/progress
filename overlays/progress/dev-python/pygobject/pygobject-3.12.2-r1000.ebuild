@@ -12,7 +12,7 @@ PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.6"
 inherit autotools eutils gnome2 python virtualx
 
 DESCRIPTION="GLib's GObject library bindings for Python"
-HOMEPAGE="http://www.pygtk.org/"
+HOMEPAGE="https://wiki.gnome.org/Projects/PyGObject"
 SRC_URI+=" python_abis_2.6? ( mirror://gnome/sources/${PN}/3.8/${PN}-3.8.3.tar.xz )"
 
 LICENSE="LGPL-2.1+"
