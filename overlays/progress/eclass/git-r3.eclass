@@ -351,6 +351,49 @@ _git-r3_set_submodules() {
 	done < <(echo "${data}" | git config -f /dev/fd/0 -l || die)
 }
 
+# @FUNCTION: _git-r3_set_subrepos
+# @USAGE: <submodule-uri> <parent-repo-uri>...
+# @INTERNAL
+# @DESCRIPTION:
+# Create 'subrepos' array containing absolute (canonical) submodule URIs
+# for the given <submodule-uri>. If the URI is relative, URIs will be
+# constructed using all <parent-repo-uri>s. Otherwise, this single URI
+# will be placed in the array.
+_git-r3_set_subrepos() {
+	debug-print-function ${FUNCNAME} "$@"
+
+	local suburl=${1}
+	subrepos=( "${@:2}" )
+
+	if [[ ${suburl} == ./* || ${suburl} == ../* ]]; then
+		# drop all possible trailing slashes for consistency
+		subrepos=( "${subrepos[@]%%/}" )
+
+		while true; do
+			if [[ ${suburl} == ./* ]]; then
+				suburl=${suburl:2}
+			elif [[ ${suburl} == ../* ]]; then
+				suburl=${suburl:3}
+
+				# XXX: correctness checking
+
+				# drop the last path component
+				subrepos=( "${subrepos[@]%/*}" )
+				# and then the trailing slashes, again
+				subrepos=( "${subrepos[@]%%/}" )
+			else
+				break
+			fi
+		done
+
+		# append the preprocessed path to the preprocessed URIs
+		subrepos=( "${subrepos[@]/%//${suburl}}")
+	else
+		subrepos=( "${suburl}" )
+	fi
+}
+
+
 # @FUNCTION: _git-r3_is_local_repo
 # @USAGE: <repo-uri>
 # @INTERNAL
@@ -644,11 +687,9 @@ git-r3_fetch() {
 			if [[ ! ${commit} ]]; then
 				die "Unable to get commit id for submodule ${subname}"
 			fi
-			if [[ ${url} == ./* || ${url} == ../* ]]; then
-				local subrepos=( "${repos[@]/%//${url}}" )
-			else
-				local subrepos=( "${url}" )
-			fi
+
+			local subrepos
+			_git-r3_set_subrepos "${url}" "${repos[@]}"
 
 			git-r3_fetch "${subrepos[*]}" "${commit}" "${local_id}/${subname}"
 
@@ -780,10 +821,8 @@ git-r3_checkout() {
 			local subname=${submodules[0]}
 			local url=${submodules[1]}
 			local path=${submodules[2]}
-
-			if [[ ${url} == ./* || ${url} == ../* ]]; then
-				url=${repos[0]%%/}/${url}
-			fi
+			local subrepos
+			_git-r3_set_subrepos "${url}" "${repos[@]}"
 
 			git-r3_checkout "${url}" "${out_dir}/${path}" \
 				"${local_id}/${subname}"
