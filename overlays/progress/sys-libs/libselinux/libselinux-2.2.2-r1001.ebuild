@@ -11,12 +11,15 @@ USE_RUBY="ruby19 ruby20 ruby21"
 
 inherit eutils multilib multilib-minimal python ruby-ng toolchain-funcs
 
+MY_P="${P//_/-}"
+
+PATCHBUNDLE="r4"
 SEPOL_VER="2.2"
 
 DESCRIPTION="SELinux userland library"
 HOMEPAGE="http://userspace.selinuxproject.org/"
-SRC_URI="http://userspace.selinuxproject.org/releases/20131030/${P}.tar.gz
-	http://dev.gentoo.org/~swift/patches/${PN}/patchbundle-${P}-r4.tar.gz"
+SRC_URI="http://userspace.selinuxproject.org/releases/20131030/${MY_P}.tar.gz
+	http://dev.gentoo.org/~swift/patches/${PN}/patchbundle-${P}-${PATCHBUNDLE}.tar.gz"
 
 LICENSE="GPL-2 public-domain"
 SLOT="0"
@@ -24,8 +27,8 @@ KEYWORDS="*"
 IUSE="python ruby static-libs"
 RESTRICT="test"
 
-RDEPEND=">=sys-libs/libsepol-${SEPOL_VER}
-	>=dev-libs/libpcre-8.33[static-libs?]
+RDEPEND=">=sys-libs/libsepol-${SEPOL_VER}[${MULTILIB_USEDEP}]
+	>=dev-libs/libpcre-8.33[${MULTILIB_USEDEP},static-libs?]
 	ruby? ( $(ruby_implementations_depend) )"
 DEPEND="${RDEPEND}
 	python? ( >=dev-lang/swig-2.0.9 )
@@ -34,7 +37,7 @@ DEPEND="${RDEPEND}
 		virtual/pkgconfig
 	)"
 
-S="${WORKDIR}/${P}"
+S="${WORKDIR}/${MY_P}"
 
 pkg_setup() {
 	if use python; then
@@ -96,7 +99,7 @@ multilib_src_compile() {
 
 	if multilib_is_native_abi && use ruby; then
 		each_ruby_compile() {
-			cd "${WORKDIR}/${P}-${ABI}"
+			cd "${BUILD_DIR}"
 			emake \
 				CC="$(tc-getCC)" \
 				LIBDIR="/usr/$(get_libdir)" \
@@ -136,7 +139,7 @@ multilib_src_install() {
 
 	if multilib_is_native_abi && use ruby; then
 		each_ruby_install() {
-			cd "${WORKDIR}/${P}-${ABI}"
+			cd "${BUILD_DIR}"
 			emake \
 				DESTDIR="${D}" \
 				LIBDIR="\$(PREFIX)/$(get_libdir)" \
