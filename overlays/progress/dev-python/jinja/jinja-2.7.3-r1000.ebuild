@@ -71,7 +71,7 @@ src_install(){
 	distutils_src_install
 
 	delete_tests() {
-		rm -fr "${ED}$(python_get_sitedir)/jinja2/testsuite"
+		rm -r "${ED}$(python_get_sitedir)/jinja2/testsuite"
 	}
 	python_execute_function -q delete_tests
 
