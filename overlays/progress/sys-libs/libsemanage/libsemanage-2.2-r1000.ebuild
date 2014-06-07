@@ -11,12 +11,14 @@ USE_RUBY="ruby19 ruby20 ruby21"
 
 inherit eutils multilib multilib-minimal python ruby-ng toolchain-funcs
 
+MY_P="${P//_/-}"
+
 SEPOL_VER="2.2"
 SELNX_VER="2.2.2-r1"
 
 DESCRIPTION="SELinux kernel and policy management library"
 HOMEPAGE="http://userspace.selinuxproject.org/"
-SRC_URI="http://userspace.selinuxproject.org/releases/20131030/${P}.tar.gz"
+SRC_URI="http://userspace.selinuxproject.org/releases/20131030/${MY_P}.tar.gz"
 
 LICENSE="LGPL-2.1"
 SLOT="0"
@@ -24,11 +26,11 @@ KEYWORDS="*"
 IUSE="python ruby static-libs"
 RESTRICT="test"
 
-RDEPEND=">=sys-libs/libsepol-${SEPOL_VER}
-	>=sys-libs/libselinux-${SELNX_VER}
-	app-arch/bzip2
-	dev-libs/ustr
-	sys-process/audit
+RDEPEND=">=sys-libs/libsepol-${SEPOL_VER}[${MULTILIB_USEDEP}]
+	>=sys-libs/libselinux-${SELNX_VER}[${MULTILIB_USEDEP}]
+	app-arch/bzip2[${MULTILIB_USEDEP}]
+	dev-libs/ustr[${MULTILIB_USEDEP}]
+	sys-process/audit[${MULTILIB_USEDEP}]
 	ruby? ( $(ruby_implementations_depend) )"
 DEPEND="${RDEPEND}
 	sys-devel/bison
@@ -39,7 +41,7 @@ DEPEND="${RDEPEND}
 		virtual/pkgconfig
 	)"
 
-S="${WORKDIR}/${P}"
+S="${WORKDIR}/${MY_P}"
 
 pkg_setup() {
 	if use python; then
@@ -115,7 +117,7 @@ multilib_src_compile() {
 
 	if multilib_is_native_abi && use ruby; then
 		each_ruby_compile() {
-			cd "${WORKDIR}/${P}-${ABI}"
+			cd "${BUILD_DIR}"
 			emake \
 				CC="$(tc-getCC)" \
 				LIBDIR="/usr/$(get_libdir)" \
@@ -155,7 +157,7 @@ multilib_src_install() {
 
 	if multilib_is_native_abi && use ruby; then
 		each_ruby_install() {
-			cd "${WORKDIR}/${P}-${ABI}"
+			cd "${BUILD_DIR}"
 			emake \
 				DESTDIR="${D}" \
 				LIBDIR="\$(PREFIX)/$(get_libdir)" \
