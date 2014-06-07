@@ -26,17 +26,6 @@ RDEPEND="pygments? ( $(python_abi_depend dev-python/pygments) )"
 
 S="${WORKDIR}/${MY_P}"
 
-src_prepare() {
-	distutils_src_prepare
-
-	# https://github.com/waylan/Python-Markdown/issues/294
-	sed -e "s/self.assertIs(markdown.util.parseBoolValue(value, False), result)/self.assertTrue(markdown.util.parseBoolValue(value, False) is result)/" -i tests/test_apis.py
-
-	# https://github.com/waylan/Python-Markdown/issues/295
-	# https://github.com/waylan/Python-Markdown/commit/4ca11effd18372dc6b5e8cf852130a7e75c27eb6
-	sed -e "s/^closeClass = r/closeClass = /" -i markdown/extensions/smarty.py
-}
-
 src_install() {
 	distutils_src_install
 
