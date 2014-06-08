@@ -475,6 +475,8 @@ multilib_prepare_wrappers() {
 #	else
 #       error "abi_ppc_32 not supported by the package."
 #	endif
+#elif defined(SWIG) /* https://sourceforge.net/p/swig/bugs/799/ */
+#	error "Native ABI not supported by the package."
 #else
 #	error "No ABI matched, please report a bug to bugs.gentoo.org"
 #endif
@@ -499,6 +501,12 @@ _EOF_
 					# headers if no specific x86 headers were installed.
 					if [[ ${ABI} == amd64 ]]; then
 						sed -e "/abi_x86_32 /s&error.*&include <${CHOST}${f}>&" \
+							-i "${wrapper}" || die
+					fi
+
+					# Needed for swig.
+					if multilib_is_native_abi; then
+						sed -e "/Native ABI/s&error.*&include <${CHOST}${f}>&" \
 							-i "${wrapper}" || die
 					fi
 				fi
