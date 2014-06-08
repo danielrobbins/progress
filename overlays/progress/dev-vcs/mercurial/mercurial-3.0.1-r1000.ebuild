@@ -7,7 +7,7 @@ PYTHON_DEPEND="<<[threads]>>"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 
-inherit bash-completion-r1 elisp-common eutils distutils
+inherit bash-completion-r1 distutils elisp-common eutils
 
 DESCRIPTION="Scalable distributed SCM"
 HOMEPAGE="http://mercurial.selenic.com/ https://pypi.python.org/pypi/Mercurial"
@@ -58,6 +58,8 @@ src_prepare() {
 	rm tests/test-mq.t
 	# Disable test failing due to DeprecationWarning in internal code in dev-vcs/bzr 2.6.0.
 	rm tests/test-convert-bzr-directories.t
+
+	epatch "${FILESDIR}/${P}-po_fixes.patch"
 }
 
 src_compile() {
@@ -69,7 +71,7 @@ src_compile() {
 
 	if use emacs; then
 		pushd contrib > /dev/null || die
-		elisp-compile mercurial.el || die "elisp-compile failed!"
+		elisp-compile mercurial.el
 		popd > /dev/null || die
 	fi
 
@@ -98,7 +100,7 @@ src_install() {
 	newins contrib/zsh_completion _hg
 
 	if use emacs; then
-		elisp-install ${PN} contrib/mercurial.el* || die "elisp-install failed!"
+		elisp-install ${PN} contrib/mercurial.el*
 		elisp-site-file-install "${FILESDIR}"/${SITEFILE}
 	fi
 
