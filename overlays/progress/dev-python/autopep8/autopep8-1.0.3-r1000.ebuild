@@ -4,7 +4,6 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-# http://bugs.jython.org/issue1982
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 
 inherit distutils
@@ -18,7 +17,7 @@ SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
-DEPEND="$(python_abi_depend ">=dev-python/pep8-1.5.6")
+DEPEND="$(python_abi_depend ">=dev-python/pep8-1.5.7")
 	$(python_abi_depend dev-python/setuptools)
 	$(python_abi_depend virtual/python-argparse)"
 RDEPEND="${DEPEND}"
