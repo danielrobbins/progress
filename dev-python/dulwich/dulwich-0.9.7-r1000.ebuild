@@ -5,9 +5,8 @@
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.* *-jython"
-# 2.6: Test suite hangs.
 PYTHON_TESTS_RESTRICTED_ABIS="2.6"
-DISTUTILS_SRC_TEST="nosetests"
+DISTUTILS_SRC_TEST="setup.py"
 
 inherit distutils
 
@@ -23,20 +22,13 @@ IUSE="ssh"
 RDEPEND="ssh? ( $(python_abi_depend -e "*-pypy-*" dev-python/paramiko) )"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
-#	test? ( $(python_abi_depend -e "2.7" dev-python/unittest2) )
-
-distutils_src_test_pre_hook() {
-	local module
-	for module in _diff_tree _objects _pack; do
-		ln -fs "../$(ls -d build-${PYTHON_ABI}/lib.*)/dulwich/${module}$(python_get_extension_module_suffix)" "dulwich/${module}$(python_get_extension_module_suffix)" || die "Symlinking dulwich/${module}$(python_get_extension_module_suffix) failed with $(python_get_implementation_and_version)"
-	done
-}
 
 src_install() {
 	distutils_src_install
+	python_clean_installation_image
 
 	delete_tests() {
-		rm -r "${ED}$(python_get_sitedir)/dulwich/tests"
+		rm -r "${ED}$(python_get_sitedir)/dulwich/"{contrib/test_*.py,tests}
 	}
 	python_execute_function -q delete_tests
 }
