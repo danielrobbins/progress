@@ -16,7 +16,7 @@ if [[ ${PV} == "9999" ]] ; then
 else
 	SRC_URI="ftp://ftp.astron.com/pub/file/${P}.tar.gz
 		ftp://ftp.gw.com/mirrors/pub/unix/file/${P}.tar.gz"
-	KEYWORDS="~*"
+	KEYWORDS="*"
 fi
 
 DESCRIPTION="identify a file's format by scanning binary data for patterns"
@@ -42,9 +42,6 @@ src_prepare() {
 
 	# don't let python README kill main README #60043
 	mv python/README{,.python}
-
-	# https://github.com/file/file/commit/e14d88d8df2aafb74ba0c0b3d0116fc84b68cbd8
-	sed -e "s/bi = bytes(filename, 'utf-8')/bi = filename if isinstance(filename, bytes) else bytes(filename, 'utf-8')/" -i python/magic.py
 }
 
 multilib_src_configure() {
