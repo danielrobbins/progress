@@ -120,6 +120,21 @@ buildsycoca() {
 	done
 }
 
+# @FUNCTION: comment_add_subdirectory
+# @USAGE: subdirectory
+# @DESCRIPTION:
+# Comment out an add_subdirectory call in CMakeLists.txt in the current directory
+comment_add_subdirectory() {
+	if [[ -z ${1} ]]; then
+		die "comment_add_subdirectory must be passed the directory name to comment"
+	fi
+
+	if [[ -a "CMakeLists.txt" ]]; then
+	        sed -e "/add_subdirectory[[:space:]]*([[:space:]]*${1}[[:space:]]*)/s/^/#DONOTCOMPILE /" \
+			-i CMakeLists.txt || die "failed to comment add_subdirectory(${1})"
+	fi
+}
+
 # @FUNCTION: comment_all_add_subdirectory
 # @USAGE: [list of directory names]
 # @DESCRIPTION:
@@ -260,68 +275,6 @@ load_library_dependencies() {
 			die "Failed to include library dependencies for ${pn}"
 	done
 	eend $?
-}
-
-# @FUNCTION: add_blocker
-# @DESCRIPTION:
-# Create correct RDEPEND value for blocking correct package.
-# Useful for file-collision blocks.
-# Parameters are package and version(s) to block.
-# add_blocker kdelibs 4.2.4
-# If no version is specified, then all versions will be blocked.
-# If the version is 0, then no versions will be blocked.
-# If a second version ending in ":3.5" is passed, then the version listed for
-# that slot will be blocked as well.
-#
-# Examples:
-#    # Block all versions of kdelibs
-#    add_blocker kdelibs
-#
-#    # Block all versions of kdelibs older than 4.3.50
-#    add_blocker kdelibs 4.3.50
-#
-#    # Block kdelibs 3.5.10 and older, but not any version of
-#    # kdelibs from KDE 4
-#    add_blocker kdelibs 0 3.5.10:3.5
-add_blocker() {
-	debug-print-function ${FUNCNAME} "$@"
-
-	[[ -z ${1} ]] && die "Missing parameter"
-	local pkg=kde-base/$1 atom old_ver="unset" use
-	if [[ $pkg == *\[*\] ]]; then
-		use=${pkg/#*\[/[}
-		pkg=${pkg%\[*\]}
-	fi
-
-	[[ "$3" == *:3.5 ]] && old_ver=${3%:3.5}
-
-	# If the version passed is "0", do nothing
-	if [[ ${2} != 0 ]]; then
-		# If no version was passed, block all versions in this slot
-		if [[ -z ${2} ]]; then
-			atom=${pkg}
-		# If the version passed begins with a "<", then use "<" instead of "<="
-		elif [[ ${2::1} == "<" ]]; then
-			# this also removes the first character of the version, which is a "<"
-			atom="<${pkg}-${2:1}"
-		else
-			atom="<=${pkg}-${2}"
-		fi
-		RDEPEND+=" !${atom}:4${use}"
-	fi
-
-	# Do the same thing as above for :3.5, except that we don't want any
-	# output if no parameter was passed.
-	if [[ ${old_ver} != "unset" ]]; then
-		if [[ -z ${old_ver} ]]; then
-			atom=${pkg}
-		elif [[ ${old_ver::1} == "<" ]]; then
-			atom="<${pkg}-${old_ver:1}"
-		else
-			atom="<=${pkg}-${old_ver}"
-		fi
-		RDEPEND+=" !${atom}:3.5${use}"
-	fi
 }
 
 # @FUNCTION: add_kdebase_dep
