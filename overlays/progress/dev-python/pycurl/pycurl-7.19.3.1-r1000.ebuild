@@ -19,7 +19,7 @@ KEYWORDS="*"
 IUSE="curl_ssl_gnutls curl_ssl_nss +curl_ssl_openssl examples ssl"
 
 DEPEND=">=net-misc/curl-7.25.0-r1[ssl=]
-	ssl? ( net-misc/curl[curl_ssl_gnutls=,curl_ssl_nss=,curl_ssl_openssl=,-curl_ssl_axtls,-curl_ssl_cyassl,-curl_ssl_polarssl] )"
+	ssl? ( net-misc/curl[curl_ssl_gnutls(-)=,curl_ssl_nss(-)=,curl_ssl_openssl(-)=,-curl_ssl_axtls(-),-curl_ssl_cyassl(-),-curl_ssl_polarssl(-)] )"
 RDEPEND="${DEPEND}"
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
@@ -29,6 +29,10 @@ PYTHON_MODULES="curl"
 src_prepare() {
 	distutils_src_prepare
 	sed -e "/setup_args\['data_files'\] = get_data_files()/d" -i setup.py || die "sed failed"
+}
+
+src_configure() {
+	export PYCURL_SSL_LIBRARY="${CURL_SSL}"
 }
 
 src_test() {
