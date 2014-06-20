@@ -824,7 +824,7 @@ git-r3_checkout() {
 			local subrepos
 			_git-r3_set_subrepos "${url}" "${repos[@]}"
 
-			git-r3_checkout "${url}" "${out_dir}/${path}" \
+			git-r3_checkout "${subrepos[*]}" "${out_dir}/${path}" \
 				"${local_id}/${subname}"
 
 			submodules=( "${submodules[@]:3}" ) # shift
