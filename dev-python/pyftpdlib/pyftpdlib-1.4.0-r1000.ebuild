@@ -5,37 +5,29 @@
 EAPI="5-progress"
 PYTHON_DEPEND="<<[{*-cpython}ssl?]>>"
 PYTHON_MULTIPLE_ABIS="1"
+PYTHON_RESTRICTED_ABIS="3.1"
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
 
 inherit distutils
 
 DESCRIPTION="Python FTP server library"
-HOMEPAGE="http://code.google.com/p/pyftpdlib/ https://pypi.python.org/pypi/pyftpdlib"
-SRC_URI="http://pyftpdlib.googlecode.com/files/${P}.tar.gz"
+HOMEPAGE="https://github.com/giampaolo/pyftpdlib https://pypi.python.org/pypi/pyftpdlib"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
 KEYWORDS="*"
-IUSE="examples ssl"
+IUSE="examples ssl test"
 
 # Python >=3.3 provides os.sendfile().
 RDEPEND="$(python_abi_depend -e "3.[3-9] *-jython" dev-python/pysendfile)
 	ssl? ( $(python_abi_depend -e "*-jython" dev-python/pyopenssl) )"
 DEPEND="${RDEPEND}
-	$(python_abi_depend dev-python/setuptools)"
+	$(python_abi_depend dev-python/setuptools)
+	test? ( $(python_abi_depend -i "2.6" dev-python/unittest2) )"
 
-DOCS="CREDITS HISTORY"
-
-src_prepare() {
-	distutils_src_prepare
-
-	# http://code.google.com/p/pyftpdlib/issues/detail?id=256
-	sed \
-		-e "/unicode = str/i\\    basestring = str" \
-		-e "/unicode = unicode/i\\    basestring = basestring" \
-		-i pyftpdlib/_compat.py
-	sed -e "s/from pyftpdlib._compat import PY3, u, b, getcwdu, callable/from pyftpdlib._compat import PY3, u, b, getcwdu, callable, basestring/" -i test/test_ftpd.py
-}
+# DOCS="CREDITS HISTORY.rst"
+DOCS="CREDITS"
 
 src_test() {
 	testing() {
