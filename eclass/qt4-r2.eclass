@@ -14,7 +14,7 @@ case ${EAPI} in
 	*)	 die "qt4-r2.eclass: unsupported EAPI=${EAPI:-0}" ;;
 esac
 
-inherit base qmake-utils
+inherit base eutils qmake-utils
 
 export XDG_CONFIG_HOME="${T}"
 
@@ -131,14 +131,7 @@ qt4-r2_src_install() {
 	debug-print-function $FUNCNAME "$@"
 
 	base_src_install INSTALL_ROOT="${D}" "$@"
-
-	# backward compatibility for non-array variables
-	if [[ -n ${DOCS} ]] && [[ "$(declare -p DOCS 2>/dev/null 2>&1)" != "declare -a"* ]]; then
-		dodoc ${DOCS} || die "dodoc failed"
-	fi
-	if [[ -n ${HTML_DOCS} ]] && [[ "$(declare -p HTML_DOCS 2>/dev/null 2>&1)" != "declare -a"* ]]; then
-		dohtml -r ${HTML_DOCS} || die "dohtml failed"
-	fi
+	einstalldocs
 }
 
 EXPORT_FUNCTIONS src_unpack src_prepare src_configure src_compile src_install
