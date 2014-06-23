@@ -21,12 +21,33 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="doc"
 
-RDEPEND="$(python_abi_depend ">=dev-python/beaker-1.1")
-	$(python_abi_depend ">=dev-python/markupsafe-0.9.2")"
-DEPEND="${RDEPEND}
-	$(python_abi_depend dev-python/setuptools)"
+DEPEND="$(python_abi_depend ">=dev-python/beaker-1.1")
+	$(python_abi_depend ">=dev-python/markupsafe-0.9.2")
+	$(python_abi_depend dev-python/setuptools)
+	$(python_abi_depend virtual/python-argparse)
+	$(python_abi_depend virtual/python-mock)"
+RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/${MY_P}"
+
+DOCS=""
+
+src_prepare() {
+	distutils_src_prepare
+
+	preparation() {
+		cp -r test test-${PYTHON_ABI} || return
+
+		if has "$(python_get_version -l)" 3.1 3.2; then
+			2to3-${PYTHON_ABI} -f unicode -nw --no-diffs test-${PYTHON_ABI} || return
+		fi
+	}
+	python_execute_function preparation
+}
+
+src_test() {
+	python_execute_nosetests -e -P 'build-${PYTHON_ABI}/lib' -- -w 'test-${PYTHON_ABI}'
+}
 
 src_install() {
 	distutils_src_install
