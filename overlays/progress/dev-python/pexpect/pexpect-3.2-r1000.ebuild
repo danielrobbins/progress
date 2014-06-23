@@ -33,6 +33,13 @@ src_compile() {
 	fi
 }
 
+src_test() {
+	testing() {
+		python_execute PROJECT_PEXPECT_HOME="$(pwd)" PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" tools/testall.py
+	}
+	python_execute_function testing
+}
+
 src_install() {
 	distutils_src_install
 
