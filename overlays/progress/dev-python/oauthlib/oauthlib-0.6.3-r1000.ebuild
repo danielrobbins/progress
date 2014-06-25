@@ -17,7 +17,8 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="test"
 
-RDEPEND="$(python_abi_depend -e "${PYTHON_TESTS_FAILURES_TOLERANT_ABIS}" dev-python/pycrypto)"
+RDEPEND="$(python_abi_depend -e "${PYTHON_TESTS_FAILURES_TOLERANT_ABIS}" dev-python/pycrypto)
+	$(python_abi_depend dev-python/pyjwt)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	test? (
