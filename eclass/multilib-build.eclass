@@ -43,6 +43,8 @@ _MULTILIB_FLAGS=(
 	abi_mips_n32:n32
 	abi_mips_n64:n64
 	abi_mips_o32:o32
+	abi_ppc_32:ppc
+	abi_ppc_64:ppc64
 )
 
 # @ECLASS-VARIABLE: MULTILIB_COMPAT
