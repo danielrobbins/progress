@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="*-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
@@ -21,11 +21,14 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="examples tornado"
 
-DEPEND=">=net-libs/zeromq-2.2.0
+DEPEND="$(python_abi_depend -e "*-pypy-*" dev-python/cffi:=)
+	>=net-libs/zeromq-2.2.0
 	tornado? ( $(python_abi_depend -e "3.1" www-servers/tornado) )"
 RDEPEND="${DEPEND}"
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
+
+PYTHON_CFFI_MODULES_GENERATION_COMMANDS=("import zmq.backend.cffi")
 
 DOCS="README.md"
 PYTHON_MODULES="zmq"
@@ -38,7 +41,7 @@ src_install() {
 	distutils_src_install
 
 	delete_tests() {
-		rm -fr "${ED}$(python_get_sitedir)/zmq/tests/"test_*.py
+		rm -r "${ED}$(python_get_sitedir)/zmq/tests/"test_*.py
 	}
 	python_execute_function -q delete_tests
 
