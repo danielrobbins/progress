@@ -18,12 +18,14 @@ readarray -t _PYTHON_INHERITED_ECLASSES_FUNCTIONS_OUTPUTS <<< "$(
 	tc-getCPP
 	tc-getCC
 	tc-getCXX
+	tc-getAR
 )" 2> /dev/null
 _PYTHON_MULTILIB_LIBDIR="${_PYTHON_INHERITED_ECLASSES_FUNCTIONS_OUTPUTS[0]}"
 _PYTHON_MULTILIB_LIBNAME="${_PYTHON_INHERITED_ECLASSES_FUNCTIONS_OUTPUTS[1]}"
 _PYTHON_TOOLCHAIN_FUNCS_CPP="${_PYTHON_INHERITED_ECLASSES_FUNCTIONS_OUTPUTS[2]}"
 _PYTHON_TOOLCHAIN_FUNCS_CC="${_PYTHON_INHERITED_ECLASSES_FUNCTIONS_OUTPUTS[3]}"
 _PYTHON_TOOLCHAIN_FUNCS_CXX="${_PYTHON_INHERITED_ECLASSES_FUNCTIONS_OUTPUTS[4]}"
+_PYTHON_TOOLCHAIN_FUNCS_AR="${_PYTHON_INHERITED_ECLASSES_FUNCTIONS_OUTPUTS[5]}"
 unset _PYTHON_INHERITED_ECLASSES_FUNCTIONS_OUTPUTS
 
 if ! has "${EAPI:-0}" 0 1 2 3 4 4-python 5 5-progress; then
@@ -728,8 +730,6 @@ fi
 # If --include-ABIs option is specified, then only Python ABIs matching its argument are used.
 # --exclude-ABIs and --include-ABIs options cannot be specified simultaneously.
 python_abi_depend() {
-	local atom atom_index atoms=() exclude_ABIs="0" excluded_ABIs include_ABIs="0" included_ABIs PYTHON_ABI USE_dependencies USE_flag USE_flag_index USE_flags=()
-
 	if has "${EAPI:-0}" 0 1 2 3 4 5; then
 		die "${FUNCNAME}() cannot be used in this EAPI"
 	fi
@@ -737,6 +737,8 @@ python_abi_depend() {
 	if ! _python_package_supporting_installation_for_multiple_python_abis; then
 		die "${FUNCNAME}() cannot be used in ebuilds of packages not supporting installation for multiple Python ABIs"
 	fi
+
+	local atom atom_index atoms=() exclude_ABIs="0" excluded_ABIs include_ABIs="0" included_ABIs PYTHON_ABI USE_dependencies USE_flag USE_flag_index USE_flags=()
 
 	while (($#)); do
 		case "$1" in
@@ -913,7 +915,7 @@ _python_prepare_jython() {
 }
 
 _python_abi-specific_local_scope() {
-	[[ " ${FUNCNAME[@]:2} " =~ " "(_python_final_sanity_checks|python_execute_function|python_mod_optimize|python_mod_cleanup)" " ]]
+	[[ " ${FUNCNAME[@]:2} " =~ " "(_python_final_sanity_checks|python_execute_function|python_mod_optimize|python_mod_cleanup|python_generate_cffi_modules)" " ]]
 }
 
 _python_initialize_prefix_variables() {
@@ -1135,8 +1137,7 @@ python_execute() {
 
 	while (($#)); do
 		if [[ "$1" =~ ^[${letters}_][${letters}0123456789_]*= ]]; then
-			local "$1"
-			export "$1"
+			local -x "$1"
 		else
 			break
 		fi
@@ -1148,6 +1149,63 @@ python_execute() {
 	fi
 
 	echo "${_BOLD}""${printed_command[@]}""${_NORMAL}"
+	"$@"
+}
+
+_python_execute_with_build_environment() {
+	local compiler_options file linker_options variable verbose_executables="0"
+
+	while (($#)); do
+		case "$1" in
+			--verbose-executables)
+				verbose_executables="1"
+				;;
+			--)
+				shift
+				break
+				;;
+			-*)
+				die "${FUNCNAME}(): Unrecognized option '$1'"
+				;;
+			*)
+				break
+				;;
+		esac
+		shift
+	done
+
+	if [[ "${CHOST}" == *-darwin* ]]; then
+		compiler_options=""
+		linker_options="-bundle -undefined dynamic_lookup"
+	else
+		compiler_options="-pthread"
+		linker_options="-shared"
+	fi
+
+	local -x CPP="${_PYTHON_TOOLCHAIN_FUNCS_CPP}"
+	local -x CC="${_PYTHON_TOOLCHAIN_FUNCS_CC}${compiler_options:+ }${compiler_options}"
+	local -x CXX="${_PYTHON_TOOLCHAIN_FUNCS_CXX}${compiler_options:+ }${compiler_options}"
+	local -x AR="${_PYTHON_TOOLCHAIN_FUNCS_AR}"
+	local -x LDSHARED="${_PYTHON_TOOLCHAIN_FUNCS_CC}${compiler_options:+ }${compiler_options}${linker_options:+ }${linker_options}"
+	local -x LDCXXSHARED="${_PYTHON_TOOLCHAIN_FUNCS_CXX}${compiler_options:+ }${compiler_options}${linker_options:+ }${linker_options}"
+
+	if [[ "${verbose_executables}" == "1" ]]; then
+		mkdir -p "${T}/verbose_executables"
+
+		for variable in CPP CC CXX AR LDSHARED LDCXXSHARED; do
+			file="${!variable%% *}"
+			cat << EOF > "${T}/verbose_executables/${file}"
+#!${EPREFIX}/bin/bash
+
+echo "${file}" "\$@"
+"$(type -p "${file}")" "\$@"
+EOF
+			chmod +x "${T}/verbose_executables/${file}"
+		done
+
+		local -x PATH="${T}/verbose_executables:${PATH}"
+	fi
+
 	"$@"
 }
 
@@ -4102,6 +4160,135 @@ python_mod_cleanup() {
 	fi
 
 	_python_clean_compiled_modules "${search_paths[@]}"
+}
+
+# ================================================================================================
+# ============================ FUNCTIONS FOR HANDLING OF CFFI MODULES ============================
+# ================================================================================================
+
+# @ECLASS-VARIABLE: PYTHON_CFFI_MODULES_GENERATION_COMMANDS
+# @DESCRIPTION:
+# Array of Python commands used for generation of Python CFFI modules.
+
+# @FUNCTION: python_generate_cffi_modules
+# @USAGE: [-A|--ABIs-patterns Python_ABIs]
+# @DESCRIPTION:
+# Generate Python CFFI modules.
+#
+# This function can be used only in src_install() phase.
+python_generate_cffi_modules() {
+	if has "${EAPI:-0}" 0 1 2 3; then
+		die "${FUNCNAME}() cannot be used in this EAPI"
+	fi
+
+	if [[ "${EBUILD_PHASE}" != "install" ]]; then
+		die "${FUNCNAME}() can be used only in src_install() phase"
+	fi
+
+	_python_check_python_pkg_setup_execution
+	_python_set_color_variables
+
+	local ABIs_patterns="*" enabled_PYTHON_ABI enabled_PYTHON_ABIS iterated_PYTHON_ABIS PYTHON_ABI="${PYTHON_ABI}" python_command
+
+	if _python_package_supporting_installation_for_multiple_python_abis; then
+		enabled_PYTHON_ABIS="${PYTHON_ABIS}"
+	else
+		enabled_PYTHON_ABIS="${PYTHON_ABI}"
+	fi
+
+	while (($#)); do
+		case "$1" in
+			-A|--ABIs-patterns)
+				ABIs_patterns="$2"
+				shift
+				;;
+			-*)
+				die "${FUNCNAME}(): Unrecognized option '$1'"
+				;;
+			*)
+				die "${FUNCNAME}(): Invalid usage"
+				;;
+		esac
+		shift
+	done
+
+	for enabled_PYTHON_ABI in ${enabled_PYTHON_ABIS}; do
+		if _python_check_python_abi_matching --patterns-list "${enabled_PYTHON_ABI}" "${ABIs_patterns}"; then
+			iterated_PYTHON_ABIS+="${iterated_PYTHON_ABIS:+ }${enabled_PYTHON_ABI}"
+		fi
+	done
+
+	if [[ "${#PYTHON_CFFI_MODULES_GENERATION_COMMANDS[@]}" -ge 1 ]]; then
+		_python_clean_cffi_modules --delete-cffi-modules
+
+		for PYTHON_ABI in ${iterated_PYTHON_ABIS}; do
+			echo " ${_GREEN}*${_NORMAL} ${_BLUE}Generation of Python CFFI modules for $(python_get_implementation_and_version)${_NORMAL}"
+			for python_command in "${PYTHON_CFFI_MODULES_GENERATION_COMMANDS[@]}"; do
+				echo "${_BOLD}\"${python_command}\"${_NORMAL}"
+
+				pushd "${T}" > /dev/null || die "pushd failed"
+
+				_python_execute_with_build_environment --verbose-executables "$(PYTHON ${PYTHON_ABI})" -c \
+"import sys
+sys.path.remove('')
+sys.path.insert(0, '${ED}$(python_get_sitedir -b)')
+del sys
+
+${python_command}" || die "Generation of Python CFFI modules for $(python_get_implementation_and_version) failed"
+
+				popd > /dev/null || die "popd failed"
+			done
+		done
+
+		_python_clean_cffi_modules
+	fi
+}
+
+_python_clean_cffi_modules() {
+	if has "${EAPI:-0}" 0 1 2 3; then
+		die "${FUNCNAME}() cannot be used in this EAPI"
+	fi
+
+	if [[ "${EBUILD_PHASE}" != "install" ]]; then
+		die "${FUNCNAME}() can be used only in src_install() phase"
+	fi
+
+	_python_check_python_pkg_setup_execution
+
+	local cache_directory delete_cffi_modules="0" file
+
+	while (($#)); do
+		case "$1" in
+			--delete-cffi-modules)
+				delete_cffi_modules="1"
+				;;
+			-*)
+				die "${FUNCNAME}(): Unrecognized option '$1'"
+				;;
+			*)
+				die "${FUNCNAME}(): Invalid usage"
+				;;
+		esac
+		shift
+	done
+
+	while read -d $'\0' -r cache_directory; do
+		if [[ -d "${cache_directory}" ]]; then
+			pushd "${cache_directory}" > /dev/null || die "pushd failed"
+			for file in *; do
+				if [[ -d "${file}" ]]; then
+					rm -r "${file}" || die "${FUNCNAME}(): Deletion of '${file}' failed"
+				elif [[ -f "${file}" ]]; then
+					if [[ "${file}" == *.c ]]; then
+						rm "${file}" || die "${FUNCNAME}(): Deletion of '${file}' failed"
+					elif [[ "${delete_cffi_modules}" == "1" && "${file}" == *.so ]]; then
+						rm "${file}" || die "${FUNCNAME}(): Deletion of '${file}' failed"
+					fi
+				fi
+			done
+			popd > /dev/null || die "popd failed"
+		fi
+	done < <(find "${ED}" -name "__pycache__" -type d -print0)
 }
 
 # ================================================================================================
