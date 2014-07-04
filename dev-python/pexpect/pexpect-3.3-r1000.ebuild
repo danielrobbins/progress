@@ -5,6 +5,7 @@
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
+DISTUTILS_SRC_TEST="py.test"
 
 inherit distutils
 
@@ -31,13 +32,6 @@ src_compile() {
 		PYTHONPATH="../build-$(PYTHON -f --ABI)/lib" emake html
 		popd > /dev/null
 	fi
-}
-
-src_test() {
-	testing() {
-		python_execute PROJECT_PEXPECT_HOME="$(pwd)" PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" tools/testall.py
-	}
-	python_execute_function testing
 }
 
 src_install() {
