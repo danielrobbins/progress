@@ -3453,9 +3453,9 @@ python_execute_nosetests() {
 		_PYTHON_TEST_FUNCTION="python_execute_nosetests" _python_test_hook pre
 
 		if [[ -n "${evaluated_PYTHONPATH}" ]]; then
-			python_execute PYTHONPATH="${evaluated_PYTHONPATH}" nosetests --verbosity="${PYTHON_TEST_VERBOSITY}" "${arguments[@]}" || return "$?"
+			_python_execute_with_build_environment python_execute PYTHONPATH="${evaluated_PYTHONPATH}" nosetests --verbosity="${PYTHON_TEST_VERBOSITY}" "${arguments[@]}" || return "$?"
 		else
-			python_execute nosetests --verbosity="${PYTHON_TEST_VERBOSITY}" "${arguments[@]}" || return "$?"
+			_python_execute_with_build_environment python_execute nosetests --verbosity="${PYTHON_TEST_VERBOSITY}" "${arguments[@]}" || return "$?"
 		fi
 
 		_PYTHON_TEST_FUNCTION="python_execute_nosetests" _python_test_hook post
@@ -3526,9 +3526,9 @@ python_execute_py.test() {
 		_PYTHON_TEST_FUNCTION="python_execute_py.test" _python_test_hook pre
 
 		if [[ -n "${evaluated_PYTHONPATH}" ]]; then
-			python_execute PYTHONPATH="${evaluated_PYTHONPATH}" py.test $([[ "${PYTHON_TEST_VERBOSITY}" -ge 2 ]] && echo -v) "${arguments[@]}" || return "$?"
+			_python_execute_with_build_environment python_execute PYTHONPATH="${evaluated_PYTHONPATH}" py.test $([[ "${PYTHON_TEST_VERBOSITY}" -ge 2 ]] && echo -v) "${arguments[@]}" || return "$?"
 		else
-			python_execute py.test $([[ "${PYTHON_TEST_VERBOSITY}" -gt 1 ]] && echo -v) "${arguments[@]}" || return "$?"
+			_python_execute_with_build_environment python_execute py.test $([[ "${PYTHON_TEST_VERBOSITY}" -gt 1 ]] && echo -v) "${arguments[@]}" || return "$?"
 		fi
 
 		_PYTHON_TEST_FUNCTION="python_execute_py.test" _python_test_hook post
@@ -3599,9 +3599,9 @@ python_execute_trial() {
 		_PYTHON_TEST_FUNCTION="python_execute_trial" _python_test_hook pre
 
 		if [[ -n "${evaluated_PYTHONPATH}" ]]; then
-			python_execute PYTHONPATH="${evaluated_PYTHONPATH}" trial $([[ "${PYTHON_TEST_VERBOSITY}" -ge 4 ]] && echo --spew) "${arguments[@]}" || return "$?"
+			_python_execute_with_build_environment python_execute PYTHONPATH="${evaluated_PYTHONPATH}" trial $([[ "${PYTHON_TEST_VERBOSITY}" -ge 4 ]] && echo --spew) "${arguments[@]}" || return "$?"
 		else
-			python_execute trial $([[ "${PYTHON_TEST_VERBOSITY}" -ge 4 ]] && echo --spew) "${arguments[@]}" || return "$?"
+			_python_execute_with_build_environment python_execute trial $([[ "${PYTHON_TEST_VERBOSITY}" -ge 4 ]] && echo --spew) "${arguments[@]}" || return "$?"
 		fi
 
 		_PYTHON_TEST_FUNCTION="python_execute_trial" _python_test_hook post
