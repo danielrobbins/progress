@@ -115,13 +115,13 @@ _multilib_build_set_globals() {
 		done
 
 		flags=( "${MULTILIB_COMPAT[@]}" )
+
+		REQUIRED_USE="|| ( ${flags[*]} )"
 	fi
 
 	local usedeps=${flags[@]/%/(-)?}
 
 	IUSE=${flags[*]}
-	REQUIRED_USE="|| ( ${flags[*]} )"
-
 	MULTILIB_USEDEP=${usedeps// /,}
 }
 _multilib_build_set_globals
