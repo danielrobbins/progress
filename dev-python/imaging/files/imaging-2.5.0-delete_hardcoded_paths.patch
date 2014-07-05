@@ -1,6 +1,6 @@
 --- setup.py
 +++ setup.py
-@@ -71,11 +71,6 @@
+@@ -74,11 +74,6 @@
              self.compiler.library_dirs, library)
  
  
@@ -12,7 +12,7 @@
  def _read(file):
      return open(file, 'rb').read()
  
-@@ -182,152 +177,14 @@
+@@ -186,170 +181,14 @@
                  for d in os.environ[k].split(os.path.pathsep):
                      _add_directory(library_dirs, d)
  
@@ -39,30 +39,40 @@
 -            # darwin ports installation directories
 -            _add_directory(library_dirs, "/opt/local/lib")
 -            _add_directory(include_dirs, "/opt/local/include")
--            
--            # if homebrew is installed, use its lib and include directories
+-
+-            # if Homebrew is installed, use its lib and include directories
 -            import subprocess
 -            try:
--                prefix = subprocess.check_output(['brew', '--prefix'])
--                if prefix:
--                    prefix = prefix.strip()
--                    _add_directory(library_dirs, os.path.join(prefix, 'lib'))
--                    _add_directory(include_dirs, os.path.join(prefix, 'include'))
--                    
--                    # freetype2 is a key-only brew under opt/
--                    _add_directory(library_dirs, os.path.join(prefix, 'opt', 'freetype', 'lib'))
--                    _add_directory(include_dirs, os.path.join(prefix, 'opt', 'freetype', 'include'))
+-                prefix = subprocess.check_output(
+-                    ['brew', '--prefix']
+-                ).strip().decode('latin1')
 -            except:
--                pass # homebrew not installed
--            
--            # freetype2 ships with X11 (after homebrew, so that homebrew freetype is preferred)
--            _add_directory(library_dirs, "/usr/X11/lib")
--            _add_directory(include_dirs, "/usr/X11/include")
+-                # Homebrew not installed
+-                prefix = None
+-
+-            ft_prefix = None
+-
+-            if prefix:
+-                # add Homebrew's include and lib directories
+-                _add_directory(library_dirs, os.path.join(prefix, 'lib'))
+-                _add_directory(include_dirs, os.path.join(prefix, 'include'))
+-                ft_prefix = os.path.join(prefix, 'opt', 'freetype')
+-
+-            if ft_prefix and os.path.isdir(ft_prefix):
+-                # freetype might not be linked into Homebrew's prefix
+-                _add_directory(library_dirs, os.path.join(ft_prefix, 'lib'))
+-                _add_directory(
+-                    include_dirs, os.path.join(ft_prefix, 'include'))
+-            else:
+-                # fall back to freetype from XQuartz if
+-                # Homebrew's freetype is missing
+-                _add_directory(library_dirs, "/usr/X11/lib")
+-                _add_directory(include_dirs, "/usr/X11/include")
 -
 -        elif sys.platform.startswith("linux"):
 -            arch_tp = (plat.processor(), plat.architecture()[0])
--            if arch_tp == ("x86_64","32bit"):
--                # 32 bit build on 64 bit machine. 
+-            if arch_tp == ("x86_64", "32bit"):
+-                # 32 bit build on 64 bit machine.
 -                _add_directory(library_dirs, "/usr/lib/i386-linux-gnu")
 -            else:
 -                for platform_ in arch_tp:
@@ -73,30 +83,38 @@
 -                    if platform_ in ["x86_64", "64bit"]:
 -                        _add_directory(library_dirs, "/lib64")
 -                        _add_directory(library_dirs, "/usr/lib64")
--                        _add_directory(library_dirs, "/usr/lib/x86_64-linux-gnu")
+-                        _add_directory(
+-                            library_dirs, "/usr/lib/x86_64-linux-gnu")
 -                        break
 -                    elif platform_ in ["i386", "i686", "32bit"]:
--                        _add_directory(library_dirs, "/usr/lib/i386-linux-gnu")
+-                        _add_directory(
+-                            library_dirs, "/usr/lib/i386-linux-gnu")
 -                        break
 -                    elif platform_ in ["aarch64"]:
 -                        _add_directory(library_dirs, "/usr/lib64")
--                        _add_directory(library_dirs, "/usr/lib/aarch64-linux-gnu")
+-                        _add_directory(
+-                            library_dirs, "/usr/lib/aarch64-linux-gnu")
 -                        break
 -                    elif platform_ in ["arm", "armv7l"]:
--                        _add_directory(library_dirs, "/usr/lib/arm-linux-gnueabi")
+-                        _add_directory(
+-                            library_dirs, "/usr/lib/arm-linux-gnueabi")
 -                        break
 -                    elif platform_ in ["ppc64"]:
 -                        _add_directory(library_dirs, "/usr/lib64")
--                        _add_directory(library_dirs, "/usr/lib/ppc64-linux-gnu")
--                        _add_directory(library_dirs, "/usr/lib/powerpc64-linux-gnu")
+-                        _add_directory(
+-                            library_dirs, "/usr/lib/ppc64-linux-gnu")
+-                        _add_directory(
+-                            library_dirs, "/usr/lib/powerpc64-linux-gnu")
 -                        break
 -                    elif platform_ in ["ppc"]:
 -                        _add_directory(library_dirs, "/usr/lib/ppc-linux-gnu")
--                        _add_directory(library_dirs, "/usr/lib/powerpc-linux-gnu")
+-                        _add_directory(
+-                            library_dirs, "/usr/lib/powerpc-linux-gnu")
 -                        break
 -                    elif platform_ in ["s390x"]:
 -                        _add_directory(library_dirs, "/usr/lib64")
--                        _add_directory(library_dirs, "/usr/lib/s390x-linux-gnu")
+-                        _add_directory(
+-                            library_dirs, "/usr/lib/s390x-linux-gnu")
 -                        break
 -                    elif platform_ in ["s390"]:
 -                        _add_directory(library_dirs, "/usr/lib/s390-linux-gnu")
@@ -165,7 +183,7 @@
          _add_directory(include_dirs, "/usr/include")
  
          # on Windows, look for the OpenJPEG libraries in the location that
-@@ -507,29 +364,7 @@
+@@ -570,29 +409,7 @@
              exts.append(Extension(
                  "PIL._webp", ["_webp.c"], libraries=libs, define_macros=defs))
  
@@ -196,7 +214,7 @@
              exts.append(Extension(
                  "PIL._imagingtk", ["_imagingtk.c", "Tk/tkImaging.c"],
                  libraries=[feature.tcl, feature.tk]))
-@@ -621,30 +456,6 @@
+@@ -691,30 +508,6 @@
              if m.group(1) < "1.2.3":
                  return m.group(1)
  
@@ -224,6 +242,6 @@
 -        finally:
 -            os.unlink(tmpfile)
 -
+ 
  setup(
      name=NAME,
-     version=VERSION,
