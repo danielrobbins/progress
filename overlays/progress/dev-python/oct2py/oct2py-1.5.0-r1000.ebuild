@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.6 *-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 DISTUTILS_SRC_TEST="nosetests"
 
@@ -21,7 +21,6 @@ KEYWORDS="*"
 IUSE="examples ipython"
 
 RDEPEND="$(python_abi_depend dev-python/numpy)
-	$(python_abi_depend dev-python/pexpect)
 	$(python_abi_depend sci-libs/scipy)
 	sci-mathematics/octave[gnuplot]
 	ipython? ( $(python_abi_depend -e "3.1" dev-python/ipython) )"
