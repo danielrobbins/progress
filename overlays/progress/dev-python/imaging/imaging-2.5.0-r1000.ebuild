@@ -7,13 +7,13 @@ PYTHON_DEPEND="<<[{*-cpython}tk?]>>"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython"
 
-inherit distutils eutils multilib
+inherit distutils eutils
 
 MY_PN="Pillow"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Python Imaging Library - Pillow (fork of PIL)"
-HOMEPAGE="https://github.com/python-imaging/Pillow https://pypi.python.org/pypi/Pillow"
+HOMEPAGE="https://github.com/python-pillow/Pillow https://pypi.python.org/pypi/Pillow"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.zip"
 
 LICENSE="HPND"
@@ -36,7 +36,8 @@ DEPEND="${RDEPEND}
 	doc? (
 		$(python_abi_depend dev-python/sphinx)
 		$(python_abi_depend dev-python/sphinx-better-theme)
-	)"
+	)
+	test? ( $(python_abi_depend -i "2.6 3.1" dev-python/unittest2) )"
 
 S="${WORKDIR}/${MY_P}"
 
@@ -50,12 +51,13 @@ pkg_setup() {
 src_prepare() {
 	distutils_src_prepare
 
-	epatch "${FILESDIR}/${PN}-2.4.0-delete_hardcoded_paths.patch"
-	epatch "${FILESDIR}/${PN}-2.1.0-libm_linking.patch"
-	epatch "${FILESDIR}/${PN}-2.3.0-use_xdg-open.patch"
+	epatch "${FILESDIR}/${PN}-2.5.0-delete_hardcoded_paths.patch"
+	epatch "${FILESDIR}/${PN}-2.5.0-libm_linking.patch"
+	epatch "${FILESDIR}/${PN}-2.5.0-use_xdg-open.patch"
 
 	# Fix compatibility with Python 3.1.
 	sed -e "s/callable(\([^)]\+\))/(hasattr(\1, '__call__') if __import__('sys').version_info\[:2\] == (3, 1) else &)/" -i PIL/Image.py
+	sed -e "s/if sys.version_info\[:2\] <= (2, 6):/if sys.version_info[:2] <= (2, 6) or sys.version_info[:2] == (3, 1):/" -i Tests/helper.py
 
 	local feature
 	for feature in jpeg jpeg2k:jpeg2000 lcms tiff truetype:freetype webp webp:webpmux zlib; do
@@ -88,8 +90,21 @@ src_compile() {
 
 src_test() {
 	tests() {
-		python_execute PYTHONPATH="$(ls -d build-${PYTHON_ABI}/lib.*)" "$(PYTHON)" selftest.py --installed || return
-		python_execute PYTHONPATH="$(ls -d build-${PYTHON_ABI}/lib.*)" "$(PYTHON)" Tests/run.py --installed || return
+		local exit_status="0" test
+
+		if ! python_execute PYTHONPATH="$(ls -d build-${PYTHON_ABI}/lib.*)" "$(PYTHON)" selftest.py --installed; then
+			eerror "selftest.py failed with $(python_get_implementation_and_version)"
+			exit_status="1"
+		fi
+
+		for test in Tests/test_*.py; do
+			if ! python_execute PYTHONPATH="$(ls -d build-${PYTHON_ABI}/lib.*)" "$(PYTHON)" "${test}"; then
+				eerror "${test} failed with $(python_get_implementation_and_version)"
+				exit_status="1"
+			fi
+		done
+
+		return "${exit_status}"
 	}
 	python_execute_function tests
 }
@@ -97,16 +112,11 @@ src_test() {
 src_install() {
 	distutils_src_install
 
-	delete_tests() {
-		rm -f "${ED}$(python_get_sitedir)/PIL/tests.py"
-	}
-	python_execute_function -q delete_tests
-
 	local module
 	for module in PIL/*.py; do
 		module="${module#PIL/}"
 		module="${module%.py}"
-		[[ "${module}" =~ ^(__init__|_binary|JpegPresets|WebPImagePlugin|tests)$ ]] && continue
+		[[ "${module}" =~ ^(__init__|_binary|_util|ImageMorph|Jpeg2KImagePlugin|JpegPresets|PyAccess|WebPImagePlugin)$ ]] && continue
 		PYTHON_MODULES+=" ${module}.py"
 	done
 
@@ -115,7 +125,7 @@ src_install() {
 		for module in PIL/*.py; do
 			module="${module#PIL/}"
 			module="${module%.py}"
-			[[ "${module}" =~ ^(__init__|_binary|JpegPresets|WebPImagePlugin|tests)$ ]] && continue
+			[[ "${module}" =~ ^(__init__|_binary|_util|ImageMorph|Jpeg2KImagePlugin|JpegPresets|PyAccess|WebPImagePlugin)$ ]] && continue
 			dodir "$(python_get_sitedir)"
 			cat << EOF > "${ED}$(python_get_sitedir)/${module}.py"
 def _warning():
