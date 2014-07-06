@@ -3,9 +3,7 @@
 # https://code.google.com/p/gentoo-progress/issues/detail?id=13
 dev-lang/python:3.5
 
--dev-lang/python:2.6
--dev-python/argparse
--dev-python/ordereddict
+-virtual/python-argparse
 
 ->=dev-python/sip-4.15.5
 ->=dev-python/PyQt4-4.11
