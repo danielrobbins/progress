@@ -51,15 +51,13 @@ src_prepare() {
 	rm tests/test-check-pyflakes.t
 	# https://bz.selenic.com/show_bug.cgi?id=4188
 	rm tests/test-patchbomb.t
-	# https://bz.selenic.com/show_bug.cgi?id=4239
-	rm tests/test-fncache.t
 	# Disable tests sometimes timing out.
 	rm tests/test-largefiles.t
 	rm tests/test-mq.t
 	# Disable test failing due to DeprecationWarning in internal code in dev-vcs/bzr 2.6.0.
 	rm tests/test-convert-bzr-directories.t
 
-	epatch "${FILESDIR}/${P}-po_fixes.patch"
+	epatch "${FILESDIR}/${PN}-3.0.1-po_fixes.patch"
 }
 
 src_compile() {
