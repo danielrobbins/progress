@@ -5,8 +5,7 @@
 EAPI="5-progress"
 PYTHON_DEPEND="<<[{*-cpython}xml]>>"
 PYTHON_MULTIPLE_ABIS="1"
-# 3.3, 3.4: http://sourceforge.net/p/docutils/bugs/200/
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.3 3.4 *-jython"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 
 inherit distutils
 
