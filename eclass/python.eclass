@@ -1174,7 +1174,10 @@ _python_execute_with_build_environment() {
 		shift
 	done
 
-	if [[ "${CHOST}" == *-darwin* ]]; then
+	if [[ "${CHOST}" == *-aix* ]]; then
+		compiler_options=""
+		linker_options="-shared -Wl,-berok"
+	elif [[ "${CHOST}" == *-darwin* ]]; then
 		compiler_options=""
 		linker_options="-bundle -undefined dynamic_lookup"
 	else
