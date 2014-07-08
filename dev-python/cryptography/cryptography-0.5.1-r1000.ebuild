@@ -42,14 +42,11 @@ DOCS="AUTHORS.rst CHANGELOG.rst CONTRIBUTING.rst README.rst"
 src_prepare() {
 	distutils_src_prepare
 
-	# https://github.com/pyca/cryptography/commit/1e95bc636ffd66451b6097b0a7f55c6a004563b7
-	sed -e "143a\\\n/* Not a macro, const on openssl 1.0 */\nint ASN1_STRING_set_default_mask_asc(char *);" -i cryptography/hazmat/bindings/openssl/asn1.py
-
 	# Fix compatibility with Python 3.1.
 	# int.from_bytes() and int.to_bytes() were introduced in Python 3.2.
 	sed \
-		-e "278s/if six.PY3:/if __import__(\"sys\").version_info[:2] >= (3, 2):/" \
-		-e "308s/if six.PY3:/if __import__(\"sys\").version_info[:2] >= (3, 2):/" \
+		-e "332s/if six.PY3:/if __import__(\"sys\").version_info[:2] >= (3, 2):/" \
+		-e "362s/if six.PY3:/if __import__(\"sys\").version_info[:2] >= (3, 2):/" \
 		-i cryptography/hazmat/backends/openssl/backend.py
 }
 
