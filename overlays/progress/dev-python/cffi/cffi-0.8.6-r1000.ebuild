@@ -10,7 +10,7 @@ DISTUTILS_SRC_TEST="py.test"
 inherit distutils eutils
 
 DESCRIPTION="Foreign Function Interface for Python calling C code."
-HOMEPAGE="https://cffi.readthedocs.org/ https://pypi.python.org/pypi/cffi"
+HOMEPAGE="https://cffi.readthedocs.org/ https://bitbucket.org/cffi/cffi https://pypi.python.org/pypi/cffi"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
@@ -26,8 +26,8 @@ DEPEND="${REDEPEND}
 
 src_prepare() {
 	distutils_src_prepare
-	epatch "${FILESDIR}/${P}-cffi_module_configuration.patch"
-	epatch "${FILESDIR}/${P}-python-3.1.patch"
+	epatch "${FILESDIR}/${PN}-0.8.2-cffi_module_configuration.patch"
+	epatch "${FILESDIR}/${PN}-0.8.2-python-3.1.patch"
 
 	# Disable failing tests.
 	rm testing/test_zintegration.py
