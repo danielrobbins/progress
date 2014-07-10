@@ -13,17 +13,17 @@ inherit eutils multilib multilib-minimal python ruby-ng toolchain-funcs
 
 MY_P="${P//_/-}"
 
-PATCHBUNDLE="3"
-SEPOL_VER="2.3"
+PATCHBUNDLE="r5"
+SEPOL_VER="2.2"
 
 DESCRIPTION="SELinux userland library"
 HOMEPAGE="http://userspace.selinuxproject.org/"
-SRC_URI="http://userspace.selinuxproject.org/releases/20140506/${MY_P}.tar.gz
-	http://dev.gentoo.org/~swift/patches/${PN}/patchbundle-${PN}-${PATCHBUNDLE}.tar.gz"
+SRC_URI="http://userspace.selinuxproject.org/releases/20131030/${MY_P}.tar.gz
+	http://dev.gentoo.org/~swift/patches/${PN}/patchbundle-${P}-${PATCHBUNDLE}.tar.gz"
 
 LICENSE="GPL-2 public-domain"
 SLOT="0"
-KEYWORDS="~*"
+KEYWORDS="*"
 IUSE="python ruby static-libs"
 RESTRICT="test"
 
@@ -161,10 +161,14 @@ src_install() {
 }
 
 pkg_postinst() {
-	local policy_type
+	local expression_file policy_type
 	for policy_type in ${POLICY_TYPES}; do
 		mkdir -p "${EROOT}etc/selinux/${policy_type}/contexts/files"
 		touch "${EROOT}etc/selinux/${policy_type}/contexts/files/file_contexts.local"
+
+		for expression_file in file_contexts file_contexts.homedirs file_contexts.local; do
+			sefcontext_compile /etc/selinux/${policy_type}/contexts/files/${expression_file}
+		done
 	done
 
 	if use python; then
