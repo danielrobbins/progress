@@ -413,7 +413,9 @@ distutils_src_install() {
 		done
 	fi
 
-	python_generate_cffi_modules
+	if ! has "${EAPI:-0}" 2 3; then
+		python_generate_cffi_modules
+	fi
 
 	while read -d $'\0' -r nspkg_pth_file; do
 		nspkg_pth_files+=("${nspkg_pth_file}")
