@@ -4,6 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
+# 3.[4-9]: https://www.logilab.org/ticket/241813
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.[3-9] *-jython"
 PYTHON_NAMESPACES="logilab"
 
@@ -32,6 +33,14 @@ DEPEND="${RDEPEND}
 S="${WORKDIR}/${P}"
 
 PYTHON_MODULES="logilab"
+
+src_prepare() {
+	distutils_src_prepare
+
+	# Disable tests breaking test suite with Python >=3.4.
+	# https://www.logilab.org/ticket/241807
+	rm test/unittest_compat.py
+}
 
 src_compile() {
 	distutils_src_compile
