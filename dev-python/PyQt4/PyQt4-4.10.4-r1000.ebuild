@@ -43,7 +43,7 @@ REQUIRED_USE="
 # Minimal supported version of Qt.
 QT_PV="4.8.0:4"
 
-RDEPEND="$(python_abi_depend ">=dev-python/sip-4.15.5:0=")
+RDEPEND="$(python_abi_depend "=dev-python/sip-4.15*:0=")
 	>=dev-qt/qtcore-${QT_PV}
 	X? (
 		>=dev-qt/qtgui-${QT_PV}
