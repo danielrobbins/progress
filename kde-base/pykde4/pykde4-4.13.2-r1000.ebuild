@@ -53,6 +53,7 @@ src_prepare() {
 	fi
 
 	has_version ">=dev-python/PyQt4-4.10.4" && epatch "${FILESDIR}/${PN}-4.11.5-PyQt4-4.10.4.patch"
+	epatch "${FILESDIR}/${PN}-4.12.5-PyQt4-4.11.patch"
 
 	# See bug 322351
 	use arm && epatch "${FILESDIR}/${PN}-4.10.1-arm-sip.patch"
