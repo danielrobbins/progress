@@ -1200,8 +1200,9 @@ _python_execute_with_build_environment() {
 			cat << EOF > "${T}/verbose_executables/${file}"
 #!${EPREFIX}/bin/bash
 
+export PATH="\${PATH#${T}/verbose_executables:}"
 echo "${file}" "\$@"
-"$(type -p "${file}")" "\$@"
+exec "$(type -p "${file}")" "\$@"
 EOF
 			chmod +x "${T}/verbose_executables/${file}"
 		done
