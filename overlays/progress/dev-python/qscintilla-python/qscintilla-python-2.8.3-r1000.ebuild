@@ -21,8 +21,8 @@ KEYWORDS="*"
 IUSE="debug"
 
 DEPEND="
-	$(python_abi_depend ">=dev-python/sip-4.12:0=")
-	$(python_abi_depend ">=dev-python/PyQt4-4.8:0=[X]")
+	$(python_abi_depend ">=dev-python/sip-4.16:0=")
+	$(python_abi_depend ">=dev-python/PyQt4-4.10:0=[X]")
 	~x11-libs/qscintilla-${PV}
 "
 RDEPEND="${DEPEND}"
