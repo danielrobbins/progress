@@ -11,8 +11,8 @@ inherit versionator
 # This eclass contains all functions shared by the different eclasses,
 # for KDE 4 ebuilds.
 
-if [[ ${___ECLASS_ONCE_KDE4_FUNCTIONS} != "recur -_+^+_- spank" ]] ; then
-___ECLASS_ONCE_KDE4_FUNCTIONS="recur -_+^+_- spank"
+if [[ -z ${_KDE4_FUNCTIONS_ECLASS} ]]; then
+_KDE4_FUNCTIONS_ECLASS=1
 
 # @ECLASS-VARIABLE: EAPI
 # @DESCRIPTION:
@@ -215,6 +215,14 @@ enable_selected_doc_linguas() {
 
 			# Disable subdirectories recursively
 			comment_all_add_subdirectory "${handbookdir}"
+
+			# In certain packages, the default handbook is en_US instead of the usual en. Since there is no en_US 'translation',
+			# it makes no sense to add to KDE_LINGUAS which causes this type of handbook to not be installed.
+			if [[ -d "${handbookdir}/en_US" && ! -d "${handbookdir}/en" ]]; then
+				mv "${handbookdir}/en_US" "${handbookdir}/en" || die
+				sed -e "s/en_US/en/" -i "${handbookdir}/CMakeLists.txt"
+			fi
+
 			# Add requested translations
 			local lingua
 			for lingua in en ${KDE_LINGUAS}; do
