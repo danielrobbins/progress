@@ -19,7 +19,7 @@ KEYWORDS="*"
 IUSE=""
 
 DEPEND="$(python_abi_depend ">=dev-python/mozcrash-0.11")
-	$(python_abi_depend ">=dev-python/mozdevice-0.30")
+	$(python_abi_depend ">=dev-python/mozdevice-0.37")
 	$(python_abi_depend ">=dev-python/mozfile-1.0")
 	$(python_abi_depend ">=dev-python/mozinfo-0.7")
 	$(python_abi_depend ">=dev-python/mozlog-1.5")
