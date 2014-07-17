@@ -24,7 +24,7 @@ DEPEND="$(python_abi_depend dev-python/setuptools)
 	test? ( $(python_abi_depend ">=dev-python/pytest-2") )"
 RDEPEND=""
 
-DOCS="CHANGELOG README.txt"
+DOCS="AUTHORS CHANGELOG README.txt"
 
 src_prepare() {
 	distutils_src_prepare
