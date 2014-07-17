@@ -4,6 +4,3 @@
 dev-lang/python:3.5
 
 -virtual/python-argparse
-
-->=dev-python/sip-4.15.5
-->=dev-python/PyQt4-4.11
