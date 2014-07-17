@@ -10,8 +10,8 @@
 # @DESCRIPTION:
 # The base eclass defines some default functions and variables.
 
-if [[ ${___ECLASS_ONCE_BASE} != "recur -_+^+_- spank" ]] ; then
-___ECLASS_ONCE_BASE="recur -_+^+_- spank"
+if [[ -z ${_BASE_ECLASS} ]]; then
+_BASE_ECLASS=1
 
 inherit eutils
 
