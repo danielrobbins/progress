@@ -21,7 +21,7 @@ IUSE="curtsies doc gtk nls urwid"
 RDEPEND="$(python_abi_depend dev-python/pygments)
 	$(python_abi_depend dev-python/setuptools)
 	curtsies? (
-		$(python_abi_depend -e "*-pypy-*" dev-python/curtsies)
+		$(python_abi_depend -e "*-pypy-*" ">=dev-python/curtsies-0.0.34")
 		$(python_abi_depend -e "*-pypy-*" dev-python/greenlet)
 	)
 	gtk? (
