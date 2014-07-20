@@ -18,7 +18,7 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="doc"
 
-RDEPEND="$(python_abi_depend ">=dev-python/py-1.4.20")
+RDEPEND="$(python_abi_depend ">=dev-python/py-1.4.22")
 	$(python_abi_depend virtual/python-argparse)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
@@ -29,9 +29,6 @@ PYTHON_MODULES="pytest.py _pytest"
 
 src_prepare() {
 	distutils_src_prepare
-
-	# Fix compatibility with Python 3.1.
-	sed -e "s/callable(finalizer)/py.builtin.&/" -i _pytest/runner.py
 
 	# Disable tests failing with Python 3.1.
 	sed -e "s/\([[:space:]]*\)def test_exact_teardown_issue90(/\1@pytest.mark.skipif('sys.version_info[:2] == (3, 1)')\n&/" -i testing/test_runner.py
