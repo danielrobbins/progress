@@ -15,7 +15,7 @@ SRC_URI="ftp://xmlsoft.org/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="~*"
+KEYWORDS="*"
 IUSE="crypt debug python static-libs"
 
 RDEPEND=">=dev-libs/libxml2-2.8.0:2[${MULTILIB_USEDEP}]
@@ -66,9 +66,9 @@ multilib_src_compile() {
 	if multilib_is_native_abi && use python; then
 		python_copy_sources python
 		building() {
-			emake PYTHON_INCLUDES="$(python_get_includedir)" \
+			emake PYTHON_INCLUDES="${EPREFIX}$(python_get_includedir)" \
 				PYTHON_LIBS="$(python_get_library -l)" \
-				PYTHON_SITE_PACKAGES="$(python_get_sitedir)" \
+				PYTHON_SITE_PACKAGES="${EPREFIX}$(python_get_sitedir)" \
 				PYTHON_VERSION="$(python_get_version)"
 		}
 		python_execute_function -s --source-dir python building
@@ -93,7 +93,7 @@ multilib_src_install() {
 		installation() {
 			emake DESTDIR="${D}" \
 				PYTHON_LIBS="$(python_get_library -l)" \
-				PYTHON_SITE_PACKAGES="$(python_get_sitedir)" \
+				PYTHON_SITE_PACKAGES="${EPREFIX}$(python_get_sitedir)" \
 				install
 		}
 		python_execute_function -s --source-dir python installation
