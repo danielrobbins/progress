@@ -7,7 +7,7 @@ PYTHON_MULTIPLE_ABIS="1"
 
 inherit distutils
 
-DESCRIPTION="Python SSL Certificates"
+DESCRIPTION="Python package for providing Mozilla's CA Bundle."
 HOMEPAGE="http://python-requests.org/ https://pypi.python.org/pypi/certifi"
 SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
 
@@ -16,7 +16,7 @@ SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
-DEPEND=""
+DEPEND="$(python_abi_depend dev-python/setuptools)"
 RDEPEND="app-misc/ca-certificates"
 
 src_install() {
