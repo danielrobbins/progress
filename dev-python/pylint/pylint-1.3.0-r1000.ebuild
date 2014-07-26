@@ -5,13 +5,13 @@
 EAPI="5-progress"
 PYTHON_DEPEND="<<[{*-cpython}tk?]>>"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.* 3.* *-jython"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.6 3.* *-jython"
 
 inherit distutils
 
 DESCRIPTION="Python code static checker"
 HOMEPAGE="http://pylint.org/ https://bitbucket.org/logilab/pylint https://pypi.python.org/pypi/pylint"
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.zip"
 
 LICENSE="GPL-2"
 SLOT="0"
