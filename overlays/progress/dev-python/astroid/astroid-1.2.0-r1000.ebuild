@@ -25,14 +25,6 @@ DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	test? ( $(python_abi_depend -e "3.* *-jython *-pypy-*" dev-python/egenix-mx-base) )"
 
-src_prepare() {
-	distutils_src_prepare
-
-	# Disable failing test.
-	# https://bitbucket.org/logilab/astroid/issue/8
-	sed -e "s/test_numpy_crash/_&/" -i test/unittest_regrtest.py
-}
-
 src_test() {
 	testing() {
 		local tpath="${T}/test-${PYTHON_ABI}"
