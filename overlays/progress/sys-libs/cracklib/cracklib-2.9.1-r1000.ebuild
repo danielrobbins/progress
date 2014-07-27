@@ -87,6 +87,7 @@ multilib_src_install() {
 }
 
 multilib_src_install_all() {
+	einstalldocs
 	prune_libtool_files
 	rm -r "${ED}"/usr/share/cracklib
 
