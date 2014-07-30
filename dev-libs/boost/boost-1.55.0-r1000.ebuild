@@ -11,8 +11,8 @@ inherit eutils flag-o-matic multilib multiprocessing python toolchain-funcs
 
 MY_P="${PN}_${PV//./_}"
 
-DESCRIPTION="Boost Libraries for C++"
-HOMEPAGE="http://www.boost.org/"
+DESCRIPTION="Boost libraries for C++"
+HOMEPAGE="http://www.boost.org/ https://github.com/boostorg"
 SRC_URI="mirror://sourceforge/boost/${MY_P}.tar.bz2"
 
 LICENSE="Boost-1.0"
@@ -92,6 +92,7 @@ pkg_setup() {
 
 src_prepare() {
 	epatch \
+		"${FILESDIR}/${PN}-1.52.0-no_threads.patch" \
 		"${FILESDIR}/${PN}-1.51.0-respect_python-buildid.patch" \
 		"${FILESDIR}/${PN}-1.51.0-support_dots_in_python-buildid.patch" \
 		"${FILESDIR}/${PN}-1.48.0-no_strict_aliasing_python2.patch" \
