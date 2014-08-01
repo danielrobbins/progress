@@ -467,9 +467,9 @@ autotools-utils_src_test() {
 	_check_build_dir
 	pushd "${BUILD_DIR}" > /dev/null || die
 
-	if make -n check "${@}" &>/dev/null; then
+	if make -ni check "${@}" &>/dev/null; then
 		emake check "${@}" || die 'emake check failed.'
-	elif make -n test "${@}" &>/dev/null; then
+	elif make -ni test "${@}" &>/dev/null; then
 		emake test "${@}" || die 'emake test failed.'
 	fi
 
