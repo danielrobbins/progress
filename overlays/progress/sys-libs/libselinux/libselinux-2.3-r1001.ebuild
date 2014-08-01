@@ -23,7 +23,7 @@ SRC_URI="http://userspace.selinuxproject.org/releases/20140506/${MY_P}.tar.gz
 
 LICENSE="GPL-2 public-domain"
 SLOT="0"
-KEYWORDS="~*"
+KEYWORDS="*"
 IUSE="python ruby static-libs"
 RESTRICT="test"
 
