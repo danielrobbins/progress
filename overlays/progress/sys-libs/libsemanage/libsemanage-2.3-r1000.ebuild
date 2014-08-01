@@ -22,7 +22,7 @@ SRC_URI="http://userspace.selinuxproject.org/releases/20140506/${MY_P}.tar.gz"
 
 LICENSE="LGPL-2.1"
 SLOT="0"
-KEYWORDS="~*"
+KEYWORDS="*"
 IUSE="python ruby static-libs"
 RESTRICT="test"
 
