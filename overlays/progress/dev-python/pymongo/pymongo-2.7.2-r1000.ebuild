@@ -4,6 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
@@ -38,6 +39,9 @@ src_prepare() {
 		fi
 	}
 	python_execute_function preparation
+
+	# Fix compatibility with newer Jython (revision >= 107fe4a4c96b).
+	sed -e "s/^if sys.platform.startswith('java'):$/if False:/" -i pymongo/pool.py
 }
 
 src_compile() {
