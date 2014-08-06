@@ -22,7 +22,7 @@ REQUIRED_USE="test? ( html5lib sparql )"
 RDEPEND="$(python_abi_depend dev-python/isodate)
 	$(python_abi_depend -i "2.6" dev-python/ordereddict)
 	$(python_abi_depend dev-python/pyparsing)
-	berkdb? ( $(python_abi_depend -e "*-jython" dev-python/bsddb3) )
+	berkdb? ( $(python_abi_depend -e "3.1 *-jython" dev-python/bsddb3) )
 	html5lib? ( $(python_abi_depend -e "*-jython" dev-python/html5lib) )
 	sparql? ( $(python_abi_depend dev-python/sparql-wrapper) )"
 DEPEND="${RDEPEND}
