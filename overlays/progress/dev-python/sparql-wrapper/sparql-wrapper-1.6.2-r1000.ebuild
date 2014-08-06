@@ -24,5 +24,5 @@ DEPEND="${RDEPEND}
 
 S="${WORKDIR}/${MY_P}"
 
-DOCS="AUTHORS.txt ChangeLog.txt"
+DOCS="AUTHORS.md"
 PYTHON_MODULES="${MY_PN}"
