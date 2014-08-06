@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="*-jython"
+PYTHON_RESTRICTED_ABIS="3.1 *-jython"
 
 inherit db-use distutils multilib
 
@@ -17,7 +17,18 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="doc"
 
-RDEPEND=">=sys-libs/db-4.8:="
+RDEPEND="<sys-libs/db-6.2:=
+	|| (
+		sys-libs/db:6.1
+		sys-libs/db:6.0
+		sys-libs/db:5.3
+		sys-libs/db:5.2
+		sys-libs/db:5.1
+		sys-libs/db:5.0
+		sys-libs/db:4.8
+		sys-libs/db:4.7
+	)
+	"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
@@ -26,21 +37,28 @@ PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 DOCS="ChangeLog TODO.txt"
 
 src_configure() {
-	for DB_VER in 6.0 5.3 5.2 5.1 5.0 4.8; do
-		if has_version sys-libs/db:${DB_VER}; then
-			break
+	local bdb_versions=(6.1 6.0 5.3 5.2 5.1 5.0 4.8 4.7)
+	if [[ -n "${BSDDB3_BDB_VERSION}" ]]; then
+		if ! has "${BSDDB3_BDB_VERSION}" "${bdb_versions[@]}"; then
+			die "Invalid BSDDB3_BDB_VERSION: '${BSDDB3_BDB_VERSION}'"
 		fi
-	done
+	else
+		for BSDDB3_BDB_VERSION in "${bdb_versions[@]}"; do
+			if has_version sys-libs/db:${BSDDB3_BDB_VERSION}; then
+				break
+			fi
+		done
+	fi
 
 	DISTUTILS_GLOBAL_OPTIONS=(
 		"* --berkeley-db=${EPREFIX}/usr"
-		"* --berkeley-db-incdir=${EPREFIX}$(db_includedir ${DB_VER})"
+		"* --berkeley-db-incdir=${EPREFIX}$(db_includedir ${BSDDB3_BDB_VERSION})"
 		"* --berkeley-db-libdir=${EPREFIX}/usr/$(get_libdir)"
 	)
 
 	sed \
-		-e "s/db_ver = None/db_ver = (${DB_VER%.*}, ${DB_VER#*.})/" \
-		-e "s/dblib = 'db'/dblib = '$(db_libname ${DB_VER})'/" \
+		-e "s/db_ver = None/db_ver = (${BSDDB3_BDB_VERSION%.*}, ${BSDDB3_BDB_VERSION#*.})/" \
+		-e "s/dblib = 'db'/dblib = '$(db_libname ${BSDDB3_BDB_VERSION})'/" \
 		-i setup2.py setup3.py || die "sed failed"
 }
 
@@ -53,7 +71,7 @@ src_test() {
 		rm -f build
 		ln -s build-${PYTHON_ABI} build
 
-		python_execute TMPDIR="${T}/tests-${PYTHON_ABI}" "$(PYTHON)" test.py -vv
+		python_execute TMPDIR="${T}/tests-${PYTHON_ABI}" "$(PYTHON)" test$(python_get_version -l --major).py -vv
 	}
 	python_execute_function tests
 }
