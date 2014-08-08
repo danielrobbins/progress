@@ -3,7 +3,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.*"
+PYTHON_RESTRICTED_ABIS="2.6 3.* *-jython"
 
 inherit distutils
 
@@ -17,7 +17,8 @@ KEYWORDS="*"
 IUSE=""
 
 DEPEND="$(python_abi_depend ">=dev-python/mozfile-1.0")
-	$(python_abi_depend dev-python/mozlog)
+	$(python_abi_depend ">=dev-python/mozlog-2.1")
 	$(python_abi_depend dev-python/moznetwork)
+	$(python_abi_depend ">=dev-python/mozprocess-0.19")
 	$(python_abi_depend dev-python/setuptools)"
 RDEPEND="${DEPEND}"
