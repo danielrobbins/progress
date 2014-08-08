@@ -3,7 +3,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.*"
+PYTHON_RESTRICTED_ABIS="2.6 3.* *-jython"
 
 inherit distutils
 
@@ -16,6 +16,6 @@ SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
-DEPEND="$(python_abi_depend dev-python/setuptools)
-	$(python_abi_depend virtual/python-argparse)"
+DEPEND="$(python_abi_depend dev-python/blessings)
+	$(python_abi_depend dev-python/setuptools)"
 RDEPEND="${DEPEND}"
