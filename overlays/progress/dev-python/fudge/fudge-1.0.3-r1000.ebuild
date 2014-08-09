@@ -4,12 +4,14 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
+# 3.*: https://bitbucket.org/kumar303/fudge/issue/27
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.*"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
 
 DESCRIPTION="Replace real objects with fakes (mocks, stubs, etc) while testing."
-HOMEPAGE="http://farmdev.com/projects/fudge/ https://pypi.python.org/pypi/fudge"
+HOMEPAGE="http://farmdev.com/projects/fudge/ https://bitbucket.org/kumar303/fudge https://pypi.python.org/pypi/fudge"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
@@ -17,7 +19,8 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="doc"
 
-DEPEND="doc? ( $(python_abi_depend dev-python/sphinx) )"
+DEPEND="$(python_abi_depend dev-python/setuptools)
+	doc? ( $(python_abi_depend dev-python/sphinx) )"
 RDEPEND=""
 
 src_prepare() {
@@ -44,7 +47,7 @@ src_install() {
 	distutils_src_install
 
 	delete_tests() {
-		rm -fr "${ED}$(python_get_sitedir)/fudge/tests"
+		rm -r "${ED}$(python_get_sitedir)/fudge/tests"
 	}
 	python_execute_function -q delete_tests
 
