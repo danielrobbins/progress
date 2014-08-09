@@ -30,9 +30,6 @@ src_prepare() {
 
 	# Avoid file collision with app-text/html2text.
 	sed -e "s/html2text=html2text:main/pyhtml2text=html2text:main/" -i setup.py
-
-	# Install not tests.
-	sed -e "s/packages=find_packages()/packages=find_packages(exclude=['test'])/" -i setup.py
 }
 
 src_test() {
