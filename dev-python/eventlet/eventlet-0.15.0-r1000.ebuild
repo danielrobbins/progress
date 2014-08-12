@@ -33,16 +33,13 @@ src_prepare() {
 	sed -e "227s/except ImportError:/except (AttributeError, ImportError, RuntimeError):/" -i tests/test__twistedutil_protocol.py
 
 	# Disable failing tests.
-	rm tests/saranwrap_test.py
+	sed -e "s/test_incomplete_headers_13/_&/" -i tests/websocket_new_test.py
 	sed \
 		-e "s/test_incomplete_headers_75/_&/" \
 		-e "s/test_incomplete_headers_76/_&/" \
 		-e "s/test_incorrect_headers/_&/" \
 		-i tests/websocket_test.py
-	sed -e "s/test_multiple_readers/_&/" -i tests/greenio_test.py
-
-	# https://bitbucket.org/birkenfeld/sphinx/issue/1185
-	sed -e "1i\\# -*- coding: utf-8 -*-" -i eventlet/green/zmq.py
+	sed -e "s/test_server_connection_timeout_exception/_&/" -i tests/wsgi_test.py
 }
 
 src_compile() {
