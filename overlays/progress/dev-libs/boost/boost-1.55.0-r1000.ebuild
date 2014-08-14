@@ -17,7 +17,7 @@ SRC_URI="mirror://sourceforge/boost/${MY_P}.tar.bz2"
 
 LICENSE="Boost-1.0"
 SLOT="0/${PV}"
-KEYWORDS="~*"
+KEYWORDS="*"
 IUSE="c++11 context debug doc icu mpi +nls python static-libs +threads tools"
 RESTRICT="test"
 
