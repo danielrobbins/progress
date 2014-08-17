@@ -566,9 +566,6 @@ multilib_install_wrappers() {
 # @DESCRIPTION:
 # Determine whether the currently built ABI is the profile native.
 # Return true status (0) if that is true, otherwise false (1).
-#
-# This function is not intended to be used directly. Please use
-# multilib_build_binaries instead.
 multilib_is_native_abi() {
 	debug-print-function ${FUNCNAME} "${@}"
 
@@ -579,14 +576,7 @@ multilib_is_native_abi() {
 
 # @FUNCTION: multilib_build_binaries
 # @DESCRIPTION:
-# Determine whether to build binaries for the currently built ABI.
-# Returns true status (0) if the currently built ABI is the profile
-# native or COMPLETE_MULTILIB variable is set to 'yes', otherwise
-# false (1).
-#
-# This is often useful for configure calls when some of the options are
-# supposed to be disabled for multilib ABIs (like those used for
-# executables only).
+# Deprecated synonym for multilib_is_native_abi
 multilib_build_binaries() {
 	debug-print-function ${FUNCNAME} "${@}"
 
@@ -614,7 +604,7 @@ multilib_native_use_with() {
 # @FUNCTION: multilib_native_use_enable
 # @USAGE: <flag> [<opt-name> [<opt-value>]]
 # @DESCRIPTION:
-# Output --enable configure option alike use_with if USE <flag>
+# Output --enable configure option alike use_enable if USE <flag>
 # is enabled and executables are being built (multilib_is_native_abi
 # is true). Otherwise, outputs --disable configure option. Arguments are
 # the same as for use_enable in the EAPI.
@@ -623,6 +613,34 @@ multilib_native_use_enable() {
 		use_enable "${@}"
 	else
 		echo "--disable-${2:-${1}}"
+	fi
+}
+
+# @FUNCTION: multilib_native_enable
+# @USAGE: <opt-name> [<opt-value>]
+# @DESCRIPTION:
+# Output --enable configure option if executables are being built
+# (multilib_is_native_abi is true). Otherwise, output --disable configure
+# option.
+multilib_native_enable() {
+	if multilib_is_native_abi; then
+		echo "--enable-${1}${2+=${2}}"
+	else
+		echo "--disable-${1}"
+	fi
+}
+
+# @FUNCTION: multilib_native_with
+# @USAGE: <opt-name> [<opt-value>]
+# @DESCRIPTION:
+# Output --with configure option if executables are being built
+# (multilib_is_native_abi is true). Otherwise, output --without configure
+# option.
+multilib_native_with() {
+	if multilib_is_native_abi; then
+		echo "--with-${1}${2+=${2}}"
+	else
+		echo "--without-${1}"
 	fi
 }
 
