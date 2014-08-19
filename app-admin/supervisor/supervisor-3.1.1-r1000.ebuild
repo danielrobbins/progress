@@ -13,10 +13,8 @@ PYTHON_NAMESPACES="supervisor"
 inherit distutils python-namespaces
 
 DESCRIPTION="A system for controlling process state under UNIX"
-HOMEPAGE="http://supervisord.org/ https://pypi.python.org/pypi/supervisor"
-# SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
-# https://github.com/Supervisor/supervisor/issues/473
-SRC_URI="https://github.com/Supervisor/supervisor/archive/${PV}.tar.gz -> ${P}.tar.gz"
+HOMEPAGE="http://supervisord.org/ https://github.com/Supervisor/supervisor https://pypi.python.org/pypi/supervisor"
+SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD GPL-2 HPND repoze ZPL"
 SLOT="0"
