@@ -10,7 +10,7 @@ DISTUTILS_SRC_TEST="nosetests"
 inherit distutils eutils
 
 DESCRIPTION="Reads FITS images and tables into numpy arrays and manipulates FITS headers"
-HOMEPAGE="http://www.stsci.edu/institute/software_hardware/pyfits https://pythonhosted.org/pyfits/ https://pypi.python.org/pypi/pyfits"
+HOMEPAGE="http://www.stsci.edu/institute/software_hardware/pyfits https://pythonhosted.org/pyfits/ https://github.com/spacetelescope/PyFITS https://pypi.python.org/pypi/pyfits"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD"
@@ -35,6 +35,9 @@ src_prepare() {
 	rm -r cextern
 
 	epatch "${FILESDIR}/${PN}-3.2-use_system_libraries.patch"
+
+	# https://github.com/spacetelescope/PyFITS/issues/95
+	sed -e "s/except UserWarning, w/except UserWarning as w/" -i lib/pyfits/scripts/fitscheck.py
 }
 
 src_test() {
