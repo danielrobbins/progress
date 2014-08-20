@@ -10,7 +10,8 @@ inherit distutils
 
 DESCRIPTION="Mercurial log navigator"
 HOMEPAGE="http://www.logilab.org/project/hgview https://pypi.python.org/pypi/hgview"
-SRC_URI="http://download.logilab.org/pub/${PN}/${P}.tar.gz"
+# SRC_URI="http://download.logilab.org/pub/${PN}/${P}.tar.gz"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
