@@ -56,7 +56,7 @@ _bash-completion-r1_get_bashdir() {
 _bash-completion-r1_get_bashcompdir() {
 	debug-print-function ${FUNCNAME} "${@}"
 
-	_bash-completion-r1_get_bashdir completionsdir /usr/share/bash-completion
+	_bash-completion-r1_get_bashdir completionsdir /usr/share/bash-completion/completions
 }
 
 # @FUNCTION: _bash-completion-r1_get_helpersdir
