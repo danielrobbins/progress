@@ -19,7 +19,7 @@ KEYWORDS="*"
 IUSE="examples tk"
 
 # Versions specified in __pkginfo__.py.
-RDEPEND="$(python_abi_depend ">=dev-python/astroid-1.1")
+RDEPEND="$(python_abi_depend ">=dev-python/astroid-1.2.1")
 	$(python_abi_depend ">=dev-python/logilab-common-0.53.0")"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
