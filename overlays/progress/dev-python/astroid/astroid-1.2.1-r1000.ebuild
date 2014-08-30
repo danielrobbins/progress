@@ -12,7 +12,7 @@ inherit distutils
 
 DESCRIPTION="rebuild a new abstract syntax tree from Python's ast"
 HOMEPAGE="http://astroid.org/ https://bitbucket.org/logilab/astroid https://pypi.python.org/pypi/astroid"
-SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.zip"
 
 LICENSE="LGPL-2.1"
 SLOT="0"
