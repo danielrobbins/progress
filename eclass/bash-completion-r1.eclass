@@ -115,3 +115,19 @@ newbashcomp() {
 		newins "${@}"
 	)
 }
+
+# @FUNCTION: bashcomp_alias
+# @USAGE: <basename> <alias>...
+# @DESCRIPTION:
+# Alias <basename> completion to one or more commands (<alias>es).
+bashcomp_alias() {
+	debug-print-function ${FUNCNAME} "${@}"
+
+	[[ ${#} -lt 2 ]] && die "Usage: ${FUNCNAME} <basename> <alias>..."
+	local base=${1} f
+	shift
+
+	for f; do
+		dosym "${base}" "$(_bash-completion-r1_get_bashcompdir)/${f}"
+	done
+}
