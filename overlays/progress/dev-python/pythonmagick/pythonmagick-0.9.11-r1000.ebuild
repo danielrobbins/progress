@@ -14,7 +14,7 @@ MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Python bindings for ImageMagick"
 HOMEPAGE="http://www.imagemagick.org/script/api.php"
-SRC_URI="http://www.imagemagick.org/download/python/${MY_P}.tar.xz"
+SRC_URI="mirror://imagemagick/python/${MY_P}.tar.xz"
 
 LICENSE="GPL-3"
 SLOT="0"
@@ -22,7 +22,7 @@ KEYWORDS="*"
 IUSE=""
 
 RDEPEND="$(python_abi_depend dev-libs/boost:0=[python])
-	>=media-gfx/imagemagick-6.4:0="
+	>=media-gfx/imagemagick-6.8.6:0="
 DEPEND="${RDEPEND}
 	virtual/pkgconfig"
 
