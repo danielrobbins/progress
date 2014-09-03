@@ -11,7 +11,7 @@ FORTRAN_NEEDED="lapack"
 inherit distutils eutils flag-o-matic fortran-2 multilib toolchain-funcs
 
 MY_P="${PN}-${PV/_/}"
-DOC_PV="1.8.0"
+DOC_PV="1.8.1"
 DOC_P="${PN}-${DOC_PV}"
 
 DESCRIPTION="Fast array and numerical python library"
@@ -40,6 +40,7 @@ S="${WORKDIR}/${MY_P}"
 
 PYTHON_CFLAGS=("* + -fno-strict-aliasing")
 
+DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES="1"
 DOCS="COMPATIBILITY DEV_README.txt THANKS.txt"
 
 pkg_setup() {
@@ -108,7 +109,6 @@ src_prepare() {
 	# linking with cblas and lapack library will force
 	# autodetecting and linking to all available fortran compilers
 	if use lapack; then
-		append-fflags -fPIC
 		NUMPY_FCONFIG="config_fc --noopt --noarch"
 		# workaround bug 335908
 		[[ $(tc-getFC) == *gfortran* ]] && NUMPY_FCONFIG+=" --fcompiler=gnu95"
@@ -117,10 +117,15 @@ src_prepare() {
 	# Disable versioning of f2py script.
 	sed -e "s/f2py_exe = 'f2py'+os.path.basename(sys.executable)\[6:\]$/f2py_exe = 'f2py'/" -i numpy/f2py/setup.py || die
 
-	# Regenerate Cython-generated files.
-	pushd numpy/random/mtrand > /dev/null
-	python_execute "$(PYTHON -f)" generate_mtrand_c.py || die "Cythonization of numpy/random/mtrand/mtrand.pyx failed"
-	popd > /dev/null
+	distutils_src_prepare
+
+	preparation() {
+		# Regenerate Cython-generated files.
+		pushd numpy/random/mtrand > /dev/null
+		python_execute "$(PYTHON)" generate_mtrand_c.py || die "Cythonization of numpy/random/mtrand/mtrand.pyx failed"
+		popd > /dev/null
+	}
+	python_execute_function -s preparation
 }
 
 src_compile() {
@@ -128,23 +133,19 @@ src_compile() {
 }
 
 src_test() {
+	local -x FFLAGS="${FFLAGS} -fPIC"
+
 	testing() {
-		python_execute "$(PYTHON)" setup.py ${NUMPY_FCONFIG} build -b "build-${PYTHON_ABI}" install --home="${S}/test-${PYTHON_ABI}" --no-compile || die "Installation for tests failed with $(python_get_implementation_and_version)"
-		pushd "${S}/test-${PYTHON_ABI}/"lib* > /dev/null
-		python_execute PYTHONPATH="python" "$(PYTHON)" -c "import numpy, sys; sys.exit(not numpy.test(label='full', verbose=3).wasSuccessful())" || return
-		popd > /dev/null
-		rm -fr test-${PYTHON_ABI}
+		python_execute "$(PYTHON)" setup.py ${NUMPY_FCONFIG} install --root="${T}/tests-${PYTHON_ABI}" || die "Installation for tests failed with $(python_get_implementation_and_version)"
+		pushd "${T}/tests-${PYTHON_ABI}" > /dev/null || die
+		python_execute PYTHONPATH="${T}/tests-${PYTHON_ABI}${EPREFIX}$(python_get_sitedir)" "$(PYTHON)" -c "import numpy, sys; sys.exit(not numpy.test(label='full', verbose=3).wasSuccessful())" || return
+		popd > /dev/null || die
 	}
-	python_execute_function testing
+	python_execute_function -s testing
 }
 
 src_install() {
 	distutils_src_install ${NUMPY_FCONFIG}
-
-	delete_txt() {
-		rm -f "${ED}"$(python_get_sitedir)/numpy/*.txt
-	}
-	python_execute_function -q delete_txt
 
 	(
 		docinto f2py
