@@ -30,7 +30,7 @@ src_prepare() {
 	distutils_src_prepare
 
 	# Ignore potential AttributeError and RuntimeError caused by gnutls module.
-	sed -e "227s/except ImportError:/except (AttributeError, ImportError, RuntimeError):/" -i tests/test__twistedutil_protocol.py
+	sed -e "236s/except ImportError:/except (AttributeError, ImportError, RuntimeError):/" -i tests/test__twistedutil_protocol.py
 
 	# Disable failing tests.
 	sed -e "s/test_incomplete_headers_13/_&/" -i tests/websocket_new_test.py
