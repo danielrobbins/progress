@@ -25,6 +25,10 @@ DEPEND="${RDEPEND}"
 
 DOCS=(AUTHORS ChangeLog FEATURES NEWS README TODO)
 
+MULTILIB_CHOST_TOOLS=(
+	/usr/bin/xslt-config
+)
+
 pkg_setup() {
 	use python && python_pkg_setup
 }
@@ -35,9 +39,9 @@ src_prepare() {
 
 	epatch "${FILESDIR}"/${PN}-1.1.26-disable_static_modules.patch
 
-	# Use AC_PATH_TOOL for libgcrypt-config for sane cross-compilation and multilib support.
+	# Use AC_PATH_TOOL for libgcrypt-config and xml2-config for sane cross-compilation and multilib support.
 	# https://bugzilla.gnome.org/show_bug.cgi?id=725635
-	epatch "${FILESDIR}"/${PN}-1.1.28-libgcrypt-config.patch
+	epatch "${FILESDIR}"/${PN}-1.1.28-AC_PATH_TOOL.patch
 
 	# Python bindings are built/tested/installed manually.
 	sed -i -e 's/$(PYTHON_SUBDIR)//' Makefile.am || die
