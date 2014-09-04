@@ -42,6 +42,10 @@ DEPEND="${RDEPEND}
 
 S="${WORKDIR}/${PN}-${PV%_rc*}"
 
+MULTILIB_CHOST_TOOLS=(
+	/usr/bin/xml2-config
+)
+
 pkg_setup() {
 	use python && python_pkg_setup
 }
