@@ -31,9 +31,6 @@ src_prepare() {
 
 	# https://bitbucket.org/hpk42/py/issue/29
 	sed -e "s/if sys.version_info < (2,7):/if sys.version_info < (2, 7) or sys.version_info >= (3, 0) and sys.version_info < (3, 2):/" -i py/_code/source.py
-
-	# Disable test failing with Subversion >=1.8.
-	sed -e "s/test_lock_unlock/_&/" -i testing/path/test_svnwc.py
 }
 
 src_compile() {
