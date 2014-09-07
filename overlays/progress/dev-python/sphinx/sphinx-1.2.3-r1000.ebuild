@@ -61,7 +61,7 @@ src_compile() {
 
 	if use doc; then
 		einfo "Generation of documentation"
-		sed -e "/import sys/a sys.path.insert(0, '${S}/build-$(PYTHON -f --ABI)/lib')" -i sphinx-build.py || die "sed failed"
+		sed -e "/import sys/a\\sys.path.insert(0, '${S}/build-$(PYTHON -f --ABI)/lib')" -i sphinx-build.py || die "sed failed"
 		pushd doc > /dev/null
 		emake SPHINXBUILD="$(PYTHON -f) ../sphinx-build.py" html
 		popd > /dev/null
