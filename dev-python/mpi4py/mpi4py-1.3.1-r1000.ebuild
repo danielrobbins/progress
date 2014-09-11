@@ -23,6 +23,13 @@ RDEPEND="${DEPEND}"
 
 PYTHON_VERSIONED_EXECUTABLES=("/usr/bin/python-mpi")
 
+src_prepare() {
+	distutils_src_prepare
+
+	# Fix building with exported LDSHARED environmental variable.
+	sed -e "s/ldshared   = environ.get('LDSHARED', ldshared)/ldshared   = (split_linker_cmd(environ.get('LDSHARED'))[1] if environ.get('LDSHARED') is not None else ldshared)/" -i conf/mpidistutils.py
+}
+
 src_test() {
 	testing() {
 		PYTHONPATH="$(ls -d build-${PYTHON_ABI}/lib*)" mpiexec -n 2 "$(PYTHON)" test/runtests.py -v
