@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 
-inherit qt4-r2
+inherit qmake-utils
 
 MY_P="QScintilla-gpl-${PV}"
 
@@ -16,58 +16,63 @@ LICENSE="|| ( GPL-2 GPL-3 )"
 # Subslot based on first component of VERSION from Qt4Qt5/qscintilla.pro
 SLOT="0/11"
 KEYWORDS="*"
-IUSE="doc"
+IUSE="designer doc"
 
 DEPEND="
-	dev-qt/designer:4
 	dev-qt/qtcore:4
 	dev-qt/qtgui:4
+	designer? ( dev-qt/designer:4 )
 "
 RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/${MY_P}"
 
 src_configure() {
-	pushd Qt4Qt5 > /dev/null
 	einfo "Configuration of qscintilla"
-	eqmake4 qscintilla.pro
+	pushd Qt4Qt5 > /dev/null
+	eqmake4
 	popd > /dev/null
 
-	pushd designer-Qt4Qt5 > /dev/null
-	einfo "Configuration of designer plugin"
-	# Avoid using of system Qsci/* headers and system libqscintilla2.so during building of libqscintillaplugin.so.
-	CXXFLAGS="${CXXFLAGS}${CXXFLAGS:+ }-I../Qt4Qt5" LDFLAGS="${LDFLAGS}${LDFLAGS:+ }-L../Qt4Qt5" eqmake4 designer.pro
-	popd > /dev/null
+	if use designer; then
+		einfo "Configuration of designer plugin"
+		pushd designer-Qt4Qt5 > /dev/null
+		# Avoid using of system Qsci/* headers and system libqscintilla2.so during building of libqscintillaplugin.so.
+		CXXFLAGS="${CXXFLAGS}${CXXFLAGS:+ }-I../Qt4Qt5" LDFLAGS="${LDFLAGS}${LDFLAGS:+ }-L../Qt4Qt5" eqmake4
+		popd > /dev/null
+	fi
 }
 
 src_compile() {
-	pushd Qt4Qt5 > /dev/null
 	einfo "Building of qscintilla"
+	pushd Qt4Qt5 > /dev/null
 	emake
 	popd > /dev/null
 
-	pushd designer-Qt4Qt5 > /dev/null
-	einfo "Building of designer plugin"
-	emake
-	popd > /dev/null
+	if use designer; then
+		einfo "Building of designer plugin"
+		pushd designer-Qt4Qt5 > /dev/null
+		emake
+		popd > /dev/null
+	fi
 }
 
 src_install() {
-	pushd Qt4Qt5 > /dev/null
 	einfo "Installation of qscintilla"
+	pushd Qt4Qt5 > /dev/null
 	emake INSTALL_ROOT="${D}" install
 	popd > /dev/null
 
-	pushd designer-Qt4Qt5 > /dev/null
-	einfo "Installation of designer plugin"
-	emake INSTALL_ROOT="${D}" install
-	popd > /dev/null
+	if use designer; then
+		einfo "Installation of designer plugin"
+		pushd designer-Qt4Qt5 > /dev/null
+		emake INSTALL_ROOT="${D}" install
+		popd > /dev/null
+	fi
 
 	dodoc NEWS
 
 	if use doc; then
 		dohtml doc/html-Qt4Qt5/*
 		insinto /usr/share/doc/${PF}
-		doins -r doc/Scintilla
 	fi
 }
