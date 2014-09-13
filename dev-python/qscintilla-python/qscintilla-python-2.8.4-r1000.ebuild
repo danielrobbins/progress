@@ -7,7 +7,7 @@ PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 PYTHON_EXPORT_PHASE_FUNCTIONS="1"
 
-inherit python qt4-r2
+inherit python qmake-utils
 
 MY_P="QScintilla-gpl-${PV}"
 
@@ -47,7 +47,7 @@ src_configure() {
 		)
 		python_execute "${myconf[@]}" || return
 
-		eqmake4 Qsci.pro
+		eqmake4
 	}
 	python_execute_function -s configuration
 }
