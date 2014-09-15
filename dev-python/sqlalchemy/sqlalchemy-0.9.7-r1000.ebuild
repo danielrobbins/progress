@@ -43,6 +43,17 @@ src_prepare() {
 
 	# Disable tests hardcoding function call counts specific to Python versions.
 	rm -r test/aaa_profiling
+
+	# Fix compatibility with Python 3.2.
+	# https://bitbucket.org/zzzeek/sqlalchemy/issue/3198
+	sed -e "s/u'participating_x'/'participating_x'/" -i test/sql/test_metadata.py
+
+	# https://bitbucket.org/zzzeek/sqlalchemy/commits/e974bed379e4
+	sed -e "3277a\\\n    def __reduce__(self):\n        return self.__class__, (util.text_type(self), )" -i lib/sqlalchemy/sql/elements.py
+	sed \
+		-e "s/PickleMetadataTest/PickleTypesTest/" \
+		-e "s/testmeta/test_pickle_types/" \
+		-i test/sql/test_types.py
 }
 
 src_test() {
