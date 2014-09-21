@@ -11,14 +11,14 @@ inherit autotools eutils flag-o-matic multilib pax-utils python toolchain-funcs
 if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
-	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="a249f1f879be"
+	EHG_REPO_URI="https://hg.python.org/cpython"
+	EHG_REVISION="a4e0aee1a9b5"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
 fi
 
-PATCHSET_REVISION="20131222"
+PATCHSET_REVISION="20140921"
 
 DESCRIPTION="Python is an interpreted, interactive, object-oriented programming language."
 HOMEPAGE="http://www.python.org/"
@@ -32,9 +32,9 @@ else
 fi
 
 LICENSE="PSF-2"
-SLOT="3.4"
+SLOT="3.3"
 PYTHON_ABI="${SLOT}"
-KEYWORDS="~*"
+KEYWORDS="*"
 IUSE="build doc elibc_uclibc examples gdbm ipv6 +ncurses +readline sqlite +ssl +threads tk wininst +xml"
 
 RDEPEND="app-arch/bzip2
@@ -196,7 +196,6 @@ src_configure() {
 		--mandir='${prefix}/share/man' \
 		--with-computed-gotos \
 		--with-dbmliborder="${dbmliborder}" \
-		--without-ensurepip \
 		--with-libc="" \
 		--enable-loadable-sqlite-extensions \
 		--with-system-expat \
