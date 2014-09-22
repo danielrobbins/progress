@@ -10,8 +10,8 @@ inherit java-pkg-2 java-ant-2 python
 if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
-	EHG_REPO_URI="http://hg.python.org/jython"
-	EHG_REVISION="67a4b9a0361c"
+	EHG_REPO_URI="https://hg.python.org/jython"
+	EHG_REVISION="3bfd14f0b231"
 fi
 
 PATCHSET_REVISION="20121230"
@@ -39,7 +39,6 @@ CDEPEND="dev-java/ant-core:0
 	dev-java/jnr-constants:0
 	>=dev-java/jnr-netdb-1.1.2-r1:1.0
 	>=dev-java/jnr-posix-3.0.1-r1:3.0
-	dev-java/jsr223:0
 	>=dev-java/libreadline-java-0.8.0
 	dev-java/netty-buffer:0
 	dev-java/netty-codec:0
@@ -65,9 +64,6 @@ pkg_setup() {
 
 java_prepare() {
 	EPATCH_SUFFIX="patch" epatch "${FILESDIR}/${SLOT}-${PATCHSET_REVISION}"
-	
-	# http://bugs.jython.org/issue2032
-	sed -e "s/SC_GLOBAL_EXPLICT/SC_GLOBAL_EXPLICIT/" -i Lib/compiler/pycodegen.py
 
 	find extlibs -name "*.jar" -delete
 	find -name "*.py[co]" -delete
@@ -79,7 +75,7 @@ java_prepare() {
 	java-pkg_jar-from --into extlibs asm-4 asm-util.jar asm-util-4.0.jar
 	java-pkg_jar-from --into extlibs bcpkix bcpkix.jar bcpkix-jdk15on-150.jar
 	java-pkg_jar-from --into extlibs bcprov bcprov.jar bcprov-jdk15on-150.jar
-	java-pkg_jar-from --into extlibs commons-compress commons-compress.jar commons-compress-1.8.jar
+	java-pkg_jar-from --into extlibs commons-compress commons-compress.jar commons-compress-1.8.1.jar
 	java-pkg_jar-from --into extlibs guava-17 guava.jar guava-17.0.jar
 	java-pkg_jar-from --into extlibs icu4j-52 icu4j.jar icu4j-52_1.jar
 	java-pkg_jar-from --into extlibs jffi-1.2 jffi.jar jffi-1.2.6.jar
@@ -89,12 +85,11 @@ java_prepare() {
 	java-pkg_jar-from --into extlibs jnr-posix-3.0 jnr-posix.jar jnr-posix-2.4.0.jar
 	java-pkg_jar-from --build-only --into extlibs junit-4 junit.jar junit-4.10.jar
 	java-pkg_jar-from --into extlibs libreadline-java libreadline-java.jar libreadline-java-0.8.jar
-	java-pkg_jar-from --into extlibs jsr223 script-api.jar livetribe-jsr223-2.0.6.jar
-	java-pkg_jar-from --into extlibs netty-buffer netty-buffer.jar netty-buffer-4.0.18.Final.jar
-	java-pkg_jar-from --into extlibs netty-codec netty-codec.jar netty-codec-4.0.18.Final.jar
-	java-pkg_jar-from --into extlibs netty-common netty-common.jar netty-common-4.0.18.Final.jar
-	java-pkg_jar-from --into extlibs netty-handler netty-handler.jar netty-handler-4.0.18.Final.jar
-	java-pkg_jar-from --into extlibs netty-transport netty-transport.jar netty-transport-4.0.18.Final.jar
+	java-pkg_jar-from --into extlibs netty-buffer netty-buffer.jar netty-buffer-4.0.20.Final.jar
+	java-pkg_jar-from --into extlibs netty-codec netty-codec.jar netty-codec-4.0.20.Final.jar
+	java-pkg_jar-from --into extlibs netty-common netty-common.jar netty-common-4.0.20.Final.jar
+	java-pkg_jar-from --into extlibs netty-handler netty-handler.jar netty-handler-4.0.20.Final.jar
+	java-pkg_jar-from --into extlibs netty-transport netty-transport.jar netty-transport-4.0.20.Final.jar
 	java-pkg_jar-from --into extlibs servlet-api-2.5 servlet-api.jar servlet-api-2.5.jar
 	java-pkg_jar-from --into extlibs xerces-2 xercesImpl.jar xercesImpl-2.11.0.jar
 
@@ -196,6 +191,6 @@ pkg_postrm() {
 
 	if ! has_version "${CATEGORY}/${PN}:${SLOT}"; then
 		# Clean Jython system cache.
-		rm -fr "${EROOT}var/cache/jython/"${SLOT}-*	
+		rm -fr "${EROOT}var/cache/jython/"${SLOT}-*
 	fi
 }
