@@ -7,7 +7,7 @@ PYTHON_DEPEND="python? ( <<>> )"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
 
-inherit eutils flag-o-matic multilib multiprocessing python toolchain-funcs
+inherit eutils flag-o-matic multilib multilib-minimal multiprocessing python toolchain-funcs
 
 MY_P="${PN}_${PV//./_}"
 
@@ -21,12 +21,13 @@ KEYWORDS="*"
 IUSE="c++11 context debug doc icu mpi +nls python static-libs +threads tools"
 RESTRICT="test"
 
-RDEPEND="icu? ( >=dev-libs/icu-3.6:0=::${REPOSITORY}[c++11(-)=] )
-	!icu? ( virtual/libiconv )
+RDEPEND="icu? ( >=dev-libs/icu-3.6:0=::${REPOSITORY}[c++11(-)=,${MULTILIB_USEDEP}] )
+	!icu? ( virtual/libiconv[${MULTILIB_USEDEP}] )
 	mpi? ( || ( sys-cluster/openmpi[cxx] sys-cluster/mpich2[cxx,threads] ) )
-	app-arch/bzip2:0=
-	sys-libs/zlib:0=
-	!app-admin/eselect-boost"
+	app-arch/bzip2:0=[${MULTILIB_USEDEP}]
+	sys-libs/zlib:0=[${MULTILIB_USEDEP}]
+	!app-admin/eselect-boost
+	abi_x86_32? ( !app-emulation/emul-linux-x86-cpplibs[-abi_x86_32(-)] )"
 DEPEND="${RDEPEND}
 	>=dev-util/boost-build-${PV}"
 
@@ -65,15 +66,15 @@ create_user-config.jam() {
 	fi
 	local mpi_configuration python_configuration
 
-	if use mpi; then
+	if multilib_is_native_abi && use mpi; then
 		mpi_configuration="using mpi ;"
 	fi
 
-	if use python; then
+	if multilib_is_native_abi && use python; then
 		python_configuration="using python : $(python_get_version) : /usr : $(python_get_includedir) : /usr/$(get_libdir) ;"
 	fi
 
-	cat > user-config.jam << __EOF__
+	cat > "${BOOST_ROOT}/user-config.jam" << __EOF__
 using ${compiler} : ${compiler_version} : ${compiler_executable} : <cflags>"${CFLAGS}" <cxxflags>"${CXXFLAGS}" <linkflags>"${LDFLAGS}" ;
 ${mpi_configuration}
 ${python_configuration}
@@ -117,16 +118,61 @@ EOF
 	done
 
 	epatch_user
+
+	multilib_copy_sources
 }
 
 ejam() {
-	echo b2 "$@"
-	b2 "$@"
+	local arguments=(
+		--user-config="${BOOST_ROOT}/user-config.jam"
+		--boost-build="${EPREFIX}/usr/share/boost-build"
+		--prefix="${ED}usr"
+		--layout=system
+		-d+2
+		-j$(makeopts_jobs)
+		-q
+		$(usex debug gentoodebug gentoorelease)
+		link=$(usex static-libs shared,static shared)
+		pch=off
+		threading=$(usex threads multi single)
+	)
+
+	if ! use context; then
+		arguments+=(--without-context)
+	fi
+
+	if use icu; then
+		arguments+=(-sICU_PATH="${EPREFIX}/usr")
+	else
+		arguments+=(--disable-icu boost.locale.icu=off)
+	fi
+
+	if ! multilib_is_native_abi || ! use mpi; then
+		arguments+=(--without-mpi)
+	fi
+
+	if ! use nls; then
+		arguments+=(--without-locale)
+	fi
+
+	if multilib_is_native_abi && use python; then
+		if [[ -n "${PYTHON_ABI}" ]]; then
+			arguments+=(--python-buildid=${PYTHON_ABI})
+		fi
+	else
+		arguments+=(--without-python)
+	fi
+
+	if [[ "${CHOST}" == *-winnt* ]]; then
+		arguments+=(-sNO_BZIP2=1)
+	fi
+
+	echo b2 "${arguments[@]}" "$@"
+	b2 "${arguments[@]}" "$@"
 }
 
 src_configure() {
 	[[ "$(makeopts_jobs)" -gt 64 ]] && MAKEOPTS+=" -j64"
-	OPTIONS=($(usex debug gentoodebug gentoorelease) -j$(makeopts_jobs) -q -d+2 --user-config="${S}/user-config.jam")
 
 	c++11_checks
 
@@ -155,34 +201,20 @@ src_configure() {
 		[[ $(gcc-version) > 4.3 ]] && append-flags -mno-altivec
 	fi
 
-	use context || OPTIONS+=(--without-context)
-	use icu && OPTIONS+=(-sICU_PATH="${EPREFIX}/usr")
-	use icu || OPTIONS+=(--disable-icu boost.locale.icu=off)
-	use mpi || OPTIONS+=(--without-mpi)
-	use nls || OPTIONS+=(--without-locale)
-	use python || OPTIONS+=(--without-python)
 
-	OPTIONS+=(pch=off)
-	OPTIONS+=(--boost-build="${EPREFIX}/usr/share/boost-build")
-	OPTIONS+=(--prefix="${ED}usr")
-	OPTIONS+=(--layout=system)
-	OPTIONS+=(threading=$(usex threads multi single))
-	OPTIONS+=(link=$(usex static-libs shared,static shared))
-
-	[[ ${CHOST} == *-winnt* ]] && OPTIONS+=(-sNO_BZIP2=1)
 }
 
-src_compile() {
-	export BOOST_ROOT="${S}"
+multilib_src_compile() {
+	local -x BOOST_ROOT="${BUILD_DIR}"
 	PYTHON_DIRS=""
 	MPI_PYTHON_MODULE=""
 
 	building() {
 		create_user-config.jam
 
-		ejam "${OPTIONS[@]}" $(use python && echo --python-buildid=${PYTHON_ABI}) || die "Building of Boost libraries failed"
+		ejam || die "Building of Boost libraries failed"
 
-		if use python; then
+		if multilib_is_native_abi && use python; then
 			if [[ -z "${PYTHON_DIRS}" ]]; then
 				PYTHON_DIRS="$(find bin.v2/libs -name python | sort)"
 			else
@@ -196,7 +228,7 @@ src_compile() {
 				mv ${dir} ${dir}-${PYTHON_ABI} || die "Renaming of '${dir}' to '${dir}-${PYTHON_ABI}' failed"
 			done
 
-			if use mpi; then
+			if multilib_is_native_abi && use mpi; then
 				if [[ -z "${MPI_PYTHON_MODULE}" ]]; then
 					MPI_PYTHON_MODULE="$(find bin.v2/libs/mpi/build/*/gentoo* -name mpi.so)"
 					if [[ "$(echo "${MPI_PYTHON_MODULE}" | wc -l)" -ne 1 ]]; then
@@ -212,47 +244,48 @@ src_compile() {
 			fi
 		fi
 	}
-	if use python; then
+	if multilib_is_native_abi && use python; then
 		python_execute_function building
 	else
 		building
 	fi
 
-	if use tools; then
+	if multilib_is_native_abi && use tools; then
 		pushd tools > /dev/null || die
-		ejam "${OPTIONS[@]}" || die "Building of Boost tools failed"
+		ejam || die "Building of Boost tools failed"
 		popd > /dev/null || die
 	fi
 }
 
-src_install () {
+multilib_src_install() {
+	local -x BOOST_ROOT="${BUILD_DIR}"
+
 	installation() {
 		create_user-config.jam
 
-		if use python; then
+		if multilib_is_native_abi && use python; then
 			local dir
 			for dir in ${PYTHON_DIRS}; do
 				cp -pr ${dir}-${PYTHON_ABI} ${dir} || die "Copying of '${dir}-${PYTHON_ABI}' to '${dir}' failed"
 			done
 
-			if use mpi; then
+			if multilib_is_native_abi && use mpi; then
 				cp -p stage/lib/mpi.so-${PYTHON_ABI} "${MPI_PYTHON_MODULE}" || die "Copying of 'stage/lib/mpi.so-${PYTHON_ABI}' to '${MPI_PYTHON_MODULE}' failed"
 				cp -p stage/lib/mpi.so-${PYTHON_ABI} stage/lib/mpi.so || die "Copying of 'stage/lib/mpi.so-${PYTHON_ABI}' to 'stage/lib/mpi.so' failed"
 			fi
 		fi
 
-		ejam "${OPTIONS[@]}" \
+		ejam \
 			--includedir="${ED}usr/include" \
 			--libdir="${ED}usr/$(get_libdir)" \
-			$(use python && echo --python-buildid=${PYTHON_ABI}) \
 			install || die "Installation of Boost libraries failed"
 
-		if use python; then
+		if multilib_is_native_abi && use python; then
 			rm -r ${PYTHON_DIRS} || die
 
 			# Move mpi.so Python module to Python site-packages directory.
 			# https://svn.boost.org/trac/boost/ticket/2838
-			if use mpi; then
+			if multilib_is_native_abi && use mpi; then
 				dodir $(python_get_sitedir)/boost
 				mv "${ED}usr/$(get_libdir)/mpi.so" "${ED}$(python_get_sitedir)/boost" || die
 				cat << EOF > "${ED}$(python_get_sitedir)/boost/__init__.py" || die
@@ -271,12 +304,33 @@ EOF
 			fi
 		fi
 	}
-	if use python; then
+	if multilib_is_native_abi && use python; then
 		python_execute_function installation
 	else
 		installation
 	fi
 
+	pushd "${ED}usr/$(get_libdir)" > /dev/null || die
+
+	local ext=$(get_libname)
+	if use threads; then
+		local f
+		for f in *${ext}; do
+			dosym ${f} /usr/$(get_libdir)/${f/${ext}/-mt${ext}}
+		done
+	fi
+
+	popd > /dev/null || die
+
+	if multilib_is_native_abi && use tools; then
+		dobin dist/bin/*
+
+		insinto /usr/share
+		doins -r dist/share/boostbook
+	fi
+}
+
+multilib_src_install_all() {
 	if ! use context; then
 		rm -r "${ED}usr/include/boost/context" || die
 		rm -r "${ED}usr/include/boost/coroutine" || die
@@ -306,25 +360,6 @@ EOF
 		doins LICENSE_1_0.txt
 
 		dosym /usr/include/boost /usr/share/doc/${PF}/html/boost
-	fi
-
-	pushd "${ED}usr/$(get_libdir)" > /dev/null || die
-
-	local ext=$(get_libname)
-	if use threads; then
-		local f
-		for f in *${ext}; do
-			dosym ${f} /usr/$(get_libdir)/${f/${ext}/-mt${ext}}
-		done
-	fi
-
-	popd > /dev/null || die
-
-	if use tools; then
-		dobin dist/bin/*
-
-		insinto /usr/share
-		doins -r dist/share/boostbook
 	fi
 
 	# boost's build system truely sucks for not having a destdir.  Because for
