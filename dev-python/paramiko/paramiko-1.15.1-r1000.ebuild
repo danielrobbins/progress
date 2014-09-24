@@ -5,8 +5,6 @@
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
-# 3.[4-9]: https://github.com/paramiko/paramiko/issues/286
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.[4-9]"
 
 inherit distutils
 
@@ -19,7 +17,7 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="doc examples"
 
-RDEPEND="$(python_abi_depend dev-python/ecdsa)
+RDEPEND="$(python_abi_depend ">=dev-python/ecdsa-0.11")
 	$(python_abi_depend ">=dev-python/pycrypto-2.1")"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
