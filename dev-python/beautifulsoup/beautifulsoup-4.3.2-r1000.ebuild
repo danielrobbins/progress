@@ -22,7 +22,7 @@ KEYWORDS="*"
 IUSE="doc html5lib +lxml"
 
 RDEPEND="html5lib? ( $(python_abi_depend -e "*-jython" dev-python/html5lib) )
-	lxml? ( $(python_abi_depend -e "*-jython *-pypy-*" dev-python/lxml) )"
+	lxml? ( $(python_abi_depend -e "3.1 *-jython *-pypy-*" dev-python/lxml) )"
 DEPEND="${RDEPEND}
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
 
@@ -30,6 +30,17 @@ S="${WORKDIR}/${MY_P}"
 
 DOCS="AUTHORS.txt NEWS.txt README.txt TODO.txt"
 PYTHON_MODULES="bs4"
+
+src_prepare() {
+	distutils_src_prepare
+
+	# Disable tests failing with Python 3.4 and enabled warnings.
+	# https://bugs.launchpad.net/beautifulsoup/+bug/1375721
+	sed \
+		-e "s/test_disk_file_warning/_&/" \
+		-e "s/test_url_warning/_&/" \
+		-i bs4/tests/test_soup.py
+}
 
 src_compile() {
 	distutils_src_compile
@@ -76,7 +87,7 @@ src_install() {
 	distutils_src_install
 
 	delete_tests() {
-		rm -fr "${ED}$(python_get_sitedir)/bs4/"{testing.py,tests}
+		rm -r "${ED}$(python_get_sitedir)/bs4/"{testing.py,tests}
 	}
 	python_execute_function -q delete_tests
 
