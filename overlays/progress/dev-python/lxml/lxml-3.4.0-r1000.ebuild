@@ -4,8 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.1"
+PYTHON_RESTRICTED_ABIS="3.1 *-jython *-pypy-*"
 
 inherit distutils
 [[ "${PV}" == "9999" ]] && inherit git-2
@@ -28,8 +27,8 @@ else
 fi
 IUSE="beautifulsoup3 doc examples +threads"
 
-RDEPEND=">=dev-libs/libxml2-2.7.2
-	>=dev-libs/libxslt-1.1.15
+RDEPEND=">=dev-libs/libxml2-2.9.0
+	>=dev-libs/libxslt-1.1.26
 	beautifulsoup3? (
 		$(python_abi_depend -i "2.*" dev-python/beautifulsoup:python-2)
 		$(python_abi_depend -i "3.*" dev-python/beautifulsoup:python-3)
