@@ -3,7 +3,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_TESTS_RESTRICTED_ABIS="*-jython *-pypy-*"
+PYTHON_TESTS_RESTRICTED_ABIS="3.1 *-jython *-pypy-*"
 
 inherit distutils
 
@@ -43,7 +43,7 @@ src_install() {
 	distutils_src_install
 
 	delete_tests() {
-		rm -f "${ED}$(python_get_sitedir)/cssselect/tests.py"
+		rm "${ED}$(python_get_sitedir)/cssselect/tests.py"
 	}
 	python_execute_function -q delete_tests
 
