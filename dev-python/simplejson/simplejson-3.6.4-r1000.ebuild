@@ -23,6 +23,8 @@ RDEPEND=""
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 
+DOCS="CHANGES.txt README.rst"
+
 src_prepare() {
 	distutils_src_prepare
 
