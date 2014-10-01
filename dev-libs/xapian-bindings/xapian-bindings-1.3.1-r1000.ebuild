@@ -9,7 +9,7 @@ PYTHON_MULTIPLE_ABIS="1"
 # http://trac.xapian.org/ticket/346
 PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 
-USE_PHP="php5-3 php5-4"
+USE_PHP="php5-4"
 
 PHP_EXT_NAME="xapian"
 PHP_EXT_INI="yes"
