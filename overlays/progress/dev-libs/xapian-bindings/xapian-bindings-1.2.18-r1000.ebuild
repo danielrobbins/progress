@@ -9,7 +9,7 @@ PYTHON_MULTIPLE_ABIS="1"
 # http://trac.xapian.org/ticket/346
 PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 
-USE_PHP="php5-3 php5-4"
+USE_PHP="php5-4"
 
 PHP_EXT_NAME="xapian"
 PHP_EXT_INI="yes"
@@ -19,7 +19,7 @@ inherit java-pkg-opt-2 mono-env php-ext-source-r2 python
 
 DESCRIPTION="SWIG and JNI bindings for Xapian"
 HOMEPAGE="http://www.xapian.org/"
-SRC_URI="http://oligarchy.co.uk/xapian/${PV}/${P}.tar.gz"
+SRC_URI="http://oligarchy.co.uk/xapian/${PV}/${P}.tar.xz"
 
 LICENSE="GPL-2"
 SLOT="0"
