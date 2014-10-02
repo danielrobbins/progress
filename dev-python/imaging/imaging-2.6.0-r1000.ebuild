@@ -51,13 +51,23 @@ pkg_setup() {
 src_prepare() {
 	distutils_src_prepare
 
-	epatch "${FILESDIR}/${PN}-2.5.0-delete_hardcoded_paths.patch"
-	epatch "${FILESDIR}/${PN}-2.5.0-libm_linking.patch"
-	epatch "${FILESDIR}/${PN}-2.5.0-use_xdg-open.patch"
+	epatch "${FILESDIR}/${PN}-2.6.0-delete_hardcoded_paths.patch"
+	epatch "${FILESDIR}/${PN}-2.6.0-libm_linking.patch"
+	epatch "${FILESDIR}/${PN}-2.6.0-use_xdg-open.patch"
 
 	# Fix compatibility with Python 3.1.
 	sed -e "s/callable(\([^)]\+\))/(hasattr(\1, '__call__') if __import__('sys').version_info\[:2\] == (3, 1) else &)/" -i PIL/Image.py
 	sed -e "s/if sys.version_info\[:2\] <= (2, 6):/if sys.version_info[:2] <= (2, 6) or sys.version_info[:2] == (3, 1):/" -i Tests/helper.py
+
+	# Disable tests failing due to missing files.
+	sed \
+		-e "s/test_load_1_3_via_imagepalette/_&/" \
+		-e "s/test_load_via_imagepalette/_&/" \
+		-i Tests/test_file_gimpgradient.py
+	sed -e "s/test_id_field/_&/" -i Tests/test_file_tga.py
+
+	# https://github.com/python-pillow/Pillow/issues/940
+	sed -e "s/test_monochrome/_&/" -i Tests/test_file_palm.py
 
 	local feature
 	for feature in jpeg jpeg2k:jpeg2000 lcms tiff truetype:freetype webp webp:webpmux zlib; do
@@ -116,7 +126,7 @@ src_install() {
 	for module in PIL/*.py; do
 		module="${module#PIL/}"
 		module="${module%.py}"
-		[[ "${module}" =~ ^(__init__|_binary|_util|ImageMorph|Jpeg2KImagePlugin|JpegPresets|PyAccess|WebPImagePlugin)$ ]] && continue
+		[[ "${module}" =~ ^(__init__|_binary|_util|ImageMorph|Jpeg2KImagePlugin|JpegPresets|MpoImagePlugin|PyAccess|WebPImagePlugin)$ ]] && continue
 		PYTHON_MODULES+=" ${module}.py"
 	done
 
@@ -125,7 +135,7 @@ src_install() {
 		for module in PIL/*.py; do
 			module="${module#PIL/}"
 			module="${module%.py}"
-			[[ "${module}" =~ ^(__init__|_binary|_util|ImageMorph|Jpeg2KImagePlugin|JpegPresets|PyAccess|WebPImagePlugin)$ ]] && continue
+			[[ "${module}" =~ ^(__init__|_binary|_util|ImageMorph|Jpeg2KImagePlugin|JpegPresets|MpoImagePlugin|PyAccess|WebPImagePlugin)$ ]] && continue
 			dodir "$(python_get_sitedir)"
 			cat << EOF > "${ED}$(python_get_sitedir)/${module}.py"
 def _warning():
