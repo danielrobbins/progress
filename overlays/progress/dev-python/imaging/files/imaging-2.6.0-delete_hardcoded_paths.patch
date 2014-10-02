@@ -183,7 +183,7 @@
          _add_directory(include_dirs, "/usr/include")
  
          # on Windows, look for the OpenJPEG libraries in the location that
-@@ -570,29 +409,7 @@
+@@ -575,29 +414,7 @@
              exts.append(Extension(
                  "PIL._webp", ["_webp.c"], libraries=libs, define_macros=defs))
  
@@ -214,7 +214,7 @@
              exts.append(Extension(
                  "PIL._imagingtk", ["_imagingtk.c", "Tk/tkImaging.c"],
                  libraries=[feature.tcl, feature.tk]))
-@@ -691,30 +508,6 @@
+@@ -696,31 +513,6 @@
              if m.group(1) < "1.2.3":
                  return m.group(1)
  
@@ -233,6 +233,7 @@
 -            if ret >> 8 == 0:
 -                fp = open(tmpfile, 'r')
 -                multiarch_path_component = fp.readline().strip()
+-                fp.close()
 -                _add_directory(
 -                    self.compiler.library_dirs,
 -                    '/usr/lib/' + multiarch_path_component)

@@ -1,6 +1,6 @@
 --- setup.py
 +++ setup.py
-@@ -349,7 +349,7 @@
+@@ -354,7 +354,7 @@
          for file in _LIB_IMAGING:
              files.append(os.path.join("libImaging", file + ".c"))
  
@@ -9,7 +9,7 @@
          defs = []
          if feature.jpeg:
              libs.append(feature.jpeg)
-@@ -415,7 +415,7 @@
+@@ -420,7 +420,7 @@
                  libraries=[feature.tcl, feature.tk]))
  
          if os.path.isfile("_imagingmath.c"):
