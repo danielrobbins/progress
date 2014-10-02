@@ -23,13 +23,16 @@ RDEPEND="$(python_abi_depend dev-python/chardet)
 DEPEND="${RDEPEND}
 	test? ( $(python_abi_depend -i "2.6" dev-python/unittest2) )"
 
-PYTHON_MODULES="html2text.py"
+DOCS="AUTHORS.rst ChangeLog.rst"
 
 src_prepare() {
 	distutils_src_prepare
 
 	# Avoid file collision with app-text/html2text.
 	sed -e "s/html2text=html2text:main/pyhtml2text=html2text:main/" -i setup.py
+
+	# https://github.com/html2text/html2text/issues/18
+	sed -e "s/find_packages()/find_packages(exclude=['test'])/" -i setup.py
 }
 
 src_test() {
