@@ -20,9 +20,9 @@ IUSE="doc test"
 
 RDEPEND="dev-libs/openssl:0=
 	$(python_abi_depend -e "*-pypy-*" dev-python/cffi:=)
+	$(python_abi_depend dev-python/setuptools)
 	$(python_abi_depend dev-python/six)"
 DEPEND="${RDEPEND}
-	$(python_abi_depend dev-python/setuptools)
 	doc? ( $(python_abi_depend dev-python/sphinx) )
 	test? (
 		$(python_abi_depend "~dev-python/cryptography-vectors-${PV}")
@@ -45,8 +45,8 @@ src_prepare() {
 	# Fix compatibility with Python 3.1.
 	# int.from_bytes() and int.to_bytes() were introduced in Python 3.2.
 	sed \
-		-e "332s/if six.PY3:/if __import__(\"sys\").version_info[:2] >= (3, 2):/" \
-		-e "362s/if six.PY3:/if __import__(\"sys\").version_info[:2] >= (3, 2):/" \
+		-e "335s/if six.PY3:/if __import__(\"sys\").version_info[:2] >= (3, 2):/" \
+		-e "365s/if six.PY3:/if __import__(\"sys\").version_info[:2] >= (3, 2):/" \
 		-i cryptography/hazmat/backends/openssl/backend.py
 }
 
@@ -59,6 +59,10 @@ src_compile() {
 		PYTHONPATH="$(ls -d ../build-$(PYTHON -f --ABI)/lib*)" emake html
 		popd > /dev/null
 	fi
+}
+
+src_test() {
+	python_execute_py.test -P '$(ls -d "$(pwd)/build-${PYTHON_ABI}/lib"*):$(pwd)'
 }
 
 distutils_src_install_post_hook() {
