@@ -18,7 +18,7 @@ SEPOL_VER="2.2"
 
 DESCRIPTION="SELinux userland library"
 HOMEPAGE="http://userspace.selinuxproject.org/"
-SRC_URI="http://userspace.selinuxproject.org/releases/20131030/${MY_P}.tar.gz
+SRC_URI="https://raw.githubusercontent.com/wiki/SELinuxProject/selinux/files/releases/20131030/${MY_P}.tar.gz
 	http://dev.gentoo.org/~swift/patches/${PN}/patchbundle-${P}-${PATCHBUNDLE}.tar.gz"
 
 LICENSE="GPL-2 public-domain"
