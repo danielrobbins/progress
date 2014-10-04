@@ -8,7 +8,7 @@ PYTHON_RESTRICTED_ABIS="3.[3-9] *-jython *-pypy-*"
 inherit distutils
 
 DESCRIPTION="Display the Python traceback on a crash"
-HOMEPAGE="https://github.com/haypo/faulthandler https://pypi.python.org/pypi/faulthandler"
+HOMEPAGE="https://faulthandler.readthedocs.org/ https://github.com/haypo/faulthandler https://pypi.python.org/pypi/faulthandler"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="BSD-2"
@@ -16,7 +16,7 @@ SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
-DEPEND=""
+DEPEND="$(python_abi_depend dev-python/setuptools)"
 RDEPEND=""
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
