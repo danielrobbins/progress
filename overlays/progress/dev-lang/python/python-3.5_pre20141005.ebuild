@@ -11,14 +11,14 @@ inherit autotools eutils flag-o-matic multilib pax-utils python toolchain-funcs
 if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
-	EHG_REPO_URI="http://hg.python.org/cpython"
-	EHG_REVISION="688701337b1a"
+	EHG_REPO_URI="https://hg.python.org/cpython"
+	EHG_REVISION="dfdcc3fad3aa"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
 fi
 
-PATCHSET_REVISION="20140803"
+PATCHSET_REVISION="20141005"
 
 DESCRIPTION="Python is an interpreted, interactive, object-oriented programming language."
 HOMEPAGE="http://www.python.org/"
