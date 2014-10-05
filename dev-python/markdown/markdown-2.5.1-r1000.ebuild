@@ -21,10 +21,18 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="doc pygments"
 
-DEPEND=""
-RDEPEND="pygments? ( $(python_abi_depend dev-python/pygments) )"
+DEPEND="$(python_abi_depend -i "2.6" dev-python/importlib)
+	pygments? ( $(python_abi_depend dev-python/pygments) )"
+RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/${MY_P}"
+
+src_prepare() {
+	distutils_src_prepare
+
+	# Fix compatibility with Python 2.6.
+	sed -e "s/logging.captureWarnings/if __import__('sys').version_info[:2] >= (2, 7): &/" -i markdown/__init__.py
+}
 
 src_install() {
 	distutils_src_install
