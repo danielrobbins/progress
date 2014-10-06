@@ -17,7 +17,7 @@ SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
-DEPEND="$(python_abi_depend dev-python/manifestdestiny)
+DEPEND="$(python_abi_depend dev-python/manifestparser)
 	$(python_abi_depend ">=dev-python/mozfile-1.0")
 	$(python_abi_depend dev-python/mozlog)
 	$(python_abi_depend dev-python/setuptools)"
