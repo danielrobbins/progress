@@ -11,9 +11,10 @@ DISTUTILS_DISABLE_TEST_DEPENDENCY="1"
 
 inherit distutils libtool multilib-minimal toolchain-funcs
 
-MY_P=${P/_}
+MY_P="${P/_}"
+
 DESCRIPTION="Password Checking Library"
-HOMEPAGE="http://sourceforge.net/projects/cracklib"
+HOMEPAGE="http://sourceforge.net/projects/cracklib/"
 SRC_URI="mirror://sourceforge/cracklib/${MY_P}.tar.gz"
 
 LICENSE="LGPL-2.1"
@@ -28,7 +29,7 @@ DEPEND="${RDEPEND}
 		test? ( $(python_abi_depend dev-python/nose) )
 	)"
 
-S=${WORKDIR}/${MY_P}
+S="${WORKDIR}/${MY_P}"
 
 PYTHON_MODULES="cracklib.py"
 
