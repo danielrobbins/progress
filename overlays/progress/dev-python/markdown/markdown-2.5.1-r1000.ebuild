@@ -22,6 +22,7 @@ KEYWORDS="*"
 IUSE="doc pygments"
 
 DEPEND="$(python_abi_depend -i "2.6" dev-python/importlib)
+	$(python_abi_depend dev-python/pyyaml)
 	pygments? ( $(python_abi_depend dev-python/pygments) )"
 RDEPEND="${DEPEND}"
 
