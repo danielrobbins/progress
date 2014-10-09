@@ -5,6 +5,7 @@
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.1"
 
 inherit distutils
 
@@ -13,7 +14,7 @@ MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Python bindings for GMP, MPC, MPFR and MPIR libraries"
 HOMEPAGE="http://code.google.com/p/gmpy/ https://pypi.python.org/pypi/gmpy2"
-SRC_URI="http://${PN}.googlecode.com/files/${MY_P}.zip"
+SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.zip"
 
 LICENSE="LGPL-2.1"
 SLOT="2"
@@ -54,8 +55,15 @@ src_compile() {
 
 src_test() {
 	testing() {
-		python_execute PYTHONPATH="$(ls -d build-${PYTHON_ABI}/lib.*)" "$(PYTHON)" test/runtests.py || return
-		python_execute PYTHONPATH="$(ls -d build-${PYTHON_ABI}/lib.*)" "$(PYTHON)" test$(python_get_version -l --major)/gmpy_test.py || return
+		local exit_status="0" test
+		for test in test/runtests.py test$(python_get_version -l --major)/gmpy_test.py; do
+			if ! python_execute PYTHONPATH="$(ls -d build-${PYTHON_ABI}/lib.*)" "$(PYTHON)" "${test}"; then
+				eerror "${test} failed with $(python_get_implementation_and_version)"
+				exit_status="1"
+			fi
+		done
+
+		return "${exit_status}"
 	}
 	python_execute_function testing
 }
