@@ -22,7 +22,7 @@ IUSE=""
 DEPEND=""
 RDEPEND=""
 
-S="${WORKDIR}/${MY_P}"
+S="${WORKDIR}/python-ipy-${MY_P}"
 
 DOCS="AUTHORS ChangeLog README"
 PYTHON_MODULES="IPy.py"
