@@ -9,7 +9,7 @@ inherit distutils
 
 DESCRIPTION="SPF (Sender Policy Framework) implemented in Python."
 HOMEPAGE="https://pypi.python.org/pypi/pyspf"
-SRC_URI="mirror://sourceforge/pymilter/${P}.tar.gz"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="PSF-2"
 SLOT="0"
