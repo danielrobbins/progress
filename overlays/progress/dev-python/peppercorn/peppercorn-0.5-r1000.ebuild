@@ -10,7 +10,7 @@ DISTUTILS_SRC_TEST="setup.py"
 inherit distutils
 
 DESCRIPTION="A library for converting a token stream into a data structure for use in web form posts"
-HOMEPAGE="https://docs.pylonsproject.org/projects/peppercorn https://pypi.python.org/pypi/peppercorn"
+HOMEPAGE="https://docs.pylonsproject.org/projects/peppercorn https://github.com/Pylons/peppercorn https://pypi.python.org/pypi/peppercorn"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="repoze"
@@ -46,7 +46,7 @@ src_install() {
 	distutils_src_install
 
 	delete_tests() {
-		rm -fr "${ED}$(python_get_sitedir)/peppercorn/tests.py"
+		rm "${ED}$(python_get_sitedir)/peppercorn/tests.py"
 	}
 	python_execute_function -q delete_tests
 
