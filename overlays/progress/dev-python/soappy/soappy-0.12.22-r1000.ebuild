@@ -5,7 +5,7 @@
 EAPI="5-progress"
 PYTHON_DEPEND="<<[{*-cpython}ssl?,{*-cpython}xml]>>"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.*"
+PYTHON_RESTRICTED_ABIS="3.* *-jython"
 
 inherit distutils
 
@@ -13,19 +13,19 @@ MY_PN="SOAPpy"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="SOAP Services for Python"
-HOMEPAGE="http://pywebsvcs.sourceforge.net/ https://pypi.python.org/pypi/SOAPpy"
-SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
+HOMEPAGE="http://pywebsvcs.sourceforge.net/ https://github.com/kiorky/SOAPpy https://pypi.python.org/pypi/SOAPpy"
+SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.zip"
 
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="*"
 IUSE="examples ssl"
 
-RDEPEND="$(python_abi_depend dev-python/fpconst)
+DEPEND="$(python_abi_depend dev-python/defusedxml)
+	$(python_abi_depend dev-python/setuptools)
 	$(python_abi_depend dev-python/wstools)
 	ssl? ( $(python_abi_depend -e "*-jython *-pypy-*" dev-python/m2crypto) )"
-DEPEND="${RDEPEND}
-	$(python_abi_depend dev-python/setuptools)"
+RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/${MY_P}"
 
