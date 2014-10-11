@@ -1,6 +1,6 @@
 https://bugs.gentoo.org/show_bug.cgi?id=329499
-http://bugs.python.org/issue5504
-http://hg.python.org/cpython/rev/e13ea83e2edb
+https://bugs.python.org/issue5504
+https://hg.python.org/cpython/rev/e13ea83e2edb
 
 --- Modules/_ctypes/callbacks.c
 +++ Modules/_ctypes/callbacks.c

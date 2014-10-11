@@ -1,5 +1,5 @@
-http://bugs.python.org/issue9561
-http://hg.python.org/cpython/rev/fb4d2e6d393e
+https://bugs.python.org/issue9561
+https://hg.python.org/cpython/rev/fb4d2e6d393e
 
 --- Lib/distutils/command/install_egg_info.py
 +++ Lib/distutils/command/install_egg_info.py

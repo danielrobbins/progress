@@ -1,5 +1,5 @@
-http://bugs.python.org/issue19435
-http://hg.python.org/cpython/rev/e4fe8fcaef0d
+https://bugs.python.org/issue19435
+https://hg.python.org/cpython/rev/e4fe8fcaef0d
 
 --- Lib/CGIHTTPServer.py
 +++ Lib/CGIHTTPServer.py

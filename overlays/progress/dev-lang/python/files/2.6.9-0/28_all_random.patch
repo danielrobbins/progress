@@ -1,5 +1,5 @@
-http://bugs.python.org/issue15340
-http://hg.python.org/cpython/rev/edbf37ace03c
+https://bugs.python.org/issue15340
+https://hg.python.org/cpython/rev/edbf37ace03c
 
 --- Python/random.c
 +++ Python/random.c

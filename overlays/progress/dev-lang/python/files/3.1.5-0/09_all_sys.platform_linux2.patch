@@ -1,5 +1,5 @@
-http://bugs.python.org/issue12326
-http://hg.python.org/cpython/rev/800d45e51dd7
+https://bugs.python.org/issue12326
+https://hg.python.org/cpython/rev/800d45e51dd7
 
 --- configure.ac
 +++ configure.ac

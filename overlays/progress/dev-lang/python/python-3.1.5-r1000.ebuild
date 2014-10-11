@@ -11,7 +11,7 @@ inherit autotools eutils flag-o-matic multilib pax-utils python toolchain-funcs
 if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
-	EHG_REPO_URI="http://hg.python.org/cpython"
+	EHG_REPO_URI="https://hg.python.org/cpython"
 	EHG_REVISION=""
 else
 	MY_PV="${PV%_p*}"

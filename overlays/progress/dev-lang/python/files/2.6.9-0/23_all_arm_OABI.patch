@@ -1,5 +1,5 @@
 https://bugs.gentoo.org/show_bug.cgi?id=266703
-http://bugs.python.org/issue1762561
+https://bugs.python.org/issue1762561
 
 --- Objects/floatobject.c
 +++ Objects/floatobject.c

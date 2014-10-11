@@ -1,5 +1,5 @@
-http://bugs.python.org/issue12226
-http://hg.python.org/cpython/rev/32a39ec6bd75
+https://bugs.python.org/issue12226
+https://hg.python.org/cpython/rev/32a39ec6bd75
 
 --- Lib/distutils/config.py
 +++ Lib/distutils/config.py

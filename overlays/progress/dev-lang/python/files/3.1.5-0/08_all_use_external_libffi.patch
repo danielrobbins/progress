@@ -1,6 +1,6 @@
-http://bugs.python.org/issue6943
-http://hg.python.org/cpython/rev/f02881332342
-http://hg.python.org/cpython/rev/6d9be1a97c17
+https://bugs.python.org/issue6943
+https://hg.python.org/cpython/rev/f02881332342
+https://hg.python.org/cpython/rev/6d9be1a97c17
 
 --- configure.ac
 +++ configure.ac
