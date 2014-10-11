@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.1 3.2"
+PYTHON_RESTRICTED_ABIS="3.1 3.2 *-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
@@ -21,22 +21,17 @@ SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
-DEPEND="$(python_abi_depend dev-python/setuptools)"
-RDEPEND=""
+RDEPEND="$(python_abi_depend -i "2.6" dev-python/ordereddict)
+	$(python_abi_depend dev-python/regex)"
+DEPEND="${RDEPEND}
+	$(python_abi_depend dev-python/setuptools)"
 
 S="${WORKDIR}/${MY_P}"
 
 PYTHON_MODULES="${MY_PN}"
 
-src_prepare() {
-	distutils_src_prepare
-
-	# Fix failing test.
-	# https://github.com/ikirudennis/python-textile/commit/83c81db387fa5f0c5ca25c27b8bc36d105bce599
-	sed -e 's/walker = treewalkers.getTreeWalker("simpletree")/walker = treewalkers.getTreeWalker("etree")/' -i textile/tools/sanitizer.py
-}
-
 distutils_src_test_post_hook() {
+	# https://github.com/nose-devs/nose/issues/815
 	rm -f .coverage .noseids
 }
 
