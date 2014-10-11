@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.6 *-jython"
 
 inherit distutils
 
@@ -40,7 +40,7 @@ src_test() {
 		cd tests
 
 		local exit_status="0" test
-		for test in *.py; do
+		for test in test_*.py; do
 			if ! python_execute PYTHONPATH="../build/lib" "$(PYTHON)" "${test}"; then
 				eerror "${test} failed with $(python_get_implementation_and_version)"
 				exit_status="1"
