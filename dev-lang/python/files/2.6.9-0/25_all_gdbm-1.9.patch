@@ -1,5 +1,5 @@
-http://bugs.python.org/issue13007
-http://hg.python.org/cpython/rev/14cafb8d1480
+https://bugs.python.org/issue13007
+https://hg.python.org/cpython/rev/14cafb8d1480
 
 --- Lib/whichdb.py
 +++ Lib/whichdb.py

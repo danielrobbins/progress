@@ -1,5 +1,5 @@
 https://bugs.gentoo.org/show_bug.cgi?id=281968
-http://bugs.python.org/issue6731
+https://bugs.python.org/issue6731
 
 --- setup.py
 +++ setup.py

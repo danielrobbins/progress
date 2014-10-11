@@ -1,8 +1,8 @@
-http://bugs.python.org/issue6244
-http://hg.python.org/cpython/rev/1227e7cc1d9b
-http://bugs.python.org/issue16809
-http://hg.python.org/cpython/rev/2d96764a66fa
-http://hg.python.org/cpython/rev/06244031b608
+https://bugs.python.org/issue6244
+https://hg.python.org/cpython/rev/1227e7cc1d9b
+https://bugs.python.org/issue16809
+https://hg.python.org/cpython/rev/2d96764a66fa
+https://hg.python.org/cpython/rev/06244031b608
 
 --- Lib/lib-tk/Tkinter.py
 +++ Lib/lib-tk/Tkinter.py

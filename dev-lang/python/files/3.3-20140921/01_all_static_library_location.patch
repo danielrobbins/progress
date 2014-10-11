@@ -1,6 +1,6 @@
 Install libpythonX.Y.a in /usr/lib instead of /usr/lib/pythonX.Y/config.
 https://bugs.gentoo.org/show_bug.cgi?id=252372
-http://bugs.python.org/issue6103
+https://bugs.python.org/issue6103
 
 --- Makefile.pre.in
 +++ Makefile.pre.in

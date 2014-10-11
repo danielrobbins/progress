@@ -1,5 +1,5 @@
 https://bugs.gentoo.org/show_bug.cgi?id=335505
-http://bugs.python.org/issue10268
+https://bugs.python.org/issue10268
 
 --- configure.ac
 +++ configure.ac

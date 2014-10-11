@@ -1,5 +1,5 @@
-http://bugs.python.org/issue12326
-http://hg.python.org/cpython/rev/c816479f6aaf
+https://bugs.python.org/issue12326
+https://hg.python.org/cpython/rev/c816479f6aaf
 
 --- configure.in
 +++ configure.in

@@ -1,5 +1,5 @@
-http://bugs.python.org/issue19855
-http://hg.python.org/cpython/rev/9f9ae5f7c4ae
+https://bugs.python.org/issue19855
+https://hg.python.org/cpython/rev/9f9ae5f7c4ae
 
 --- Lib/uuid.py
 +++ Lib/uuid.py

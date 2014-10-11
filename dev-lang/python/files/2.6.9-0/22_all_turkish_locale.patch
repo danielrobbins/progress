@@ -1,5 +1,5 @@
 https://bugs.gentoo.org/show_bug.cgi?id=250075
-http://bugs.python.org/issue1813
+https://bugs.python.org/issue1813
 
 --- Lib/decimal.py
 +++ Lib/decimal.py

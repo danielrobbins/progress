@@ -1,5 +1,5 @@
-http://bugs.python.org/issue4366
-http://hg.python.org/cpython/rev/28e6c23c8ae6
+https://bugs.python.org/issue4366
+https://hg.python.org/cpython/rev/28e6c23c8ae6
 
 --- Lib/distutils/command/build_ext.py
 +++ Lib/distutils/command/build_ext.py

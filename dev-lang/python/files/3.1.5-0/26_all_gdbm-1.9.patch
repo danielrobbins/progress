@@ -1,5 +1,5 @@
-http://bugs.python.org/issue13007
-http://hg.python.org/cpython/rev/7a41855b6196
+https://bugs.python.org/issue13007
+https://hg.python.org/cpython/rev/7a41855b6196
 
 --- Lib/dbm/__init__.py
 +++ Lib/dbm/__init__.py
