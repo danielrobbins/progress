@@ -12,22 +12,22 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="https://hg.python.org/cpython"
-	EHG_REVISION="429acfbef89c"
+	EHG_REVISION="a33b3bef2a1c"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
 fi
 
-PATCHSET_REVISION="20131222"
+PATCHSET_REVISION="20141005"
 
 DESCRIPTION="Python is an interpreted, interactive, object-oriented programming language."
-HOMEPAGE="http://www.python.org/"
+HOMEPAGE="https://www.python.org/"
 if [[ "${PV}" == *_pre* ]]; then
 	SRC_URI=""
 else
-	SRC_URI="http://www.python.org/ftp/python/${MY_PV}/${MY_P}.tar.xz"
+	SRC_URI="https://www.python.org/ftp/python/${MY_PV}/${MY_P}.tar.xz"
 	if [[ "${PR#r}" -lt 1000 ]]; then
-		SRC_URI+=" http://people.apache.org/~Arfrever/gentoo/python-gentoo-patches-${MY_PV}$([[ "${PATCHSET_REVISION}" != "0" ]] && echo "-r${PATCHSET_REVISION}").tar.bz2"
+		SRC_URI+=" https://people.apache.org/~Arfrever/gentoo/python-gentoo-patches-${MY_PV}$([[ "${PATCHSET_REVISION}" != "0" ]] && echo "-r${PATCHSET_REVISION}").tar.bz2"
 	fi
 fi
 
