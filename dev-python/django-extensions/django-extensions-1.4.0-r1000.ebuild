@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.1 3.2"
+PYTHON_RESTRICTED_ABIS="2.6 3.1 3.2"
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
 
 inherit distutils
@@ -33,6 +33,7 @@ DEPEND="${RDEPEND}
 	test? ( $(python_abi_depend dev-python/django[sqlite]) )"
 
 DOCS="README.rst docs/AUTHORS"
+PYTHON_MODULES="${PN/-/_}"
 
 src_compile() {
 	distutils_src_compile
@@ -47,7 +48,9 @@ src_compile() {
 
 src_test() {
 	testing() {
-		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" run_tests.py
+		# Disable warnings.
+		# https://github.com/django-extensions/django-extensions/issues/570
+		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" PYTHONWARNINGS="" "$(PYTHON)" run_tests.py
 	}
 	python_execute_function testing
 }
