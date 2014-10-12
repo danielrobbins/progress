@@ -8,21 +8,13 @@ PYTHON_MULTIPLE_ABIS="1"
 inherit distutils
 
 DESCRIPTION="Universal encoding detector for Python 2 and 3"
-HOMEPAGE="https://github.com/chardet/chardet https://pypi.python.org/pypi/chardet"
+HOMEPAGE="https://chardet.github.io/ https://github.com/chardet/chardet https://pypi.python.org/pypi/chardet"
 SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="LGPL-2.1"
 SLOT="0"
 KEYWORDS="*"
-IUSE="doc"
+IUSE=""
 
 DEPEND="$(python_abi_depend dev-python/setuptools)"
 RDEPEND="${DEPEND}"
-
-src_install() {
-	distutils_src_install
-
-	if use doc; then
-		dohtml -r docs/
-	fi
-}
