@@ -4,13 +4,13 @@
 
 EAPI="5-progress"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="3.1 *-jython *-pypy-*"
 
 inherit distutils eutils fdo-mime
 
 DESCRIPTION="Scientific PYthon Development EnviRonment"
-HOMEPAGE="http://code.google.com/p/spyderlib/ https://pypi.python.org/pypi/spyder"
-SRC_URI="http://spyderlib.googlecode.com/files/${P}.zip"
+HOMEPAGE="http://code.google.com/p/spyderlib/ https://bitbucket.org/spyder-ide/spyderlib https://pypi.python.org/pypi/spyder"
+SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.zip"
 
 LICENSE="MIT"
 SLOT="0"
@@ -18,25 +18,25 @@ KEYWORDS="*"
 IUSE="doc ipython matplotlib numpy pep8 psutil +pyflakes pylint +rope scipy sphinx"
 
 RDEPEND="$(python_abi_depend virtual/python-qt:4[X,svg,webkit])
-	ipython? ( $(python_abi_depend dev-python/ipython) )
+	ipython? ( $(python_abi_depend -e "2.6 3.2" dev-python/ipython) )
 	matplotlib? ( $(python_abi_depend dev-python/matplotlib) )
 	numpy? ( $(python_abi_depend dev-python/numpy) )
 	pep8? ( $(python_abi_depend dev-python/pep8) )
 	psutil? ( $(python_abi_depend dev-python/psutil) )
 	pyflakes? ( $(python_abi_depend dev-python/pyflakes) )
 	pylint? ( $(python_abi_depend dev-python/pylint) )
-	rope? ( $(python_abi_depend dev-python/rope) )
+	rope? ( $(python_abi_depend -e "3.*" dev-python/rope) )
 	scipy? ( $(python_abi_depend sci-libs/scipy) )
 	sphinx? ( $(python_abi_depend dev-python/sphinx) )"
 DEPEND="${RDEPEND}
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
 
-DOCS="CHANGELOG README"
+DOCS="CHANGELOG README.md"
 PYTHON_MODULES="spyderlib spyderplugins"
 
 src_prepare() {
 	distutils_src_prepare
-	epatch "${FILESDIR}/${PN}-2.2.3-build.patch"
+	epatch "${FILESDIR}/${PN}-2.3.1-build.patch"
 }
 
 src_compile() {
