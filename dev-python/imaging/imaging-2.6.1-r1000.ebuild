@@ -59,13 +59,6 @@ src_prepare() {
 	sed -e "s/callable(\([^)]\+\))/(hasattr(\1, '__call__') if __import__('sys').version_info\[:2\] == (3, 1) else &)/" -i PIL/Image.py
 	sed -e "s/if sys.version_info\[:2\] <= (2, 6):/if sys.version_info[:2] <= (2, 6) or sys.version_info[:2] == (3, 1):/" -i Tests/helper.py
 
-	# Disable tests failing due to missing files.
-	sed \
-		-e "s/test_load_1_3_via_imagepalette/_&/" \
-		-e "s/test_load_via_imagepalette/_&/" \
-		-i Tests/test_file_gimpgradient.py
-	sed -e "s/test_id_field/_&/" -i Tests/test_file_tga.py
-
 	# https://github.com/python-pillow/Pillow/issues/940
 	sed -e "s/test_monochrome/_&/" -i Tests/test_file_palm.py
 
