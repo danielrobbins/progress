@@ -86,6 +86,20 @@ perlinfo_done=false
 
 perl-module_src_unpack() {
 	debug-print-function $FUNCNAME "$@"
+
+	case "${EAPI:-0}" in
+		4|4-python|5|5-progress)
+			;;
+		*)
+			ewarn
+			ewarn "******************************************************************"
+			ewarn "Support for EAPI=${EAPI:-0} in perl-module.eclass will be removed"
+			ewarn "on 1/Nov/2014. Please fix your overlay ebuilds to use EAPI=5."
+			ewarn "******************************************************************"
+			ewarn
+			;;
+	esac
+
 	unpacker_src_unpack
 	has src_prepare ${PERL_EXPF} || perl-module_src_prepare
 }
