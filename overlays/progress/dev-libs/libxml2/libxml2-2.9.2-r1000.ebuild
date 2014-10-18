@@ -78,25 +78,15 @@ src_prepare() {
 
 	epatch "${FILESDIR}/${PN}-2.9.1-disable_static_modules.patch"
 
-	# Important patches from 2.9.2
-	epatch "${FILESDIR}/${P}-missing-break.patch" \
-		"${FILESDIR}/${P}-python-2.6.patch" \
-		"${FILESDIR}/${P}-compression-detection.patch" \
-		"${FILESDIR}/${P}-non-ascii-cr-lf.patch" \
-		"${FILESDIR}/${P}-python3.patch" \
-		"${FILESDIR}/${P}-python3a.patch"
-
-	# Security fixes from 2.9.2
-	epatch "${FILESDIR}/${P}-external-param-entities.patch"
-
-	# https://bugzilla.gnome.org/show_bug.cgi?id=730290
-	epatch "${FILESDIR}/${PN}-2.9.1-xmllint-postvalid.patch"
+	# Important patches from master
+	epatch \
+		"${FILESDIR}/${PN}-2.9.2-revert-missing-initialization.patch"
 
 	# Python bindings are built/tested/installed manually.
 	sed -e 's/$(PYTHON_SUBDIR)//' -i Makefile.am || die "sed failed"
 
 	# Use pkgconfig to find icu to properly support multilib
-	epatch "${FILESDIR}/${PN}-2.9.1-icu-pkgconfig.patch"
+	epatch "${FILESDIR}/${PN}-2.9.2-icu-pkgconfig.patch"
 
 	eautoreconf
 }
