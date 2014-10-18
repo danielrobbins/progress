@@ -1,6 +1,8 @@
---- configure.in
-+++ configure.in
-@@ -1385,19 +1385,11 @@
+https://bugzilla.gnome.org/show_bug.cgi?id=738751
+
+--- configure.ac
++++ configure.ac
+@@ -1481,19 +1481,11 @@
  AC_SUBST(WITH_ICONV)
  
  WITH_ICU=0
