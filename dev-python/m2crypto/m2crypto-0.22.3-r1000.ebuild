@@ -3,6 +3,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
+PYTHON_DEPEND="<<[threads]>>"
 PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
@@ -17,7 +18,7 @@ DESCRIPTION="M2Crypto: A Python crypto and SSL toolkit"
 HOMEPAGE="https://github.com/martinpaljak/M2Crypto https://pypi.python.org/pypi/M2Crypto"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
-LICENSE="BSD"
+LICENSE="MIT"
 SLOT="0"
 KEYWORDS="*"
 # IUSE="doc examples"
@@ -25,7 +26,7 @@ IUSE=""
 
 RDEPEND="dev-libs/openssl:0="
 DEPEND="${RDEPEND}
-	dev-lang/swig
+	dev-lang/swig:0
 	$(python_abi_depend dev-python/setuptools)"
 #	doc? ( dev-python/epydoc )
 
