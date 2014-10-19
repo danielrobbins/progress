@@ -12,29 +12,29 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="https://hg.python.org/cpython"
-	EHG_REVISION="a4e0aee1a9b5"
+	EHG_REVISION="f8a8ddf0b070"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
 fi
 
-PATCHSET_REVISION="20140921"
+PATCHSET_REVISION="20141005"
 
 DESCRIPTION="Python is an interpreted, interactive, object-oriented programming language."
-HOMEPAGE="http://www.python.org/"
+HOMEPAGE="https://www.python.org/"
 if [[ "${PV}" == *_pre* ]]; then
 	SRC_URI=""
 else
-	SRC_URI="http://www.python.org/ftp/python/${MY_PV}/${MY_P}.tar.xz"
+	SRC_URI="https://www.python.org/ftp/python/${MY_PV}/${MY_P}.tar.xz"
 	if [[ "${PR#r}" -lt 1000 ]]; then
-		SRC_URI+=" http://people.apache.org/~Arfrever/gentoo/python-gentoo-patches-${MY_PV}$([[ "${PATCHSET_REVISION}" != "0" ]] && echo "-r${PATCHSET_REVISION}").tar.bz2"
+		SRC_URI+=" https://people.apache.org/~Arfrever/gentoo/python-gentoo-patches-${MY_PV}$([[ "${PATCHSET_REVISION}" != "0" ]] && echo "-r${PATCHSET_REVISION}").tar.bz2"
 	fi
 fi
 
 LICENSE="PSF-2"
-SLOT="3.3"
+SLOT="3.4"
 PYTHON_ABI="${SLOT}"
-KEYWORDS="*"
+KEYWORDS="~*"
 IUSE="build doc elibc_uclibc examples gdbm ipv6 +ncurses +readline sqlite +ssl +threads tk wininst +xml"
 
 RDEPEND="app-arch/bzip2
@@ -196,6 +196,7 @@ src_configure() {
 		--mandir='${prefix}/share/man' \
 		--with-computed-gotos \
 		--with-dbmliborder="${dbmliborder}" \
+		--without-ensurepip \
 		--with-libc="" \
 		--enable-loadable-sqlite-extensions \
 		--with-system-expat \
