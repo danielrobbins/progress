@@ -10,8 +10,8 @@ inherit java-pkg-2 java-ant-2 python
 if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
-	EHG_REPO_URI="http://hg.python.org/jython"
-	EHG_REVISION="f52f81d83a74"
+	EHG_REPO_URI="https://hg.python.org/jython"
+	EHG_REVISION="4ed64dc6c895"
 fi
 
 PATCHSET_REVISION="20121230"
@@ -64,9 +64,6 @@ pkg_setup() {
 
 java_prepare() {
 	EPATCH_SUFFIX="patch" epatch "${FILESDIR}/${SLOT}-${PATCHSET_REVISION}"
-	
-	# http://bugs.jython.org/issue2032
-	sed -e "s/SC_GLOBAL_EXPLICT/SC_GLOBAL_EXPLICIT/" -i Lib/compiler/pycodegen.py
 
 	find extlibs -name "*.jar" -delete
 	find -name "*.py[co]" -delete
@@ -194,6 +191,6 @@ pkg_postrm() {
 
 	if ! has_version "${CATEGORY}/${PN}:${SLOT}"; then
 		# Clean Jython system cache.
-		rm -fr "${EROOT}var/cache/jython/"${SLOT}-*	
+		rm -fr "${EROOT}var/cache/jython/"${SLOT}-*
 	fi
 }
