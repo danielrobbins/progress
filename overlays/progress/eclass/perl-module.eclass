@@ -51,6 +51,20 @@ case "${EAPI:-0}" in
 		;;
 esac
 
+case "${EAPI:-0}" in
+	4|4-python|5|5-progress)
+		;;
+	*)
+		ewarn
+		ewarn "******************************************************************"
+		ewarn "${EBUILD}:"
+		ewarn "Support for EAPI=${EAPI:-0} in perl-module.eclass will be removed"
+		ewarn "on 1/Nov/2014. Please fix your overlay ebuilds to use EAPI=5."
+		ewarn "******************************************************************"
+		ewarn
+		;;
+esac
+
 case "${PERL_EXPORT_PHASE_FUNCTIONS:-yes}" in
 	yes)
 		EXPORT_FUNCTIONS ${PERL_EXPF}
@@ -88,15 +102,13 @@ perl-module_src_unpack() {
 	debug-print-function $FUNCNAME "$@"
 
 	case "${EAPI:-0}" in
-		4|4-python|5|5-progress)
+		5|5-progress)
+			;;
+		4|4-python)
+			eqawarn "Support for EAPI=${EAPI:-0} in perl-module.eclass is deprecated."
+			eqawarn "Please fix your ebuilds to use EAPI=5."
 			;;
 		*)
-			ewarn
-			ewarn "******************************************************************"
-			ewarn "Support for EAPI=${EAPI:-0} in perl-module.eclass will be removed"
-			ewarn "on 1/Nov/2014. Please fix your overlay ebuilds to use EAPI=5."
-			ewarn "******************************************************************"
-			ewarn
 			;;
 	esac
 
