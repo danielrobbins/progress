@@ -15,8 +15,8 @@ MY_PV="${MY_PV/_rc/rc}"
 MY_P="${MY_PN}-${MY_PV}"
 
 DESCRIPTION="The Cython compiler for writing C extensions for the Python language"
-HOMEPAGE="http://www.cython.org/ https://github.com/cython/cython https://pypi.python.org/pypi/Cython"
-SRC_URI="http://www.cython.org/release/${MY_P}.tar.gz"
+HOMEPAGE="http://cython.org/ https://github.com/cython/cython https://pypi.python.org/pypi/Cython"
+SRC_URI="http://cython.org/release/${MY_P}.tar.gz"
 
 LICENSE="Apache-2.0"
 SLOT="0"
