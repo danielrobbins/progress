@@ -30,9 +30,9 @@ REQUIRED_USE="|| ( java lua mono perl php python ruby tcl )"
 RDEPEND="=dev-libs/xapian-${PV}*
 	lua? ( >=dev-lang/lua-5.1 )
 	mono? ( dev-lang/mono )
-	perl? ( dev-lang/perl )
+	perl? ( dev-lang/perl:= )
 	ruby? ( dev-lang/ruby )
-	tcl? ( >=dev-lang/tcl-8.1 )"
+	tcl? ( >=dev-lang/tcl-8.1:= )"
 DEPEND="${RDEPEND}
 	java? ( >=virtual/jdk-1.3 )"
 RDEPEND+="
