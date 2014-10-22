@@ -5,11 +5,11 @@
 EAPI="5-progress"
 PYTHON_DEPEND="python? ( <<[threads]>> )"
 PYTHON_MULTIPLE_ABIS="1"
-# Support for Python 3 is incomplete. 'import xapian' fails with TypeError.
+# Support for Python 3 is incomplete. 'import xapian' faileth with TypeError.
 # http://trac.xapian.org/ticket/346
 PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
 
-USE_PHP="php5-4"
+USE_PHP="php5-4 php5-5 php5-6"
 
 PHP_EXT_NAME="xapian"
 PHP_EXT_INI="yes"
@@ -50,6 +50,10 @@ pkg_setup() {
 	fi
 }
 
+src_unpack() {
+	default
+}
+
 src_prepare() {
 	java-pkg-opt-2_src_prepare
 
@@ -87,12 +91,25 @@ src_configure() {
 		$(use_with ruby) \
 		$(use_with tcl)
 
-	# Python bindings are built/tested/installed manually.
+	# PHP and Python bindings are built/tested/installed manually.
+	sed -e "/SUBDIRS =/s/ php//" -i Makefile || die "sed failed"
 	sed -e "/SUBDIRS =/s/ python//" -i Makefile || die "sed failed"
 }
 
 src_compile() {
 	default
+
+	if use php; then
+		local php_slot
+		for php_slot in $(php_get_slots); do
+			cp -r php php-${php_slot}
+			emake -C php-${php_slot} \
+				PHP="${EPREFIX}/usr/$(get_libdir)/${php_slot}/bin/php" \
+				PHP_CONFIG="${EPREFIX}/usr/$(get_libdir)/${php_slot}/bin/php-config" \
+				PHP_EXTENSION_DIR="$("${EPREFIX}/usr/$(get_libdir)/${php_slot}/bin/php-config" --extension-dir)" \
+				PHP_INC="$("${EPREFIX}/usr/$(get_libdir)/${php_slot}/bin/php-config" --includes)"
+		done
+	fi
 
 	if use python; then
 		python_copy_sources python
@@ -110,6 +127,18 @@ src_compile() {
 
 src_test() {
 	default
+
+	if use php; then
+		local php_slot
+		for php_slot in $(php_get_slots); do
+			emake -C php-${php_slot} \
+				PHP="${EPREFIX}/usr/$(get_libdir)/${php_slot}/bin/php" \
+				PHP_CONFIG="${EPREFIX}/usr/$(get_libdir)/${php_slot}/bin/php-config" \
+				PHP_EXTENSION_DIR="$("${EPREFIX}/usr/$(get_libdir)/${php_slot}/bin/php-config" --extension-dir)" \
+				PHP_INC="$("${EPREFIX}/usr/$(get_libdir)/${php_slot}/bin/php-config" --includes)" \
+				check
+		done
+	fi
 
 	if use python; then
 		testing() {
@@ -139,6 +168,17 @@ src_install () {
 	fi
 
 	if use php; then
+		local php_slot
+		for php_slot in $(php_get_slots); do
+			emake -C php-${php_slot} \
+				DESTDIR="${D}" \
+				PHP="${EPREFIX}/usr/$(get_libdir)/${php_slot}/bin/php" \
+				PHP_CONFIG="${EPREFIX}/usr/$(get_libdir)/${php_slot}/bin/php-config" \
+				PHP_EXTENSION_DIR="$("${EPREFIX}/usr/$(get_libdir)/${php_slot}/bin/php-config" --extension-dir)" \
+				PHP_INC="$("${EPREFIX}/usr/$(get_libdir)/${php_slot}/bin/php-config" --includes)" \
+				install
+		done
+
 		php-ext-source-r2_createinifiles
 	fi
 
@@ -167,10 +207,6 @@ src_install () {
 pkg_postinst() {
 	if use python; then
 		python_mod_optimize xapian
-	fi
-
-	if use php_targets_php5-4; then
-		ewarn "Note: subclassing Xapian classes in PHP currently doesn't work with PHP 5.4"
 	fi
 }
 
