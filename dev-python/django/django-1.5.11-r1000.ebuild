@@ -49,9 +49,26 @@ src_prepare() {
 	# Avoid test failures with unittest2 and Python 3.
 	sed -e "s/from unittest2 import \*/raise ImportError/" -i django/utils/unittest/__init__.py
 
-	# Disable failing test.
-	# https://code.djangoproject.com/ticket/21416
-	sed -e "s/test_app_with_import/_&/" -i tests/admin_scripts/tests.py
+	# Fix generation of documentation with Python 3.
+	# https://github.com/django/django/commit/a5733fcd7be7adb8b236825beff4ccda19900f9e
+	sed -e "s/with open(outfilename, 'wb') as fp:/with open(outfilename, 'w') as fp:/" -i docs/_ext/djangodocs.py
+
+	# Fix django.contrib.markup.tests.Templates.test_textile() with Python 3.
+	sed -e "s/textile.textile(force_bytes(value)/textile.textile(force_text(value) if __import__('sys').version_info[0] >= 3 else force_bytes(value)/" -i django/contrib/markup/templatetags/markup.py
+
+	# Fix regressiontests.templates.tests.Templates.test_templates() with NumPy >=1.9.
+	# https://code.djangoproject.com/ticket/23489
+	# https://github.com/django/django/commit/12809e160995eb617fe394c75e5b9f3211c056ff
+	sed -e "s/except (TypeError, AttributeError, KeyError, ValueError):$/except (TypeError, AttributeError, KeyError, ValueError, IndexError):/" -i django/template/base.py
+
+	# Fix encoding declaration.
+	sed -e "1{h;d};2G" -i tests/regressiontests/utils/jslex.py
+
+	# Disable failing tests.
+	# https://code.djangoproject.com/ticket/21092
+	sed -e "s/test_runner_deprecation_verbosity_zero/_&/" -i tests/regressiontests/test_runner/tests.py
+	# https://code.djangoproject.com/ticket/21093
+	sed -e "s/test_dont_base64_encode/_&/" -i tests/regressiontests/mail/tests.py
 }
 
 src_compile() {
