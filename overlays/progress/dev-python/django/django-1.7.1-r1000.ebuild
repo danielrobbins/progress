@@ -6,10 +6,8 @@ EAPI="5-progress"
 PYTHON_BDEPEND="test? ( <<[{*-cpython *-pypy-*}sqlite]>> )"
 PYTHON_DEPEND="<<[{*-cpython *-pypy-*}sqlite?]>>"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.1"
+PYTHON_RESTRICTED_ABIS="2.6 3.1"
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
-# 3.[4-9]: https://code.djangoproject.com/ticket/21721
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.[4-9]"
 WEBAPP_NO_AUTO_INSTALL="yes"
 
 inherit bash-completion-r1 distutils versionator webapp
@@ -26,6 +24,7 @@ KEYWORDS="*"
 IUSE="doc mysql postgres sqlite test"
 
 RDEPEND="$(python_abi_depend -e "*-jython" dev-python/imaging)
+	$(python_abi_depend dev-python/setuptools)
 	mysql? ( $(python_abi_depend -e "3.* *-jython" dev-python/mysql-python) )
 	postgres? ( $(python_abi_depend -e "*-jython *-pypy-*" dev-python/psycopg:2) )"
 DEPEND="${RDEPEND}
@@ -46,21 +45,10 @@ src_prepare() {
 	# Disable invalid warning.
 	sed -e "s/overlay_warning = True/overlay_warning = False/" -i setup.py
 
-	# Avoid test failures with unittest2 and Python 3.
-	sed -e "s/from unittest2 import \*/raise ImportError/" -i django/utils/unittest/__init__.py
-
-	# Fix generation of documentation with Python 3.
-	# https://github.com/django/django/commit/a5733fcd7be7adb8b236825beff4ccda19900f9e
-	sed -e "s/with open(outfilename, 'wb') as fp:/with open(outfilename, 'w') as fp:/" -i docs/_ext/djangodocs.py
-
-	# Fix django.contrib.markup.tests.Templates.test_textile() with Python 3.
-	sed -e "s/textile.textile(force_bytes(value)/textile.textile(force_text(value) if __import__('sys').version_info[0] >= 3 else force_bytes(value)/" -i django/contrib/markup/templatetags/markup.py
-
-	# Disable failing tests.
-	# https://code.djangoproject.com/ticket/21092
-	sed -e "s/test_runner_deprecation_verbosity_zero/_&/" -i tests/regressiontests/test_runner/tests.py
-	# https://code.djangoproject.com/ticket/21093
-	sed -e "s/test_dont_base64_encode/_&/" -i tests/regressiontests/mail/tests.py
+	# Fix template_tests.tests.TemplateTests.test_templates() with NumPy >=1.9.
+	# https://code.djangoproject.com/ticket/23489
+	# https://github.com/django/django/commit/12809e160995eb617fe394c75e5b9f3211c056ff
+	sed -e "s/except (TypeError, AttributeError, KeyError, ValueError):$/except (TypeError, AttributeError, KeyError, ValueError, IndexError):/" -i django/template/base.py
 }
 
 src_compile() {

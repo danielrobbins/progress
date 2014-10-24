@@ -6,8 +6,10 @@ EAPI="5-progress"
 PYTHON_BDEPEND="test? ( <<[{*-cpython *-pypy-*}sqlite]>> )"
 PYTHON_DEPEND="<<[{*-cpython *-pypy-*}sqlite?]>>"
 PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.6 3.1"
+PYTHON_RESTRICTED_ABIS="3.1"
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
+# 3.[4-9]: https://code.djangoproject.com/ticket/21721
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.[4-9]"
 WEBAPP_NO_AUTO_INSTALL="yes"
 
 inherit bash-completion-r1 distutils versionator webapp
@@ -24,7 +26,6 @@ KEYWORDS="*"
 IUSE="doc mysql postgres sqlite test"
 
 RDEPEND="$(python_abi_depend -e "*-jython" dev-python/imaging)
-	$(python_abi_depend dev-python/setuptools)
 	mysql? ( $(python_abi_depend -e "3.* *-jython" dev-python/mysql-python) )
 	postgres? ( $(python_abi_depend -e "*-jython *-pypy-*" dev-python/psycopg:2) )"
 DEPEND="${RDEPEND}
@@ -45,11 +46,20 @@ src_prepare() {
 	# Disable invalid warning.
 	sed -e "s/overlay_warning = True/overlay_warning = False/" -i setup.py
 
-	# https://github.com/django/django/commit/d0c6016367c11d4d4cc42ace340f951f5b75738e
-	sed \
-		-e "106a\\        with change_cwd(\"..\"):" \
-		-e "107,117s/^/    /" \
-		-i tests/test_runner/test_discover_runner.py
+	# Avoid test failures with unittest2 and Python 3.
+	sed -e "s/from unittest2 import \*/raise ImportError/" -i django/utils/unittest/__init__.py
+
+	# Fix template_tests.tests.TemplateTests.test_templates() with NumPy >=1.9.
+	# https://code.djangoproject.com/ticket/23489
+	# https://github.com/django/django/commit/12809e160995eb617fe394c75e5b9f3211c056ff
+	sed -e "s/except (TypeError, AttributeError, KeyError, ValueError):$/except (TypeError, AttributeError, KeyError, ValueError, IndexError):/" -i django/template/base.py
+
+	# Fix encoding declaration.
+	sed -e "1{h;d};2G" -i tests/utils_tests/test_jslex.py
+
+	# Disable failing test.
+	# https://code.djangoproject.com/ticket/21416
+	sed -e "s/test_app_with_import/_&/" -i tests/admin_scripts/tests.py
 }
 
 src_compile() {
