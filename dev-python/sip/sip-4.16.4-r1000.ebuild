@@ -25,7 +25,7 @@ else
 	SRC_URI="mirror://sourceforge/pyqt/${P}.tar.gz"
 fi
 
-LICENSE="|| ( GPL-2 GPL-3 sip )"
+LICENSE="|| ( GPL-2 GPL-3 SIP )"
 # Subslot based on SIP_API_MAJOR_NR from siplib/sip.h.in
 SLOT="0/11"
 KEYWORDS="*"
