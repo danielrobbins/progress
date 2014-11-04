@@ -236,6 +236,7 @@ run_in_build_dir() {
 	[[ ${#} -ne 0 ]] || die "${FUNCNAME}: no command specified."
 	[[ ${BUILD_DIR} ]] || die "${FUNCNAME}: BUILD_DIR not set."
 
+	mkdir -p "${BUILD_DIR}" || die
 	pushd "${BUILD_DIR}" >/dev/null || die
 	"${@}"
 	ret=${?}
