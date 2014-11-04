@@ -68,10 +68,10 @@ unset x
 #
 # Example:
 # @CODE
-#   PATCHES=(
-#       "${FILESDIR}/mypatch.patch"
-#       "${FILESDIR}/mypatch2.patch"
-#   )
+# PATCHES=(
+# 	"${FILESDIR}/mypatch.patch"
+# 	"${FILESDIR}/mypatch2.patch"
+# )
 # @CODE
 
 # @FUNCTION: qt4-r2_src_unpack

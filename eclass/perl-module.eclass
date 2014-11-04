@@ -17,10 +17,7 @@ inherit eutils multiprocessing unpacker
 PERL_EXPF="src_unpack src_compile src_test src_install"
 
 case "${EAPI:-0}" in
-	0|1)
-		PERL_EXPF+=" pkg_setup pkg_preinst pkg_postinst pkg_prerm pkg_postrm"
-		;;
-	2|3|4|4-python|5|5-progress)
+	4|4-python|5|5-progress)
 		PERL_EXPF+=" src_prepare src_configure"
 		[[ ${CATEGORY} == "perl-core" ]] && \
 			PERL_EXPF+=" pkg_postinst pkg_postrm"
@@ -51,19 +48,21 @@ case "${EAPI:-0}" in
 		;;
 esac
 
-case "${EAPI:-0}" in
-	4|4-python|5|5-progress)
-		;;
-	*)
-		ewarn
-		ewarn "******************************************************************"
-		ewarn "${EBUILD}:"
-		ewarn "Support for EAPI=${EAPI:-0} in perl-module.eclass will be removed"
-		ewarn "on 1/Nov/2014. Please fix your overlay ebuilds to use EAPI=5."
-		ewarn "******************************************************************"
-		ewarn
-		;;
-esac
+# we will need this again soon
+#
+#case "${EAPI:-0}" in
+#	5|5-progress)
+#		;;
+#	*)
+#		ewarn
+#		ewarn "******************************************************************"
+#		ewarn "${EBUILD}:"
+#		ewarn "Support for EAPI=${EAPI:-0} in perl-module.eclass will be removed"
+#		ewarn "on XX/XX/2015. Please fix your overlay ebuilds to use EAPI=5."
+#		ewarn "******************************************************************"
+#		ewarn
+#		;;
+#esac
 
 case "${PERL_EXPORT_PHASE_FUNCTIONS:-yes}" in
 	yes)
@@ -122,6 +121,10 @@ perl-module_src_prepare() {
 	[[ ${PATCHES[@]} ]] && epatch "${PATCHES[@]}"
 	debug-print "$FUNCNAME: applying user patches"
 	epatch_user
+	if [[ ${PERL_RM_FILES[@]} ]]; then
+		debug-print "$FUNCNAME: stripping unneeded files"
+		perl_rm_files "${PERL_RM_FILES[@]}"
+	fi
 	perl_fix_osx_extra
 	esvn_clean
 }
@@ -398,6 +401,42 @@ perl_remove_temppath() {
 	done
 }
 
+# @FUNCTION: perl_rm_files
+# @USAGE: perl_rm_files "file_1" "file_2"
+# @DESCRIPTION:
+# Remove certain files from a Perl release and remove them from the MANIFEST
+# while we're there.
+#
+# Most useful in src_prepare for nuking bad tests, and is highly recommended
+# for any tests like 'pod.t', 'pod-coverage.t' or 'kwalitee.t', as what they
+# test is completely irrelevant to end users, and frequently fail simply
+# because the authors of Test::Pod... changed their recommendations, and thus
+# failures are only useful feedback to Authors, not users.
+#
+# Removing from MANIFEST also avoids needless log messages warning
+# users about files "missing from their kit".
+perl_rm_files() {
+	debug-print-function $FUNCNAME "$@"
+	local skipfile="${T}/.gentoo_makefile_skip"
+	local manifile="${S}/MANIFEST"
+	local manitemp="${T}/.gentoo_manifest_temp"
+	oldifs="$IFS"
+	IFS="\n"
+	for filename in "$@"; do
+		einfo "Removing un-needed ${filename}";
+		# Remove the file
+		rm -f "${S}/${filename}"
+		[[ -e "${manifile}" ]] && echo "${filename}" >> "${skipfile}"
+	done
+	if [[ -e "${manifile}" && -e "${skipfile}" ]]; then
+		einfo "Fixing Manifest"
+		grep -v -F -f "${skipfile}" "${manifile}" > "${manitemp}"
+		mv -f -- "${manitemp}" "${manifile}"
+		rm -- "${skipfile}";
+	fi
+	IFS="$oldifs"
+}
+
 perl_link_duallife_scripts() {
 	debug-print-function $FUNCNAME "$@"
 	if [[ ${CATEGORY} != perl-core ]] || ! has_version ">=dev-lang/perl-5.8.8-r8" ; then
@@ -433,13 +472,4 @@ perl_link_duallife_scripts() {
 
 perl_set_eprefix() {
 	debug-print-function $FUNCNAME "$@"
-	case ${EAPI:-0} in
-		0|1|2)
-			if ! use prefix; then
-				EPREFIX=
-				ED=${D}
-				EROOT=${ROOT}
-			fi
-			;;
-	esac
 }
