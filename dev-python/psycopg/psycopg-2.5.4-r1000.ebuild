@@ -20,7 +20,7 @@ SLOT="2"
 KEYWORDS="*"
 IUSE="debug doc examples mxdatetime"
 
-DEPEND=">=dev-db/postgresql-base-8.1
+DEPEND=">=virtual/postgresql-8.1
 	mxdatetime? ( $(python_abi_depend -e "3.* *-pypy-*" dev-python/egenix-mx-base) )"
 RDEPEND="${DEPEND}"
 RESTRICT="test"
