@@ -49,10 +49,10 @@ src_prepare() {
 	rm tests/test-push-cgi.t
 	# https://bz.selenic.com/show_bug.cgi?id=4087
 	rm tests/test-check-pyflakes.t
-	# https://bz.selenic.com/show_bug.cgi?id=4188
-	rm tests/test-patchbomb.t
 	# https://bz.selenic.com/show_bug.cgi?id=4356
 	rm tests/test-https.t
+	# https://bz.selenic.com/show_bug.cgi?id=4440
+	rm tests/test-run-tests.t
 	# Disable tests sometimes timing out.
 	rm tests/test-largefiles.t
 	rm tests/test-mq.t
