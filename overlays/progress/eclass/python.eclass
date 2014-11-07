@@ -103,6 +103,8 @@ _python_check_python_abi_matching() {
 			[[ "${PYTHON_ABI}" =~ ^[[:digit:]]+\.[[:digit:]]+$ && "${PYTHON_ABI}" == ${pattern%-cpython} ]]
 		elif [[ "${pattern}" == *"-jython" ]]; then
 			[[ "${PYTHON_ABI}" == ${pattern} ]]
+		elif [[ "${pattern}" == *"-pypy" ]]; then
+			[[ "${PYTHON_ABI}" == ${pattern}-* ]]
 		elif [[ "${pattern}" == *"-pypy-"* ]]; then
 			[[ "${PYTHON_ABI}" == ${pattern} ]]
 		else
