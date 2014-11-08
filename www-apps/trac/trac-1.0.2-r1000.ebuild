@@ -4,10 +4,10 @@
 
 EAPI="5-progress"
 PYTHON_DEPEND="<<[sqlite?]>>"
-PYTHON_MULTIPLE_ABIS="1"
+PYTHON_ABI_TYPE="multiple"
 PYTHON_RESTRICTED_ABIS="3.* *-jython"
 
-inherit distutils eutils user webapp
+inherit distutils user webapp
 
 MY_PV="${PV/_beta/b}"
 MY_P="Trac-${MY_PV}"
@@ -31,8 +31,8 @@ DEPEND="$(python_abi_depend dev-python/docutils)
 	fastcgi? ( virtual/httpd-fastcgi )
 	i18n? ( $(python_abi_depend dev-python/Babel) )
 	mysql? ( $(python_abi_depend dev-python/mysql-python) )
-	postgres? ( $(python_abi_depend -e "*-pypy-*" dev-python/psycopg:2) )
-	subversion? ( $(python_abi_depend -e "*-pypy-*" dev-vcs/subversion[python]) )"
+	postgres? ( $(python_abi_depend -e "*-pypy" dev-python/psycopg:2) )
+	subversion? ( $(python_abi_depend -e "*-pypy" dev-vcs/subversion[python]) )"
 RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/${MY_P}"
@@ -49,7 +49,6 @@ pkg_setup() {
 
 src_prepare() {
 	distutils_src_prepare
-	epatch "${FILESDIR}/${P}-tests.patch"
 }
 
 src_test() {
