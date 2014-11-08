@@ -34,7 +34,7 @@ fi
 LICENSE="PSF-2"
 SLOT="3.4"
 PYTHON_ABI="${SLOT}"
-KEYWORDS="~*"
+KEYWORDS="*"
 IUSE="build doc elibc_uclibc examples gdbm ipv6 +ncurses +readline sqlite +ssl +threads tk wininst +xml"
 
 RDEPEND="app-arch/bzip2
