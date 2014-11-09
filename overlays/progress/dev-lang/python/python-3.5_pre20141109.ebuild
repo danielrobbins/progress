@@ -12,7 +12,7 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="https://hg.python.org/cpython"
-	EHG_REVISION="408bbdaef8d4"
+	EHG_REVISION="ec81edc30221"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
@@ -129,6 +129,7 @@ src_prepare() {
 		Modules/getpath.c \
 		setup.py || die "sed failed to replace @@GENTOO_LIBDIR@@"
 
+	sed -e "s/test_input_tty_non_ascii/_&/" -i Lib/test/test_builtin.py
 	sed -e "s/test_stty_match/_&/" -i Lib/test/test_shutil.py
 
 	# Disable ABI flags.
