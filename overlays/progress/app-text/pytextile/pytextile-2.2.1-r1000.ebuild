@@ -3,7 +3,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
+PYTHON_ABI_TYPE="multiple"
 PYTHON_RESTRICTED_ABIS="3.1 3.2 *-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
@@ -13,7 +13,7 @@ MY_PN="textile"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="A Python implementation of Textile, Dean Allen's Human Text Generator for creating (X)HTML."
-HOMEPAGE="https://github.com/ikirudennis/python-textile https://pypi.python.org/pypi/textile"
+HOMEPAGE="https://github.com/textile/python-textile https://pypi.python.org/pypi/textile"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="BSD"
