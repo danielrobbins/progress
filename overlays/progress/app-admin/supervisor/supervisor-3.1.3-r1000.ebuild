@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_DEPEND="<<[{*-cpython}xml]>>"
-PYTHON_MULTIPLE_ABIS="1"
+PYTHON_ABI_TYPE="multiple"
 # *-jython: resource module required.
 PYTHON_RESTRICTED_ABIS="3.* *-jython"
 DISTUTILS_SRC_TEST="setup.py"
