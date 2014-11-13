@@ -4,8 +4,8 @@
 
 EAPI="5-progress"
 PYTHON_DEPEND="<<[xml]>>"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
+PYTHON_ABI_TYPE="multiple"
+PYTHON_RESTRICTED_ABIS="*-jython"
 PYTHON_NONVERSIONED_EXECUTABLES=(".*")
 
 EGIT_MASTER="gentoolkit"
@@ -31,7 +31,7 @@ RDEPEND="${DEPEND}
 	!<=app-portage/gentoolkit-dev-0.2.7
 	|| ( >=sys-apps/coreutils-8.15 sys-freebsd/freebsd-bin )
 	sys-apps/gawk
-	sys-apps/gentoo-functions
+	!prefix? ( sys-apps/gentoo-functions )
 	sys-apps/grep
 	$(python_abi_depend virtual/python-argparse)"
 
