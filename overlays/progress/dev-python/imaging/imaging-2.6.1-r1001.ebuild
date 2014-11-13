@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_DEPEND="<<[{*-cpython}tk?]>>"
-PYTHON_MULTIPLE_ABIS="1"
+PYTHON_ABI_TYPE="multiple"
 PYTHON_RESTRICTED_ABIS="*-jython"
 
 inherit distutils eutils
@@ -114,6 +114,13 @@ src_test() {
 
 src_install() {
 	distutils_src_install
+
+	install_headers() {
+		insinto "$(python_get_includedir)"
+		doins libImaging/Imaging.h
+		doins libImaging/ImPlatform.h
+	}
+	python_execute_function install_headers
 
 	local module
 	for module in PIL/*.py; do
