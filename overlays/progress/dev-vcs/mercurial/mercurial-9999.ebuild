@@ -4,8 +4,10 @@
 
 EAPI="5-progress"
 PYTHON_DEPEND="<<[threads]>>"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
+PYTHON_ABI_TYPE="multiple"
+PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy"
+# Random time-outs in some tests.
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 
 inherit bash-completion-r1 distutils elisp-common eutils mercurial
 
@@ -50,12 +52,8 @@ src_prepare() {
 	rm tests/test-push-cgi.t
 	# https://bz.selenic.com/show_bug.cgi?id=4087
 	rm tests/test-check-pyflakes.t
-	# https://bz.selenic.com/show_bug.cgi?id=4188
-	rm tests/test-patchbomb.t
-	# Disable tests sometimes timing out.
-	rm tests/test-largefiles.t
-	rm tests/test-mq.t
-	rm tests/test-subrepo.t
+	# https://bz.selenic.com/show_bug.cgi?id=4356
+	rm tests/test-https.t
 	# Disable test failing due to DeprecationWarning in internal code in dev-vcs/bzr 2.6.0.
 	rm tests/test-convert-bzr-directories.t
 }
