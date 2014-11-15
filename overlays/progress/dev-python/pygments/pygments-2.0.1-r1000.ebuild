@@ -3,18 +3,17 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
+PYTHON_ABI_TYPE="multiple"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 
-inherit bash-completion-r1 distutils eutils vcs-snapshot
+inherit bash-completion-r1 distutils
 
 MY_PN="Pygments"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Pygments is a syntax highlighting package written in Python."
 HOMEPAGE="http://pygments.org/ https://bitbucket.org/birkenfeld/pygments-main https://pypi.python.org/pypi/Pygments"
-# SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
-SRC_URI="https://bitbucket.org/birkenfeld/pygments-main/get/80ce5e90f9a894e0d94803ecdde7de61445ebfe6.tar.bz2 -> ${P}.tar.bz2"
+SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
@@ -29,16 +28,12 @@ DEPEND="${RDEPEND}
 		virtual/ttf-fonts
 	)"
 
-# S="${WORKDIR}/${MY_P}"
+S="${WORKDIR}/${MY_P}"
 
 DOCS="AUTHORS CHANGES"
 
 src_prepare() {
 	distutils_src_prepare
-	epatch "${FILESDIR}/${P}-PIL-python-3.patch"
-
-	# https://bitbucket.org/birkenfeld/pygments-main/issue/981
-	sed -e "s:html_favicon = 'favicon.ico':html_favicon = '_static/favicon.ico':" -i doc/conf.py
 
 	sed -e "/sys.path.insert(0, os.path.abspath('..'))/d" -i doc/conf.py
 	sed -e "/sys.path.insert(0, '..')/d" -i tests/run.py
@@ -56,6 +51,7 @@ src_compile() {
 
 		if has "$(python_get_version -l)" 3.1 3.2; then
 			2to3-${PYTHON_ABI} -f unicode -nw --no-diffs build-${PYTHON_ABI}/lib tests-${PYTHON_ABI} || return
+			sed -e "s/eval(r\"u/eval(r\"/" -i build-${PYTHON_ABI}/lib/pygments/unistring.py || return
 		fi
 	}
 	python_execute_function -q preparation
@@ -77,7 +73,7 @@ src_test() {
 
 src_install(){
 	distutils_src_install
-	newbashcomp external/pygments.bashcomp ${PN}
+	newbashcomp external/pygments.bashcomp pygmentize
 
 	if use doc; then
 		dohtml -r doc/_build/html/
