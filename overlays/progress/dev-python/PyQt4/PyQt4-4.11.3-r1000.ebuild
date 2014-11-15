@@ -3,19 +3,19 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
+PYTHON_ABI_TYPE="multiple"
+PYTHON_RESTRICTED_ABIS="*-jython *-pypy"
 PYTHON_EXPORT_PHASE_FUNCTIONS="1"
 
 inherit eutils python qmake-utils toolchain-funcs
 
 DESCRIPTION="Python bindings for the Qt toolkit"
-HOMEPAGE="http://www.riverbankcomputing.co.uk/software/pyqt/intro https://pypi.python.org/pypi/PyQt4"
+HOMEPAGE="http://www.riverbankcomputing.com/software/pyqt/intro https://pypi.python.org/pypi/PyQt4"
 
 if [[ "${PV}" == *_pre* ]]; then
 	HG_REVISION=""
 	MY_P="PyQt-x11-gpl-${PV%_pre*}-snapshot-${HG_REVISION}"
-	SRC_URI="http://www.riverbankcomputing.co.uk/static/Downloads/PyQt4/${MY_P}.tar.gz
+	SRC_URI="http://www.riverbankcomputing.com/static/Downloads/PyQt4/${MY_P}.tar.gz
 		http://people.apache.org/~Arfrever/gentoo/${MY_P}.tar.gz"
 else
 	MY_P="PyQt-x11-gpl-${PV}"
@@ -43,9 +43,9 @@ REQUIRED_USE="
 	webkit? ( X )"
 
 # Minimal supported version of Qt.
-QT_PV="4.8.0:4"
+QT_PV="4.8.5:4"
 
-RDEPEND="$(python_abi_depend ">=dev-python/sip-4.16:0=")
+RDEPEND="$(python_abi_depend ">=dev-python/sip-4.16.4:0=")
 	>=dev-qt/qtcore-${QT_PV}
 	X? (
 		>=dev-qt/qtgui-${QT_PV}
@@ -166,7 +166,7 @@ src_configure() {
 		# Avoid stripping of libpythonplugin.so.
 		if use designer; then
 			pushd designer > /dev/null || return
-			eqmake4 python.pro
+			eqmake4 designer.pro
 			popd > /dev/null || return
 		fi
 	}
