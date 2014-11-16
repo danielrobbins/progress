@@ -4,8 +4,8 @@
 
 EAPI="5-progress"
 PYTHON_DEPEND="<<[threads]>>"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
+PYTHON_ABI_TYPE="multiple"
+PYTHON_RESTRICTED_ABIS="*-jython *-pypy"
 OPENGL_REQUIRED="always"
 
 inherit eutils kde4-base multilib portability python toolchain-funcs
@@ -52,10 +52,8 @@ src_prepare() {
 			|| die "Failed to disable examples"
 	fi
 
-	has_version ">=dev-python/PyQt4-4.10.4" && epatch "${FILESDIR}/${PN}-4.11.5-PyQt4-4.10.4.patch"
-
 	# See bug 322351
-	use arm && epatch "${FILESDIR}/${PN}-4.10.1-arm-sip.patch"
+	use arm && epatch "${FILESDIR}/${PN}-4.14.0-arm-sip.patch"
 
 	sed -i -e 's/kpythonpluginfactory /kpython${PYTHON_SHORT_VERSION}pluginfactory /g' kpythonpluginfactory/CMakeLists.txt
 
