@@ -3,18 +3,18 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
+PYTHON_ABI_TYPE="multiple"
+PYTHON_RESTRICTED_ABIS="*-jython *-pypy"
 
 FORTRAN_NEEDED="lapack"
 
 inherit distutils eutils flag-o-matic fortran-2 multilib toolchain-funcs
 
 MY_P="${PN}-${PV/_/}"
-DOC_PV="1.8.1"
+DOC_PV="1.9.1"
 DOC_P="${PN}-${DOC_PV}"
 
-DESCRIPTION="Fast array and numerical python library"
+DESCRIPTION="NumPy: array processing for numbers, strings, records, and objects."
 HOMEPAGE="http://www.numpy.org/ https://github.com/numpy/numpy https://pypi.python.org/pypi/numpy"
 SRC_URI="mirror://sourceforge/numpy/${MY_P}.tar.gz
 	doc? (
