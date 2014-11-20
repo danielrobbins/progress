@@ -3,8 +3,8 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5 3.1 3.2"
+PYTHON_ABI_TYPE="multiple"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 DISTUTILS_SRC_TEST="py.test"
 
 inherit distutils eutils
@@ -23,14 +23,26 @@ RDEPEND="$(python_abi_depend dev-python/pytz)
 DEPEND="${RDEPEND}
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
 
+DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES="1"
 PYTHON_MODULES="babel"
 
 src_prepare() {
-	distutils_src_prepare
 	epatch "${FILESDIR}/${P}-tests.patch"
 
 	# https://github.com/mitsuhiko/babel/issues/46
 	sed -e "s/utf_8/utf-8/" -i babel/util.py
+
+	# Fix compatibility with Python 3.1.
+	sed -e "201s/if PY2:/if __import__('sys').version_info < (3, 2):/" -i babel/messages/mofile.py
+
+	distutils_src_prepare
+
+	preparation() {
+		if has "$(python_get_version -l)" 3.1 3.2; then
+			2to3-${PYTHON_ABI} -f unicode -nw --no-diffs babel tests
+		fi
+	}
+	python_execute_function -s preparation
 }
 
 src_compile() {
