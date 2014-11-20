@@ -3,11 +3,11 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.1 *-jython *-pypy-*"
+PYTHON_ABI_TYPE="multiple"
+PYTHON_RESTRICTED_ABIS="3.1 *-jython *-pypy"
 
 inherit distutils
-[[ "${PV}" == "9999" ]] && inherit git-2
+[[ "${PV}" == "9999" ]] && inherit git-r3
 
 DESCRIPTION="Powerful and Pythonic XML processing library combining libxml2/libxslt with the ElementTree API."
 HOMEPAGE="http://lxml.de/ https://pypi.python.org/pypi/lxml"
