@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_DEPEND="<<[{*-cpython}threads]>>"
-PYTHON_MULTIPLE_ABIS="1"
+PYTHON_ABI_TYPE="multiple"
 PYTHON_RESTRICTED_ABIS="2.6 3.* *-jython"
 
 inherit distutils
