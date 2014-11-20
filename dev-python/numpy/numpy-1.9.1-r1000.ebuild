@@ -32,7 +32,7 @@ RDEPEND="
 	$(python_abi_depend dev-python/setuptools)
 	lapack? ( virtual/cblas virtual/lapack )"
 DEPEND="${RDEPEND}
-	>=dev-python/cython-0.19
+	$(python_abi_depend ">=dev-python/cython-0.19")
 	lapack? ( virtual/pkgconfig )
 	test? ( $(python_abi_depend dev-python/nose) )"
 
