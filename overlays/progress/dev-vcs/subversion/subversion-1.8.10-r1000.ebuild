@@ -11,8 +11,8 @@ if [[ "${PV}" == *_pre* ]]; then
 else
 	PYTHON_BDEPEND="test? ( <<>> )"
 fi
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
+PYTHON_ABI_TYPE="multiple"
+PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy"
 if [[ "${PV}" != *_pre* ]]; then
 	WANT_AUTOMAKE="none"
 fi
@@ -165,7 +165,7 @@ pkg_setup() {
 		print "  SVN_TEST_FSFS_PACKING=1               - Enable packing of FSFS repositories"
 		print "                                          (SVN_TEST_FSFS_PACKING requires SVN_TEST_FSFS_SHARDING)"
 #		if use sasl; then
-#	 		print "  SVN_TEST_SASL=1                       - Enable SASL authentication"
+#			print "  SVN_TEST_SASL=1                       - Enable SASL authentication"
 #		fi
 		if use ctypes-python || use java || use perl || use python || use ruby; then
 			print "  SVN_TEST_BINDINGS=1                   - Enable testing of bindings"
@@ -648,7 +648,7 @@ src_install() {
 		print "Installation of Subversion SWIG Perl bindings"
 		print
 		emake -j1 DESTDIR="${D}" INSTALLDIRS="vendor" install-swig-pl || die "Installation of Subversion SWIG Perl bindings failed"
-		fixlocalpod
+		perl_delete_localpod
 		find "${ED}" "(" -name .packlist -o -name "*.bs" ")" -print0 | xargs -0 rm -fr
 	fi
 
@@ -694,7 +694,8 @@ EOF
 	fi
 
 	# Install Bash Completion, bug 43179.
-	newbashcomp tools/client-side/bash_completion subversion
+	newbashcomp tools/client-side/bash_completion svn
+	bashcomp_alias svn svn{admin,dumpfilter,look,sync,version}
 	rm -f tools/client-side/bash_completion
 
 	# Install svnserve init script and xinet.d configuration.
@@ -775,10 +776,6 @@ pkg_preinst() {
 }
 
 pkg_postinst() {
-	if use perl; then
-		perl-module_pkg_postinst
-	fi
-
 	if use ctypes-python || use python; then
 		python_mod_optimize $(use ctypes-python && echo csvn) $(use python && echo libsvn svn)
 	fi
@@ -808,10 +805,6 @@ pkg_postinst() {
 }
 
 pkg_postrm() {
-	if use perl; then
-		perl-module_pkg_postrm
-	fi
-
 	if use ctypes-python || use python; then
 		python_mod_cleanup $(use ctypes-python && echo csvn) $(use python && echo libsvn svn)
 	fi
