@@ -8,12 +8,10 @@ PYTHON_ABI_TYPE="multiple"
 PYTHON_RESTRICTED_ABIS="*-jython"
 PYTHON_NONVERSIONED_EXECUTABLES=(".*")
 
-EGIT_MASTER="gentoolkit"
-EGIT_BRANCH="gentoolkit"
-
-inherit distutils git-2
+inherit distutils git-r3
 
 EGIT_REPO_URI="git://git.overlays.gentoo.org/proj/gentoolkit.git"
+EGIT_BRANCH="gentoolkit"
 
 DESCRIPTION="Collection of administration scripts for Gentoo"
 HOMEPAGE="http://www.gentoo.org/proj/en/portage/tools/index.xml"
