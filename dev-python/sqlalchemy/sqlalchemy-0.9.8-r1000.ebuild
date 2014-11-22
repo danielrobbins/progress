@@ -22,10 +22,9 @@ SRC_URI="mirror://pypi/${MY_P:0:1}/${MY_PN}/${MY_P}.tar.gz"
 LICENSE="MIT"
 SLOT="0"
 KEYWORDS="*"
-IUSE="doc examples firebird mssql mysql postgres +sqlite test"
+IUSE="doc examples mssql mysql postgres +sqlite test"
 
 RDEPEND="$(python_abi_depend dev-python/setuptools)
-	firebird? ( $(python_abi_depend -e "3.* *-jython *-pypy" dev-python/kinterbasdb) )
 	mssql? ( $(python_abi_depend -e "3.* *-jython *-pypy" dev-python/pymssql) )
 	mysql? ( $(python_abi_depend -e "3.* *-jython" dev-python/mysql-python) )
 	postgres? ( $(python_abi_depend -e "*-jython *-pypy" dev-python/psycopg:2) )"
