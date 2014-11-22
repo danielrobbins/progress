@@ -3,7 +3,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
+PYTHON_ABI_TYPE="multiple"
 PYTHON_RESTRICTED_ABIS="*-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
@@ -16,15 +16,25 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 LICENSE="LGPL-2.1"
 SLOT="0"
 KEYWORDS="*"
-IUSE=""
+IUSE="doc"
 
 RDEPEND="sys-apps/attr"
 DEPEND="${DEPEND}
-	$(python_abi_depend dev-python/setuptools)"
+	$(python_abi_depend dev-python/setuptools)
+	doc? ( $(python_abi_depend dev-python/sphinx) )"
 
 src_prepare() {
 	distutils_src_prepare
 	sed -e "/extra_compile_args=/d" -i setup.py
+}
+
+src_compile() {
+	distutils_src_compile
+
+	if use doc; then
+		einfo "Generation of documentation"
+		PYTHONPATH="$(ls -d build-$(PYTHON -f --ABI)/lib*)" "$(PYTHON -f)" setup.py build_sphinx || die "Generation of documentation failed"
+	fi
 }
 
 src_test() {
@@ -35,4 +45,12 @@ src_test() {
 	fi
 
 	distutils_src_test
+}
+
+src_install() {
+	distutils_src_install
+
+	if use doc; then
+		dohtml -r build/sphinx/html/
+	fi
 }
