@@ -36,6 +36,9 @@ src_prepare() {
 	epatch "${FILESDIR}/${PV}-revdep-rebuild-py-504654-2.patch"
 	epatch "${FILESDIR}/${PV}-equery-508114.patch"
 	epatch "${FILESDIR}/${PV}-revdep-rebuild-526400.patch"
+
+	# https://bugs.gentoo.org/show_bug.cgi?id=382009
+	sed -e '/die 1 "Unable to find a satisfactory location for temporary files ($1)"/s/die/mkdir -p "$1" || &/' -i bin/revdep-rebuild.sh
 }
 
 distutils_src_compile_pre_hook() {
