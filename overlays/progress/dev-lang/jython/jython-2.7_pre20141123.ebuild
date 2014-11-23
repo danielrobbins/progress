@@ -11,7 +11,7 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="https://hg.python.org/jython"
-	EHG_REVISION="3bfd14f0b231"
+	EHG_REVISION="f51940218cf2"
 fi
 
 PATCHSET_REVISION="20121230"
