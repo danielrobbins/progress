@@ -13,6 +13,13 @@ inherit eutils fdo-mime libtool gnome.org gnome2-utils
 
 case "${EAPI:-0}" in
 	0|1)
+		eqawarn
+		eqawarn "${CATEGORY}/${PF}: EAPI 0/1 support is now deprecated."
+		eqawarn "If you are the package maintainer, please"
+		eqawarn "update this package to a newer EAPI."
+		eqawarn "Support for EAPIs 0 and 1 for gnome2.eclass will be dropped"
+		eqawarn "in a month (around 23rd December)."
+		eqawarn
 		EXPORT_FUNCTIONS src_unpack src_compile src_install pkg_preinst pkg_postinst pkg_postrm
 		;;
 	2|3|4|4-python|5|5-progress)
