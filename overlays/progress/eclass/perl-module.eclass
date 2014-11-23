@@ -361,7 +361,7 @@ perl-module_pkg_postinst() {
 # It does not do anything. Deprecated, to be removed.
 perl-module_pkg_prerm() {
 	debug-print-function $FUNCNAME "$@"
-	eqawarn "perl-module.eclass: perl-module_pkg_prerm does not do anything and will be removed. Please remove the call."
+	ewarn "perl-module.eclass: perl-module_pkg_prerm does not do anything and will be removed. Please remove the call."
 }
 
 # @FUNCTION: perl-module_pkg_postrm
