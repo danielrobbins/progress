@@ -3,12 +3,12 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.1"
+PYTHON_ABI_TYPE="multiple"
+PYTHON_RESTRICTED_ABIS="2.6 3.1"
 # *-jython: https://github.com/eliben/pyelftools/issues/41
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 
-inherit distutils eutils
+inherit distutils
 
 DESCRIPTION="Library for analyzing ELF files and DWARF debugging information"
 HOMEPAGE="https://github.com/eliben/pyelftools https://pypi.python.org/pypi/pyelftools"
@@ -17,18 +17,12 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 LICENSE="public-domain"
 SLOT="0"
 KEYWORDS="*"
-IUSE="examples test"
+IUSE="examples"
 
-DEPEND="test? ( $(python_abi_depend -i "2.6" dev-python/unittest2) )"
+DEPEND=""
 RDEPEND=""
 
 PYTHON_MODULES="elftools"
-
-src_prepare() {
-	distutils_src_prepare
-	epatch "${FILESDIR}/${P}-grace-string-dyn.patch"
-	epatch "${FILESDIR}/${P}-dyntable.patch"
-}
 
 src_test() {
 	testing() {
