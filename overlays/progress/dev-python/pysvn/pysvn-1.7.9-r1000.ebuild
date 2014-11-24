@@ -3,14 +3,14 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
+PYTHON_ABI_TYPE="multiple"
+PYTHON_RESTRICTED_ABIS="*-jython *-pypy"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 
 inherit eutils python toolchain-funcs
 
-DESCRIPTION="Object-oriented python bindings for subversion"
-HOMEPAGE="http://pysvn.tigris.org/"
+DESCRIPTION="Object-oriented Python bindings for Subversion"
+HOMEPAGE="http://pysvn.tigris.org/ http://pysvn.barrys-emacs.org/"
 if [[ "${PV}" == *_pre* ]]; then
 	SRC_URI="http://people.apache.org/~Arfrever/gentoo/${P}.tar.xz"
 else
@@ -30,7 +30,7 @@ src_prepare() {
 	# Delete internal copy of dev-python/pycxx.
 	rm -fr Import
 
-	epatch "${FILESDIR}/${PN}-1.7.8-respect_flags.patch"
+	epatch "${FILESDIR}/${PN}-1.7.9-respect_flags.patch"
 
 	python_copy_sources
 }
