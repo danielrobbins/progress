@@ -3,8 +3,8 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
+PYTHON_ABI_TYPE="multiple"
+PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy"
 
 inherit distutils
 
@@ -18,7 +18,7 @@ KEYWORDS="*"
 IUSE=""
 
 RDEPEND="$(python_abi_depend ">=dev-vcs/mercurial-1.9")
-	$(python_abi_depend ">=dev-python/dulwich-0.9.4")
+	$(python_abi_depend ">=dev-python/dulwich-0.9.7")
 	$(python_abi_depend -i "2.6" dev-python/ordereddict)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
