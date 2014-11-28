@@ -604,7 +604,6 @@ _python_parse_dependencies_in_new_EAPIs() {
 if _python_implementation; then
 	DEPEND=">=app-admin/eselect-python-20091230 >=app-shells/bash-4"
 	RDEPEND="${DEPEND}"
-	PDEPEND="app-admin/python-updater"
 fi
 
 if has "${EAPI:-0}" 0 1 2 3 || { has "${EAPI:-0}" 4 5 && has "${PYTHON_ECLASS_API}" 0; }; then
