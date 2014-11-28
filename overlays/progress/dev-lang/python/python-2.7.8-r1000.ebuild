@@ -11,7 +11,7 @@ inherit autotools eutils flag-o-matic multilib pax-utils python toolchain-funcs
 if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
-	EHG_REPO_URI="http://hg.python.org/cpython"
+	EHG_REPO_URI="https://hg.python.org/cpython"
 	EHG_REVISION=""
 else
 	MY_PV="${PV%_p*}"
@@ -21,13 +21,13 @@ fi
 PATCHSET_REVISION="0"
 
 DESCRIPTION="Python is an interpreted, interactive, object-oriented programming language."
-HOMEPAGE="http://www.python.org/"
+HOMEPAGE="https://www.python.org/"
 if [[ "${PV}" == *_pre* ]]; then
 	SRC_URI=""
 else
-	SRC_URI="http://www.python.org/ftp/python/${MY_PV}/${MY_P}.tar.xz"
+	SRC_URI="https://www.python.org/ftp/python/${MY_PV}/${MY_P}.tar.xz"
 	if [[ "${PR#r}" -lt 1000 ]]; then
-		SRC_URI+=" http://people.apache.org/~Arfrever/gentoo/python-gentoo-patches-${MY_PV}$([[ "${PATCHSET_REVISION}" != "0" ]] && echo "-r${PATCHSET_REVISION}").tar.bz2"
+		SRC_URI+=" https://people.apache.org/~Arfrever/gentoo/python-gentoo-patches-${MY_PV}$([[ "${PATCHSET_REVISION}" != "0" ]] && echo "-r${PATCHSET_REVISION}").tar.bz2"
 	fi
 fi
 
@@ -348,10 +348,11 @@ pkg_postinst() {
 		ewarn "\e[1;31m************************************************************************\e[0m"
 		ewarn
 		ewarn "You have just upgraded from an older version of Python. You should:"
-		ewarn "1. Switch active version of Python ${PV%%.*} using 'eselect python'"
-		ewarn "2. Update PYTHON_ABIS variable in make.conf"
-		ewarn "3. Run 'emerge --update --deep --newuse world'"
-		ewarn "4. Run 'python-updater [options]' to rebuild potential remaining Python-related packages"
+		ewarn "1. Run 'emerge --oneshot sys-apps/portage'"
+		ewarn "2. Update potential PYTHON_* variables in make.conf and package.use"
+		ewarn "3. Run 'emerge --nodeps --oneshot sys-apps/portage'"
+		ewarn "4. Switch active version of Python ${PV%%.*} using 'eselect python'"
+		ewarn "5. Run 'emerge --update --deep --newuse @world'"
 		ewarn
 		ewarn "\e[1;31m************************************************************************\e[0m"
 		ewarn
