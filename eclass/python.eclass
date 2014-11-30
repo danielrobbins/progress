@@ -928,7 +928,7 @@ _python_prepare_jython() {
 }
 
 _python_abi-specific_local_scope() {
-	[[ " ${FUNCNAME[@]:2} " =~ " "(_python_final_sanity_checks|python_execute_function|python_mod_optimize|python_mod_cleanup|python_generate_cffi_modules)" " ]]
+	[[ " ${FUNCNAME[@]:2} " =~ " "(_python_final_sanity_checks|python_execute_function|python_byte-compile_modules|python_clean_byte-compiled_modules|python_generate_cffi_modules)" " ]]
 }
 
 _python_initialize_prefix_variables() {
@@ -3639,11 +3639,20 @@ python_execute_trial() {
 # ======================= FUNCTIONS FOR HANDLING OF BYTE-COMPILED MODULES ========================
 # ================================================================================================
 
-# @FUNCTION: python_enable_pyc
+# @FUNCTION: python_enable_byte-compilation
 # @DESCRIPTION:
-# Tell Python to automatically recompile modules to .pyc/.pyo if the
-# timestamps/version stamps have changed.
-python_enable_pyc() {
+# Enable byte-compilation of *.py Python modules to *.pyc / *.pyo Python modules during:
+# - Importation
+# - Installation by Distutils
+#
+# Importational byte-compilation occurs when any of the following properties of *.py Python module
+# does not match value cached in header of *.pyc / *.pyo Python module:
+# - Magic number
+# - Time of last modification of data
+# - Size (Python >=3.3)
+#
+# Byte-compilation should be enabled temporarily and only when it is absolutely necessary.
+python_enable_byte-compilation() {
 	_python_check_python_pkg_setup_execution
 
 	if [[ "$#" -ne 0 ]]; then
@@ -3653,12 +3662,20 @@ python_enable_pyc() {
 	unset PYTHONDONTWRITEBYTECODE
 }
 
-# @FUNCTION: python_disable_pyc
+# @FUNCTION: python_disable_byte-compilation
 # @DESCRIPTION:
-# Tell Python not to automatically recompile modules to .pyc/.pyo
-# even if the timestamps/version stamps do not match. This is done
-# to protect sandbox.
-python_disable_pyc() {
+# Disable byte-compilation of *.py Python modules to *.pyc / *.pyo Python modules during:
+# - Importation
+# - Installation by Distutils
+#
+# Importational byte-compilation occurs when any of the following properties of *.py Python module
+# does not match value cached in header of *.pyc / *.pyo Python module:
+# - Magic number
+# - Time of last modification of data
+# - Size (Python >=3.3)
+#
+# Byte-compilation should be disabled to avoid sandbox violations.
+python_disable_byte-compilation() {
 	_python_check_python_pkg_setup_execution
 
 	if [[ "$#" -ne 0 ]]; then
@@ -3668,11 +3685,11 @@ python_disable_pyc() {
 	export PYTHONDONTWRITEBYTECODE="1"
 }
 
-_python_clean_compiled_modules() {
+_python_clean_byte-compiled_modules() {
 	_python_initialize_prefix_variables
 	_python_set_color_variables
 
-	[[ "${FUNCNAME[1]}" =~ ^(python_mod_optimize|python_mod_cleanup)$ ]] || die "${FUNCNAME}(): Invalid usage"
+	[[ "${FUNCNAME[1]}" =~ ^(python_byte-compile_modules|python_clean_byte-compiled_modules)$ ]] || die "${FUNCNAME}(): Invalid usage"
 
 	local base_module_name compiled_file compiled_files=() dir path py_file root
 
@@ -3758,14 +3775,14 @@ _python_clean_compiled_modules() {
 	done
 }
 
-# @FUNCTION: python_mod_optimize
+# @FUNCTION: python_byte-compile_modules
 # @USAGE: [-A|--ABIs-patterns Python_ABIs] [--allow-evaluated-non-sitedir-paths] [-d directory] [-f] [-l] [-q] [-x regular_expression] [--] <file|directory> [files|directories]
 # @DESCRIPTION:
 # Byte-compile specified Python modules.
 # -d, -f, -l, -q and -x options passed to this function are passed to compileall.py.
 #
 # This function can be used only in pkg_postinst() phase.
-python_mod_optimize() {
+python_byte-compile_modules() {
 	if [[ "${EBUILD_PHASE}" != "postinst" ]]; then
 		die "${FUNCNAME}() can be used only in pkg_postinst() phase"
 	fi
@@ -3908,7 +3925,7 @@ python_mod_optimize() {
 					if ! has "$(_python_get_implementation "${PYTHON_ABI}")" Jython PyPy; then
 						"$(PYTHON)" -O -m compileall -f "${options[@]}" "${dirs[@]}" &> /dev/null || exit_status="1"
 					fi
-					_python_clean_compiled_modules "${dirs[@]}"
+					_python_clean_byte-compiled_modules "${dirs[@]}"
 				fi
 				if ((${#site_packages_files[@]})) || ((${#evaluated_files[@]})); then
 					for file in "${site_packages_files[@]}"; do
@@ -3921,7 +3938,7 @@ python_mod_optimize() {
 					if ! has "$(_python_get_implementation "${PYTHON_ABI}")" Jython PyPy; then
 						"$(PYTHON)" -O -m py_compile "${files[@]}" &> /dev/null || exit_status="1"
 					fi
-					_python_clean_compiled_modules "${files[@]}"
+					_python_clean_byte-compiled_modules "${files[@]}"
 				fi
 				eend "${exit_status}"
 				if [[ -n "${stderr}" ]]; then
@@ -3961,14 +3978,14 @@ python_mod_optimize() {
 				if ! has "$(_python_get_implementation "${PYTHON_ABI}")" Jython PyPy; then
 					"$(PYTHON ${PYTHON_ABI})" -O -m compileall -f "${options[@]}" "${other_dirs[@]}" &> /dev/null || exit_status="1"
 				fi
-				_python_clean_compiled_modules "${other_dirs[@]}"
+				_python_clean_byte-compiled_modules "${other_dirs[@]}"
 			fi
 			if ((${#other_files[@]})); then
 				stderr+="${stderr:+$'\n'}$("$(PYTHON ${PYTHON_ABI})" -m py_compile "${other_files[@]}" 2>&1)" || exit_status="1"
 				if ! has "$(_python_get_implementation "${PYTHON_ABI}")" Jython PyPy; then
 					"$(PYTHON ${PYTHON_ABI})" -O -m py_compile "${other_files[@]}" &> /dev/null || exit_status="1"
 				fi
-				_python_clean_compiled_modules "${other_files[@]}"
+				_python_clean_byte-compiled_modules "${other_files[@]}"
 			fi
 			eend "${exit_status}"
 			if [[ -n "${stderr}" ]]; then
@@ -3987,10 +4004,10 @@ python_mod_optimize() {
 			fi
 		fi
 	else
-		# Deprecated part of python_mod_optimize()
+		# Deprecated part of python_byte-compile_modules()
 		ewarn
 		ewarn "Deprecation Warning: Usage of ${FUNCNAME}() in packages not supporting installation"
-		ewarn "for multiple Python ABIs in EAPI <=2 is deprecated and will be disallowed on 2011-08-01."
+		ewarn "for multiple Python ABIs in EAPI <=2 is deprecated and will be disallowed on 2016-01-01."
 		ewarn "Use EAPI >=3 and call ${FUNCNAME}() with paths having appropriate syntax."
 		ewarn "The ebuild needs to be fixed. Please report a bug, if it has not been already reported."
 		ewarn
@@ -4052,26 +4069,26 @@ python_mod_optimize() {
 		if ((${#mydirs[@]})); then
 			"$(PYTHON ${PYTHON_ABI})" "${myroot}$(python_get_libdir)/compileall.py" "${myopts[@]}" "${mydirs[@]}" || return_code="1"
 			"$(PYTHON ${PYTHON_ABI})" -O "${myroot}$(python_get_libdir)/compileall.py" "${myopts[@]}" "${mydirs[@]}" &> /dev/null || return_code="1"
-			_python_clean_compiled_modules "${mydirs[@]}"
+			_python_clean_byte-compiled_modules "${mydirs[@]}"
 		fi
 
 		if ((${#myfiles[@]})); then
 			"$(PYTHON ${PYTHON_ABI})" "${myroot}$(python_get_libdir)/py_compile.py" "${myfiles[@]}" || return_code="1"
 			"$(PYTHON ${PYTHON_ABI})" -O "${myroot}$(python_get_libdir)/py_compile.py" "${myfiles[@]}" &> /dev/null || return_code="1"
-			_python_clean_compiled_modules "${myfiles[@]}"
+			_python_clean_byte-compiled_modules "${myfiles[@]}"
 		fi
 
 		eend "${return_code}"
 	fi
 }
 
-# @FUNCTION: python_mod_cleanup
+# @FUNCTION: python_clean_byte-compiled_modules
 # @USAGE: [-A|--ABIs-patterns Python_ABIs] [--allow-evaluated-non-sitedir-paths] [--] <file|directory> [files|directories]
 # @DESCRIPTION:
 # Delete orphaned byte-compiled Python modules corresponding to specified Python modules.
 #
 # This function can be used only in pkg_postrm() phase.
-python_mod_cleanup() {
+python_clean_byte-compiled_modules() {
 	if [[ "${EBUILD_PHASE}" != "postrm" ]]; then
 		die "${FUNCNAME}() can be used only in pkg_postrm() phase"
 	fi
@@ -4164,10 +4181,10 @@ python_mod_cleanup() {
 			shift
 		done
 	else
-		# Deprecated part of python_mod_cleanup()
+		# Deprecated part of python_clean_byte-compiled_modules()
 		ewarn
 		ewarn "Deprecation Warning: Usage of ${FUNCNAME}() in packages not supporting installation"
-		ewarn "for multiple Python ABIs in EAPI <=2 is deprecated and will be disallowed on 2011-08-01."
+		ewarn "for multiple Python ABIs in EAPI <=2 is deprecated and will be disallowed on 2016-01-01."
 		ewarn "Use EAPI >=3 and call ${FUNCNAME}() with paths having appropriate syntax."
 		ewarn "The ebuild needs to be fixed. Please report a bug, if it has not been already reported."
 		ewarn
@@ -4176,7 +4193,7 @@ python_mod_cleanup() {
 		search_paths=("${search_paths[@]/#/${root}/}")
 	fi
 
-	_python_clean_compiled_modules "${search_paths[@]}"
+	_python_clean_byte-compiled_modules "${search_paths[@]}"
 }
 
 # ================================================================================================
@@ -4311,3 +4328,23 @@ _python_clean_cffi_modules() {
 # ================================================================================================
 # ===================================== DEPRECATED FUNCTIONS =====================================
 # ================================================================================================
+
+# Scheduled for deletion on 2016-01-01.
+python_enable_pyc() {
+	python_enable_byte-compilation "$@"
+}
+
+# Scheduled for deletion on 2016-01-01.
+python_disable_pyc() {
+	python_disable_byte-compilation "$@"
+}
+
+# Scheduled for deletion on 2016-01-01.
+python_mod_optimize() {
+	python_byte-compile_modules "$@"
+}
+
+# Scheduled for deletion on 2016-01-01.
+python_mod_cleanup() {
+	python_clean_byte-compiled_modules "$@"
+}
