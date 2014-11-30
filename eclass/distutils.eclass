@@ -470,8 +470,8 @@ distutils_src_install() {
 # @FUNCTION: distutils_pkg_postinst
 # @DESCRIPTION:
 # The distutils pkg_postinst function. This function is exported.
-# When PYTHON_MODULES variable is set, then this function calls python_mod_optimize() with modules
-# specified in PYTHON_MODULES variable. Otherwise it calls python_mod_optimize() with module, whose
+# When PYTHON_MODULES variable is set, then this function calls python_byte-compile_modules() with modules
+# specified in PYTHON_MODULES variable. Otherwise it calls python_byte-compile_modules() with module, whose
 # name is equal to name of current package, if this module exists.
 distutils_pkg_postinst() {
 	if [[ "${EBUILD_PHASE}" != "postinst" ]]; then
@@ -504,15 +504,15 @@ distutils_pkg_postinst() {
 	fi
 
 	if [[ -n "${PYTHON_MODULES}" ]]; then
-		python_mod_optimize ${PYTHON_MODULES}
+		python_byte-compile_modules ${PYTHON_MODULES}
 	fi
 }
 
 # @FUNCTION: distutils_pkg_postrm
 # @DESCRIPTION:
 # The distutils pkg_postrm function. This function is exported.
-# When PYTHON_MODULES variable is set, then this function calls python_mod_cleanup() with modules
-# specified in PYTHON_MODULES variable. Otherwise it calls python_mod_cleanup() with module, whose
+# When PYTHON_MODULES variable is set, then this function calls python_clean_byte-compiled_modules() with modules
+# specified in PYTHON_MODULES variable. Otherwise it calls python_clean_byte-compiled_modules() with module, whose
 # name is equal to name of current package, if this module exists.
 distutils_pkg_postrm() {
 	if [[ "${EBUILD_PHASE}" != "postrm" ]]; then
@@ -545,7 +545,7 @@ distutils_pkg_postrm() {
 	fi
 
 	if [[ -n "${PYTHON_MODULES}" ]]; then
-		python_mod_cleanup ${PYTHON_MODULES}
+		python_clean_byte-compiled_modules ${PYTHON_MODULES}
 	fi
 }
 
