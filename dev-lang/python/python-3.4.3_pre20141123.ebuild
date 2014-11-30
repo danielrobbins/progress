@@ -224,9 +224,9 @@ src_test() {
 		return
 	fi
 
-	# Byte compiling should be enabled here.
+	# Byte-compilation should be enabled here.
 	# Otherwise test_import fails.
-	python_enable_pyc
+	python_enable_byte-compilation
 
 	# Skip failing tests.
 	local skipped_tests="gdb"
@@ -251,7 +251,7 @@ src_test() {
 	elog "cd '${EPREFIX}$(python_get_libdir)/test'"
 	elog "and run the tests separately."
 
-	python_disable_pyc
+	python_disable_byte-compilation
 
 	if [[ "${result}" -ne 0 ]]; then
 		die "emake test failed"
@@ -318,7 +318,7 @@ eselect_python_update() {
 pkg_postinst() {
 	eselect_python_update
 
-	python_mod_optimize -f -x "/(site-packages|test|tests)/" $(python_get_libdir)
+	python_byte-compile_modules -f -x "/(site-packages|test|tests)/" $(python_get_libdir)
 
 	if [[ "${python_updater_warning}" == "1" ]]; then
 		ewarn
@@ -340,5 +340,5 @@ pkg_postinst() {
 pkg_postrm() {
 	eselect_python_update
 
-	python_mod_cleanup $(python_get_libdir)
+	python_clean_byte-compiled_modules $(python_get_libdir)
 }
