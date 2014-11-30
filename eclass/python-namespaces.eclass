@@ -153,7 +153,7 @@ except ImportError:
 # @FUNCTION: python-namespaces_pkg_postinst
 # @DESCRIPTION:
 # Implementation of pkg_postinst() phase. This function is exported.
-# This function calls python_mod_optimize() with __init__.py modules corresponding to Python namespaces.
+# This function calls python_byte-compile_modules() with __init__.py modules corresponding to Python namespaces.
 python-namespaces_pkg_postinst() {
 	if [[ "${EBUILD_PHASE}" != "postinst" ]]; then
 		die "${FUNCNAME}() can be used only in pkg_postinst() phase"
@@ -165,13 +165,13 @@ python-namespaces_pkg_postinst() {
 		die "${FUNCNAME}() does not accept arguments"
 	fi
 
-	python_mod_optimize $(for namespace in $(_python-namespaces_get_enabled_namespaces); do echo ${namespace//.//}/__init__.py; done)
+	python_byte-compile_modules $(for namespace in $(_python-namespaces_get_enabled_namespaces); do echo ${namespace//.//}/__init__.py; done)
 }
 
 # @FUNCTION: python-namespaces_pkg_postrm
 # @DESCRIPTION:
 # Implementation of pkg_postrm() phase. This function is exported.
-# This function calls python_mod_cleanup() with __init__.py modules corresponding to Python namespaces.
+# This function calls python_clean_byte-compiled_modules() with __init__.py modules corresponding to Python namespaces.
 python-namespaces_pkg_postrm() {
 	if [[ "${EBUILD_PHASE}" != "postrm" ]]; then
 		die "${FUNCNAME}() can be used only in pkg_postrm() phase"
@@ -183,5 +183,5 @@ python-namespaces_pkg_postrm() {
 		die "${FUNCNAME}() does not accept arguments"
 	fi
 
-	python_mod_cleanup $(for namespace in $(_python-namespaces_get_enabled_namespaces); do echo ${namespace//.//}/__init__.py; done)
+	python_clean_byte-compiled_modules $(for namespace in $(_python-namespaces_get_enabled_namespaces); do echo ${namespace//.//}/__init__.py; done)
 }
