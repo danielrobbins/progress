@@ -39,7 +39,7 @@ CDEPEND=">=dev-db/sqlite-3.6.18
 	dev-libs/expat
 	sys-libs/zlib:0=
 	berkdb? ( >=sys-libs/db-4:= )
-	gnome-keyring? ( dev-libs/glib:2 sys-apps/dbus gnome-base/gnome-keyring )
+	gnome-keyring? ( dev-libs/glib:2 sys-apps/dbus gnome-base/libgnome-keyring )
 	kde? ( dev-qt/qtcore:4 dev-qt/qtdbus:4 dev-qt/qtgui:4 sys-apps/dbus kde-base/kdelibs:4 )
 	magic? ( sys-apps/file )
 	perl? ( dev-lang/perl:= )
@@ -797,7 +797,7 @@ pkg_preinst() {
 
 pkg_postinst() {
 	if use ctypes-python || use python; then
-		python_mod_optimize $(use ctypes-python && echo csvn) $(use python && echo libsvn svn)
+		python_byte-compile_modules $(use ctypes-python && echo csvn) $(use python && echo libsvn svn)
 	fi
 
 	if use extras; then
@@ -826,7 +826,7 @@ pkg_postinst() {
 
 pkg_postrm() {
 	if use ctypes-python || use python; then
-		python_mod_cleanup $(use ctypes-python && echo csvn) $(use python && echo libsvn svn)
+		python_clean_byte-compiled_modules $(use ctypes-python && echo csvn) $(use python && echo libsvn svn)
 	fi
 }
 
