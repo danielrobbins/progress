@@ -11,7 +11,7 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="https://hg.python.org/jython"
-	EHG_REVISION="9fef5da411e5"
+	EHG_REVISION="7e2e9537565f"
 fi
 
 PATCHSET_REVISION="20121230"
@@ -32,7 +32,7 @@ CDEPEND="dev-java/ant-core:0
 	dev-java/bcpkix:0
 	dev-java/bcprov:0
 	dev-java/commons-compress:0
-	dev-java/guava:17
+	dev-java/guava:18
 	dev-java/icu4j:52
 	dev-java/jffi:1.2
 	dev-java/jline:0
@@ -76,7 +76,7 @@ java_prepare() {
 	java-pkg_jar-from --into extlibs bcpkix bcpkix.jar bcpkix-jdk15on-150.jar
 	java-pkg_jar-from --into extlibs bcprov bcprov.jar bcprov-jdk15on-150.jar
 	java-pkg_jar-from --into extlibs commons-compress commons-compress.jar commons-compress-1.8.1.jar
-	java-pkg_jar-from --into extlibs guava-17 guava.jar guava-17.0.jar
+	java-pkg_jar-from --into extlibs guava-18 guava.jar guava-17.0.jar
 	java-pkg_jar-from --into extlibs icu4j-52 icu4j.jar icu4j-52_1.jar
 	java-pkg_jar-from --into extlibs jffi-1.2 jffi.jar jffi-1.2.6.jar
 	java-pkg_jar-from --into extlibs jline jline.jar jline-1.0.jar
