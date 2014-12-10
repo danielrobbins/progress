@@ -3,8 +3,8 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
+PYTHON_ABI_TYPE="multiple"
+PYTHON_RESTRICTED_ABIS="*-jython *-pypy"
 DISTUTILS_SRC_TEST="setup.py"
 
 inherit distutils
@@ -37,6 +37,14 @@ src_prepare() {
 		# https://bugs.launchpad.net/pycrypto/+bug/1004781
 		sed -e "s/test_negative_number_roundtrip_mpzToLongObj_longObjToMPZ/_&/" -i lib/Crypto/SelfTest/Util/test_number.py
 	fi
+
+	# Fix Crypto.PublicKey.RSA._RSAobj.exportKey(format="OpenSSH") with Python 3.
+	# https://github.com/dlitz/pycrypto/commit/ab25c6fe95ee92fac3187dcd90e0560ccacb084a
+	sed \
+		-e "/keyparts =/s/'ssh-rsa'/b('ssh-rsa')/" \
+		-e "s/keystring = ''.join/keystring = b('').join/" \
+		-e "s/return 'ssh-rsa '/return b('ssh-rsa ')/" \
+		-i lib/Crypto/PublicKey/RSA.py
 }
 
 src_configure() {
