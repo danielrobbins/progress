@@ -3,10 +3,10 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_DEPEND="<<[{*-cpython}ssl]>>"
-PYTHON_MULTIPLE_ABIS="1"
+PYTHON_DEPEND="<<[{*-cpython}ssl,{*-cpython}xml]>>"
+PYTHON_ABI_TYPE="multiple"
 PYTHON_RESTRICTED_ABIS="*-jython"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.1"
 DISTUTILS_SRC_TEST="setup.py"
 
 inherit distutils
@@ -36,6 +36,14 @@ DOCS="CHANGES.rst"
 src_prepare() {
 	distutils_src_prepare
 	cp libcloud/test/secrets.py-dist libcloud/test/secrets.py || die "cp failed"
+
+	# Disable usage of dev-python/lxml.
+	# https://issues.apache.org/jira/browse/LIBCLOUD-642
+	sed -e "s/from lxml\(\.[^[:space:]]\+\)\? import .*/raise ImportError/" -i $(grep -Elr "from lxml(\.[^[:space:]]+)? import " libcloud)
+
+	# Fix compatibility with Python 3.2.
+	# https://issues.apache.org/jira/browse/LIBCLOUD-645
+	sed -e "s/'key': key.publickey().exportKey('OpenSSH')/'key': (key.publickey().exportKey('OpenSSH').decode('utf-8') if __import__('sys').version_info[0] >= 3 else key.publickey().exportKey('OpenSSH'))/" -i libcloud/compute/drivers/softlayer.py
 }
 
 src_install() {
