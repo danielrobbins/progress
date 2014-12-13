@@ -74,7 +74,7 @@ case "${PERL_EXPORT_PHASE_FUNCTIONS:-yes}" in
 		;;
 esac
 
-LICENSE="${LICENSE:-|| ( Artistic GPL-1 GPL-2 GPL-3 )}"
+LICENSE="${LICENSE:-|| ( Artistic GPL-1+ )}"
 
 if [[ -n ${MY_PN} || -n ${MY_PV} || -n ${MODULE_VERSION} ]] ; then
 	: ${MY_P:=${MY_PN:-${PN}}-${MY_PV:-${MODULE_VERSION:-${PV}}}}
