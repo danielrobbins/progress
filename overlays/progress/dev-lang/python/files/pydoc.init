@@ -1,9 +1,5 @@
 #!/sbin/runscript
 
-depend() {
-	need net
-}
-
 start() {
 	local pydoc_port="${@PYDOC_PORT_VARIABLE@-${PYDOC_PORT}}"
 
@@ -12,7 +8,7 @@ start() {
 		return 1
 	fi
 
-	ebegin "Starting pydoc server on port ${pydoc_port}" 
+	ebegin "Starting pydoc server on port ${pydoc_port}"
 	start-stop-daemon --start --background --make-pidfile \
 			  --pidfile /var/run/@PYDOC@.pid \
 			  --exec /usr/bin/@PYDOC@ -- -p "${pydoc_port}"
