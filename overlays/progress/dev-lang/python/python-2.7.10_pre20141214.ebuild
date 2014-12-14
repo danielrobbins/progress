@@ -12,7 +12,7 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="https://hg.python.org/cpython"
-	EHG_REVISION="3537994fa43b"
+	EHG_REVISION="baa5258bef22"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
@@ -221,6 +221,7 @@ src_configure() {
 		--infodir='${prefix}/share/info' \
 		--mandir='${prefix}/share/man' \
 		--with-dbmliborder="${dbmliborder}" \
+		--without-ensurepip \
 		--with-libc="" \
 		--enable-loadable-sqlite-extensions \
 		--with-system-expat \
@@ -247,9 +248,9 @@ src_test() {
 		return
 	fi
 
-	# Byte compiling should be enabled here.
+	# Byte-compilation should be enabled here.
 	# Otherwise test_import fails.
-	python_enable_pyc
+	python_enable_byte-compilation
 
 	# Skip failing tests.
 	local skipped_tests="distutils gdb"
@@ -274,7 +275,7 @@ src_test() {
 	elog "cd '${EPREFIX}$(python_get_libdir)/test'"
 	elog "and run the tests separately."
 
-	python_disable_pyc
+	python_disable_byte-compilation
 
 	if [[ "${result}" -ne 0 ]]; then
 		die "emake test failed"
@@ -341,17 +342,18 @@ eselect_python_update() {
 pkg_postinst() {
 	eselect_python_update
 
-	python_mod_optimize -f -x "/(site-packages|test|tests)/" $(python_get_libdir)
+	python_byte-compile_modules -f -x "/(site-packages|test|tests)/" $(python_get_libdir)
 
 	if [[ "${python_updater_warning}" == "1" ]]; then
 		ewarn
 		ewarn "\e[1;31m************************************************************************\e[0m"
 		ewarn
 		ewarn "You have just upgraded from an older version of Python. You should:"
-		ewarn "1. Switch active version of Python ${PV%%.*} using 'eselect python'"
-		ewarn "2. Update PYTHON_ABIS variable in make.conf"
-		ewarn "3. Run 'emerge --update --deep --newuse world'"
-		ewarn "4. Run 'python-updater [options]' to rebuild potential remaining Python-related packages"
+		ewarn "1. Run 'emerge --oneshot sys-apps/portage'"
+		ewarn "2. Update potential PYTHON_* variables in make.conf and package.use"
+		ewarn "3. Run 'emerge --nodeps --oneshot sys-apps/portage'"
+		ewarn "4. Switch active version of Python ${PV%%.*} using 'eselect python'"
+		ewarn "5. Run 'emerge --update --deep --newuse @world'"
 		ewarn
 		ewarn "\e[1;31m************************************************************************\e[0m"
 		ewarn
@@ -362,5 +364,5 @@ pkg_postinst() {
 pkg_postrm() {
 	eselect_python_update
 
-	python_mod_cleanup $(python_get_libdir)
+	python_clean_byte-compiled_modules $(python_get_libdir)
 }

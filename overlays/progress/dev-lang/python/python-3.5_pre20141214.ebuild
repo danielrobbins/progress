@@ -12,7 +12,7 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="https://hg.python.org/cpython"
-	EHG_REVISION="df5c6b05238e"
+	EHG_REVISION="df8601299c94"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
@@ -32,9 +32,9 @@ else
 fi
 
 LICENSE="PSF-2"
-SLOT="3.4"
+SLOT="3.5"
 PYTHON_ABI="${SLOT}"
-KEYWORDS="*"
+KEYWORDS="~*"
 IUSE="build doc elibc_uclibc examples gdbm ipv6 +ncurses +readline sqlite +ssl +threads tk wininst +xml"
 
 RDEPEND="app-arch/bzip2
@@ -215,6 +215,13 @@ src_compile() {
 	else
 		pax-mark m python
 	fi
+
+	if use doc; then
+		einfo "Generation of documentation"
+		cd Doc
+		mkdir -p build/{doctrees,html}
+		sphinx-build -b html -d build/doctrees . build/html || die "Generation of documentation failed"
+	fi
 }
 
 src_test() {
@@ -224,9 +231,9 @@ src_test() {
 		return
 	fi
 
-	# Byte compiling should be enabled here.
+	# Byte-compilation should be enabled here.
 	# Otherwise test_import fails.
-	python_enable_pyc
+	python_enable_byte-compilation
 
 	# Skip failing tests.
 	local skipped_tests="gdb"
@@ -251,7 +258,7 @@ src_test() {
 	elog "cd '${EPREFIX}$(python_get_libdir)/test'"
 	elog "and run the tests separately."
 
-	python_disable_pyc
+	python_disable_byte-compilation
 
 	if [[ "${result}" -ne 0 ]]; then
 		die "emake test failed"
@@ -284,6 +291,12 @@ src_install() {
 	use wininst || rm -f "${ED}$(python_get_libdir)/distutils/command/"wininst-*.exe
 
 	dodoc Misc/{ACKS,HISTORY,NEWS} || die "dodoc failed"
+
+	if use doc; then
+		dohtml -A xml -r Doc/build/html/
+		echo "PYTHONDOCS_${SLOT//./_}=\"${EPREFIX}/usr/share/doc/${PF}/html/library\"" > "60python-docs-${SLOT}"
+		doenvd "60python-docs-${SLOT}"
+	fi
 
 	if use examples; then
 		insinto /usr/share/doc/${PF}/examples
@@ -318,17 +331,18 @@ eselect_python_update() {
 pkg_postinst() {
 	eselect_python_update
 
-	python_mod_optimize -f -x "/(site-packages|test|tests)/" $(python_get_libdir)
+	python_byte-compile_modules -f -x "/(site-packages|test|tests)/" $(python_get_libdir)
 
 	if [[ "${python_updater_warning}" == "1" ]]; then
 		ewarn
 		ewarn "\e[1;31m************************************************************************\e[0m"
 		ewarn
 		ewarn "You have just upgraded from an older version of Python. You should:"
-		ewarn "1. Switch active version of Python ${PV%%.*} using 'eselect python'"
-		ewarn "2. Update PYTHON_ABIS variable in make.conf"
-		ewarn "3. Run 'emerge --update --deep --newuse world'"
-		ewarn "4. Run 'python-updater [options]' to rebuild potential remaining Python-related packages"
+		ewarn "1. Run 'emerge --oneshot sys-apps/portage'"
+		ewarn "2. Update potential PYTHON_* variables in make.conf and package.use"
+		ewarn "3. Run 'emerge --nodeps --oneshot sys-apps/portage'"
+		ewarn "4. Switch active version of Python ${PV%%.*} using 'eselect python'"
+		ewarn "5. Run 'emerge --update --deep --newuse @world'"
 		ewarn
 		ewarn "\e[1;31m************************************************************************\e[0m"
 		ewarn
@@ -339,5 +353,5 @@ pkg_postinst() {
 pkg_postrm() {
 	eselect_python_update
 
-	python_mod_cleanup $(python_get_libdir)
+	python_clean_byte-compiled_modules $(python_get_libdir)
 }
