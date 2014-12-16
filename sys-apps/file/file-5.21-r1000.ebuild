@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_DEPEND="python? ( <<>> )"
-PYTHON_MULTIPLE_ABIS="1"
+PYTHON_ABI_TYPE="multiple"
 # http://bugs.jython.org/issue1916
 PYTHON_RESTRICTED_ABIS="*-jython"
 
