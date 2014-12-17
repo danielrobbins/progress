@@ -50,7 +50,7 @@ RDEPEND="${CDEPEND}
 	apache2? ( www-servers/apache[apache2_modules_dav] )
 	extras? ( =dev-lang/python-2* )
 	java? ( >=virtual/jre-1.5 )
-	kde? ( kde-base/kwalletd )
+	kde? ( || ( kde-apps/kwalletd:4 kde-base/kwalletd ) )
 	nls? ( virtual/libintl )
 	perl? ( dev-perl/URI )"
 DEPEND="${CDEPEND}
