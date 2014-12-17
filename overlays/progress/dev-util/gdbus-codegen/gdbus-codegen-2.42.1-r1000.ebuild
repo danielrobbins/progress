@@ -5,8 +5,8 @@
 EAPI="5-progress"
 GNOME_ORG_MODULE="glib"
 PYTHON_DEPEND="<<[xml]>>"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
+PYTHON_ABI_TYPE="multiple"
+PYTHON_RESTRICTED_ABIS="*-jython *-pypy"
 
 inherit distutils eutils gnome.org
 
@@ -15,7 +15,7 @@ HOMEPAGE="http://www.gtk.org/"
 
 LICENSE="LGPL-2+"
 SLOT="0"
-KEYWORDS="*"
+[[ "${REPOSITORY}" == "progress" ]] && KEYWORDS="~*" || KEYWORDS="*"
 IUSE=""
 
 DEPEND=""
@@ -29,8 +29,7 @@ S="${WORKDIR}/glib-${PV}/gio/gdbus-2.0/codegen"
 PYTHON_MODULES="gdbus_codegen"
 
 src_prepare() {
-	epatch "${FILESDIR}/${PN}-2.32.4-sitedir.patch"
-	epatch "${FILESDIR}/${PN}-2.36.4-input-encoding.patch"
+	epatch "${FILESDIR}/${PN}-2.40.0-sitedir.patch"
 	sed -e "s:\"/usr/local\":\"${EPREFIX}/usr\":" \
 		-i config.py || die "sed config.py failed"
 
