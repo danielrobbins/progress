@@ -215,6 +215,10 @@ gnome2_src_install() {
 		emake DESTDIR="${GNOME2_DESTDIR:-${D}}" "scrollkeeper_localstate_dir=${installation_prefix}${sk_tmp_dir} " "$@" install || die "install failed"
 	else
 		debug-print "Installing with 'einstall'"
+		eqawarn
+		eqawarn "Support for USE_EINSTALL will be dropped in a month,"
+		eqawarn "please stop using it (#482082)"
+		eqawarn
 		einstall "scrollkeeper_localstate_dir=${installation_prefix}${sk_tmp_dir} " "$@" || die "einstall failed"
 	fi
 
