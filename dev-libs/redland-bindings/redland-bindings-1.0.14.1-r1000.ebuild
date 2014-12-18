@@ -2,10 +2,11 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
+EAPI="5-progress"
 PYTHON_DEPEND="python? ( <<>> )"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
+PYTHON_ABI_TYPE="multiple"
+PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 
 inherit multilib python
 
@@ -15,12 +16,12 @@ SRC_URI="http://download.librdf.org/source/${P}.tar.gz"
 
 LICENSE="Apache-2.0 GPL-2 LGPL-2.1"
 SLOT="0"
-KEYWORDS="amd64 ~ppc x86 ~x86-linux ~ppc-macos"
+KEYWORDS="*"
 IUSE="lua perl python php ruby"
 
 RDEPEND=">=dev-libs/redland-1.0.14
 	lua? ( >=dev-lang/lua-5.1 )
-	perl? ( dev-lang/perl )
+	perl? ( dev-lang/perl:= )
 	php? ( dev-lang/php )
 	ruby? ( dev-lang/ruby dev-ruby/log4r )"
 DEPEND="${RDEPEND}
@@ -95,9 +96,9 @@ src_install() {
 }
 
 pkg_postinst() {
-	use python && python_mod_optimize RDF.py
+	use python && python_byte-compile_modules RDF.py
 }
 
 pkg_postrm() {
-	use python && python_mod_cleanup RDF.py
+	use python && python_clean_byte-compiled_modules RDF.py
 }
