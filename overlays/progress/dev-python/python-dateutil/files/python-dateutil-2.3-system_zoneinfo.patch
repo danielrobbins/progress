@@ -36,7 +36,7 @@ https://github.com/dateutil/dateutil/issues/11
 +                        absolute_filename = os.path.join(root, filename)
 +                        relative_filename = absolute_filename[len(_SYSTEM_ZONEINFO_DIR)+1:]
 +                        with open(absolute_filename, "rb") as file:
-+                            if file.read(4).decode() == "TZif":
++                            if file.read(4) == b"TZif":
 +                                self.zones[relative_filename] = tzfile(absolute_filename, relative_filename)
  
  
