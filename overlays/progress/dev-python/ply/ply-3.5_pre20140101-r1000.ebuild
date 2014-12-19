@@ -3,15 +3,14 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
-# 3.[3-9]: https://github.com/dabeaz/ply/issues/34
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.[3-9] *-jython"
+PYTHON_ABI_TYPE="multiple"
 
-inherit distutils
+inherit distutils eutils vcs-snapshot
 
 DESCRIPTION="Python Lex-Yacc library"
 HOMEPAGE="http://www.dabeaz.com/ply/ https://github.com/dabeaz/ply https://pypi.python.org/pypi/ply"
-SRC_URI="http://www.dabeaz.com/ply/${P}.tar.gz"
+# SRC_URI="http://www.dabeaz.com/ply/${P}.tar.gz"
+SRC_URI="https://github.com/dabeaz/ply/archive/6513f3537d80f483ec9c7e36d52e87f107a57f23.tar.gz -> ${P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
@@ -21,10 +20,15 @@ IUSE="examples"
 DEPEND="$(python_abi_depend dev-python/setuptools)"
 RDEPEND=""
 
-DOCS="ANNOUNCE CHANGES README TODO"
+DOCS="ANNOUNCE CHANGES README.md TODO"
+
+src_prepare() {
+	distutils_src_prepare
+	epatch "${FILESDIR}/${P}-tests.patch"
+}
 
 src_test() {
-	python_enable_pyc
+	python_enable_byte-compilation
 
 	cd test
 
@@ -41,7 +45,7 @@ src_test() {
 	}
 	python_execute_function testing
 
-	python_disable_pyc
+	python_disable_byte-compilation
 }
 
 src_install() {
