@@ -9,7 +9,7 @@ PYTHON_ABI_TYPE="multiple"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 DISTUTILS_SRC_TEST="setup.py"
 
-inherit distutils
+inherit distutils eutils
 
 DESCRIPTION="Extensions to the standard Python datetime module"
 HOMEPAGE="https://dateutil.readthedocs.org/ https://launchpad.net/dateutil https://github.com/dateutil/dateutil https://pypi.python.org/pypi/python-dateutil"
@@ -31,6 +31,7 @@ PYTHON_MODULES="dateutil"
 src_prepare() {
 	distutils_src_prepare
 
-	# Install not dateutil-zoneinfo.tar.gz.
+	# Use system zoneinfo and install not dateutil-zoneinfo.tar.gz.
+	epatch "${FILESDIR}/${P}-system_zoneinfo.patch"
 	sed -e "/package_data=/d" -i setup.py || die "sed failed"
 }
