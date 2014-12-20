@@ -3,8 +3,8 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_DEPEND="<<[threads]>>"
 PYTHON_ABI_TYPE="multiple"
+PYTHON_DEPEND="<<[threads]>>"
 PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy"
 # Random time-outs in some tests.
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
