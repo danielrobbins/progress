@@ -3,7 +3,6 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="3"
-WANT_AUTOMAKE="none"
 WANT_LIBTOOL="none"
 
 inherit autotools eutils flag-o-matic multilib pax-utils python toolchain-funcs
@@ -12,7 +11,7 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="https://hg.python.org/cpython"
-	EHG_REVISION="7d1bd8eed59e"
+	EHG_REVISION="872f048f0403"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
@@ -135,6 +134,7 @@ src_prepare() {
 	# Disable ABI flags.
 	sed -e "s/ABIFLAGS=\"\${ABIFLAGS}.*\"/:/" -i configure.ac || die "sed failed"
 
+	eaclocal
 	eautoconf
 	eautoheader
 }
