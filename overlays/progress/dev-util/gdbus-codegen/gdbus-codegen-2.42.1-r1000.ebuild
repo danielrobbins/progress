@@ -4,8 +4,8 @@
 
 EAPI="5-progress"
 GNOME_ORG_MODULE="glib"
-PYTHON_DEPEND="<<[xml]>>"
 PYTHON_ABI_TYPE="multiple"
+PYTHON_DEPEND="<<[xml]>>"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy"
 
 inherit distutils eutils gnome.org

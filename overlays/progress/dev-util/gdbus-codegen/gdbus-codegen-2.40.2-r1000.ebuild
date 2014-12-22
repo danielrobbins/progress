@@ -4,9 +4,9 @@
 
 EAPI="5-progress"
 GNOME_ORG_MODULE="glib"
+PYTHON_ABI_TYPE="multiple"
 PYTHON_DEPEND="<<[xml]>>"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="*-jython *-pypy"
 
 inherit distutils eutils gnome.org
 
@@ -15,7 +15,7 @@ HOMEPAGE="http://www.gtk.org/"
 
 LICENSE="LGPL-2+"
 SLOT="0"
-KEYWORDS="~*"
+KEYWORDS="*"
 IUSE=""
 
 DEPEND=""
