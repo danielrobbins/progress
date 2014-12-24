@@ -3,7 +3,10 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_DEPEND="python? ( <<2>> )"
+PYTHON_ABI_TYPE="single"
+PYTHON_BDEPEND="test? ( <<>> )"
+PYTHON_DEPEND="python? ( <<>> )"
+PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy"
 
 inherit eutils multilib python toolchain-funcs versionator
 
@@ -14,10 +17,9 @@ HOMEPAGE="http://www.boost.org/doc/tools/build/index.html"
 SRC_URI="mirror://sourceforge/boost/boost_${MY_PV}.tar.bz2"
 
 LICENSE="Boost-1.0"
-SLOT=0
+SLOT="0"
 KEYWORDS="*"
 IUSE="examples python test"
-REQUIRED_USE="test? ( python )"
 
 DEPEND="test? ( sys-apps/diffutils )"
 RDEPEND=""
@@ -25,8 +27,7 @@ RDEPEND=""
 S="${WORKDIR}/boost_${MY_PV}/tools/build/v2"
 
 pkg_setup() {
-	if use python; then
-		python_set_active_version 2
+	if use python || use test; then
 		python_pkg_setup
 	fi
 }
@@ -56,6 +57,8 @@ src_prepare() {
 		-e "s/^feature.feature optimization       : off speed space/& none/" \
 		-e "s/^feature.feature debug-symbols      : on off/& none/" \
 		-i tools/builtin.jam || die "sed failed"
+
+	epatch_user
 }
 
 src_configure() {
@@ -104,9 +107,9 @@ src_install() {
 }
 
 pkg_postinst() {
-	use python && python_mod_optimize /usr/share/boost-build
+	use python && python_byte-compile_modules /usr/share/boost-build
 }
 
 pkg_postrm() {
-	use python && python_mod_cleanup /usr/share/boost-build
+	use python && python_clean_byte-compiled_modules /usr/share/boost-build
 }
