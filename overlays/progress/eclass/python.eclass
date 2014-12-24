@@ -4,7 +4,7 @@
 
 # @ECLASS: python.eclass
 # @MAINTAINER:
-# Gentoo Python Project <python@gentoo.org>
+# Arfrever Frehtes Taifersar Arahesis <Arfrever@Apache.Org>
 # @BLURB: Eclass for Python packages
 # @DESCRIPTION:
 # The python eclass contains miscellaneous, useful functions for Python packages.
@@ -61,10 +61,12 @@ _CPYTHON3_GLOBALLY_SUPPORTED_ABIS=(3.1 3.2 3.3 3.4 3.5)
 _JYTHON_GLOBALLY_SUPPORTED_ABIS=(2.7-jython)
 _PYPY_GLOBALLY_SUPPORTED_ABIS=(2.7-pypy 3.2-pypy)
 _PYTHON_GLOBALLY_SUPPORTED_ABIS=(${_CPYTHON2_GLOBALLY_SUPPORTED_ABIS[@]} ${_CPYTHON3_GLOBALLY_SUPPORTED_ABIS[@]} ${_JYTHON_GLOBALLY_SUPPORTED_ABIS[@]} ${_PYPY_GLOBALLY_SUPPORTED_ABIS[@]})
+_PYTHON_GLOBALLY_SUPPORTED_ORDERED_ABIS=(${_JYTHON_GLOBALLY_SUPPORTED_ABIS[@]} ${_PYPY_GLOBALLY_SUPPORTED_ABIS[@]} ${_CPYTHON2_GLOBALLY_SUPPORTED_ABIS[@]} ${_CPYTHON3_GLOBALLY_SUPPORTED_ABIS[@]})
+_PYTHON_GLOBALLY_NONDEFAULT_ABIS="3.[5-9]"
 
-# ================================================================================================
-# ===================================== HANDLING OF METADATA =====================================
-# ================================================================================================
+# ========================================================================================================================
+# ================================================= HANDLING OF METADATA =================================================
+# ========================================================================================================================
 
 _PYTHON_ABI_PATTERN_REGEX="([[:alnum:]]|\.|-|\*|\[|\])+"
 
@@ -149,42 +151,135 @@ _python_implementation() {
 # Specification of type of Python ABIs.
 #
 # Valid values:
+#   single
 #   multiple
+#
+# PYTHON_ABI_TYPE="single" variable supported in:
+#   EAPI="5-progress"
+#
+# PYTHON_ABI_TYPE="multiple" variable supported in:
+#   EAPI="0"
+#   EAPI="1"
+#   EAPI="2"
+#   EAPI="3"
+#   EAPI="4"
+#   EAPI="4-python"
+#   EAPI="5"
+#   EAPI="5-progress"
+#
+# PYTHON_ABI_TYPE="single" variable enables generation of python_single_abi_* USE flags in:
+#   EAPI="5-progress"
+#
+# PYTHON_ABI_TYPE="multiple" variable enables generation of python_abis_* USE flags in:
+#   EAPI="4-python"
+#   EAPI="5-progress"
 
-_python_package_supporting_installation_for_multiple_python_abis() {
-	if has "${EAPI:-0}" 0 1 2 3 || { has "${EAPI:-0}" 4 5 && has "${PYTHON_ECLASS_API}" 0; }; then
-		if [[ "${PYTHON_ABI_TYPE}" == "multiple" || -n "${PYTHON_MULTIPLE_ABIS}" || -n "${SUPPORT_PYTHON_ABIS}" ]]; then
-			return 0
+if [[ -n "$(declare -p PYTHON_ABI_TYPE 2> /dev/null)" ]]; then
+	if [[ ! "${PYTHON_ABI_TYPE}" =~ ^(single|multiple)$ ]]; then
+		die "Invalid PYTHON_ABI_TYPE=\"${PYTHON_ABI_TYPE}\" variable"
+	fi
+	if has "${EAPI:-0}" 0 1 2 3 4 4-python 5 && [[ "${PYTHON_ABI_TYPE}" =~ ^(single)$ ]]; then
+		eerror "Use EAPI=\"5-progress\" or newer for PYTHON_ABI_TYPE=\"${PYTHON_ABI_TYPE}\" variable."
+		die "PYTHON_ABI_TYPE=\"${PYTHON_ABI_TYPE}\" variable not supported in EAPI=\"${EAPI}\""
+	fi
+	if [[ -n "${PYTHON_MULTIPLE_ABIS}" ]]; then
+		die "PYTHON_MULTIPLE_ABIS variable is redundant with PYTHON_ABI_TYPE variable"
+	fi
+	if [[ -n "${SUPPORT_PYTHON_ABIS}" ]]; then
+		die "SUPPORT_PYTHON_ABIS variable is redundant with PYTHON_ABI_TYPE variable"
+	fi
+fi
+
+if ! { has "${EAPI:-0}" 0 1 2 3 || { has "${EAPI:-0}" 4 5 && has "${PYTHON_ECLASS_API}" 0; }; }; then
+	if [[ -n "${SUPPORT_PYTHON_ABIS}" ]]; then
+		eerror "Use PYTHON_ABI_TYPE=\"multiple\" variable instead of SUPPORT_PYTHON_ABIS variable."
+		die "SUPPORT_PYTHON_ABIS variable is banned"
+	fi
+	if [[ -n "${RESTRICT_PYTHON_ABIS}" ]]; then
+		eerror "Use PYTHON_RESTRICTED_ABIS variable instead of RESTRICT_PYTHON_ABIS variable."
+		die "RESTRICT_PYTHON_ABIS variable is banned"
+	fi
+fi
+
+if ! has "${EAPI:-0}" 0 1 2 3 4 4-python 5 5-progress; then
+	if [[ -n "${PYTHON_MULTIPLE_ABIS}" ]]; then
+		eerror "Use PYTHON_ABI_TYPE=\"multiple\" variable instead of PYTHON_MULTIPLE_ABIS variable."
+		die "PYTHON_MULTIPLE_ABIS variable is banned"
+	fi
+fi
+
+# @ECLASS-VARIABLE: PYTHON_MULTIPLE_ABIS
+# @DESCRIPTION:
+# Set this to indicate that current package supports installation for multiple Python ABIs.
+# Deprecated in favor of PYTHON_ABI_TYPE="multiple".
+
+# @ECLASS-VARIABLE: PYTHON_RESTRICTED_ABIS
+# @DESCRIPTION:
+# Space-separated list of Python ABIs patterns. Support for Python ABIs matching any Python ABIs
+# patterns specified in this list is disabled.
+
+# @ECLASS-VARIABLE: PYTHON_NONDEFAULT_ABIS
+# @DESCRIPTION:
+# Space-separated list of Python ABIs patterns. Automatic enabling of python_single_abi_* USE flags
+# corresponding to Python ABIs matching any Python ABIs patterns specified in this list is disabled.
+# This variable is ignored in ebuilds not setting PYTHON_ABI_TYPE="single" variable.
+
+_python_abi_type() {
+	local type
+
+	if [[ "$#" -ne 1 ]]; then
+		die "${FUNCNAME}() requires 1 argument"
+	fi
+
+	type="$1"
+
+	if [[ "${type}" == "implicit_single" ]]; then
+		[[ -z "${PYTHON_ABI_TYPE}" && -z "${PYTHON_MULTIPLE_ABIS}" && -z "${SUPPORT_PYTHON_ABIS}" ]]
+	elif [[ "${type}" == "single" ]]; then
+		[[ "${PYTHON_ABI_TYPE}" == "single" ]]
+	elif [[ "${type}" == "multiple" ]]; then
+		if has "${EAPI:-0}" 0 1 2 3 || { has "${EAPI:-0}" 4 5 && has "${PYTHON_ECLASS_API}" 0; }; then
+			[[ "${PYTHON_ABI_TYPE}" == "multiple" || -n "${PYTHON_MULTIPLE_ABIS}" || -n "${SUPPORT_PYTHON_ABIS}" ]]
 		else
-			return 1
+			[[ "${PYTHON_ABI_TYPE}" == "multiple" || -n "${PYTHON_MULTIPLE_ABIS}" ]]
 		fi
 	else
-		if [[ "${PYTHON_ABI_TYPE}" == "multiple" || -n "${PYTHON_MULTIPLE_ABIS}" ]]; then
-			return 0
-		else
-			return 1
-		fi
+		die "${FUNCNAME}(): Unrecognized argument \"${type}\""
 	fi
 }
 
 _python_set_IUSE() {
-	local PYTHON_ABI USE_flags
+	local i PYTHON_ABI USE_flags
 
 	_PYTHON_LOCALLY_SUPPORTED_ABIS=()
 
 	for PYTHON_ABI in "${_PYTHON_GLOBALLY_SUPPORTED_ABIS[@]}"; do
 		if ! _python_check_python_abi_matching --patterns-list "${PYTHON_ABI}" "${PYTHON_RESTRICTED_ABIS}"; then
 			_PYTHON_LOCALLY_SUPPORTED_ABIS+=("${PYTHON_ABI}")
-			USE_flags+="${USE_flags:+ }python_abis_${PYTHON_ABI}"
+			if _python_abi_type single; then
+				USE_flags+="${USE_flags:+ }python_single_abi_${PYTHON_ABI}"
+			else
+				USE_flags+="${USE_flags:+ }python_abis_${PYTHON_ABI}"
+			fi
 		fi
 	done
+
+	if _python_abi_type single; then
+		for ((i = $((${#_PYTHON_GLOBALLY_SUPPORTED_ORDERED_ABIS[@]} - 1)); i >= 0; i--)); do
+			PYTHON_ABI="${_PYTHON_GLOBALLY_SUPPORTED_ORDERED_ABIS[${i}]}"
+			if has "${PYTHON_ABI}" "${_PYTHON_LOCALLY_SUPPORTED_ABIS[@]}" && ! _python_check_python_abi_matching --patterns-list "${PYTHON_ABI}" "${_PYTHON_GLOBALLY_NONDEFAULT_ABIS} ${PYTHON_NONDEFAULT_ABIS}"; then
+				USE_flags="${USE_flags/python_single_abi_${PYTHON_ABI}/+python_single_abi_${PYTHON_ABI}}"
+				break
+			fi
+		done
+	fi
 
 	if ! has "${EAPI:-0}" 4 5; then
 		IUSE="${USE_flags}"
 	fi
 }
 
-if ! has "${EAPI:-0}" 0 1 2 3 && _python_package_supporting_installation_for_multiple_python_abis; then
+if _python_abi_type single || { ! has "${EAPI:-0}" 0 1 2 3 && _python_abi_type multiple; }; then
 	_python_set_IUSE
 fi
 unset -f _python_set_IUSE
@@ -200,6 +295,7 @@ unset -f _python_set_IUSE
 #   EAPI="3"
 #   EAPI="4" + PYTHON_ECLASS_API="0"
 #   EAPI="5" + PYTHON_ECLASS_API="0"
+#
 # New API:
 #   EAPI="4" + PYTHON_ECLASS_API="1"
 #   EAPI="4-python"
@@ -209,7 +305,7 @@ unset -f _python_set_IUSE
 # PYTHON_DEPEND in new API is a dependency string with <<>> markers.
 # <<>> markers indicate atoms of Python implementational packages.
 # <<>> markers can contain USE dependencies.
-# <<>> markers must contain versions ranges in ebuilds of packages not supporting installation for multiple Python ABIs.
+# <<>> markers must contain versions ranges in ebuilds not setting PYTHON_ABI_TYPE variable.
 #
 # Syntax in old API:
 #   PYTHON_DEPEND:             [[!]USE_flag? ]<versions_range>
@@ -232,6 +328,7 @@ unset -f _python_set_IUSE
 #   EAPI="3"
 #   EAPI="4" + PYTHON_ECLASS_API="0"
 #   EAPI="5" + PYTHON_ECLASS_API="0"
+#
 # New API:
 #   EAPI="4" + PYTHON_ECLASS_API="1"
 #   EAPI="4-python"
@@ -241,7 +338,7 @@ unset -f _python_set_IUSE
 # PYTHON_BDEPEND in new API is a dependency string with <<>> markers.
 # <<>> markers indicate atoms of Python implementational packages.
 # <<>> markers can contain USE dependencies.
-# <<>> markers must contain versions ranges in ebuilds of packages not supporting installation for multiple Python ABIs.
+# <<>> markers must contain versions ranges in ebuilds not setting PYTHON_ABI_TYPE variable.
 #
 # Syntax in old API:
 #   PYTHON_BDEPEND:            [[!]USE_flag? ]<versions_range>
@@ -331,7 +428,7 @@ _python_parse_versions_range() {
 
 		_append_accepted_versions_range() {
 			local accepted_version="0" i
-			for ((i = "${#python_versions[@]}"; i >= 0; i--)); do
+			for ((i = $((${#python_versions[@]} - 1)); i >= 0; i--)); do
 				if [[ "${python_versions[${i}]}" == "${python_maximal_version}" ]]; then
 					accepted_version="1"
 				fi
@@ -422,13 +519,19 @@ _python_parse_dependencies_in_old_EAPIs() {
 unset _PYTHON_DEPEND_CHECKS_CODE _PYTHON_USE_FLAGS_CHECKS_CODE
 
 _python_parse_dependencies_in_new_EAPIs() {
-	local component cpython_abis=() cpython_atoms=() cpython_reversed_abis=() i input_value input_variable output_value output_variable output_variables PYTHON_ABI replace_whitespace_characters="1" required_USE_flags separate_components USE_dependencies versions_range
+	local component cpython_abis=() cpython_atoms=() cpython_reversed_abis=() i input_value input_variable output_value output_variable output_variables PYTHON_ABI replace_whitespace_characters="1" required_USE_flags separate_components USE_dependencies USE_flag_prefix versions_range
 
 	input_value="${!1}"
 	input_variable="$1"
 	output_variables="$2"
 
-	if has "${EAPI:-0}" 4 5 && _python_package_supporting_installation_for_multiple_python_abis; then
+	if _python_abi_type single; then
+		USE_flag_prefix="python_single_abi_"
+	else
+		USE_flag_prefix="python_abis_"
+	fi
+
+	if has "${EAPI:-0}" 4 5 && _python_abi_type multiple; then
 		cpython_abis=(${_CPYTHON2_GLOBALLY_SUPPORTED_ABIS[@]} ${_CPYTHON3_GLOBALLY_SUPPORTED_ABIS[@]})
 		for ((i = $((${#cpython_abis[@]} - 1)); i >= 0; i--)); do
 			cpython_reversed_abis+=("${cpython_abis[${i}]}")
@@ -461,7 +564,7 @@ _python_parse_dependencies_in_new_EAPIs() {
 		echo "${matched_USE_dependencies}"
 	}
 
-	for ((i = 0; i < "${#input_value}"; i++)); do
+	for ((i = 0; i < ${#input_value}; i++)); do
 		if [[ "${input_value:${i}:1}" == "<" && "${input_value:$((${i} + 1)):1}" == "<" ]]; then
 			replace_whitespace_characters="0"
 			separate_components+="${input_value:${i}:1}"
@@ -491,11 +594,11 @@ _python_parse_dependencies_in_new_EAPIs() {
 				versions_range="${component}"
 				USE_dependencies=""
 			fi
-			if _python_package_supporting_installation_for_multiple_python_abis; then
+			if _python_abi_type single || _python_abi_type multiple; then
 				if [[ -n "${versions_range}" ]]; then
-					die "Invalid syntax of ${input_variable}: Versions range cannot be used in ebuilds of packages supporting installation for multiple Python ABIs"
+					die "Invalid syntax of ${input_variable}: Versions range can not be used in ebuilds setting PYTHON_ABI_TYPE variable"
 				fi
-				if has "${EAPI:-0}" 4 5; then
+				if has "${EAPI:-0}" 4 5 && _python_abi_type multiple; then
 					cpython_atoms=()
 					for PYTHON_ABI in "${cpython_reversed_abis[@]}"; do
 						if ! _python_check_python_abi_matching --patterns-list "${PYTHON_ABI}" "${PYTHON_RESTRICTED_ABIS}"; then
@@ -514,30 +617,38 @@ _python_parse_dependencies_in_new_EAPIs() {
 						_PYTHON_USE_FLAGS_CHECKS_CODE+="${_PYTHON_USE_FLAGS_CHECKS_CODE:+ }:;"
 					fi
 				fi
+				if _python_abi_type single || { ! has "${EAPI:-0}" 4 5 && _python_abi_type multiple; }; then
+					output_value+="${output_value:+ }("
+				fi
 				for PYTHON_ABI in "${_PYTHON_LOCALLY_SUPPORTED_ABIS[@]}"; do
-					if has "${EAPI:-0}" 4 5; then
+					if has "${EAPI:-0}" 4 5 && _python_abi_type multiple; then
 						if [[ -n "${USE_dependencies}" ]]; then
 							_PYTHON_USE_FLAGS_CHECKS_CODE+="${_PYTHON_USE_FLAGS_CHECKS_CODE:+ }if [[ \"\${PYTHON_ABI}\" == \"${PYTHON_ABI}\" ]] && ! has_version \"\$(python_get_implementational_package)$(_get_matched_USE_dependencies)\"; then die \"\$(python_get_implementational_package)$(_get_matched_USE_dependencies) not installed in ROOT=\\\"\${ROOT}\\\"\"; fi;"
 						fi
 					else
 						if [[ "${PYTHON_ABI}" =~ ^[[:digit:]]+\.[[:digit:]]+$ ]]; then
-							output_value+="${output_value:+ }python_abis_${PYTHON_ABI}? ( dev-lang/python:${PYTHON_ABI}$(_get_matched_USE_dependencies) )"
+							output_value+="${output_value:+ }${USE_flag_prefix}${PYTHON_ABI}? ( dev-lang/python:${PYTHON_ABI}$(_get_matched_USE_dependencies) )"
 						elif [[ "${PYTHON_ABI}" =~ ^[[:digit:]]+\.[[:digit:]]+-jython$ ]]; then
-							output_value+="${output_value:+ }python_abis_${PYTHON_ABI}? ( dev-lang/jython:${PYTHON_ABI%-jython}$(_get_matched_USE_dependencies) )"
+							output_value+="${output_value:+ }${USE_flag_prefix}${PYTHON_ABI}? ( dev-lang/jython:${PYTHON_ABI%-jython}$(_get_matched_USE_dependencies) )"
 						elif [[ "${PYTHON_ABI}" =~ ^[[:digit:]]+\.[[:digit:]]+-pypy$ ]]; then
 							if has "${EAPI:-0}" 4-python; then
-								output_value+="${output_value:+ }python_abis_${PYTHON_ABI}? ( dev-lang/pypy:python-${PYTHON_ABI%-pypy}$(_get_matched_USE_dependencies) )"
+								output_value+="${output_value:+ }${USE_flag_prefix}${PYTHON_ABI}? ( dev-lang/pypy:python-${PYTHON_ABI%-pypy}$(_get_matched_USE_dependencies) )"
 							else
-								output_value+="${output_value:+ }python_abis_${PYTHON_ABI}? ( dev-lang/pypy:python-${PYTHON_ABI%-pypy}=$(_get_matched_USE_dependencies) )"
+								output_value+="${output_value:+ }${USE_flag_prefix}${PYTHON_ABI}? ( dev-lang/pypy:python-${PYTHON_ABI%-pypy}=$(_get_matched_USE_dependencies) )"
 							fi
 						fi
 					fi
 				done
-				if ! has "${EAPI:-0}" 4 5; then
+				if _python_abi_type single || { ! has "${EAPI:-0}" 4 5 && _python_abi_type multiple; }; then
+					output_value+="${output_value:+ })"
 					if [[ "${#_PYTHON_LOCALLY_SUPPORTED_ABIS[@]}" -gt 1 ]]; then
-						required_USE_flags+="${required_USE_flags:+ }|| ( ${_PYTHON_LOCALLY_SUPPORTED_ABIS[@]/#/python_abis_} )"
+						if _python_abi_type single; then
+							required_USE_flags+="${required_USE_flags:+ }^^ ( ${_PYTHON_LOCALLY_SUPPORTED_ABIS[@]/#/${USE_flag_prefix}} )"
+						else
+							required_USE_flags+="${required_USE_flags:+ }|| ( ${_PYTHON_LOCALLY_SUPPORTED_ABIS[@]/#/${USE_flag_prefix}} )"
+						fi
 					else
-						required_USE_flags+="${required_USE_flags:+ }${_PYTHON_LOCALLY_SUPPORTED_ABIS[@]/#/python_abis_}"
+						required_USE_flags+="${required_USE_flags:+ }${_PYTHON_LOCALLY_SUPPORTED_ABIS[@]/#/${USE_flag_prefix}}"
 					fi
 				fi
 			else
@@ -565,7 +676,7 @@ _python_parse_dependencies_in_new_EAPIs() {
 			fi
 			_PYTHON_USE_FLAGS_CHECKS_CODE+="${_PYTHON_USE_FLAGS_CHECKS_CODE:+ }if use ${component%\?};"
 		elif [[ "${component}" == "||" ]]; then
-			if has "${EAPI:-0}" 4 5 || ! _python_package_supporting_installation_for_multiple_python_abis; then
+			if has "${EAPI:-0}" 4 5 || _python_abi_type implicit_single; then
 				die "Invalid syntax of ${input_variable}: Unrecognized component '${component}'"
 			fi
 			output_value+="${output_value:+ }${component}"
@@ -594,7 +705,7 @@ _python_parse_dependencies_in_new_EAPIs() {
 	done
 
 
-	if ! has "${EAPI:-0}" 4 5 && _python_package_supporting_installation_for_multiple_python_abis; then
+	if _python_abi_type single || { ! has "${EAPI:-0}" 4 5 && _python_abi_type multiple; }; then
 		REQUIRED_USE+="${REQUIRED_USE:+ }${required_USE_flags}"
 	fi
 
@@ -622,7 +733,7 @@ if has "${EAPI:-0}" 0 1 2 3 || { has "${EAPI:-0}" 4 5 && has "${PYTHON_ECLASS_AP
 	fi
 	unset _PYTHON_ATOMS
 else
-	if [[ -z "$(declare -p PYTHON_DEPEND 2> /dev/null)" ]] && _python_package_supporting_installation_for_multiple_python_abis; then
+	if [[ -z "$(declare -p PYTHON_DEPEND 2> /dev/null)" ]] && { _python_abi_type single || _python_abi_type multiple; }; then
 		PYTHON_DEPEND="<<>>"
 	fi
 	if [[ -n "${PYTHON_DEPEND}" ]]; then
@@ -631,7 +742,7 @@ else
 	if [[ -n "${PYTHON_BDEPEND}" ]]; then
 		_python_parse_dependencies_in_new_EAPIs PYTHON_BDEPEND "DEPEND"
 	fi
-	if ! has "${EAPI:-0}" 4 5 && _python_package_supporting_installation_for_multiple_python_abis; then
+	if _python_abi_type single || { ! has "${EAPI:-0}" 4 5 && _python_abi_type multiple; }; then
 		unset _PYTHON_DEPEND_CHECKS_CODE _PYTHON_USE_FLAGS_CHECKS_CODE
 	else
 		_PYTHON_DEPEND_CHECKS_CODE="${_PYTHON_DEPEND_CHECKS_CODE%;}"
@@ -741,17 +852,17 @@ fi
 # Print dependency atoms with USE dependencies for Python ABIs added.
 # If --exclude-ABIs option is specified, then Python ABIs matching its argument are not used.
 # If --include-ABIs option is specified, then only Python ABIs matching its argument are used.
-# --exclude-ABIs and --include-ABIs options cannot be specified simultaneously.
+# --exclude-ABIs and --include-ABIs options can not be specified simultaneously.
 python_abi_depend() {
 	if has "${EAPI:-0}" 0 1 2 3 4 5; then
-		die "${FUNCNAME}() cannot be used in this EAPI"
+		die "${FUNCNAME}() can not be used in EAPI=\"${EAPI}\""
 	fi
 
-	if ! _python_package_supporting_installation_for_multiple_python_abis; then
-		die "${FUNCNAME}() cannot be used in ebuilds of packages not supporting installation for multiple Python ABIs"
+	if ! _python_abi_type single && ! _python_abi_type multiple; then
+		die "${FUNCNAME}() can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"single\" or PYTHON_ABI_TYPE=\"multiple\" variable"
 	fi
 
-	local atom atom_index atoms=() exclude_ABIs="0" excluded_ABIs include_ABIs="0" included_ABIs PYTHON_ABI USE_dependencies USE_flag USE_flag_index USE_flags=()
+	local atom atom_index atoms=() exclude_ABIs="0" excluded_ABIs include_ABIs="0" included_ABIs iterated_PYTHON_ABIS=() PYTHON_ABI PYTHON_ABI_index USE_dependencies
 
 	while (($#)); do
 		case "$1" in
@@ -780,7 +891,7 @@ python_abi_depend() {
 	done
 
 	if [[ "${exclude_ABIs}" == "1" && "${include_ABIs}" == "1" ]]; then
-		die "${FUNCNAME}(): '--exclude-ABIs' and '--include-ABIs' options cannot be specified simultaneously"
+		die "${FUNCNAME}(): '--exclude-ABIs' and '--include-ABIs' options can not be specified simultaneously"
 	fi
 
 	if [[ "$#" -eq 0 ]]; then
@@ -789,7 +900,7 @@ python_abi_depend() {
 
 	atoms=("$@")
 
-	if [[ "${exclude_ABIs}" == "0" && "${include_ABIs}" == "0" ]]; then
+	if _python_abi_type multiple && [[ "${exclude_ABIs}" == "0" && "${include_ABIs}" == "0" ]]; then
 		USE_dependencies="$(printf ",python_abis_%s?" "${_PYTHON_LOCALLY_SUPPORTED_ABIS[@]}")"
 		USE_dependencies="${USE_dependencies#,}"
 
@@ -811,54 +922,81 @@ python_abi_depend() {
 		if [[ "${exclude_ABIs}" == "1" ]]; then
 			for PYTHON_ABI in "${_PYTHON_LOCALLY_SUPPORTED_ABIS[@]}"; do
 				if ! _python_check_python_abi_matching --patterns-list "${PYTHON_ABI}" "${excluded_ABIs}"; then
-					USE_flags+=("python_abis_${PYTHON_ABI}")
+					iterated_PYTHON_ABIS+=("${PYTHON_ABI}")
 				fi
 			done
 
-			if [[ "${#USE_flags[@]}" -eq 0 ]]; then
+			if [[ "${#iterated_PYTHON_ABIS[@]}" -eq 0 ]]; then
 				ewarn "'${EBUILD}':"
 				ewarn "${FUNCNAME}(): Python ABIs patterns list '${excluded_ABIs}' excludes all locally supported Python ABIs"
-			elif [[ "${#USE_flags[@]}" -eq "${#_PYTHON_LOCALLY_SUPPORTED_ABIS[@]}" ]]; then
+			elif [[ "${#iterated_PYTHON_ABIS[@]}" -eq "${#_PYTHON_LOCALLY_SUPPORTED_ABIS[@]}" ]]; then
 				ewarn "'${EBUILD}':"
 				ewarn "${FUNCNAME}(): Python ABIs patterns list '${excluded_ABIs}' excludes no locally supported Python ABIs"
 			fi
 		elif [[ "${include_ABIs}" == "1" ]]; then
 			for PYTHON_ABI in "${_PYTHON_LOCALLY_SUPPORTED_ABIS[@]}"; do
 				if _python_check_python_abi_matching --patterns-list "${PYTHON_ABI}" "${included_ABIs}"; then
-					USE_flags+=("python_abis_${PYTHON_ABI}")
+					iterated_PYTHON_ABIS+=("${PYTHON_ABI}")
 				fi
 			done
 
-			if [[ "${#USE_flags[@]}" -eq 0 ]]; then
+			if [[ "${#iterated_PYTHON_ABIS[@]}" -eq 0 ]]; then
 				ewarn "'${EBUILD}':"
 				ewarn "${FUNCNAME}(): Python ABIs patterns list '${included_ABIs}' includes no locally supported Python ABIs"
-			elif [[ "${#USE_flags[@]}" -eq "${#_PYTHON_LOCALLY_SUPPORTED_ABIS[@]}" ]]; then
+			elif [[ "${#iterated_PYTHON_ABIS[@]}" -eq "${#_PYTHON_LOCALLY_SUPPORTED_ABIS[@]}" ]]; then
 				ewarn "'${EBUILD}':"
 				ewarn "${FUNCNAME}(): Python ABIs patterns list '${included_ABIs}' includes all locally supported Python ABIs"
 			fi
+		elif _python_abi_type single; then
+			iterated_PYTHON_ABIS=("${_PYTHON_LOCALLY_SUPPORTED_ABIS[@]}")
 		else
 			die "${FUNCNAME}(): Internal error"
 		fi
 
-		if [[ "${#USE_flags[@]}" -gt 1 ]]; then
+		if [[ "${#iterated_PYTHON_ABIS[@]}" -gt 1 ]]; then
 			echo -n "( "
 		fi
 
-		for USE_flag_index in "${!USE_flags[@]}"; do
-			USE_flag="${USE_flags[${USE_flag_index}]}"
-			USE_dependencies="${USE_flag}"
+		for PYTHON_ABI_index in "${!iterated_PYTHON_ABIS[@]}"; do
+			PYTHON_ABI="${iterated_PYTHON_ABIS[${PYTHON_ABI_index}]}"
 
-			echo -n "${USE_flag}? ( "
+			if _python_abi_type single; then
+				echo -n "python_single_abi_${PYTHON_ABI}? ( "
+			else
+				echo -n "python_abis_${PYTHON_ABI}? ( "
+			fi
 
 			for atom_index in "${!atoms[@]}"; do
 				atom="${atoms[${atom_index}]}"
 
-				if [[ "${atom}" == *"["*"]" ]]; then
-					echo -n "${atom%]},"
+				if _python_abi_type single; then
+					echo -n "|| ( "
+
+					if [[ "${atom}" == *"["*"]" ]]; then
+						echo -n "${atom%]},"
+					else
+						echo -n "${atom}["
+					fi
+					echo -n "python_abis_${PYTHON_ABI}]"
+
+					echo -n " "
+
+					if [[ "${atom}" == *"["*"]" ]]; then
+						echo -n "${atom%]},"
+					else
+						echo -n "${atom}["
+					fi
+					echo -n "python_single_abi_${PYTHON_ABI}]"
+
+					echo -n " )"
 				else
-					echo -n "${atom}["
+					if [[ "${atom}" == *"["*"]" ]]; then
+						echo -n "${atom%]},"
+					else
+						echo -n "${atom}["
+					fi
+					echo -n "python_abis_${PYTHON_ABI}]"
 				fi
-				echo -n "${USE_dependencies}]"
 
 				if [[ "${atom_index}" -ne $((${#atoms[@]} - 1)) ]]; then
 					echo -n " "
@@ -867,27 +1005,27 @@ python_abi_depend() {
 
 			echo -n " )"
 
-			if [[ "${USE_flag_index}" -ne $((${#USE_flags[@]} - 1)) ]]; then
+			if [[ "${PYTHON_ABI_index}" -ne $((${#iterated_PYTHON_ABIS[@]} - 1)) ]]; then
 				echo -n " "
 			fi
 		done
 
-		if [[ "${#USE_flags[@]}" -gt 1 ]]; then
+		if [[ "${#iterated_PYTHON_ABIS[@]}" -gt 1 ]]; then
 			echo -n " )"
 		fi
 	fi
 }
 
-# ================================================================================================
-# =================================== MISCELLANEOUS FUNCTIONS ====================================
-# ================================================================================================
+# ========================================================================================================================
+# =============================================== MISCELLANEOUS FUNCTIONS ================================================
+# ========================================================================================================================
 
 _python_check_run-time_dependency() {
 	if has "${EAPI:-0}" 0 1 2 3 || { has "${EAPI:-0}" 4 5 && has "${PYTHON_ECLASS_API}" 0; }; then
 		return 0
 	else
-		if ! has "${EAPI:-0}" 4 5 && _python_package_supporting_installation_for_multiple_python_abis; then
-			die "${FUNCNAME} called illegally"
+		if _python_abi_type single || { ! has "${EAPI:-0}" 4 5 && _python_abi_type multiple; }; then
+			die "${FUNCNAME}() called illegally"
 		fi
 
 		eval "${_PYTHON_DEPEND_CHECKS_CODE}"
@@ -908,7 +1046,9 @@ _python_prepare_jython() {
 		build_group="$(package_manager_build_group)" || die "${FUNCNAME}(): Extraction of build group failed"
 	fi
 
-	if _python_package_supporting_installation_for_multiple_python_abis; then
+	if _python_abi_type single; then
+		iterated_PYTHON_ABIS="${PYTHON_SINGLE_ABI}"
+	elif _python_abi_type multiple; then
 		iterated_PYTHON_ABIS="${PYTHON_ABIS}"
 	else
 		iterated_PYTHON_ABIS="${PYTHON_ABI}"
@@ -964,7 +1104,7 @@ _python_final_sanity_checks() {
 	if ! _python_implementation && [[ "$(declare -p PYTHON_SANITY_CHECKS_EXECUTED 2> /dev/null)" != "declare -- PYTHON_SANITY_CHECKS_EXECUTED="* || " ${FUNCNAME[@]:1} " =~ " "(python_set_active_version|python_pkg_setup)" " && -z "${PYTHON_SKIP_SANITY_CHECKS}" ]]; then
 		local iterated_PYTHON_ABIS PYTHON_ABI="${PYTHON_ABI}"
 
-		if _python_package_supporting_installation_for_multiple_python_abis; then
+		if _python_abi_type multiple; then
 			iterated_PYTHON_ABIS="${PYTHON_ABIS}"
 		else
 			iterated_PYTHON_ABIS="${PYTHON_ABI}"
@@ -972,7 +1112,7 @@ _python_final_sanity_checks() {
 
 		for PYTHON_ABI in ${iterated_PYTHON_ABIS}; do
 			# Ensure that appropriate version of Python is installed.
-			if has "${EAPI:-0}" 0 1 2 3 4 5 || { ! has "${EAPI:-0}" 0 1 2 3 4 5 && ! _python_package_supporting_installation_for_multiple_python_abis; }; then
+			if has "${EAPI:-0}" 0 1 2 3 4 5 || { ! has "${EAPI:-0}" 0 1 2 3 4 5 && ! _python_abi_type single && ! _python_abi_type multiple; }; then
 				if ! ROOT="/" has_version "$(python_get_implementational_package)"; then
 					die "$(python_get_implementational_package) not installed in ROOT=\"/\""
 				fi
@@ -1050,10 +1190,30 @@ python_pkg_setup() {
 		die "${FUNCNAME}() does not accept arguments"
 	fi
 
+	if _python_abi_type single; then
+		if [[ -z "${PYTHON_SINGLE_ABI}" || "${PYTHON_SINGLE_ABI}" =~ [${IFS}] ]]; then
+			die "Invalid PYTHON_SINGLE_ABI=\"${PYTHON_SINGLE_ABI}\" variable"
+		fi
+	elif ! has "${EAPI:-0}" 0 1 2 3 4 5 && _python_abi_type multiple; then
+		if [[ -z "${PYTHON_ABIS}" ]]; then
+			die "Invalid PYTHON_ABIS=\"${PYTHON_ABIS}\" variable"
+		fi
+	fi
+
 	_python_prepare_jython
 
-	if _python_package_supporting_installation_for_multiple_python_abis; then
-		_python_calculate_PYTHON_ABIS
+	if _python_abi_type single; then
+		PYTHON_ABI="${PYTHON_SINGLE_ABI}"
+		_python_initial_sanity_checks
+		_python_final_sanity_checks
+		export EPYTHON="$(PYTHON "${PYTHON_ABI}")"
+	elif _python_abi_type multiple; then
+		if has "${EAPI:-0}" 0 1 2 3 4 5; then
+			_python_calculate_PYTHON_ABIS
+		else
+			_python_initial_sanity_checks
+			_python_final_sanity_checks
+		fi
 		export EPYTHON="$(PYTHON -f)"
 	else
 		PYTHON_ABI="${PYTHON_ABI:-$(PYTHON --ABI)}"
@@ -1091,7 +1251,7 @@ python_pkg_setup() {
 			fi
 		}
 
-		if _python_package_supporting_installation_for_multiple_python_abis; then
+		if _python_abi_type multiple; then
 			PYTHON_SKIP_SANITY_CHECKS="1" python_execute_function -q python_pkg_setup_check_USE_flags
 		else
 			python_pkg_setup_check_USE_flags
@@ -1100,7 +1260,7 @@ python_pkg_setup() {
 		unset -f python_pkg_setup_check_USE_flags
 	fi
 
-	if { has "${EAPI:-0}" 4 5 && ! has "${PYTHON_ECLASS_API}" 0; } || { ! has "${EAPI:-0}" 0 1 2 3 4 5 && ! _python_package_supporting_installation_for_multiple_python_abis; }; then
+	if { has "${EAPI:-0}" 4 5 && ! has "${PYTHON_ECLASS_API}" 0; } || { ! has "${EAPI:-0}" 0 1 2 3 4 5 && ! _python_abi_type single && ! _python_abi_type multiple; }; then
 		python_pkg_setup_check_USE_flags() {
 			ROOT="/" eval "${_PYTHON_USE_FLAGS_CHECKS_CODE}"
 			if [[ "${ROOT}" != "/" ]] && _python_check_run-time_dependency; then
@@ -1108,7 +1268,7 @@ python_pkg_setup() {
 			fi
 		}
 
-		if _python_package_supporting_installation_for_multiple_python_abis; then
+		if _python_abi_type multiple; then
 			PYTHON_SKIP_SANITY_CHECKS="1" python_execute_function -q python_pkg_setup_check_USE_flags
 		else
 			python_pkg_setup_check_USE_flags
@@ -1408,7 +1568,7 @@ python_clean_installation_image() {
 			find "${ED}$(python_get_sitedir)" "(" -name "*.c" -o -name "*.h" -o -name "*.la" ")" -type f -print0 | xargs -0 rm -f
 		fi
 	}
-	if _python_package_supporting_installation_for_multiple_python_abis; then
+	if _python_abi_type multiple; then
 		python_execute_function -q python_clean_sitedirs
 	else
 		python_clean_sitedirs
@@ -1417,30 +1577,9 @@ python_clean_installation_image() {
 	unset -f python_clean_sitedirs
 }
 
-# ================================================================================================
-# =========== FUNCTIONS FOR PACKAGES SUPPORTING INSTALLATION FOR MULTIPLE PYTHON ABIS ============
-# ================================================================================================
-
-if ! { has "${EAPI:-0}" 0 1 2 3 || { has "${EAPI:-0}" 4 5 && has "${PYTHON_ECLASS_API}" 0; }; }; then
-	if [[ -n "${SUPPORT_PYTHON_ABIS}" ]]; then
-		eerror "Use PYTHON_ABI_TYPE=\"multiple\" variable instead of SUPPORT_PYTHON_ABIS variable."
-		die "SUPPORT_PYTHON_ABIS variable is banned"
-	fi
-	if [[ -n "${RESTRICT_PYTHON_ABIS}" ]]; then
-		eerror "Use PYTHON_RESTRICTED_ABIS variable instead of RESTRICT_PYTHON_ABIS variable."
-		die "RESTRICT_PYTHON_ABIS variable is banned"
-	fi
-fi
-
-# @ECLASS-VARIABLE: PYTHON_MULTIPLE_ABIS
-# @DESCRIPTION:
-# Set this to indicate that current package supports installation for multiple Python ABIs.
-# Deprecated in favor of PYTHON_ABI_TYPE="multiple".
-
-# @ECLASS-VARIABLE: PYTHON_RESTRICTED_ABIS
-# @DESCRIPTION:
-# Space-separated list of Python ABIs patterns. Support for Python ABIs matching any Python ABIs
-# patterns specified in this list is disabled.
+# ========================================================================================================================
+# ========================== FUNCTIONS FOR EBUILDS SETTING PYTHON_ABI_TYPE="multiple" VARIABLE ===========================
+# ========================================================================================================================
 
 # @ECLASS-VARIABLE: PYTHON_TESTS_RESTRICTED_ABIS
 # @DESCRIPTION:
@@ -1462,8 +1601,8 @@ if ! has "${EAPI:-0}" 0 1; then
 			die "${FUNCNAME}() can be used only in src_prepare() phase"
 		fi
 
-		if ! _python_package_supporting_installation_for_multiple_python_abis; then
-			die "${FUNCNAME}() cannot be used in ebuilds of packages not supporting installation for multiple Python ABIs"
+		if ! _python_abi_type multiple; then
+			die "${FUNCNAME}() can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"multiple\" variable"
 		fi
 
 		_python_check_python_pkg_setup_execution
@@ -1481,8 +1620,8 @@ if ! has "${EAPI:-0}" 0 1; then
 				die \"\${FUNCNAME}() can be used only in ${python_default_function}() phase\"
 			fi
 
-			if ! _python_package_supporting_installation_for_multiple_python_abis; then
-				die \"\${FUNCNAME}() cannot be used in ebuilds of packages not supporting installation for multiple Python ABIs\"
+			if ! _python_abi_type multiple; then
+				die \"\${FUNCNAME}() can not be used in ebuilds not setting PYTHON_ABI_TYPE=\\\"multiple\\\" variable\"
 			fi
 
 			_python_check_python_pkg_setup_execution
@@ -1497,8 +1636,8 @@ if ! has "${EAPI:-0}" 0 1; then
 			die "${FUNCNAME}() can be used only in src_install() phase"
 		fi
 
-		if ! _python_package_supporting_installation_for_multiple_python_abis; then
-			die "${FUNCNAME}() cannot be used in ebuilds of packages not supporting installation for multiple Python ABIs"
+		if ! _python_abi_type multiple; then
+			die "${FUNCNAME}() can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"multiple\" variable"
 		fi
 
 		_python_check_python_pkg_setup_execution
@@ -1526,8 +1665,12 @@ if has "${EAPI:-0}" 0 1 2 3 4 5; then
 fi
 
 _python_calculate_PYTHON_ABIS() {
-	if ! _python_package_supporting_installation_for_multiple_python_abis; then
-		die "${FUNCNAME}() cannot be used in ebuilds of packages not supporting installation for multiple Python ABIs"
+	if ! has "${EAPI:-0}" 0 1 2 3 4 5; then
+		die "${FUNCNAME}() can not be used in EAPI=\"${EAPI}\""
+	fi
+
+	if ! _python_abi_type multiple; then
+		die "${FUNCNAME}() can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"multiple\" variable"
 	fi
 
 	_python_initial_sanity_checks
@@ -1547,7 +1690,7 @@ _python_calculate_PYTHON_ABIS() {
 		fi
 	fi
 
-	if has "${EAPI:-0}" 0 1 2 3 4 5 && [[ "$(declare -p PYTHON_ABIS 2> /dev/null)" != "declare -x PYTHON_ABIS="* ]]; then
+	if [[ "$(declare -p PYTHON_ABIS 2> /dev/null)" != "declare -x PYTHON_ABIS="* ]]; then
 		local PYTHON_ABI
 
 		if [[ "$(declare -p USE_PYTHON 2> /dev/null)" == "declare -x USE_PYTHON="* ]]; then
@@ -1721,8 +1864,8 @@ _python_restore_flags() {
 # Execute specified function for each value of PYTHON_ABIS, optionally passing additional
 # arguments. The specified function can use PYTHON_ABI and BUILDDIR variables.
 python_execute_function() {
-	if ! _python_package_supporting_installation_for_multiple_python_abis; then
-		die "${FUNCNAME}() cannot be used in ebuilds of packages not supporting installation for multiple Python ABIs"
+	if ! _python_abi_type multiple; then
+		die "${FUNCNAME}() can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"multiple\" variable"
 	fi
 
 	_python_check_python_pkg_setup_execution
@@ -1808,7 +1951,7 @@ python_execute_function() {
 		fi
 	else
 		if has "${EAPI:-0}" 0 1; then
-			die "${FUNCNAME}(): '--default-function' option cannot be used in this EAPI"
+			die "${FUNCNAME}(): '--default-function' option can not be used in EAPI=\"${EAPI}\""
 		fi
 
 		if [[ "${EBUILD_PHASE}" == "configure" ]]; then
@@ -1842,12 +1985,12 @@ python_execute_function() {
 				python_execute ${MAKE:-make} ${MAKEOPTS} ${EXTRA_EMAKE} DESTDIR="${D}" install "$@"
 			}
 		else
-			die "${FUNCNAME}(): '--default-function' option cannot be used in this ebuild phase"
+			die "${FUNCNAME}(): '--default-function' option can not be used in this ebuild phase"
 		fi
 		_python[function]="python_default_function"
 	fi
 
-	# Ensure that python_execute_function() cannot be directly or indirectly called by python_execute_function().
+	# Ensure that python_execute_function() can not be directly or indirectly called by python_execute_function().
 	if _python_abi-specific_local_scope; then
 		die "${FUNCNAME}(): Invalid call stack"
 	fi
@@ -1864,7 +2007,9 @@ python_execute_function() {
 	[[ "${EBUILD_PHASE}" == "prerm" ]] && _python[action]="Preuninstallation"
 	[[ "${EBUILD_PHASE}" == "postrm" ]] && _python[action]="Postuninstallation"
 
-	_python_calculate_PYTHON_ABIS
+	if has "${EAPI:-0}" 0 1 2 3 4 5; then
+		_python_calculate_PYTHON_ABIS
+	fi
 	if [[ "${_python[final_ABI]}" == "1" ]]; then
 		_python[iterated_PYTHON_ABIS]="$(PYTHON -f --ABI)"
 	else
@@ -1971,8 +2116,8 @@ python_execute_function() {
 # @DESCRIPTION:
 # Copy unpacked sources of current package to separate build directory for each Python ABI.
 python_copy_sources() {
-	if ! _python_package_supporting_installation_for_multiple_python_abis; then
-		die "${FUNCNAME}() cannot be used in ebuilds of packages not supporting installation for multiple Python ABIs"
+	if ! _python_abi_type multiple; then
+		die "${FUNCNAME}() can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"multiple\" variable"
 	fi
 
 	_python_check_python_pkg_setup_execution
@@ -1981,14 +2126,16 @@ python_copy_sources() {
 
 	if [[ "$#" -eq 0 ]]; then
 		if [[ "${WORKDIR}" == "$(pwd)" ]]; then
-			die "${FUNCNAME}() without arguments cannot be used in current directory"
+			die "${FUNCNAME}() without arguments can not be used in current directory"
 		fi
 		dirs=("${S%/}")
 	else
 		dirs=("$@")
 	fi
 
-	_python_calculate_PYTHON_ABIS
+	if has "${EAPI:-0}" 0 1 2 3 4 5; then
+		_python_calculate_PYTHON_ABIS
+	fi
 	for PYTHON_ABI in ${PYTHON_ABIS}; do
 		for dir in "${dirs[@]}"; do
 			cp -pr "${dir}" "${dir}-${PYTHON_ABI}" > /dev/null || die "Copying of sources failed"
@@ -2009,8 +2156,8 @@ python_generate_wrapper_scripts() {
 		die "${FUNCNAME}() can be used only in src_install() phase"
 	fi
 
-	if ! _python_package_supporting_installation_for_multiple_python_abis; then
-		die "${FUNCNAME}() cannot be used in ebuilds of packages not supporting installation for multiple Python ABIs"
+	if ! _python_abi_type multiple; then
+		die "${FUNCNAME}() can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"multiple\" variable"
 	fi
 
 	_python_check_python_pkg_setup_execution
@@ -2047,7 +2194,9 @@ python_generate_wrapper_scripts() {
 		die "${FUNCNAME}(): Missing arguments"
 	fi
 
-	_python_calculate_PYTHON_ABIS
+	if has "${EAPI:-0}" 0 1 2 3 4 5; then
+		_python_calculate_PYTHON_ABIS
+	fi
 	for PYTHON_ABI in "${_CPYTHON2_GLOBALLY_SUPPORTED_ABIS[@]}"; do
 		if has "${PYTHON_ABI}" ${PYTHON_ABIS}; then
 			python2_enabled="1"
@@ -2297,8 +2446,8 @@ python_merge_intermediate_installation_images() {
 		die "${FUNCNAME}() can be used only in src_install() phase"
 	fi
 
-	if ! _python_package_supporting_installation_for_multiple_python_abis; then
-		die "${FUNCNAME}() cannot be used in ebuilds of packages not supporting installation for multiple Python ABIs"
+	if ! _python_abi_type multiple; then
+		die "${FUNCNAME}() can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"multiple\" variable"
 	fi
 
 	_python_check_python_pkg_setup_execution
@@ -2335,7 +2484,9 @@ python_merge_intermediate_installation_images() {
 		die "${FUNCNAME}(): Intermediate installation images directory '${intermediate_installation_images_directory}' does not exist"
 	fi
 
-	_python_calculate_PYTHON_ABIS
+	if has "${EAPI:-0}" 0 1 2 3 4 5; then
+		_python_calculate_PYTHON_ABIS
+	fi
 	if [[ "$(PYTHON -f --ABI)" == 3.* ]]; then
 		b="b"
 	fi
@@ -2500,8 +2651,8 @@ python_install_executables() {
 		die "${FUNCNAME}() can be used only in src_install() phase"
 	fi
 
-	if ! _python_package_supporting_installation_for_multiple_python_abis; then
-		die "${FUNCNAME}() cannot be used in ebuilds of packages not supporting installation for multiple Python ABIs"
+	if ! _python_abi_type multiple; then
+		die "${FUNCNAME}() can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"multiple\" variable"
 	fi
 
 	_python_check_python_pkg_setup_execution
@@ -2550,9 +2701,9 @@ python_install_executables() {
 	python_merge_intermediate_installation_images $([[ "${quiet}" == "1" ]] && echo --quiet) "${intermediate_installation_images_directory}"
 }
 
-# ================================================================================================
-# ========= FUNCTIONS FOR PACKAGES NOT SUPPORTING INSTALLATION FOR MULTIPLE PYTHON ABIS ==========
-# ================================================================================================
+# ========================================================================================================================
+# ========== FUNCTIONS FOR EBUILDS NOT SETTING PYTHON_ABI_TYPE="single" OR PYTHON_ABI_TYPE="multiple" VARIABLE ===========
+# ========================================================================================================================
 
 unset EPYTHON PYTHON_ABI
 
@@ -2570,8 +2721,8 @@ python_set_active_version() {
 		die "${FUNCNAME}() can be used only in pkg_setup() phase"
 	fi
 
-	if _python_package_supporting_installation_for_multiple_python_abis; then
-		die "${FUNCNAME}() cannot be used in ebuilds of packages supporting installation for multiple Python ABIs"
+	if ! _python_abi_type implicit_single; then
+		die "${FUNCNAME}() can not be used in ebuilds setting PYTHON_ABI_TYPE=\"single\" or PYTHON_ABI_TYPE=\"multiple\" variable"
 	fi
 
 	if [[ "$#" -ne 1 ]]; then
@@ -2639,8 +2790,8 @@ python_set_active_version() {
 # @DESCRIPTION:
 # Mark current package for rebuilding by python-updater after switching of active version of Python.
 python_need_rebuild() {
-	if _python_package_supporting_installation_for_multiple_python_abis; then
-		die "${FUNCNAME}() cannot be used in ebuilds of packages supporting installation for multiple Python ABIs"
+	if ! _python_abi_type implicit_single; then
+		die "${FUNCNAME}() can not be used in ebuilds setting PYTHON_ABI_TYPE=\"single\" or PYTHON_ABI_TYPE=\"multiple\" variable"
 	fi
 
 	_python_check_python_pkg_setup_execution
@@ -2652,9 +2803,9 @@ python_need_rebuild() {
 	export PYTHON_NEED_REBUILD="$(PYTHON --ABI)"
 }
 
-# ================================================================================================
-# ======================================= GETTER FUNCTIONS =======================================
-# ================================================================================================
+# ========================================================================================================================
+# =================================================== GETTER FUNCTIONS ===================================================
+# ========================================================================================================================
 
 _PYTHON_ABI_EXTRACTION_COMMAND=\
 'import platform
@@ -2712,11 +2863,11 @@ _python_get_implementation() {
 # If -2 option is specified, then active version of CPython 2 is used.
 # If -3 option is specified, then active version of CPython 3 is used.
 # If --final-ABI option is specified, then final ABI from the list of enabled ABIs is used.
-# -2, -3 and --final-ABI options and Python_ABI argument cannot be specified simultaneously.
+# -2, -3 and --final-ABI options and Python_ABI argument can not be specified simultaneously.
 # If --ABI option is specified, then only specified Python ABI is printed instead of
 # filename of Python interpreter.
 # If --absolute-path option is specified, then absolute path to Python interpreter is printed.
-# --ABI and --absolute-path options cannot be specified simultaneously.
+# --ABI and --absolute-path options can not be specified simultaneously.
 PYTHON() {
 	_python_check_python_pkg_setup_execution
 
@@ -2754,19 +2905,21 @@ PYTHON() {
 	done
 
 	if [[ "${ABI_output}" == "1" && "${absolute_path_output}" == "1" ]]; then
-		die "${FUNCNAME}(): '--ABI' and '--absolute-path' options cannot be specified simultaneously"
+		die "${FUNCNAME}(): '--ABI' and '--absolute-path' options can not be specified simultaneously"
 	fi
 
 	if [[ "$((${python2} + ${python3} + ${final_ABI}))" -gt 1 ]]; then
-		die "${FUNCNAME}(): '-2', '-3' or '--final-ABI' options cannot be specified simultaneously"
+		die "${FUNCNAME}(): '-2', '-3' or '--final-ABI' options can not be specified simultaneously"
 	fi
 
 	if [[ "$#" -eq 0 ]]; then
 		if [[ "${final_ABI}" == "1" ]]; then
-			if ! _python_package_supporting_installation_for_multiple_python_abis; then
-				die "${FUNCNAME}(): '--final-ABI' option cannot be used in ebuilds of packages not supporting installation for multiple Python ABIs"
+			if ! _python_abi_type multiple; then
+				die "${FUNCNAME}(): '--final-ABI' option can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"multiple\" variable"
 			fi
-			_python_calculate_PYTHON_ABIS
+			if has "${EAPI:-0}" 0 1 2 3 4 5; then
+				_python_calculate_PYTHON_ABIS
+			fi
 			PYTHON_ABI="${PYTHON_ABIS##* }"
 		elif [[ "${python2}" == "1" ]]; then
 			PYTHON_ABI="$(ROOT="/" eselect python show --python2 --ABI)"
@@ -2782,7 +2935,9 @@ PYTHON() {
 			elif [[ "${PYTHON_ABI}" != "3."* ]]; then
 				die "${FUNCNAME}(): Internal error in \`eselect python show --python3\`"
 			fi
-		elif _python_package_supporting_installation_for_multiple_python_abis; then
+		elif _python_abi_type single; then
+			:
+		elif _python_abi_type multiple; then
 			if ! _python_abi-specific_local_scope; then
 				die "${FUNCNAME}() should be used in ABI-specific local scope"
 			fi
@@ -2794,13 +2949,13 @@ PYTHON() {
 		fi
 	elif [[ "$#" -eq 1 ]]; then
 		if [[ "${final_ABI}" == "1" ]]; then
-			die "${FUNCNAME}(): '--final-ABI' option and Python ABI cannot be specified simultaneously"
+			die "${FUNCNAME}(): '--final-ABI' option and Python ABI can not be specified simultaneously"
 		fi
 		if [[ "${python2}" == "1" ]]; then
-			die "${FUNCNAME}(): '-2' option and Python ABI cannot be specified simultaneously"
+			die "${FUNCNAME}(): '-2' option and Python ABI can not be specified simultaneously"
 		fi
 		if [[ "${python3}" == "1" ]]; then
-			die "${FUNCNAME}(): '-3' option and Python ABI cannot be specified simultaneously"
+			die "${FUNCNAME}(): '-3' option and Python ABI can not be specified simultaneously"
 		fi
 		PYTHON_ABI="$1"
 	else
@@ -2857,12 +3012,12 @@ python_get_implementation() {
 	done
 
 	if [[ "${final_ABI}" == "1" ]]; then
-		if ! _python_package_supporting_installation_for_multiple_python_abis; then
-			die "${FUNCNAME}(): '--final-ABI' option cannot be used in ebuilds of packages not supporting installation for multiple Python ABIs"
+		if ! _python_abi_type multiple; then
+			die "${FUNCNAME}(): '--final-ABI' option can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"multiple\" variable"
 		fi
 		PYTHON_ABI="$(PYTHON -f --ABI)"
 	else
-		if _python_package_supporting_installation_for_multiple_python_abis; then
+		if _python_abi_type multiple; then
 			if ! _python_abi-specific_local_scope; then
 				die "${FUNCNAME}() should be used in ABI-specific local scope"
 			fi
@@ -2900,12 +3055,12 @@ python_get_implementational_package() {
 	done
 
 	if [[ "${final_ABI}" == "1" ]]; then
-		if ! _python_package_supporting_installation_for_multiple_python_abis; then
-			die "${FUNCNAME}(): '--final-ABI' option cannot be used in ebuilds of packages not supporting installation for multiple Python ABIs"
+		if ! _python_abi_type multiple; then
+			die "${FUNCNAME}(): '--final-ABI' option can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"multiple\" variable"
 		fi
 		PYTHON_ABI="$(PYTHON -f --ABI)"
 	else
-		if _python_package_supporting_installation_for_multiple_python_abis; then
+		if _python_abi_type multiple; then
 			if ! _python_abi-specific_local_scope; then
 				die "${FUNCNAME}() should be used in ABI-specific local scope"
 			fi
@@ -2967,12 +3122,12 @@ python_get_includedir() {
 	fi
 
 	if [[ "${final_ABI}" == "1" ]]; then
-		if ! _python_package_supporting_installation_for_multiple_python_abis; then
-			die "${FUNCNAME}(): '--final-ABI' option cannot be used in ebuilds of packages not supporting installation for multiple Python ABIs"
+		if ! _python_abi_type multiple; then
+			die "${FUNCNAME}(): '--final-ABI' option can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"multiple\" variable"
 		fi
 		PYTHON_ABI="$(PYTHON -f --ABI)"
 	else
-		if _python_package_supporting_installation_for_multiple_python_abis; then
+		if _python_abi_type multiple; then
 			if ! _python_abi-specific_local_scope; then
 				die "${FUNCNAME}() should be used in ABI-specific local scope"
 			fi
@@ -3024,12 +3179,12 @@ python_get_libdir() {
 	fi
 
 	if [[ "${final_ABI}" == "1" ]]; then
-		if ! _python_package_supporting_installation_for_multiple_python_abis; then
-			die "${FUNCNAME}(): '--final-ABI' option cannot be used in ebuilds of packages not supporting installation for multiple Python ABIs"
+		if ! _python_abi_type multiple; then
+			die "${FUNCNAME}(): '--final-ABI' option can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"multiple\" variable"
 		fi
 		PYTHON_ABI="$(PYTHON -f --ABI)"
 	else
-		if _python_package_supporting_installation_for_multiple_python_abis; then
+		if _python_abi_type multiple; then
 			if ! _python_abi-specific_local_scope; then
 				die "${FUNCNAME}() should be used in ABI-specific local scope"
 			fi
@@ -3086,12 +3241,12 @@ python_get_sitedir() {
 	fi
 
 	if [[ "${final_ABI}" == "1" ]]; then
-		if ! _python_package_supporting_installation_for_multiple_python_abis; then
-			die "${FUNCNAME}(): '--final-ABI' option cannot be used in ebuilds of packages not supporting installation for multiple Python ABIs"
+		if ! _python_abi_type multiple; then
+			die "${FUNCNAME}(): '--final-ABI' option can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"multiple\" variable"
 		fi
 		PYTHON_ABI="$(PYTHON -f --ABI)"
 	else
-		if _python_package_supporting_installation_for_multiple_python_abis; then
+		if _python_abi_type multiple; then
 			if ! _python_abi-specific_local_scope; then
 				die "${FUNCNAME}() should be used in ABI-specific local scope"
 			fi
@@ -3147,16 +3302,16 @@ python_get_library() {
 	fi
 
 	if [[ "${base_path}" == "1" && "${linker_option}" == "1" ]]; then
-		die "${FUNCNAME}(): '--base-path' and '--linker-option' options cannot be specified simultaneously"
+		die "${FUNCNAME}(): '--base-path' and '--linker-option' options can not be specified simultaneously"
 	fi
 
 	if [[ "${final_ABI}" == "1" ]]; then
-		if ! _python_package_supporting_installation_for_multiple_python_abis; then
-			die "${FUNCNAME}(): '--final-ABI' option cannot be used in ebuilds of packages not supporting installation for multiple Python ABIs"
+		if ! _python_abi_type multiple; then
+			die "${FUNCNAME}(): '--final-ABI' option can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"multiple\" variable"
 		fi
 		PYTHON_ABI="$(PYTHON -f --ABI)"
 	else
-		if _python_package_supporting_installation_for_multiple_python_abis; then
+		if _python_abi_type multiple; then
 			if ! _python_abi-specific_local_scope; then
 				die "${FUNCNAME}() should be used in ABI-specific local scope"
 			fi
@@ -3204,12 +3359,12 @@ python_get_extension_module_suffix() {
 	done
 
 	if [[ "${final_ABI}" == "1" ]]; then
-		if ! _python_package_supporting_installation_for_multiple_python_abis; then
-			die "${FUNCNAME}(): '--final-ABI' option cannot be used in ebuilds of packages not supporting installation for multiple Python ABIs"
+		if ! _python_abi_type multiple; then
+			die "${FUNCNAME}(): '--final-ABI' option can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"multiple\" variable"
 		fi
 		PYTHON_ABI="$(PYTHON -f --ABI)"
 	else
-		if _python_package_supporting_installation_for_multiple_python_abis; then
+		if _python_abi_type multiple; then
 			if ! _python_abi-specific_local_scope; then
 				die "${FUNCNAME}() should be used in ABI-specific local scope"
 			fi
@@ -3242,11 +3397,11 @@ python_get_extension_module_suffix() {
 # @USAGE: [-f|--final-ABI] [-l|--language] [--full] [--major] [--minor] [--micro]
 # @DESCRIPTION:
 # Print version of Python implementation.
-# --full, --major, --minor and --micro options cannot be specified simultaneously.
+# --full, --major, --minor and --micro options can not be specified simultaneously.
 # If --full, --major, --minor and --micro options are not specified, then "${major_version}.${minor_version}" is printed.
 # If --language option is specified, then version of Python language is printed.
-# --language and --full options cannot be specified simultaneously.
-# --language and --micro options cannot be specified simultaneously.
+# --language and --full options can not be specified simultaneously.
+# --language and --micro options can not be specified simultaneously.
 # If --final-ABI option is specified, then final ABI from the list of enabled ABIs is used.
 python_get_version() {
 	_python_check_python_pkg_setup_execution
@@ -3284,17 +3439,17 @@ python_get_version() {
 	done
 
 	if [[ "${final_ABI}" == "1" ]]; then
-		if ! _python_package_supporting_installation_for_multiple_python_abis; then
-			die "${FUNCNAME}(): '--final-ABI' option cannot be used in ebuilds of packages not supporting installation for multiple Python ABIs"
+		if ! _python_abi_type multiple; then
+			die "${FUNCNAME}(): '--final-ABI' option can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"multiple\" variable"
 		fi
 	else
-		if _python_package_supporting_installation_for_multiple_python_abis && ! _python_abi-specific_local_scope; then
+		if _python_abi_type multiple && ! _python_abi-specific_local_scope; then
 			die "${FUNCNAME}() should be used in ABI-specific local scope"
 		fi
 	fi
 
 	if [[ "$((${full} + ${major} + ${minor} + ${micro}))" -gt 1 ]]; then
-		die "${FUNCNAME}(): '--full', '--major', '--minor' or '--micro' options cannot be specified simultaneously"
+		die "${FUNCNAME}(): '--full', '--major', '--minor' or '--micro' options can not be specified simultaneously"
 	fi
 
 	if [[ "${language}" == "1" ]]; then
@@ -3305,13 +3460,13 @@ python_get_version() {
 		fi
 		language_version="${PYTHON_ABI%%-*}"
 		if [[ "${full}" == "1" ]]; then
-			die "${FUNCNAME}(): '--language' and '--full' options cannot be specified simultaneously"
+			die "${FUNCNAME}(): '--language' and '--full' options can not be specified simultaneously"
 		elif [[ "${major}" == "1" ]]; then
 			echo "${language_version%.*}"
 		elif [[ "${minor}" == "1" ]]; then
 			echo "${language_version#*.}"
 		elif [[ "${micro}" == "1" ]]; then
-			die "${FUNCNAME}(): '--language' and '--micro' options cannot be specified simultaneously"
+			die "${FUNCNAME}(): '--language' and '--micro' options can not be specified simultaneously"
 		else
 			echo "${language_version}"
 		fi
@@ -3375,12 +3530,12 @@ python_get_implementation_and_version() {
 	done
 
 	if [[ "${final_ABI}" == "1" ]]; then
-		if ! _python_package_supporting_installation_for_multiple_python_abis; then
-			die "${FUNCNAME}(): '--final-ABI' option cannot be used in ebuilds of packages not supporting installation for multiple Python ABIs"
+		if ! _python_abi_type multiple; then
+			die "${FUNCNAME}(): '--final-ABI' option can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"multiple\" variable"
 		fi
 		PYTHON_ABI="$(PYTHON -f --ABI)"
 	else
-		if _python_package_supporting_installation_for_multiple_python_abis; then
+		if _python_abi_type multiple; then
 			if ! _python_abi-specific_local_scope; then
 				die "${FUNCNAME}() should be used in ABI-specific local scope"
 			fi
@@ -3396,9 +3551,9 @@ python_get_implementation_and_version() {
 	fi
 }
 
-# ================================================================================================
-# ================================ FUNCTIONS FOR RUNNING OF TESTS ================================
-# ================================================================================================
+# ========================================================================================================================
+# ============================================ FUNCTIONS FOR RUNNING OF TESTS ============================================
+# ========================================================================================================================
 
 # @ECLASS-VARIABLE: PYTHON_TEST_VERBOSITY
 # @DESCRIPTION:
@@ -3411,7 +3566,7 @@ _python_test_hook() {
 		die "${FUNCNAME}() requires 1 argument"
 	fi
 
-	if _python_package_supporting_installation_for_multiple_python_abis && [[ "$(type -t "${_PYTHON_TEST_FUNCTION}_$1_hook")" == "function" ]]; then
+	if _python_abi_type multiple && [[ "$(type -t "${_PYTHON_TEST_FUNCTION}_$1_hook")" == "function" ]]; then
 		"${_PYTHON_TEST_FUNCTION}_$1_hook"
 	fi
 }
@@ -3420,8 +3575,8 @@ _python_test_hook() {
 # @USAGE: [-e|--evaluate-arguments] [-P|--PYTHONPATH PYTHONPATH] [-s|--separate-build-dirs] [--] [arguments]
 # @DESCRIPTION:
 # Execute nosetests for all enabled Python ABIs.
-# In ebuilds of packages supporting installation for multiple Python ABIs, this function calls
-# python_execute_nosetests_pre_hook() and python_execute_nosetests_post_hook(), if they are defined.
+# In ebuilds setting PYTHON_ABI_TYPE="multiple" variable, this function calls python_execute_nosetests_pre_hook()
+# and python_execute_nosetests_post_hook(), if they are defined.
 python_execute_nosetests() {
 	_python_check_python_pkg_setup_execution
 	_python_set_color_variables
@@ -3477,7 +3632,7 @@ python_execute_nosetests() {
 
 		_PYTHON_TEST_FUNCTION="python_execute_nosetests" _python_test_hook post
 	}
-	if _python_package_supporting_installation_for_multiple_python_abis; then
+	if _python_abi_type multiple; then
 		python_execute_function ${separate_build_dirs:+-s} python_test_function "$@"
 	else
 		if [[ -n "${separate_build_dirs}" ]]; then
@@ -3493,8 +3648,8 @@ python_execute_nosetests() {
 # @USAGE: [-e|--evaluate-arguments] [-P|--PYTHONPATH PYTHONPATH] [-s|--separate-build-dirs] [--] [arguments]
 # @DESCRIPTION:
 # Execute py.test for all enabled Python ABIs.
-# In ebuilds of packages supporting installation for multiple Python ABIs, this function calls
-# python_execute_py.test_pre_hook() and python_execute_py.test_post_hook(), if they are defined.
+# In ebuilds setting PYTHON_ABI_TYPE="multiple" variable, this function calls python_execute_py.test_pre_hook()
+# and python_execute_py.test_post_hook(), if they are defined.
 python_execute_py.test() {
 	_python_check_python_pkg_setup_execution
 	_python_set_color_variables
@@ -3550,7 +3705,7 @@ python_execute_py.test() {
 
 		_PYTHON_TEST_FUNCTION="python_execute_py.test" _python_test_hook post
 	}
-	if _python_package_supporting_installation_for_multiple_python_abis; then
+	if _python_abi_type multiple; then
 		python_execute_function ${separate_build_dirs:+-s} python_test_function "$@"
 	else
 		if [[ -n "${separate_build_dirs}" ]]; then
@@ -3566,8 +3721,8 @@ python_execute_py.test() {
 # @USAGE: [-e|--evaluate-arguments] [-P|--PYTHONPATH PYTHONPATH] [-s|--separate-build-dirs] [--] [arguments]
 # @DESCRIPTION:
 # Execute trial for all enabled Python ABIs.
-# In ebuilds of packages supporting installation for multiple Python ABIs, this function
-# calls python_execute_trial_pre_hook() and python_execute_trial_post_hook(), if they are defined.
+# In ebuilds setting PYTHON_ABI_TYPE="multiple" variable, this function calls calls python_execute_trial_pre_hook()
+# and python_execute_trial_post_hook(), if they are defined.
 python_execute_trial() {
 	_python_check_python_pkg_setup_execution
 	_python_set_color_variables
@@ -3623,7 +3778,7 @@ python_execute_trial() {
 
 		_PYTHON_TEST_FUNCTION="python_execute_trial" _python_test_hook post
 	}
-	if _python_package_supporting_installation_for_multiple_python_abis; then
+	if _python_abi_type multiple; then
 		python_execute_function ${separate_build_dirs:+-s} python_test_function "$@"
 	else
 		if [[ -n "${separate_build_dirs}" ]]; then
@@ -3635,9 +3790,9 @@ python_execute_trial() {
 	unset -f python_test_function
 }
 
-# ================================================================================================
-# ======================= FUNCTIONS FOR HANDLING OF BYTE-COMPILED MODULES ========================
-# ================================================================================================
+# ========================================================================================================================
+# =================================== FUNCTIONS FOR HANDLING OF BYTE-COMPILED MODULES ====================================
+# ========================================================================================================================
 
 # @FUNCTION: python_enable_byte-compilation
 # @DESCRIPTION:
@@ -3790,11 +3945,13 @@ python_byte-compile_modules() {
 	_python_check_python_pkg_setup_execution
 	_python_initialize_prefix_variables
 
-	if ! has "${EAPI:-0}" 0 1 2 || _python_package_supporting_installation_for_multiple_python_abis || _python_implementation || [[ "${CATEGORY}/${PN}" == "sys-apps/portage" ]]; then
-		# PYTHON_ABI variable cannot be local in packages not supporting installation for multiple Python ABIs.
+	if ! has "${EAPI:-0}" 0 1 2 || _python_abi_type single || _python_abi_type multiple || _python_implementation || [[ "${CATEGORY}/${PN}" == "sys-apps/portage" ]]; then
+		# PYTHON_ABI variable can not be local in ebuilds not setting PYTHON_ABI_TYPE="single" or PYTHON_ABI_TYPE="multiple" variable.
 		local ABIs_patterns="*" allow_evaluated_non_sitedir_paths="0" dir dirs=() enabled_PYTHON_ABI enabled_PYTHON_ABIS evaluated_dirs=() evaluated_files=() exit_status file files=() iterated_PYTHON_ABIS options=() other_dirs=() other_files=() previous_PYTHON_ABI="${PYTHON_ABI}" root site_packages_dirs=() site_packages_files=() stderr stderr_line stderr_lines=()
 
-		if _python_package_supporting_installation_for_multiple_python_abis; then
+		if _python_abi_type single; then
+			enabled_PYTHON_ABIS="${PYTHON_SINGLE_ABI}"
+		elif _python_abi_type multiple; then
 			if has "${EAPI:-0}" 0 1 2 3 && [[ -z "${PYTHON_ABIS}" ]]; then
 				die "${FUNCNAME}(): python_pkg_setup() or python_execute_function() not called"
 			fi
@@ -3840,8 +3997,8 @@ python_byte-compile_modules() {
 			shift
 		done
 
-		if [[ "${allow_evaluated_non_sitedir_paths}" == "1" ]] && ! _python_package_supporting_installation_for_multiple_python_abis; then
-			die "${FUNCNAME}(): '--allow-evaluated-non-sitedir-paths' option cannot be used in ebuilds of packages not supporting installation for multiple Python ABIs"
+		if ! _python_abi_type multiple && [[ "${allow_evaluated_non_sitedir_paths}" == "1" ]]; then
+			die "${FUNCNAME}(): '--allow-evaluated-non-sitedir-paths' option can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"multiple\" variable"
 		fi
 
 		if [[ "$#" -eq 0 ]]; then
@@ -3860,9 +4017,9 @@ python_byte-compile_modules() {
 			elif ! _python_implementation && [[ "$1" =~ ^/usr/lib(32|64)?/python[[:digit:]]+\.[[:digit:]]+ ]]; then
 				die "${FUNCNAME}(): Paths of directories / files in site-packages directories must be relative to site-packages directories"
 			elif [[ "$1" =~ ^/ ]]; then
-				if _python_package_supporting_installation_for_multiple_python_abis; then
+				if _python_abi_type multiple; then
 					if [[ "${allow_evaluated_non_sitedir_paths}" != "1" ]]; then
-						die "${FUNCNAME}(): Absolute paths cannot be used in ebuilds of packages supporting installation for multiple Python ABIs"
+						die "${FUNCNAME}(): Absolute paths can not be used in ebuilds setting PYTHON_ABI_TYPE=\"multiple\" variable"
 					fi
 					if [[ "$1" != *\$* ]]; then
 						die "${FUNCNAME}(): '$1' has invalid syntax"
@@ -3959,7 +4116,7 @@ python_byte-compile_modules() {
 			unset dirs files
 		done
 
-		if _python_package_supporting_installation_for_multiple_python_abis; then
+		if _python_abi_type multiple; then
 			# Restore previous value of PYTHON_ABI.
 			if [[ -n "${previous_PYTHON_ABI}" ]]; then
 				PYTHON_ABI="${previous_PYTHON_ABI}"
@@ -4006,8 +4163,8 @@ python_byte-compile_modules() {
 	else
 		# Deprecated part of python_byte-compile_modules()
 		ewarn
-		ewarn "Deprecation Warning: Usage of ${FUNCNAME}() in packages not supporting installation"
-		ewarn "for multiple Python ABIs in EAPI <=2 is deprecated and will be disallowed on 2016-01-01."
+		ewarn "Deprecation Warning: Usage of ${FUNCNAME}() in ebuilds not setting PYTHON_ABI_TYPE=\"single\""
+		ewarn "or PYTHON_ABI_TYPE=\"multiple\" variable in EAPI <=2 is deprecated and will be disallowed on 2016-01-01."
 		ewarn "Use EAPI >=3 and call ${FUNCNAME}() with paths having appropriate syntax."
 		ewarn "The ebuild needs to be fixed. Please report a bug, if it has not been already reported."
 		ewarn
@@ -4098,7 +4255,9 @@ python_clean_byte-compiled_modules() {
 
 	local ABIs_patterns="*" allow_evaluated_non_sitedir_paths="0" dir enabled_PYTHON_ABI enabled_PYTHON_ABIS iterated_PYTHON_ABIS PYTHON_ABI="${PYTHON_ABI}" root search_paths=() sitedir
 
-	if _python_package_supporting_installation_for_multiple_python_abis; then
+	if _python_abi_type single; then
+		enabled_PYTHON_ABIS="${PYTHON_SINGLE_ABI}"
+	elif _python_abi_type multiple; then
 		if has "${EAPI:-0}" 0 1 2 3 && [[ -z "${PYTHON_ABIS}" ]]; then
 			die "${FUNCNAME}(): python_pkg_setup() or python_execute_function() not called"
 		fi
@@ -4137,8 +4296,8 @@ python_clean_byte-compiled_modules() {
 		shift
 	done
 
-	if [[ "${allow_evaluated_non_sitedir_paths}" == "1" ]] && ! _python_package_supporting_installation_for_multiple_python_abis; then
-		die "${FUNCNAME}(): '--allow-evaluated-non-sitedir-paths' option cannot be used in ebuilds of packages not supporting installation for multiple Python ABIs"
+	if ! _python_abi_type multiple && [[ "${allow_evaluated_non_sitedir_paths}" == "1" ]]; then
+		die "${FUNCNAME}(): '--allow-evaluated-non-sitedir-paths' option can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"multiple\" variable"
 	fi
 
 	if [[ "$#" -eq 0 ]]; then
@@ -4151,16 +4310,16 @@ python_clean_byte-compiled_modules() {
 		fi
 	done
 
-	if ! has "${EAPI:-0}" 0 1 2 || _python_package_supporting_installation_for_multiple_python_abis || _python_implementation || [[ "${CATEGORY}/${PN}" == "sys-apps/portage" ]]; then
+	if ! has "${EAPI:-0}" 0 1 2 || _python_abi_type single || _python_abi_type multiple || _python_implementation || [[ "${CATEGORY}/${PN}" == "sys-apps/portage" ]]; then
 		while (($#)); do
 			if [[ "$1" =~ ^($|(\.|\.\.|/)($|/)) ]]; then
 				die "${FUNCNAME}(): Invalid argument '$1'"
 			elif ! _python_implementation && [[ "$1" =~ ^/usr/lib(32|64)?/python[[:digit:]]+\.[[:digit:]]+ ]]; then
 				die "${FUNCNAME}(): Paths of directories / files in site-packages directories must be relative to site-packages directories"
 			elif [[ "$1" =~ ^/ ]]; then
-				if _python_package_supporting_installation_for_multiple_python_abis; then
+				if _python_abi_type multiple; then
 					if [[ "${allow_evaluated_non_sitedir_paths}" != "1" ]]; then
-						die "${FUNCNAME}(): Absolute paths cannot be used in ebuilds of packages supporting installation for multiple Python ABIs"
+						die "${FUNCNAME}(): Absolute paths can not be used in ebuilds setting PYTHON_ABI_TYPE=\"multiple\" variable"
 					fi
 					if [[ "$1" != *\$* ]]; then
 						die "${FUNCNAME}(): '$1' has invalid syntax"
@@ -4183,8 +4342,8 @@ python_clean_byte-compiled_modules() {
 	else
 		# Deprecated part of python_clean_byte-compiled_modules()
 		ewarn
-		ewarn "Deprecation Warning: Usage of ${FUNCNAME}() in packages not supporting installation"
-		ewarn "for multiple Python ABIs in EAPI <=2 is deprecated and will be disallowed on 2016-01-01."
+		ewarn "Deprecation Warning: Usage of ${FUNCNAME}() in ebuilds not setting PYTHON_ABI_TYPE=\"single\""
+		ewarn "or PYTHON_ABI_TYPE=\"multiple\" variable in EAPI <=2 is deprecated and will be disallowed on 2016-01-01."
 		ewarn "Use EAPI >=3 and call ${FUNCNAME}() with paths having appropriate syntax."
 		ewarn "The ebuild needs to be fixed. Please report a bug, if it has not been already reported."
 		ewarn
@@ -4196,9 +4355,9 @@ python_clean_byte-compiled_modules() {
 	_python_clean_byte-compiled_modules "${search_paths[@]}"
 }
 
-# ================================================================================================
-# ============================ FUNCTIONS FOR HANDLING OF CFFI MODULES ============================
-# ================================================================================================
+# ========================================================================================================================
+# ======================================== FUNCTIONS FOR HANDLING OF CFFI MODULES ========================================
+# ========================================================================================================================
 
 # @ECLASS-VARIABLE: PYTHON_CFFI_MODULES_GENERATION_COMMANDS
 # @DESCRIPTION:
@@ -4212,7 +4371,7 @@ python_clean_byte-compiled_modules() {
 # This function can be used only in src_install() phase.
 python_generate_cffi_modules() {
 	if has "${EAPI:-0}" 0 1 2 3; then
-		die "${FUNCNAME}() cannot be used in this EAPI"
+		die "${FUNCNAME}() can not be used in EAPI=\"${EAPI}\""
 	fi
 
 	if [[ "${EBUILD_PHASE}" != "install" ]]; then
@@ -4224,7 +4383,9 @@ python_generate_cffi_modules() {
 
 	local ABIs_patterns="*" enabled_PYTHON_ABI enabled_PYTHON_ABIS iterated_PYTHON_ABIS PYTHON_ABI="${PYTHON_ABI}" python_command
 
-	if _python_package_supporting_installation_for_multiple_python_abis; then
+	if _python_abi_type single; then
+		enabled_PYTHON_ABIS="${PYTHON_SINGLE_ABI}"
+	elif _python_abi_type multiple; then
 		enabled_PYTHON_ABIS="${PYTHON_ABIS}"
 	else
 		enabled_PYTHON_ABIS="${PYTHON_ABI}"
@@ -4280,7 +4441,7 @@ ${python_command}" || die "Generation of Python CFFI modules for $(python_get_im
 
 _python_clean_cffi_modules() {
 	if has "${EAPI:-0}" 0 1 2 3; then
-		die "${FUNCNAME}() cannot be used in this EAPI"
+		die "${FUNCNAME}() can not be used in EAPI=\"${EAPI}\""
 	fi
 
 	if [[ "${EBUILD_PHASE}" != "install" ]]; then
@@ -4325,9 +4486,9 @@ _python_clean_cffi_modules() {
 	done < <(find "${ED}" -name "__pycache__" -type d -print0)
 }
 
-# ================================================================================================
-# ===================================== DEPRECATED FUNCTIONS =====================================
-# ================================================================================================
+# ========================================================================================================================
+# ================================================= DEPRECATED FUNCTIONS =================================================
+# ========================================================================================================================
 
 # Scheduled for deletion on 2016-01-01.
 python_enable_pyc() {
