@@ -1578,7 +1578,7 @@ python_clean_installation_image() {
 }
 
 # ========================================================================================================================
-# ========================== FUNCTIONS FOR EBUILDS SETTING PYTHON_ABI_TYPE="multiple" VARIABLE ===========================
+# ============ FUNCTIONS FOR EBUILDS SETTING PYTHON_ABI_TYPE="single" OR PYTHON_ABI_TYPE="multiple" VARIABLE =============
 # ========================================================================================================================
 
 # @ECLASS-VARIABLE: PYTHON_TESTS_RESTRICTED_ABIS
@@ -1659,152 +1659,6 @@ if ! has "${EAPI:-0}" 0 1; then
 		EXPORT_FUNCTIONS src_prepare src_configure src_compile src_test src_install
 	fi
 fi
-
-if has "${EAPI:-0}" 0 1 2 3 4 5; then
-	unset PYTHON_ABIS
-fi
-
-_python_calculate_PYTHON_ABIS() {
-	if ! has "${EAPI:-0}" 0 1 2 3 4 5; then
-		die "${FUNCNAME}() can not be used in EAPI=\"${EAPI}\""
-	fi
-
-	if ! _python_abi_type multiple; then
-		die "${FUNCNAME}() can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"multiple\" variable"
-	fi
-
-	_python_initial_sanity_checks
-
-	if has "${EAPI:-0}" 0 1 2 3 || { has "${EAPI:-0}" 4 5 && has "${PYTHON_ECLASS_API}" 0; }; then
-		if [[ -z "${PYTHON_RESTRICTED_ABIS}" && -n "${RESTRICT_PYTHON_ABIS}" ]]; then
-			PYTHON_RESTRICTED_ABIS="${RESTRICT_PYTHON_ABIS}"
-		fi
-	else
-		if [[ -n "${SUPPORT_PYTHON_ABIS}" ]]; then
-			eerror "Use PYTHON_ABI_TYPE=\"multiple\" variable instead of SUPPORT_PYTHON_ABIS variable."
-			die "SUPPORT_PYTHON_ABIS variable is banned"
-		fi
-		if [[ -n "${RESTRICT_PYTHON_ABIS}" ]]; then
-			eerror "Use PYTHON_RESTRICTED_ABIS variable instead of RESTRICT_PYTHON_ABIS variable."
-			die "RESTRICT_PYTHON_ABIS variable is banned"
-		fi
-	fi
-
-	if [[ "$(declare -p PYTHON_ABIS 2> /dev/null)" != "declare -x PYTHON_ABIS="* ]]; then
-		local PYTHON_ABI
-
-		if [[ "$(declare -p USE_PYTHON 2> /dev/null)" == "declare -x USE_PYTHON="* ]]; then
-			local cpython_enabled="0"
-
-			if [[ -z "${USE_PYTHON}" ]]; then
-				die "USE_PYTHON variable is empty"
-			fi
-
-			for PYTHON_ABI in ${USE_PYTHON}; do
-				if ! has "${PYTHON_ABI}" "${_PYTHON_GLOBALLY_SUPPORTED_ABIS[@]}"; then
-					die "USE_PYTHON variable contains invalid value '${PYTHON_ABI}'"
-				fi
-
-				if has "${PYTHON_ABI}" "${_CPYTHON2_GLOBALLY_SUPPORTED_ABIS[@]}" "${_CPYTHON3_GLOBALLY_SUPPORTED_ABIS[@]}"; then
-					cpython_enabled="1"
-				fi
-
-				if ! _python_check_python_abi_matching --patterns-list "${PYTHON_ABI}" "${PYTHON_RESTRICTED_ABIS}"; then
-					export PYTHON_ABIS+="${PYTHON_ABIS:+ }${PYTHON_ABI}"
-				fi
-			done
-
-			if [[ -z "${PYTHON_ABIS//[${IFS}]/}" ]]; then
-				die "USE_PYTHON variable does not enable any Python ABI supported by ${CATEGORY}/${PF}"
-			fi
-
-			if [[ "${cpython_enabled}" == "0" ]]; then
-				die "USE_PYTHON variable does not enable any CPython ABI"
-			fi
-		else
-			local python_version python2_version python3_version support_python_major_version
-
-			if ! ROOT="/" has_version "dev-lang/python"; then
-				die "${FUNCNAME}(): 'dev-lang/python' is not installed"
-			fi
-
-			python_version="$("${EPREFIX}/usr/bin/python" -c 'from sys import version_info; print(".".join(str(x) for x in version_info[:2]))')"
-
-			if ROOT="/" has_version "=dev-lang/python-2*"; then
-				if [[ "$(readlink "${EPREFIX}/usr/bin/python2")" != "python2."* ]]; then
-					die "'${EPREFIX}/usr/bin/python2' is not valid symlink"
-				fi
-
-				python2_version="$("${EPREFIX}/usr/bin/python2" -c 'from sys import version_info; print(".".join(str(x) for x in version_info[:2]))')"
-
-				support_python_major_version="0"
-				for PYTHON_ABI in "${_CPYTHON2_GLOBALLY_SUPPORTED_ABIS[@]}"; do
-					if ! _python_check_python_abi_matching --patterns-list "${PYTHON_ABI}" "${PYTHON_RESTRICTED_ABIS}"; then
-						support_python_major_version="1"
-						break
-					fi
-				done
-				if [[ "${support_python_major_version}" == "1" ]]; then
-					if _python_check_python_abi_matching --patterns-list "${python2_version}" "${PYTHON_RESTRICTED_ABIS}"; then
-						die "Active version of CPython 2 is not supported by ${CATEGORY}/${PF}"
-					fi
-				else
-					python2_version=""
-				fi
-			fi
-
-			if ROOT="/" has_version "=dev-lang/python-3*"; then
-				if [[ "$(readlink "${EPREFIX}/usr/bin/python3")" != "python3."* ]]; then
-					die "'${EPREFIX}/usr/bin/python3' is not valid symlink"
-				fi
-
-				python3_version="$("${EPREFIX}/usr/bin/python3" -c 'from sys import version_info; print(".".join(str(x) for x in version_info[:2]))')"
-
-				support_python_major_version="0"
-				for PYTHON_ABI in "${_CPYTHON3_GLOBALLY_SUPPORTED_ABIS[@]}"; do
-					if ! _python_check_python_abi_matching --patterns-list "${PYTHON_ABI}" "${PYTHON_RESTRICTED_ABIS}"; then
-						support_python_major_version="1"
-						break
-					fi
-				done
-				if [[ "${support_python_major_version}" == "1" ]]; then
-					if _python_check_python_abi_matching --patterns-list "${python3_version}" "${PYTHON_RESTRICTED_ABIS}"; then
-						die "Active version of CPython 3 is not supported by ${CATEGORY}/${PF}"
-					fi
-				else
-					python3_version=""
-				fi
-			fi
-
-			if [[ -z "${python2_version}" && -z "${python3_version}" ]]; then
-				eerror "${CATEGORY}/${PF} requires at least one of the following packages:"
-				for PYTHON_ABI in "${_CPYTHON2_GLOBALLY_SUPPORTED_ABIS[@]}" "${_CPYTHON3_GLOBALLY_SUPPORTED_ABIS[@]}"; do
-					if ! _python_check_python_abi_matching --patterns-list "${PYTHON_ABI}" "${PYTHON_RESTRICTED_ABIS}"; then
-						eerror "    dev-lang/python:${PYTHON_ABI}"
-					fi
-				done
-				die "No supported version of CPython installed"
-			fi
-
-			if [[ -n "${python2_version}" && "${python_version}" == "2."* && "${python_version}" != "${python2_version}" ]]; then
-				eerror "Python wrapper is configured incorrectly or '${EPREFIX}/usr/bin/python2' symlink"
-				eerror "is set incorrectly. Use \`eselect python\` to fix configuration."
-				die "Incorrect configuration of Python"
-			fi
-			if [[ -n "${python3_version}" && "${python_version}" == "3."* && "${python_version}" != "${python3_version}" ]]; then
-				eerror "Python wrapper is configured incorrectly or '${EPREFIX}/usr/bin/python3' symlink"
-				eerror "is set incorrectly. Use \`eselect python\` to fix configuration."
-				die "Incorrect configuration of Python"
-			fi
-
-			PYTHON_ABIS="${python2_version} ${python3_version}"
-			PYTHON_ABIS="${PYTHON_ABIS# }"
-			export PYTHON_ABIS="${PYTHON_ABIS% }"
-		fi
-	fi
-
-	_python_final_sanity_checks
-}
 
 _python_prepare_flags() {
 	local array=() deleted_flag element flags new_value old_flag old_value operator pattern prefix variable
@@ -2109,6 +1963,156 @@ python_execute_function() {
 	if [[ "${_python[default_function]}" == "1" ]]; then
 		unset -f python_default_function
 	fi
+}
+
+# ========================================================================================================================
+# ========================== FUNCTIONS FOR EBUILDS SETTING PYTHON_ABI_TYPE="multiple" VARIABLE ===========================
+# ========================================================================================================================
+
+if has "${EAPI:-0}" 0 1 2 3 4 5; then
+	unset PYTHON_ABIS
+fi
+
+_python_calculate_PYTHON_ABIS() {
+	if ! has "${EAPI:-0}" 0 1 2 3 4 5; then
+		die "${FUNCNAME}() can not be used in EAPI=\"${EAPI}\""
+	fi
+
+	if ! _python_abi_type multiple; then
+		die "${FUNCNAME}() can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"multiple\" variable"
+	fi
+
+	_python_initial_sanity_checks
+
+	if has "${EAPI:-0}" 0 1 2 3 || { has "${EAPI:-0}" 4 5 && has "${PYTHON_ECLASS_API}" 0; }; then
+		if [[ -z "${PYTHON_RESTRICTED_ABIS}" && -n "${RESTRICT_PYTHON_ABIS}" ]]; then
+			PYTHON_RESTRICTED_ABIS="${RESTRICT_PYTHON_ABIS}"
+		fi
+	else
+		if [[ -n "${SUPPORT_PYTHON_ABIS}" ]]; then
+			eerror "Use PYTHON_ABI_TYPE=\"multiple\" variable instead of SUPPORT_PYTHON_ABIS variable."
+			die "SUPPORT_PYTHON_ABIS variable is banned"
+		fi
+		if [[ -n "${RESTRICT_PYTHON_ABIS}" ]]; then
+			eerror "Use PYTHON_RESTRICTED_ABIS variable instead of RESTRICT_PYTHON_ABIS variable."
+			die "RESTRICT_PYTHON_ABIS variable is banned"
+		fi
+	fi
+
+	if [[ "$(declare -p PYTHON_ABIS 2> /dev/null)" != "declare -x PYTHON_ABIS="* ]]; then
+		local PYTHON_ABI
+
+		if [[ "$(declare -p USE_PYTHON 2> /dev/null)" == "declare -x USE_PYTHON="* ]]; then
+			local cpython_enabled="0"
+
+			if [[ -z "${USE_PYTHON}" ]]; then
+				die "USE_PYTHON variable is empty"
+			fi
+
+			for PYTHON_ABI in ${USE_PYTHON}; do
+				if ! has "${PYTHON_ABI}" "${_PYTHON_GLOBALLY_SUPPORTED_ABIS[@]}"; then
+					die "USE_PYTHON variable contains invalid value '${PYTHON_ABI}'"
+				fi
+
+				if has "${PYTHON_ABI}" "${_CPYTHON2_GLOBALLY_SUPPORTED_ABIS[@]}" "${_CPYTHON3_GLOBALLY_SUPPORTED_ABIS[@]}"; then
+					cpython_enabled="1"
+				fi
+
+				if ! _python_check_python_abi_matching --patterns-list "${PYTHON_ABI}" "${PYTHON_RESTRICTED_ABIS}"; then
+					export PYTHON_ABIS+="${PYTHON_ABIS:+ }${PYTHON_ABI}"
+				fi
+			done
+
+			if [[ -z "${PYTHON_ABIS//[${IFS}]/}" ]]; then
+				die "USE_PYTHON variable does not enable any Python ABI supported by ${CATEGORY}/${PF}"
+			fi
+
+			if [[ "${cpython_enabled}" == "0" ]]; then
+				die "USE_PYTHON variable does not enable any CPython ABI"
+			fi
+		else
+			local python_version python2_version python3_version support_python_major_version
+
+			if ! ROOT="/" has_version "dev-lang/python"; then
+				die "${FUNCNAME}(): 'dev-lang/python' is not installed"
+			fi
+
+			python_version="$("${EPREFIX}/usr/bin/python" -c 'from sys import version_info; print(".".join(str(x) for x in version_info[:2]))')"
+
+			if ROOT="/" has_version "=dev-lang/python-2*"; then
+				if [[ "$(readlink "${EPREFIX}/usr/bin/python2")" != "python2."* ]]; then
+					die "'${EPREFIX}/usr/bin/python2' is not valid symlink"
+				fi
+
+				python2_version="$("${EPREFIX}/usr/bin/python2" -c 'from sys import version_info; print(".".join(str(x) for x in version_info[:2]))')"
+
+				support_python_major_version="0"
+				for PYTHON_ABI in "${_CPYTHON2_GLOBALLY_SUPPORTED_ABIS[@]}"; do
+					if ! _python_check_python_abi_matching --patterns-list "${PYTHON_ABI}" "${PYTHON_RESTRICTED_ABIS}"; then
+						support_python_major_version="1"
+						break
+					fi
+				done
+				if [[ "${support_python_major_version}" == "1" ]]; then
+					if _python_check_python_abi_matching --patterns-list "${python2_version}" "${PYTHON_RESTRICTED_ABIS}"; then
+						die "Active version of CPython 2 is not supported by ${CATEGORY}/${PF}"
+					fi
+				else
+					python2_version=""
+				fi
+			fi
+
+			if ROOT="/" has_version "=dev-lang/python-3*"; then
+				if [[ "$(readlink "${EPREFIX}/usr/bin/python3")" != "python3."* ]]; then
+					die "'${EPREFIX}/usr/bin/python3' is not valid symlink"
+				fi
+
+				python3_version="$("${EPREFIX}/usr/bin/python3" -c 'from sys import version_info; print(".".join(str(x) for x in version_info[:2]))')"
+
+				support_python_major_version="0"
+				for PYTHON_ABI in "${_CPYTHON3_GLOBALLY_SUPPORTED_ABIS[@]}"; do
+					if ! _python_check_python_abi_matching --patterns-list "${PYTHON_ABI}" "${PYTHON_RESTRICTED_ABIS}"; then
+						support_python_major_version="1"
+						break
+					fi
+				done
+				if [[ "${support_python_major_version}" == "1" ]]; then
+					if _python_check_python_abi_matching --patterns-list "${python3_version}" "${PYTHON_RESTRICTED_ABIS}"; then
+						die "Active version of CPython 3 is not supported by ${CATEGORY}/${PF}"
+					fi
+				else
+					python3_version=""
+				fi
+			fi
+
+			if [[ -z "${python2_version}" && -z "${python3_version}" ]]; then
+				eerror "${CATEGORY}/${PF} requires at least one of the following packages:"
+				for PYTHON_ABI in "${_CPYTHON2_GLOBALLY_SUPPORTED_ABIS[@]}" "${_CPYTHON3_GLOBALLY_SUPPORTED_ABIS[@]}"; do
+					if ! _python_check_python_abi_matching --patterns-list "${PYTHON_ABI}" "${PYTHON_RESTRICTED_ABIS}"; then
+						eerror "    dev-lang/python:${PYTHON_ABI}"
+					fi
+				done
+				die "No supported version of CPython installed"
+			fi
+
+			if [[ -n "${python2_version}" && "${python_version}" == "2."* && "${python_version}" != "${python2_version}" ]]; then
+				eerror "Python wrapper is configured incorrectly or '${EPREFIX}/usr/bin/python2' symlink"
+				eerror "is set incorrectly. Use \`eselect python\` to fix configuration."
+				die "Incorrect configuration of Python"
+			fi
+			if [[ -n "${python3_version}" && "${python_version}" == "3."* && "${python_version}" != "${python3_version}" ]]; then
+				eerror "Python wrapper is configured incorrectly or '${EPREFIX}/usr/bin/python3' symlink"
+				eerror "is set incorrectly. Use \`eselect python\` to fix configuration."
+				die "Incorrect configuration of Python"
+			fi
+
+			PYTHON_ABIS="${python2_version} ${python3_version}"
+			PYTHON_ABIS="${PYTHON_ABIS# }"
+			export PYTHON_ABIS="${PYTHON_ABIS% }"
+		fi
+	fi
+
+	_python_final_sanity_checks
 }
 
 # @FUNCTION: python_copy_sources
