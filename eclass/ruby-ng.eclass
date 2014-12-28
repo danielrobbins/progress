@@ -18,6 +18,7 @@
 #  * ruby19 - Ruby (MRI) 1.9.x
 #  * ruby20 - Ruby (MRI) 2.0.x
 #  * ruby21 - Ruby (MRI) 2.1.x
+#  * ruby22 - Ruby (MRI) 2.2.x
 #  * ree18  - Ruby Enterprise Edition 1.8.x
 #  * jruby  - JRuby
 #  * rbx    - Rubinius
@@ -116,6 +117,10 @@ ruby_implementation_depend() {
 		ruby21)
 			rubypn="dev-lang/ruby"
 			rubyslot=":2.1"
+			;;
+		ruby22)
+			rubypn="dev-lang/ruby"
+			rubyslot=":2.2"
 			;;
 		ree18)
 			rubypn="dev-lang/ruby-enterprise"
@@ -641,11 +646,24 @@ ruby_get_implementation() {
 	esac
 }
 
-# @FUNCTION: ruby-ng_rspec
+# @FUNCTION: ruby-ng_rspec <arguments>
 # @DESCRIPTION:
 # This is simply a wrapper around the rspec command (executed by $RUBY})
 # which also respects TEST_VERBOSE and NOCOLOR environment variables.
+# Optionally takes arguments to pass on to the rspec invocation.  The
+# environment variable RSPEC_VERSION can be used to control the specific
+# rspec version that must be executed. It defaults to 2 for historical
+# compatibility.
 ruby-ng_rspec() {
+	local version=${RSPEC_VERSION-2}
+	local files="$@"
+
+	# Explicitly pass the expected spec directory since the versioned
+	# rspec wrappers don't handle this automatically.
+	if [ ${#@} -eq 0 ]; then
+		files="spec"
+	fi
+
 	if [[ ${DEPEND} != *"dev-ruby/rspec"* ]]; then
 		ewarn "Missing dev-ruby/rspec in \${DEPEND}"
 	fi
@@ -669,7 +687,7 @@ ruby-ng_rspec() {
 			;;
 	esac
 
-	${RUBY} -S rspec ${rspec_params} "$@" || die "rspec failed"
+	${RUBY} -S rspec-${version} ${rspec_params} ${files} || die "rspec failed"
 }
 
 # @FUNCTION: ruby-ng_cucumber
