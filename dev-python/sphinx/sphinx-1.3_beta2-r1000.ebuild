@@ -14,11 +14,7 @@ MY_P="${MY_PN}-${PV/_beta/b}"
 
 DESCRIPTION="Python documentation generator"
 HOMEPAGE="http://sphinx-doc.org/ https://bitbucket.org/birkenfeld/sphinx https://pypi.python.org/pypi/Sphinx"
-if [[ "${PV}" == *_pre* ]]; then
-	SRC_URI="http://people.apache.org/~Arfrever/gentoo/${MY_P}.tar.xz"
-else
-	SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
-fi
+SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 # Main license: BSD-2
 LICENSE="BSD BSD-2 MIT PSF-2 test? ( ElementTree )"
