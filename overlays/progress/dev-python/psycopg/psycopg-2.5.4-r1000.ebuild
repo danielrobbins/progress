@@ -3,8 +3,8 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
+PYTHON_ABI_TYPE="multiple"
+PYTHON_RESTRICTED_ABIS="*-jython *-pypy"
 
 inherit distutils eutils
 
@@ -15,13 +15,13 @@ DESCRIPTION="PostgreSQL database adapter for Python"
 HOMEPAGE="http://initd.org/psycopg/ https://pypi.python.org/pypi/psycopg2"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
-LICENSE="LGPL-3"
+LICENSE="LGPL-3+"
 SLOT="2"
 KEYWORDS="*"
 IUSE="debug doc examples mxdatetime"
 
-DEPEND=">=virtual/postgresql-8.1
-	mxdatetime? ( $(python_abi_depend -e "3.* *-pypy-*" dev-python/egenix-mx-base) )"
+DEPEND=">=dev-db/postgresql-8.1
+	mxdatetime? ( $(python_abi_depend -e "3.* *-pypy" dev-python/egenix-mx-base) )"
 RDEPEND="${DEPEND}"
 RESTRICT="test"
 
