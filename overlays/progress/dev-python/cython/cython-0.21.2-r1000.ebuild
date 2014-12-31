@@ -3,7 +3,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
+PYTHON_ABI_TYPE="multiple"
 PYTHON_RESTRICTED_ABIS="*-jython"
 
 inherit distutils
@@ -25,7 +25,7 @@ KEYWORDS="*"
 IUSE="doc examples numpy"
 
 DEPEND="$(python_abi_depend dev-python/setuptools)
-	numpy? ( $(python_abi_depend -e "*-pypy-*" dev-python/numpy) )"
+	numpy? ( $(python_abi_depend -e "*-pypy" dev-python/numpy) )"
 RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/${MY_P}"
