@@ -136,6 +136,7 @@ _distutils_hook() {
 	if [[ "$#" -ne 1 ]]; then
 		die "${FUNCNAME}() requires 1 argument"
 	fi
+
 	if [[ "$(type -t "distutils_src_${EBUILD_PHASE}_$1_hook")" == "function" ]]; then
 		"distutils_src_${EBUILD_PHASE}_$1_hook"
 	fi
@@ -224,7 +225,7 @@ distutils_src_prepare() {
 		_distutils_restore_current_working_directory "${setup_file}"
 	done
 
-	if [[ -n "${DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES}" ]]; then
+	if _python_abi_type multiple && [[ -n "${DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES}" ]]; then
 		python_copy_sources
 	fi
 }
@@ -242,9 +243,9 @@ distutils_src_compile() {
 	_python_check_python_pkg_setup_execution
 	_python_set_color_variables
 
-	local setup_file
+	local _DISTUTILS_GLOBAL_OPTIONS=() setup_file
 
-	if _python_abi_type multiple; then
+	if _python_abi_type single || _python_abi_type multiple; then
 		distutils_building() {
 			_distutils_hook pre
 
@@ -253,14 +254,18 @@ distutils_src_compile() {
 			for setup_file in "${DISTUTILS_SETUP_FILES[@]-setup.py}"; do
 				_distutils_prepare_current_working_directory "${setup_file}"
 
-				_distutils_execute "$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" build -b "$(_distutils_get_build_dir)" "$@" || return "$?"
+				if _python_abi_type multiple; then
+					_distutils_execute "$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" build -b "$(_distutils_get_build_dir)" "$@" || return "$?"
+				else
+					_distutils_execute "$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" build "$@" || return "$?"
+				fi
 
 				_distutils_restore_current_working_directory "${setup_file}"
 			done
 
 			_distutils_hook post
 		}
-		python_execute_function ${DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES:+-s} distutils_building "$@"
+		python_execute_function $(_python_abi_type multiple && [[ -n "${DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES}" ]] && echo -s) distutils_building "$@"
 		unset -f distutils_building
 	else
 		_distutils_prepare_global_options
@@ -280,7 +285,7 @@ _distutils_src_test_hook() {
 		die "${FUNCNAME}() requires 1 argument"
 	fi
 
-	if ! _python_abi_type multiple; then
+	if ! _python_abi_type single && ! _python_abi_type multiple; then
 		return
 	fi
 
@@ -310,10 +315,10 @@ distutils_src_test() {
 	_python_check_python_pkg_setup_execution
 	_python_set_color_variables
 
-	local arguments setup_file
+	local _DISTUTILS_GLOBAL_OPTIONS=() arguments setup_file
 
 	if [[ "${DISTUTILS_SRC_TEST}" == "setup.py" ]]; then
-		if _python_abi_type multiple; then
+		if _python_abi_type single || _python_abi_type multiple; then
 			distutils_testing() {
 				_distutils_hook pre
 
@@ -322,14 +327,18 @@ distutils_src_test() {
 				for setup_file in "${DISTUTILS_SETUP_FILES[@]-setup.py}"; do
 					_distutils_prepare_current_working_directory "${setup_file}"
 
-					_distutils_execute PYTHONPATH="$(_distutils_get_PYTHONPATH)" "$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" $([[ -z "${DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES}" ]] && echo build -b "$(_distutils_get_build_dir)") test "$@" || return "$?"
+					if _python_abi_type multiple; then
+						_distutils_execute PYTHONPATH="$(_distutils_get_PYTHONPATH)" "$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" $([[ -z "${DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES}" ]] && echo build -b "$(_distutils_get_build_dir)") test "$@" || return "$?"
+					else
+						_distutils_execute PYTHONPATH="$(_distutils_get_PYTHONPATH)" "$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" test "$@" || return "$?"
+					fi
 
 					_distutils_restore_current_working_directory "${setup_file}"
 				done
 
 				_distutils_hook post
 			}
-			python_execute_function ${DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES:+-s} distutils_testing "$@"
+			python_execute_function $(_python_abi_type multiple && [[ -n "${DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES}" ]] && echo -s) distutils_testing "$@"
 			unset -f distutils_testing
 		else
 			_distutils_prepare_global_options
@@ -345,11 +354,11 @@ distutils_src_test() {
 	elif [[ "${DISTUTILS_SRC_TEST}" == "nosetests" ]]; then
 		_distutils_src_test_hook nosetests
 
-		python_execute_nosetests -P '$(_distutils_get_PYTHONPATH)' ${DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES:+-s} -- "$@"
+		python_execute_nosetests -P '$(_distutils_get_PYTHONPATH)' $(_python_abi_type multiple && [[ -n "${DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES}" ]] && echo -s) -- "$@"
 	elif [[ "${DISTUTILS_SRC_TEST}" == "py.test" ]]; then
 		_distutils_src_test_hook py.test
 
-		python_execute_py.test -P '$(_distutils_get_PYTHONPATH)' ${DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES:+-s} -- "$@"
+		python_execute_py.test -P '$(_distutils_get_PYTHONPATH)' $(_python_abi_type multiple && [[ -n "${DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES}" ]] && echo -s) -- "$@"
 	# trial requires an argument, which is usually equal to "${PN}".
 	elif [[ "${DISTUTILS_SRC_TEST}" =~ ^trial(\ .*)?$ ]]; then
 		if [[ "${DISTUTILS_SRC_TEST}" == "trial "* ]]; then
@@ -360,7 +369,7 @@ distutils_src_test() {
 
 		_distutils_src_test_hook trial
 
-		python_execute_trial -P '$(_distutils_get_PYTHONPATH)' ${DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES:+-s} -- ${arguments} "$@"
+		python_execute_trial -P '$(_distutils_get_PYTHONPATH)' $(_python_abi_type multiple && [[ -n "${DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES}" ]] && echo -s) -- ${arguments} "$@"
 	else
 		die "'DISTUTILS_SRC_TEST' variable has unsupported value '${DISTUTILS_SRC_TEST}'"
 	fi
@@ -382,9 +391,9 @@ distutils_src_install() {
 	_python_initialize_prefix_variables
 	_python_set_color_variables
 
-	local doc line nspkg_pth_file nspkg_pth_files=() setup_file
+	local _DISTUTILS_GLOBAL_OPTIONS=() doc line nspkg_pth_file nspkg_pth_files=() setup_file
 
-	if _python_abi_type multiple; then
+	if _python_abi_type single || _python_abi_type multiple; then
 		distutils_installation() {
 			_distutils_hook pre
 
@@ -393,17 +402,23 @@ distutils_src_install() {
 			for setup_file in "${DISTUTILS_SETUP_FILES[@]-setup.py}"; do
 				_distutils_prepare_current_working_directory "${setup_file}"
 
-				_distutils_execute "$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" $([[ -z "${DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES}" ]] && echo build -b "$(_distutils_get_build_dir)") install --no-compile --root="${T}/images/${PYTHON_ABI}" "$@" || return "$?"
+				if _python_abi_type multiple; then
+					_distutils_execute "$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" $([[ -z "${DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES}" ]] && echo build -b "$(_distutils_get_build_dir)") install --no-compile --root="${T}/images/${PYTHON_ABI}" "$@" || return "$?"
+				else
+					_distutils_execute "$(PYTHON)" "${setup_file#*|}" "${_DISTUTILS_GLOBAL_OPTIONS[@]}" install --root="${D}" --no-compile "$@" || return "$?"
+				fi
 
 				_distutils_restore_current_working_directory "${setup_file}"
 			done
 
 			_distutils_hook post
 		}
-		python_execute_function ${DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES:+-s} distutils_installation "$@"
+		python_execute_function $(_python_abi_type multiple && [[ -n "${DISTUTILS_USE_SEPARATE_SOURCE_DIRECTORIES}" ]] && echo -s) distutils_installation "$@"
 		unset -f distutils_installation
 
-		python_merge_intermediate_installation_images "${T}/images"
+		if _python_abi_type multiple; then
+			python_merge_intermediate_installation_images "${T}/images"
+		fi
 	else
 		_distutils_prepare_global_options
 
