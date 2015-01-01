@@ -1601,8 +1601,8 @@ if ! has "${EAPI:-0}" 0 1; then
 			die "${FUNCNAME}() can be used only in src_prepare() phase"
 		fi
 
-		if ! _python_abi_type multiple; then
-			die "${FUNCNAME}() can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"multiple\" variable"
+		if ! _python_abi_type single && ! _python_abi_type multiple; then
+			die "${FUNCNAME}() can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"single\" or PYTHON_ABI_TYPE=\"multiple\" variable"
 		fi
 
 		_python_check_python_pkg_setup_execution
@@ -1611,7 +1611,9 @@ if ! has "${EAPI:-0}" 0 1; then
 			die "${FUNCNAME}() does not accept arguments"
 		fi
 
-		python_copy_sources
+		if _python_abi_type multiple; then
+			python_copy_sources
+		fi
 	}
 
 	for python_default_function in src_configure src_compile src_test; do
@@ -1620,13 +1622,17 @@ if ! has "${EAPI:-0}" 0 1; then
 				die \"\${FUNCNAME}() can be used only in ${python_default_function}() phase\"
 			fi
 
-			if ! _python_abi_type multiple; then
-				die \"\${FUNCNAME}() can not be used in ebuilds not setting PYTHON_ABI_TYPE=\\\"multiple\\\" variable\"
+			if ! _python_abi_type single && ! _python_abi_type multiple; then
+				die \"\${FUNCNAME}() can not be used in ebuilds not setting PYTHON_ABI_TYPE=\\\"single\\\" or PYTHON_ABI_TYPE=\\\"multiple\\\" variable\"
 			fi
 
 			_python_check_python_pkg_setup_execution
 
-			python_execute_function -d -s -- \"\$@\"
+			if _python_abi_type multiple; then
+				python_execute_function -d -s -- \"\$@\"
+			else
+				python_execute_function -d -- \"\$@\"
+			fi
 		}"
 	done
 	unset python_default_function
@@ -1636,22 +1642,26 @@ if ! has "${EAPI:-0}" 0 1; then
 			die "${FUNCNAME}() can be used only in src_install() phase"
 		fi
 
-		if ! _python_abi_type multiple; then
-			die "${FUNCNAME}() can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"multiple\" variable"
+		if ! _python_abi_type single && ! _python_abi_type multiple; then
+			die "${FUNCNAME}() can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"single\" or PYTHON_ABI_TYPE=\"multiple\" variable"
 		fi
 
 		_python_check_python_pkg_setup_execution
 
-		if has "${EAPI:-0}" 0 1 2 3; then
-			python_execute_function -d -s -- "$@"
-		else
-			python_installation() {
-				python_execute ${MAKE:-make} ${MAKEOPTS} ${EXTRA_EMAKE} DESTDIR="${T}/images/${PYTHON_ABI}" install "$@"
-			}
-			python_execute_function -s python_installation "$@"
-			unset -f python_installation
+		if _python_abi_type multiple; then
+			if has "${EAPI:-0}" 2 3; then
+				python_execute_function -d -s -- "$@"
+			else
+				python_installation() {
+					python_execute ${MAKE:-make} ${MAKEOPTS} ${EXTRA_EMAKE} DESTDIR="${T}/images/${PYTHON_ABI}" install "$@"
+				}
+				python_execute_function -s python_installation "$@"
+				unset -f python_installation
 
-			python_merge_intermediate_installation_images "${T}/images"
+				python_merge_intermediate_installation_images "${T}/images"
+			fi
+		else
+			python_execute_function -d -- "$@"
 		fi
 	}
 
@@ -1718,8 +1728,8 @@ _python_restore_flags() {
 # Execute specified function for each value of PYTHON_ABIS, optionally passing additional
 # arguments. The specified function can use PYTHON_ABI and BUILDDIR variables.
 python_execute_function() {
-	if ! _python_abi_type multiple; then
-		die "${FUNCNAME}() can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"multiple\" variable"
+	if ! _python_abi_type single && ! _python_abi_type multiple; then
+		die "${FUNCNAME}() can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"single\" or PYTHON_ABI_TYPE=\"multiple\" variable"
 	fi
 
 	_python_check_python_pkg_setup_execution
@@ -1789,7 +1799,19 @@ python_execute_function() {
 		shift
 	done
 
-	if [[ -n "${_python[source_dir]}" && "${_python[separate_build_dirs]}" == 0 ]]; then
+	if ! _python_abi_type multiple && [[ "${_python[final_ABI]}" == "1" ]]; then
+		die "${FUNCNAME}(): '--final-ABI' option can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"multiple\" variable"
+	fi
+
+	if ! _python_abi_type multiple && [[ "${_python[separate_build_dirs]}" == "1" ]]; then
+		die "${FUNCNAME}(): '--separate-build-dirs' option can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"multiple\" variable"
+	fi
+
+	if ! _python_abi_type multiple && [[ -n "${_python[source_dir]}" ]]; then
+		die "${FUNCNAME}(): '--source-dir' option can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"multiple\" variable"
+	fi
+
+	if [[ -n "${_python[source_dir]}" && "${_python[separate_build_dirs]}" == "0" ]]; then
 		die "${FUNCNAME}(): '--source-dir' option can be specified only with '--separate-build-dirs' option"
 	fi
 
@@ -1861,13 +1883,17 @@ python_execute_function() {
 	[[ "${EBUILD_PHASE}" == "prerm" ]] && _python[action]="Preuninstallation"
 	[[ "${EBUILD_PHASE}" == "postrm" ]] && _python[action]="Postuninstallation"
 
-	if has "${EAPI:-0}" 0 1 2 3 4 5; then
+	if has "${EAPI:-0}" 0 1 2 3 4 5 && _python_abi_type multiple; then
 		_python_calculate_PYTHON_ABIS
 	fi
-	if [[ "${_python[final_ABI]}" == "1" ]]; then
-		_python[iterated_PYTHON_ABIS]="$(PYTHON -f --ABI)"
+	if _python_abi_type single; then
+		_python[iterated_PYTHON_ABIS]="${PYTHON_SINGLE_ABI}"
 	else
-		_python[iterated_PYTHON_ABIS]="${PYTHON_ABIS}"
+		if [[ "${_python[final_ABI]}" == "1" ]]; then
+			_python[iterated_PYTHON_ABIS]="$(PYTHON -f --ABI)"
+		else
+			_python[iterated_PYTHON_ABIS]="${PYTHON_ABIS}"
+		fi
 	fi
 	for PYTHON_ABI in ${_python[iterated_PYTHON_ABIS]}; do
 		if [[ "${EBUILD_PHASE}" == "test" ]] && _python_check_python_abi_matching --patterns-list "${PYTHON_ABI}" "${PYTHON_TESTS_RESTRICTED_ABIS}"; then
@@ -3570,7 +3596,7 @@ _python_test_hook() {
 		die "${FUNCNAME}() requires 1 argument"
 	fi
 
-	if _python_abi_type multiple && [[ "$(type -t "${_PYTHON_TEST_FUNCTION}_$1_hook")" == "function" ]]; then
+	if { _python_abi_type single || _python_abi_type multiple; } && [[ "$(type -t "${_PYTHON_TEST_FUNCTION}_$1_hook")" == "function" ]]; then
 		"${_PYTHON_TEST_FUNCTION}_$1_hook"
 	fi
 }
@@ -3585,7 +3611,7 @@ python_execute_nosetests() {
 	_python_check_python_pkg_setup_execution
 	_python_set_color_variables
 
-	local evaluate_arguments="0" PYTHONPATH_template separate_build_dirs
+	local evaluate_arguments="0" PYTHONPATH_template separate_build_dirs="0"
 
 	while (($#)); do
 		case "$1" in
@@ -3612,6 +3638,10 @@ python_execute_nosetests() {
 		esac
 		shift
 	done
+
+	if ! _python_abi_type multiple && [[ "${separate_build_dirs}" == "1" ]]; then
+		die "${FUNCNAME}(): '--separate-build-dirs' option can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"multiple\" variable"
+	fi
 
 	python_test_function() {
 		local argument arguments=() evaluated_PYTHONPATH
@@ -3636,12 +3666,9 @@ python_execute_nosetests() {
 
 		_PYTHON_TEST_FUNCTION="python_execute_nosetests" _python_test_hook post
 	}
-	if _python_abi_type multiple; then
-		python_execute_function ${separate_build_dirs:+-s} python_test_function "$@"
+	if _python_abi_type single || _python_abi_type multiple; then
+		python_execute_function $([[ "${separate_build_dirs}" == "1" ]] && echo -s) python_test_function "$@"
 	else
-		if [[ -n "${separate_build_dirs}" ]]; then
-			die "${FUNCNAME}(): Invalid usage"
-		fi
 		python_test_function "$@" || die "Testing failed"
 	fi
 
@@ -3658,7 +3685,7 @@ python_execute_py.test() {
 	_python_check_python_pkg_setup_execution
 	_python_set_color_variables
 
-	local evaluate_arguments="0" PYTHONPATH_template separate_build_dirs
+	local evaluate_arguments="0" PYTHONPATH_template separate_build_dirs="0"
 
 	while (($#)); do
 		case "$1" in
@@ -3685,6 +3712,10 @@ python_execute_py.test() {
 		esac
 		shift
 	done
+
+	if ! _python_abi_type multiple && [[ "${separate_build_dirs}" == "1" ]]; then
+		die "${FUNCNAME}(): '--separate-build-dirs' option can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"multiple\" variable"
+	fi
 
 	python_test_function() {
 		local argument arguments=() evaluated_PYTHONPATH
@@ -3709,12 +3740,9 @@ python_execute_py.test() {
 
 		_PYTHON_TEST_FUNCTION="python_execute_py.test" _python_test_hook post
 	}
-	if _python_abi_type multiple; then
-		python_execute_function ${separate_build_dirs:+-s} python_test_function "$@"
+	if _python_abi_type single || _python_abi_type multiple; then
+		python_execute_function $(_python_abi_type multiple && [[ "${separate_build_dirs}" == "1" ]] && echo -s) python_test_function "$@"
 	else
-		if [[ -n "${separate_build_dirs}" ]]; then
-			die "${FUNCNAME}(): Invalid usage"
-		fi
 		python_test_function "$@" || die "Testing failed"
 	fi
 
@@ -3731,7 +3759,7 @@ python_execute_trial() {
 	_python_check_python_pkg_setup_execution
 	_python_set_color_variables
 
-	local evaluate_arguments="0" PYTHONPATH_template separate_build_dirs
+	local evaluate_arguments="0" PYTHONPATH_template separate_build_dirs="0"
 
 	while (($#)); do
 		case "$1" in
@@ -3759,6 +3787,10 @@ python_execute_trial() {
 		shift
 	done
 
+	if ! _python_abi_type multiple && [[ "${separate_build_dirs}" == "1" ]]; then
+		die "${FUNCNAME}(): '--separate-build-dirs' option can not be used in ebuilds not setting PYTHON_ABI_TYPE=\"multiple\" variable"
+	fi
+
 	python_test_function() {
 		local argument arguments=() evaluated_PYTHONPATH
 
@@ -3782,12 +3814,9 @@ python_execute_trial() {
 
 		_PYTHON_TEST_FUNCTION="python_execute_trial" _python_test_hook post
 	}
-	if _python_abi_type multiple; then
-		python_execute_function ${separate_build_dirs:+-s} python_test_function "$@"
+	if _python_abi_type single || _python_abi_type multiple; then
+		python_execute_function $(_python_abi_type multiple && [[ "${separate_build_dirs}" == "1" ]] && echo -s) python_test_function "$@"
 	else
-		if [[ -n "${separate_build_dirs}" ]]; then
-			die "${FUNCNAME}(): Invalid usage"
-		fi
 		python_test_function "$@" || die "Testing failed"
 	fi
 
