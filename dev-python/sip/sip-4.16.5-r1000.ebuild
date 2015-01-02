@@ -3,14 +3,14 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
+PYTHON_ABI_TYPE="multiple"
+PYTHON_RESTRICTED_ABIS="*-jython *-pypy"
 PYTHON_EXPORT_PHASE_FUNCTIONS="1"
 
 inherit eutils python toolchain-funcs
 
 DESCRIPTION="Python extension module generator for C and C++ libraries"
-HOMEPAGE="http://www.riverbankcomputing.co.uk/software/sip/intro https://pypi.python.org/pypi/SIP"
+HOMEPAGE="http://www.riverbankcomputing.com/software/sip/intro https://pypi.python.org/pypi/SIP"
 
 if [[ "${PV}" == "9999" ]]; then
 	inherit mercurial
@@ -18,7 +18,7 @@ if [[ "${PV}" == "9999" ]]; then
 elif [[ "${PV}" == *_pre* ]]; then
 	HG_REVISION=""
 	MY_P="${PN}-${PV%_pre*}-snapshot-${HG_REVISION}"
-	SRC_URI="http://www.riverbankcomputing.co.uk/static/Downloads/sip4/${MY_P}.tar.gz
+	SRC_URI="http://www.riverbankcomputing.com/static/Downloads/sip4/${MY_P}.tar.gz
 		http://people.apache.org/~Arfrever/gentoo/${MY_P}.tar.gz"
 	S="${WORKDIR}/${MY_P}"
 else
@@ -85,7 +85,7 @@ src_configure() {
 src_install() {
 	python_src_install
 
-	dodoc NEWS
+	dodoc ChangeLog NEWS
 
 	if use doc; then
 		dohtml -r doc/html/
@@ -93,9 +93,9 @@ src_install() {
 }
 
 pkg_postinst() {
-	python_mod_optimize sipconfig.py sipdistutils.py
+	python_byte-compile_modules sipconfig.py sipdistutils.py
 }
 
 pkg_postrm() {
-	python_mod_cleanup sipconfig.py sipdistutils.py
+	python_clean_byte-compiled_modules sipconfig.py sipdistutils.py
 }
