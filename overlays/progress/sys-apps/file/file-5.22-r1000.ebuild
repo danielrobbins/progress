@@ -3,8 +3,8 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_DEPEND="python? ( <<>> )"
 PYTHON_ABI_TYPE="multiple"
+PYTHON_DEPEND="python? ( <<>> )"
 # http://bugs.jython.org/issue1916
 PYTHON_RESTRICTED_ABIS="*-jython"
 
