@@ -5,12 +5,11 @@
 EAPI="5-progress"
 PYTHON_ABI_TYPE="multiple"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 
 inherit distutils eutils flag-o-matic fortran-2 multilib toolchain-funcs
 
 MY_P="${PN}-${PV/_/}"
-DOC_PV="0.14.0"
+DOC_PV="0.14.1"
 DOC_P="${PN}-${DOC_PV}"
 
 DESCRIPTION="Scientific algorithms library for Python"
@@ -26,7 +25,7 @@ SLOT="0"
 IUSE="doc sparse test"
 KEYWORDS="*"
 
-CDEPEND="$(python_abi_depend dev-python/numpy[lapack])
+CDEPEND="$(python_abi_depend "dev-python/numpy[lapack]")
 	sci-libs/arpack:0=
 	virtual/cblas
 	virtual/lapack
@@ -74,8 +73,6 @@ pc_libs() {
 }
 
 src_prepare() {
-	epatch "${FILESDIR}/${P}-lsqr.patch"
-
 	# Support Python 3.1.
 	sed -e "/sys.version_info/s/(3, 2)/(3, 1)/" -i setup.py
 
