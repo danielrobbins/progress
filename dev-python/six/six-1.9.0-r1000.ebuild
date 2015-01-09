@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
+PYTHON_ABI_TYPE="multiple"
 DISTUTILS_SRC_TEST="py.test"
 
 inherit distutils
@@ -22,6 +22,18 @@ RDEPEND=""
 
 DOCS="CHANGES README"
 PYTHON_MODULES="six.py"
+
+src_prepare() {
+	distutils_src_prepare
+
+	# Fix compatibility with Python 3.1.
+	# https://bitbucket.org/gutworth/six/issue/113
+	sed \
+		-e '614s/"assertRaisesRegex"/"assertRaisesRegexp" if sys.version_info[1] <= 1 else &/' \
+		-e '615s/"assertRegex"/"assertRegexpMatches" if sys.version_info[1] <= 1 else &/' \
+		-i six.py
+	sed -e "802s/sys.version_info\[:2\] < (2, 7)/& or sys.version_info[:2] in ((3, 0), (3, 1))/" -i test_six.py
+}
 
 src_compile() {
 	distutils_src_compile
