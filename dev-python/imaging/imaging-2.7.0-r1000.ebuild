@@ -3,8 +3,8 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_DEPEND="<<[{*-cpython}tk?]>>"
 PYTHON_ABI_TYPE="multiple"
+PYTHON_DEPEND="<<[{*-cpython}tk?]>>"
 PYTHON_RESTRICTED_ABIS="*-jython"
 
 inherit distutils eutils
@@ -19,14 +19,13 @@ SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.zip"
 LICENSE="HPND"
 SLOT="0"
 KEYWORDS="*"
-IUSE="X doc examples jpeg jpeg2k lcms scanner test tiff tk truetype webp zlib"
+IUSE="X doc examples jpeg jpeg2k lcms test tiff tk truetype webp zlib"
 REQUIRED_USE="test? ( jpeg )"
 
 RDEPEND="X? ( x11-misc/xdg-utils )
 	jpeg? ( virtual/jpeg:0= )
 	jpeg2k? ( media-libs/openjpeg:2= )
 	lcms? ( media-libs/lcms:2= )
-	scanner? ( media-gfx/sane-backends:0= )
 	tiff? ( media-libs/tiff:0= )
 	truetype? ( media-libs/freetype:2= )
 	webp? ( >=media-libs/libwebp-0.3:0= )
@@ -42,11 +41,7 @@ DEPEND="${RDEPEND}
 S="${WORKDIR}/${MY_P}"
 
 DOCS="CHANGES.rst README.rst"
-
-pkg_setup() {
-	PYTHON_MODULES="PIL $(use scanner && echo sane.py)"
-	python_pkg_setup
-}
+PYTHON_MODULES="PIL"
 
 src_prepare() {
 	distutils_src_prepare
@@ -81,12 +76,6 @@ src_compile() {
 		einfo "Generation of documentation"
 		pushd docs > /dev/null
 		PYTHONPATH="$(ls -d ../build-$(PYTHON -f --ABI)/lib*)" emake html
-		popd > /dev/null
-	fi
-
-	if use scanner; then
-		pushd Sane > /dev/null
-		distutils_src_compile
 		popd > /dev/null
 	fi
 }
@@ -156,20 +145,8 @@ EOF
 		dohtml -r docs/_build/html/
 	fi
 
-	if use scanner; then
-		pushd Sane > /dev/null
-		docinto sane
-		DOCS="CHANGES sanedoc.txt" distutils_src_install
-		popd > /dev/null
-	fi
-
 	if use examples; then
 		insinto /usr/share/doc/${PF}/examples
 		doins Scripts/*
-
-		if use scanner; then
-			insinto /usr/share/doc/${PF}/examples/sane
-			doins Sane/demo_pil.py
-		fi
 	fi
 }
