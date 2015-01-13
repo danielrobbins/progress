@@ -3,9 +3,9 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_BDEPEND="test? ( <<[{*-cpython *-pypy-*}sqlite]>> )"
-PYTHON_DEPEND="<<[{*-cpython *-pypy-*}sqlite?]>>"
-PYTHON_MULTIPLE_ABIS="1"
+PYTHON_ABI_TYPE="multiple"
+PYTHON_BDEPEND="test? ( <<[{*-cpython *-pypy}sqlite]>> )"
+PYTHON_DEPEND="<<[{*-cpython *-pypy}sqlite?]>>"
 PYTHON_RESTRICTED_ABIS="3.1"
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
 # 3.[4-9]: https://code.djangoproject.com/ticket/21721
@@ -17,17 +17,15 @@ inherit bash-completion-r1 distutils versionator webapp
 MY_P="Django-${PV}"
 
 DESCRIPTION="High-level Python web framework"
-HOMEPAGE="http://www.djangoproject.com/ https://github.com/django/django https://pypi.python.org/pypi/Django"
+HOMEPAGE="https://www.djangoproject.com/ https://github.com/django/django https://pypi.python.org/pypi/Django"
 SRC_URI="https://www.djangoproject.com/m/releases/$(get_version_component_range 1-2)/${MY_P}.tar.gz"
 
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="*"
-IUSE="doc mysql postgres sqlite test"
+IUSE="doc sqlite test"
 
-RDEPEND="$(python_abi_depend -e "*-jython" dev-python/imaging)
-	mysql? ( $(python_abi_depend -e "3.* *-jython" dev-python/mysql-python) )
-	postgres? ( $(python_abi_depend -e "*-jython *-pypy-*" dev-python/psycopg:2) )"
+RDEPEND="$(python_abi_depend -e "*-jython" dev-python/imaging)"
 DEPEND="${RDEPEND}
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
 
