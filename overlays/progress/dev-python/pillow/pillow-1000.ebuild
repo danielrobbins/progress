@@ -3,7 +3,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
+PYTHON_ABI_TYPE="multiple"
 PYTHON_RESTRICTED_ABIS="*-jython"
 
 inherit python
@@ -15,7 +15,7 @@ SRC_URI=""
 LICENSE=""
 SLOT="0"
 KEYWORDS="*"
-IUSE="X doc examples jpeg lcms scanner tiff tk truetype webp zlib"
+IUSE="X doc examples jpeg lcms tiff tk truetype webp zlib"
 
 DEPEND=""
 RDEPEND="$(python_abi_depend dev-python/imaging[${IUSE// /?,}?])"
