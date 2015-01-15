@@ -17,9 +17,9 @@ EHG_REPO_URI="https://bitbucket.org/pypa/setuptools"
 LICENSE="PSF-2"
 SLOT="0"
 KEYWORDS=""
-IUSE=""
+IUSE="test"
 
-DEPEND=""
+DEPEND="test? ( $(python_abi_depend virtual/python-mock) )"
 RDEPEND=""
 
 DOCS="README.txt docs/easy_install.txt docs/pkg_resources.txt docs/setuptools.txt"
