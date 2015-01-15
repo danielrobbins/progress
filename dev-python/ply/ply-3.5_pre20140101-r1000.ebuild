@@ -13,7 +13,7 @@ HOMEPAGE="http://www.dabeaz.com/ply/ https://github.com/dabeaz/ply https://pypi.
 SRC_URI="https://github.com/dabeaz/ply/archive/6513f3537d80f483ec9c7e36d52e87f107a57f23.tar.gz -> ${P}.tar.gz"
 
 LICENSE="BSD"
-SLOT="0"
+SLOT="0/${PV}"
 KEYWORDS="*"
 IUSE="examples"
 
