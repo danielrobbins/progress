@@ -3,7 +3,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
+PYTHON_ABI_TYPE="multiple"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 DISTUTILS_SRC_TEST="py.test"
 
@@ -23,7 +23,7 @@ DEPEND=""
 RDEPEND=""
 
 DOCS="README.txt docs/easy_install.txt docs/pkg_resources.txt docs/setuptools.txt"
-PYTHON_MODULES="_markerlib easy_install.py pkg_resources.py setuptools"
+PYTHON_MODULES="_markerlib easy_install.py pkg_resources setuptools"
 
 src_prepare() {
 	distutils_src_prepare
@@ -40,7 +40,7 @@ src_install() {
 	SETUPTOOLS_DISABLE_VERSIONED_EASY_INSTALL_SCRIPT="1" distutils_src_install
 
 	delete_tests() {
-		rm -r "${ED}$(python_get_sitedir)/setuptools/tests"
+		rm -r "${ED}$(python_get_sitedir)/"{pkg_resources/tests,setuptools/tests}
 	}
 	python_execute_function -q delete_tests
 }
