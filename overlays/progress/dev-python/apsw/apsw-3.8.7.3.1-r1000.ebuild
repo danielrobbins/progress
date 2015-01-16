@@ -20,7 +20,7 @@ SRC_URI="https://github.com/rogerbinns/apsw/releases/download/${MY_PV}/${MY_P}.z
 
 LICENSE="ZLIB"
 SLOT="0"
-KEYWORDS="~*"
+KEYWORDS="*"
 IUSE="doc"
 
 DEPEND=">=dev-db/sqlite-${SQLITE_PV}"
