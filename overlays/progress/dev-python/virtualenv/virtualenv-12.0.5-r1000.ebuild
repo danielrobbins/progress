@@ -3,9 +3,9 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
+PYTHON_ABI_TYPE="multiple"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
-DISTUTILS_SRC_TEST="nosetests"
+DISTUTILS_SRC_TEST="py.test"
 
 inherit distutils
 
@@ -23,7 +23,7 @@ DEPEND="${RDEPEND}
 	doc? ( $(python_abi_depend dev-python/sphinx) )
 	test? ( $(python_abi_depend dev-python/mock) )"
 
-DOCS="docs/index.rst docs/news.rst"
+DOCS="docs/changes.rst docs/index.rst"
 PYTHON_MODULES="virtualenv.py virtualenv_support"
 
 src_prepare() {
