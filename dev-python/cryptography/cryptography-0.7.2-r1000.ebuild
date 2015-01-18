@@ -53,9 +53,6 @@ src_prepare() {
 	# Allow usage of python_generate_cffi_modules().
 	sed -e "/^[[:space:]]*ffi\.verifier\._\?compile_module = _compile_module/d" -i src/cryptography/hazmat/bindings/utils.py
 	sed -e "s/test_implicit_compile_explodes/_&/" -i tests/hazmat/bindings/test_utils.py
-
-	# https://github.com/pyca/cryptography/commit/5bea5ca0233be05e09d8c62fdeae86187e73a48e
-	sed -e "/\"enum34\"/d" -i setup.py
 }
 
 src_compile() {
