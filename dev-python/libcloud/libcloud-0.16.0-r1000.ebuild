@@ -3,10 +3,9 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_DEPEND="<<[{*-cpython}ssl,{*-cpython}xml]>>"
 PYTHON_ABI_TYPE="multiple"
-PYTHON_RESTRICTED_ABIS="*-jython"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.1"
+PYTHON_DEPEND="<<[{*-cpython}ssl,{*-cpython}xml]>>"
+PYTHON_RESTRICTED_ABIS="3.1 *-jython"
 DISTUTILS_SRC_TEST="setup.py"
 
 inherit distutils
