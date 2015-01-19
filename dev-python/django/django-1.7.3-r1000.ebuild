@@ -8,6 +8,8 @@ PYTHON_BDEPEND="test? ( <<[{*-cpython *-pypy}sqlite]>> )"
 PYTHON_DEPEND="<<[{*-cpython *-pypy}sqlite?]>>"
 PYTHON_RESTRICTED_ABIS="2.6 3.1"
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
+# 3.[4-9]: https://code.djangoproject.com/ticket/24153
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.[4-9]"
 WEBAPP_NO_AUTO_INSTALL="yes"
 
 inherit bash-completion-r1 distutils versionator webapp

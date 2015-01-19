@@ -9,6 +9,7 @@ PYTHON_DEPEND="<<[{*-cpython *-pypy}sqlite?]>>"
 PYTHON_RESTRICTED_ABIS="3.1"
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
 # 3.[4-9]: https://code.djangoproject.com/ticket/21721
+# 3.[4-9]: https://code.djangoproject.com/ticket/24153
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.[4-9]"
 WEBAPP_NO_AUTO_INSTALL="yes"
 
