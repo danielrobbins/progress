@@ -3,16 +3,15 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
-# https://bitbucket.org/eventlet/eventlet/issue/159
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
+PYTHON_ABI_TYPE="multiple"
+PYTHON_RESTRICTED_ABIS="*-jython *-pypy"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.*"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
 
 DESCRIPTION="Highly concurrent networking library"
-HOMEPAGE="http://eventlet.net/ https://bitbucket.org/eventlet/eventlet https://github.com/eventlet/eventlet https://pypi.python.org/pypi/eventlet"
+HOMEPAGE="http://eventlet.net/ https://github.com/eventlet/eventlet https://bitbucket.org/eventlet/eventlet https://pypi.python.org/pypi/eventlet"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
@@ -29,10 +28,9 @@ DEPEND="${RDEPEND}
 src_prepare() {
 	distutils_src_prepare
 
-	# Ignore potential AttributeError and RuntimeError caused by gnutls module.
-	sed -e "236s/except ImportError:/except (AttributeError, ImportError, RuntimeError):/" -i tests/test__twistedutil_protocol.py
-
 	# Disable failing tests.
+	# https://bitbucket.org/eventlet/eventlet/issue/159
+	# https://github.com/eventlet/eventlet/issues/191
 	sed -e "s/test_incomplete_headers_13/_&/" -i tests/websocket_new_test.py
 	sed \
 		-e "s/test_incomplete_headers_75/_&/" \
@@ -40,6 +38,10 @@ src_prepare() {
 		-e "s/test_incorrect_headers/_&/" \
 		-i tests/websocket_test.py
 	sed -e "s/test_server_connection_timeout_exception/_&/" -i tests/wsgi_test.py
+
+	# Disable installation of tests.
+	# https://github.com/eventlet/eventlet/issues/190
+	sed -e "/find_packages/s/'tests'/&, 'tests.*'/" -i setup.py
 }
 
 src_compile() {
