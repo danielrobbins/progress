@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
+PYTHON_ABI_TYPE="multiple"
 PYTHON_RESTRICTED_ABIS="3.*"
 
 inherit distutils
