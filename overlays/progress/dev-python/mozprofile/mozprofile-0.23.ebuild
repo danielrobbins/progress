@@ -2,8 +2,8 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
+PYTHON_ABI_TYPE="multiple"
 PYTHON_DEPEND="<<[sqlite]>>"
-PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="2.6 3.* *-jython"
 
 inherit distutils
