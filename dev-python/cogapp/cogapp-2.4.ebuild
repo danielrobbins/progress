@@ -16,10 +16,21 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 LICENSE="MIT"
 SLOT="0"
 KEYWORDS="*"
-IUSE=""
+IUSE="test"
 
-DEPEND="$(python_abi_depend dev-python/setuptools)"
+DEPEND="$(python_abi_depend dev-python/setuptools)
+	test? ( $(python_abi_depend -i "2.6" dev-python/unittest2) )"
 RDEPEND=""
+
+src_prepare() {
+	distutils_src_prepare
+
+	# Use unittest2 only with Python <2.7.
+	sed \
+		-e "13s/^try:$/if sys.version_info[:2] < (2, 7):/" \
+		-e "15s/^except ImportError:$/else:/" \
+		-i cogapp/test_cogapp.py
+}
 
 src_install() {
 	distutils_src_install
