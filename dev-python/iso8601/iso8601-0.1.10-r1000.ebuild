@@ -3,9 +3,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
-# *-jython: http://bugs.jython.org/issue1973
-PYTHON_RESTRICTED_ABIS="*-jython"
+PYTHON_ABI_TYPE="multiple"
 DISTUTILS_SRC_TEST="py.test"
 
 inherit distutils
@@ -24,4 +22,13 @@ RDEPEND=""
 
 src_test() {
 	python_execute_py.test iso8601
+}
+
+src_install() {
+	distutils_src_install
+
+	delete_tests() {
+		rm "${ED}$(python_get_sitedir)/iso8601/test_iso8601.py"
+	}
+	python_execute_function -q delete_tests
 }
