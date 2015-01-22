@@ -2,9 +2,10 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
-# *-jython: http://bugs.jython.org/issue1973
-PYTHON_RESTRICTED_ABIS="2.5 *-jython"
+PYTHON_ABI_TYPE="multiple"
+# *-jython: http://bugs.jython.org/issue2259
+PYTHON_RESTRICTED_ABIS="*-jython"
+DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
 
@@ -17,31 +18,14 @@ SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
-DEPEND=""
+DEPEND="$(python_abi_depend dev-python/setuptools)"
 RDEPEND=""
-
-src_prepare() {
-	distutils_src_prepare
-
-	# Disable installation of test_cog.py script.
-	sed -e "/'scripts\/test_cog.py'/d" -i setup.py
-
-	# Disable failing test.
-	sed -e "s/testAtFileWithTrickyFilenames/_&/" -i cogapp/test_cogapp.py
-}
-
-src_test() {
-	testing() {
-		PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" scripts/test_cog.py
-	}
-	python_execute_function testing
-}
 
 src_install() {
 	distutils_src_install
 
 	delete_tests() {
-		rm -f "${ED}$(python_get_sitedir)/cogapp/test_"*
+		rm "${ED}$(python_get_sitedir)/cogapp/test_"*
 	}
 	python_execute_function -q delete_tests
 }
