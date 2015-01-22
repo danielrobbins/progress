@@ -3,8 +3,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5"
+PYTHON_ABI_TYPE="multiple"
 
 inherit distutils
 
@@ -17,15 +16,15 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="eventlet examples gevent"
 
-RDEPEND="eventlet? ( $(python_abi_depend -e "3.* *-jython *-pypy-*" dev-python/eventlet) )
-	gevent? ( $(python_abi_depend -e "3.* *-jython *-pypy-*" dev-python/gevent) )"
+RDEPEND="eventlet? ( $(python_abi_depend -e "*-jython *-pypy" dev-python/eventlet) )
+	gevent? ( $(python_abi_depend -e "3.* *-jython *-pypy" dev-python/gevent) )"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
 src_prepare() {
 	distutils_src_prepare
 
-	# Do not install useless files.
+	# Install not useless files.
 	sed -e "s/data_files = DATA_FILES/data_files = []/" -i setup.py
 }
 
