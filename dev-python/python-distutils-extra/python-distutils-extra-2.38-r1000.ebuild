@@ -2,9 +2,8 @@
 #                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4-python"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5"
+EAPI="5-progress"
+PYTHON_ABI_TYPE="multiple"
 
 inherit distutils
 
@@ -14,7 +13,7 @@ SRC_URI="http://launchpad.net/python-distutils-extra/trunk/${PV}/+download/${P}.
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="amd64 ~ppc x86"
+KEYWORDS="*"
 IUSE=""
 
 DEPEND="$(python_abi_depend dev-python/setuptools)"
@@ -48,7 +47,7 @@ src_prepare() {
 
 src_test() {
 	# 5 tests fail with disabled byte-compilation.
-	python_enable_pyc
+	python_enable_byte-compilation
 
 	# https://bugs.launchpad.net/python-distutils-extra/+bug/951257
 	unset PYTHONWARNINGS
@@ -58,5 +57,5 @@ src_test() {
 	}
 	python_execute_function testing
 
-	python_disable_pyc
+	python_disable_byte-compilation
 }
