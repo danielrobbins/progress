@@ -3,10 +3,10 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
+PYTHON_ABI_TYPE="multiple"
 PYTHON_RESTRICTED_ABIS="*-jython"
 # https://github.com/rogerbinns/apsw/issues/129
-PYTHON_TESTS_RESTRICTED_ABIS="*-pypy-*"
+PYTHON_TESTS_RESTRICTED_ABIS="*-pypy"
 
 inherit distutils eutils
 
@@ -20,7 +20,7 @@ SRC_URI="https://github.com/rogerbinns/apsw/releases/download/${MY_PV}/${MY_P}.z
 
 LICENSE="ZLIB"
 SLOT="0"
-KEYWORDS="*"
+KEYWORDS="~*"
 IUSE="doc"
 
 DEPEND=">=dev-db/sqlite-${SQLITE_PV}"
