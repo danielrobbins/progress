@@ -3,10 +3,10 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
+PYTHON_ABI_TYPE="multiple"
 PYTHON_BDEPEND="<<>>"
 PYTHON_DEPEND="python? ( <<>> )"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="*-jython *-pypy"
 
 inherit multilib python toolchain-funcs
 
@@ -152,12 +152,12 @@ src_install() {
 
 pkg_postinst() {
 	if use python; then
-		python_mod_optimize botan
+		python_byte-compile_modules botan
 	fi
 }
 
 pkg_postrm() {
 	if use python; then
-		python_mod_cleanup botan
+		python_clean_byte-compiled_modules botan
 	fi
 }
