@@ -36,6 +36,10 @@ S="${WORKDIR}/${PN}/source"
 QA_DT_NEEDED="/usr/lib.*/libicudata\.so\.${MAJOR_VERSION}\.${MINOR_VERSION}.*"
 QA_FLAGS_IGNORED="/usr/lib.*/libicudata\.so\.${MAJOR_VERSION}\.${MINOR_VERSION}.*"
 
+MULTILIB_CHOST_TOOLS=(
+	/usr/bin/icu-config
+)
+
 src_unpack() {
 	unpack "${SRC_ARCHIVE}"
 	if use doc; then
@@ -58,8 +62,6 @@ src_prepare() {
 		-e 's:parse2DigitYear(fmt, "5/6/17", date(117, UCAL_JUNE, 5)):parse2DigitYear(fmt, "5/6/30", date(130, UCAL_JUNE, 5)):' \
 		-e 's:parse2DigitYear(fmt, "4/6/34", date(34, UCAL_JUNE, 4)):parse2DigitYear(fmt, "4/6/50", date(50, UCAL_JUNE, 4)):' \
 		-i test/intltest/dtfmttst.cpp
-
-	tc-export CC CXX
 
 	if use c++11; then
 		if [[ "$(tc-getCXX)" == *g++* ]]; then
@@ -105,7 +107,9 @@ multilib_src_configure() {
 		--disable-renaming \
 		$(use_enable debug) \
 		$(use_enable examples samples) \
-		$(use_enable static-libs static)
+		$(use_enable static-libs static) \
+		CC="$(tc-getCC)" \
+		CXX="$(tc-getCXX)"
 }
 
 multilib_src_compile() {

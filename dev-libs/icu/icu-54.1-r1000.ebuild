@@ -36,6 +36,10 @@ S="${WORKDIR}/${PN}/source"
 QA_DT_NEEDED="/usr/lib.*/libicudata\.so\.${MAJOR_VERSION}\.${MINOR_VERSION}.*"
 QA_FLAGS_IGNORED="/usr/lib.*/libicudata\.so\.${MAJOR_VERSION}\.${MINOR_VERSION}.*"
 
+MULTILIB_CHOST_TOOLS=(
+	/usr/bin/icu-config
+)
+
 src_unpack() {
 	unpack "${SRC_ARCHIVE}"
 	if use doc; then
