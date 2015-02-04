@@ -18,7 +18,7 @@ SRC_URI="mirror://sourceforge/boost/boost_${MY_PV}.tar.bz2"
 
 LICENSE="Boost-1.0"
 SLOT="0"
-KEYWORDS="~*"
+KEYWORDS="*"
 IUSE="examples python test"
 
 DEPEND="test? ( sys-apps/diffutils )"
