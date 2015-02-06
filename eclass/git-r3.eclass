@@ -130,6 +130,17 @@ fi
 # @DESCRIPTION:
 # If non-empty, this variable prevents any online operations.
 
+# @ECLASS-VARIABLE: EVCS_UMASK
+# @DEFAULT_UNSET
+# @DESCRIPTION:
+# Set this variable to a custom umask. This is intended to be set by
+# users. By setting this to something like 002, it can make life easier
+# for people who do development as non-root (but are in the portage
+# group), and then switch over to building with FEATURES=userpriv.
+# Or vice-versa. Shouldn't be a security issue here as anyone who has
+# portage group write access already can screw the system over in more
+# creative ways.
+
 # @ECLASS-VARIABLE: EGIT_BRANCH
 # @DEFAULT_UNSET
 # @DESCRIPTION:
@@ -308,8 +319,16 @@ _git-r3_set_gitdir() {
 
 	addwrite "${EGIT3_STORE_DIR}"
 	if [[ ! -d ${GIT_DIR} ]]; then
+		local saved_umask
+		if [[ ${EVCS_UMASK} ]]; then
+			saved_umask=$(umask)
+			umask "${EVCS_UMASK}" || die "Bad options to umask: ${EVCS_UMASK}"
+		fi
 		mkdir "${GIT_DIR}" || die
 		git init --bare || die
+		if [[ ${saved_umask} ]]; then
+			umask "${saved_umask}" || die
+		fi
 	fi
 }
 
@@ -506,7 +525,11 @@ git-r3_fetch() {
 	fi
 
 	# try to fetch from the remote
-	local r success
+	local r success saved_umask
+	if [[ ${EVCS_UMASK} ]]; then
+		saved_umask=$(umask)
+		umask "${EVCS_UMASK}" || die "Bad options to umask: ${EVCS_UMASK}"
+	fi
 	for r in "${repos[@]}"; do
 		einfo "Fetching ${r} ..."
 
@@ -667,6 +690,9 @@ git-r3_fetch() {
 			break
 		fi
 	done
+	if [[ ${saved_umask} ]]; then
+		umask "${saved_umask}" || die
+	fi
 	[[ ${success} ]] || die "Unable to fetch from any of EGIT_REPO_URI"
 
 	# submodules can reference commits in any branch
