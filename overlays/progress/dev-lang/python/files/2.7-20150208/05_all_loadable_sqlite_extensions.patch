@@ -3,7 +3,7 @@ https://bugs.python.org/issue10268
 
 --- configure.ac
 +++ configure.ac
-@@ -2326,6 +2326,15 @@
+@@ -2329,6 +2329,15 @@
    TCLTK_LIBS="$with_tcltk_libs"
  fi
  

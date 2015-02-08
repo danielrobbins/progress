@@ -2,7 +2,7 @@ https://bugs.python.org/issue1674555
 
 --- Lib/site.py
 +++ Lib/site.py
-@@ -538,8 +538,9 @@
+@@ -538,8 +538,12 @@
      known_paths = venv(known_paths)
      if ENABLE_USER_SITE is None:
          ENABLE_USER_SITE = check_enableusersite()
@@ -11,6 +11,9 @@ https://bugs.python.org/issue1674555
 +    if os.environ.get("_PYTHONNOSITEPACKAGES") is None:
 +        known_paths = addusersitepackages(known_paths)
 +        known_paths = addsitepackages(known_paths)
++    else:
++        # Initialize USER_BASE and USER_SITE.
++        getusersitepackages()
      setquit()
      setcopyright()
      sethelper()
@@ -163,9 +166,21 @@ https://bugs.python.org/issue1674555
  if site.ENABLE_USER_SITE and not os.path.isdir(site.USER_SITE):
      # need to add user site directory for tests
      os.makedirs(site.USER_SITE)
+@@ -434,8 +439,11 @@
+     def test_startup_imports(self):
+         # This tests checks which modules are loaded by Python when it
+         # initially starts upon startup.
++        env = os.environ.copy()
++        env["_PYTHONNOSITEPACKAGES"] = "1"
+         popen = subprocess.Popen([sys.executable, '-I', '-v', '-c',
+                                   'import sys; print(set(sys.modules))'],
++                                 env=env,
+                                  stdout=subprocess.PIPE,
+                                  stderr=subprocess.PIPE)
+         stdout, stderr = popen.communicate()
 --- Makefile.pre.in
 +++ Makefile.pre.in
-@@ -968,7 +968,7 @@
+@@ -971,7 +971,7 @@
  ######################################################################
  
  TESTOPTS=	$(EXTRATESTOPTS)

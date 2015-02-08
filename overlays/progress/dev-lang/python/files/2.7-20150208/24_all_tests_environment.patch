@@ -2,7 +2,7 @@ https://bugs.python.org/issue1674555
 
 --- Lib/site.py
 +++ Lib/site.py
-@@ -527,8 +527,9 @@
+@@ -527,8 +527,12 @@
      known_paths = removeduppaths()
      if ENABLE_USER_SITE is None:
          ENABLE_USER_SITE = check_enableusersite()
@@ -11,6 +11,9 @@ https://bugs.python.org/issue1674555
 +    if os.environ.get("_PYTHONNOSITEPACKAGES") is None:
 +        known_paths = addusersitepackages(known_paths)
 +        known_paths = addsitepackages(known_paths)
++    else:
++        # Initialize USER_BASE and USER_SITE.
++        getusersitepackages()
      if sys.platform == 'os2emx':
          setBEGINLIBPATH()
      setquit()
@@ -158,7 +161,7 @@ https://bugs.python.org/issue1674555
  
 --- Makefile.pre.in
 +++ Makefile.pre.in
-@@ -804,7 +804,7 @@
+@@ -807,7 +807,7 @@
  
  TESTOPTS=	-l $(EXTRATESTOPTS)
  TESTPROG=	$(srcdir)/Lib/test/regrtest.py

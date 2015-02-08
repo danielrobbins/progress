@@ -38,7 +38,7 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
      stdin_is_interactive = Py_FdIsInteractive(stdin, (char *)0);
 --- Modules/posixmodule.c
 +++ Modules/posixmodule.c
-@@ -1239,6 +1239,10 @@
+@@ -1262,6 +1262,10 @@
          char *p = strchr(*e, '=');
          if (p == NULL)
              continue;
@@ -51,12 +51,11 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
              PyErr_Clear();
 --- Modules/python.c
 +++ Modules/python.c
-@@ -7,6 +7,14 @@
+@@ -7,6 +7,13 @@
  #include <floatingpoint.h>
  #endif
  
 +#ifdef __linux__
-+#include <linux/prctl.h>
 +#include <sys/prctl.h>
 +#ifndef PR_SET_NAME
 +#define PR_SET_NAME 15
@@ -66,7 +65,7 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
  #ifdef MS_WINDOWS
  int
  wmain(int argc, wchar_t **argv)
-@@ -44,6 +52,11 @@
+@@ -44,6 +51,11 @@
      fpsetmask(m & ~FP_X_OFL);
  #endif
  
@@ -78,7 +77,7 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
      oldloc = _PyMem_RawStrdup(setlocale(LC_ALL, NULL));
      if (!oldloc) {
          fprintf(stderr, "out of memory\n");
-@@ -66,6 +79,18 @@
+@@ -66,6 +78,18 @@
  
      setlocale(LC_ALL, oldloc);
      PyMem_RawFree(oldloc);
@@ -99,7 +98,7 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
          PyMem_RawFree(argv_copy2[i]);
 --- Python/sysmodule.c
 +++ Python/sysmodule.c
-@@ -1868,6 +1868,10 @@
+@@ -1873,6 +1873,10 @@
  makeargvobject(int argc, wchar_t **argv)
  {
      PyObject *av;
@@ -110,7 +109,7 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
      if (argc <= 0 || argv == NULL) {
          /* Ensure at least one (empty) argument is seen */
          static wchar_t *empty_argv[1] = {L""};
-@@ -1878,7 +1882,16 @@
+@@ -1883,7 +1887,16 @@
      if (av != NULL) {
          int i;
          for (i = 0; i < argc; i++) {
@@ -128,7 +127,7 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
              if (v == NULL) {
                  Py_DECREF(av);
                  av = NULL;
-@@ -1897,7 +1910,9 @@
+@@ -1902,7 +1915,9 @@
  static void
  sys_update_path(int argc, wchar_t **argv)
  {
@@ -139,7 +138,7 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
      wchar_t *p = NULL;
      Py_ssize_t n = 0;
      PyObject *a;
-@@ -1912,12 +1927,22 @@
+@@ -1917,12 +1932,22 @@
  #elif defined(MS_WINDOWS) && !defined(MS_WINCE)
      wchar_t fullpath[MAX_PATH];
  #endif
@@ -163,7 +162,7 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
  
  #ifdef HAVE_READLINK
      if (_HAVE_SCRIPT_ARGUMENT(argc, argv))
-@@ -1994,6 +2019,7 @@
+@@ -1999,6 +2024,7 @@
      if (PyList_Insert(path, 0, a) < 0)
          Py_FatalError("sys.path.insert(0) failed");
      Py_DECREF(a);
