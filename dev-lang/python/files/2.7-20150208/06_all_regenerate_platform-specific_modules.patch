@@ -8,8 +8,8 @@ https://bugs.python.org/issue12619
  set -v
 -h2py.py -i '(u_long)' /usr/include/netinet/in.h
 +python$EXE ../../Tools/scripts/h2py.py -i '(u_long)' /usr/include/netinet/in.h
---- Lib/plat-linux/regen
-+++ Lib/plat-linux/regen
+--- Lib/plat-linux2/regen
++++ Lib/plat-linux2/regen
 @@ -5,4 +5,4 @@
  	exit 1;;
  esac
@@ -37,16 +37,16 @@ https://bugs.python.org/issue12619
 +python$EXE ../../Tools/scripts/h2py.py /usr/include/sys/stropts.h
 --- Makefile.pre.in
 +++ Makefile.pre.in
-@@ -464,7 +464,7 @@
+@@ -408,7 +408,7 @@
  
  # Default target
  all:		build_all
--build_all:	$(BUILDPYTHON) oldsharedmods sharedmods gdbhooks Modules/_testembed python-config
-+build_all:	$(BUILDPYTHON) oldsharedmods sharedmods platformspecificmods gdbhooks Modules/_testembed python-config
+-build_all:	$(BUILDPYTHON) oldsharedmods sharedmods gdbhooks
++build_all:	$(BUILDPYTHON) oldsharedmods sharedmods platformspecificmods gdbhooks
  
  # Compile a binary with gcc profile guided optimization.
  profile-opt:
-@@ -572,6 +572,32 @@
+@@ -476,6 +476,32 @@
  		_TCLTK_INCLUDES='$(TCLTK_INCLUDES)' _TCLTK_LIBS='$(TCLTK_LIBS)' \
  		$(PYTHON_FOR_BUILD) $(srcdir)/setup.py $$quiet build
  
@@ -63,9 +63,9 @@ https://bugs.python.org/issue12619
 +	fi
 +	@EXE="$(BUILDEXE)"; export EXE; \
 +	PATH="`pwd`:$$PATH"; export PATH; \
-+	PYTHONPATH="`pwd`/Lib"; export PYTHONPATH; \
++	PYTHONPATH="$(srcdir)/Lib:$(abs_builddir)/`cat pybuilddir.txt`"; export PYTHONPATH; \
 +	if [ -n "$(MULTIARCH)" ]; then MULTIARCH=$(MULTIARCH); export MULTIARCH; fi; \
-+	if [ "$(BUILD_GNU_TYPE)" = "$(HOST_GNU_TYPE)" ]; then \
++	if [ "$(build)" = "$(host)" ]; then \
 +	  PYTHON_FOR_BUILD="$(BUILDPYTHON)"; \
 +	else \
 +	  PYTHON_FOR_BUILD="$(PYTHON_FOR_BUILD)"; \
@@ -79,16 +79,16 @@ https://bugs.python.org/issue12619
  # Build static library
  # avoid long command lines, same as LIBRARY_OBJS
  $(LIBRARY): $(LIBRARY_OBJS)
-@@ -1189,7 +1215,7 @@
- 		unittest unittest/test unittest/test/testmock \
- 		venv venv/scripts venv/scripts/posix \
+@@ -995,7 +1021,7 @@
+ 		unittest unittest/test \
+ 		lib-old \
  		curses pydoc_data $(MACHDEPS)
 -libinstall:	build_all $(srcdir)/Lib/$(PLATDIR) $(srcdir)/Modules/xxmodule.c
 +libinstall:	build_all $(srcdir)/Modules/xxmodule.c
  	@for i in $(SCRIPTDIR) $(LIBDEST); \
  	do \
  		if test ! -d $(DESTDIR)$$i; then \
-@@ -1272,23 +1298,6 @@
+@@ -1078,23 +1104,6 @@
  	-PYTHONPATH=$(DESTDIR)$(LIBDEST) $(RUNSHARED) \
  		$(PYTHON_FOR_BUILD) -m lib2to3.pgen2.driver $(DESTDIR)$(LIBDEST)/lib2to3/PatternGrammar.txt
  
@@ -97,27 +97,27 @@ https://bugs.python.org/issue12619
 -	mkdir $(srcdir)/Lib/$(PLATDIR)
 -	cp $(srcdir)/Lib/plat-generic/regen $(srcdir)/Lib/$(PLATDIR)/regen
 -	export PATH; PATH="`pwd`:$$PATH"; \
--	export PYTHONPATH; PYTHONPATH="`pwd`/Lib"; \
+-	export PYTHONPATH; PYTHONPATH="$(srcdir)/Lib:$(abs_builddir)/`cat pybuilddir.txt`"; \
 -	export DYLD_FRAMEWORK_PATH; DYLD_FRAMEWORK_PATH="`pwd`"; \
 -	export EXE; EXE="$(BUILDEXE)"; \
 -	if [ -n "$(MULTIARCH)" ]; then export MULTIARCH; MULTIARCH=$(MULTIARCH); fi; \
 -	export PYTHON_FOR_BUILD; \
--	if [ "$(BUILD_GNU_TYPE)" = "$(HOST_GNU_TYPE)" ]; then \
+-	if [ "$(build)" = "$(host)" ]; then \
 -	  PYTHON_FOR_BUILD="$(BUILDPYTHON)"; \
 -	else \
 -	  PYTHON_FOR_BUILD="$(PYTHON_FOR_BUILD)"; \
 -	fi; \
 -	cd $(srcdir)/Lib/$(PLATDIR); $(RUNSHARED) ./regen
 -
- python-config: $(srcdir)/Misc/python-config.in Misc/python-config.sh
+ python-config: $(srcdir)/Misc/python-config.in
  	# Substitution happens here, as the completely-expanded BINDIR
  	# is not available in configure
-@@ -1611,7 +1620,7 @@
+@@ -1388,7 +1397,7 @@
  Python/thread.o: @THREADHEADERS@
  
  # Declare targets that aren't real files
--.PHONY: all build_all sharedmods oldsharedmods test quicktest
-+.PHONY: all build_all sharedmods oldsharedmods platformspecificmods test quicktest
+-.PHONY: all build_all sharedmods oldsharedmods test quicktest memtest
++.PHONY: all build_all sharedmods oldsharedmods platformspecificmods test quicktest memtest
  .PHONY: install altinstall oldsharedinstall bininstall altbininstall
  .PHONY: maninstall libinstall inclinstall libainstall sharedinstall
  .PHONY: frameworkinstall frameworkinstallframework frameworkinstallstructure
