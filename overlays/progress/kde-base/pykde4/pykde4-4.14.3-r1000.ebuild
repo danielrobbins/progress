@@ -3,8 +3,8 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_DEPEND="<<[threads]>>"
 PYTHON_ABI_TYPE="multiple"
+PYTHON_DEPEND="<<[threads]>>"
 PYTHON_RESTRICTED_ABIS="*-jython *-pypy"
 OPENGL_REQUIRED="always"
 
@@ -13,7 +13,7 @@ inherit eutils kde4-base multilib portability python toolchain-funcs
 DESCRIPTION="Python bindings for KDE4"
 HOMEPAGE="http://techbase.kde.org/Development/Languages/Python"
 
-KEYWORDS="~* amd64"
+KEYWORDS="*"
 IUSE="akonadi debug doc examples nepomuk"
 
 RDEPEND="
