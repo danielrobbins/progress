@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
+PYTHON_ABI_TYPE="multiple"
 
 inherit distutils
 
@@ -17,7 +17,7 @@ IUSE=""
 RESTRICT="test"
 
 RDEPEND="$(python_abi_depend net-zope/namespaces-zc[zc])
-	$(python_abi_depend ">=dev-python/setuptools-0.7")"
+	$(python_abi_depend ">=dev-python/setuptools-8.0")"
 DEPEND="${RDEPEND}"
 
 DOCS="CHANGES.rst README.rst"
