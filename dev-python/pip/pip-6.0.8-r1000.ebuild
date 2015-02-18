@@ -17,7 +17,10 @@ SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
-DEPEND="$(python_abi_depend dev-python/setuptools)"
+DEPEND="$(python_abi_depend dev-python/certifi)
+	$(python_abi_depend dev-python/lockfile)
+	$(python_abi_depend dev-python/setuptools)
+	$(python_abi_depend dev-python/six)"
 RDEPEND="${DEPEND}"
 
 DOCS="AUTHORS.txt CHANGES.txt docs/*.rst"
@@ -33,6 +36,13 @@ src_prepare() {
 
 	# Enable --disable-pip-version-check option by default.
 	sed -e "407s/default=False/default=True/" -i pip/cmdoptions.py
+
+	# Use system versions.
+	rm -r pip/_vendor/certifi
+	rm -r pip/_vendor/lockfile
+	rm -r pip/_vendor/_markerlib
+	rm -r pip/_vendor/pkg_resources
+	rm pip/_vendor/six.py
 }
 
 src_install() {
