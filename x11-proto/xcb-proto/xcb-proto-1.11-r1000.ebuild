@@ -3,9 +3,9 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
+PYTHON_ABI_TYPE="multiple"
 PYTHON_DEPEND="<<[xml]>>"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="*-jython *-pypy"
 XORG_MULTILIB="yes"
 
 inherit python xorg-2
@@ -16,7 +16,7 @@ EGIT_REPO_URI="git://anongit.freedesktop.org/git/xcb/proto"
 [[ ${PV} != 9999* ]] && \
 	SRC_URI="http://xcb.freedesktop.org/dist/${P}.tar.bz2"
 
-KEYWORDS="~*"
+KEYWORDS="*"
 IUSE=""
 
 RDEPEND=""
@@ -59,9 +59,9 @@ src_install() {
 }
 
 pkg_postinst() {
-	python_mod_optimize xcbgen
+	python_byte-compile_modules xcbgen
 }
 
 pkg_postrm() {
-	python_mod_cleanup xcbgen
+	python_clean_byte-compiled_modules xcbgen
 }
