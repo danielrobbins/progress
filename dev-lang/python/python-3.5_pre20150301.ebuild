@@ -11,13 +11,13 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="https://hg.python.org/cpython"
-	EHG_REVISION="8049954bc0e4"
+	EHG_REVISION="4a1fe339dcf6"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
 fi
 
-PATCHSET_REVISION="20150118"
+PATCHSET_REVISION="20150208"
 
 DESCRIPTION="Python is an interpreted, interactive, object-oriented programming language."
 HOMEPAGE="https://www.python.org/"
@@ -31,9 +31,9 @@ else
 fi
 
 LICENSE="PSF-2"
-SLOT="3.4"
+SLOT="3.5"
 PYTHON_ABI="${SLOT}"
-KEYWORDS="*"
+KEYWORDS="~*"
 IUSE="build doc elibc_uclibc examples gdbm ipv6 +ncurses +readline sqlite +ssl +threads tk wininst +xml"
 
 RDEPEND="app-arch/bzip2
@@ -215,6 +215,13 @@ src_compile() {
 	else
 		pax-mark m python
 	fi
+
+	if use doc; then
+		einfo "Generation of documentation"
+		cd Doc
+		mkdir -p build/{doctrees,html}
+		sphinx-build -b html -d build/doctrees . build/html || die "Generation of documentation failed"
+	fi
 }
 
 src_test() {
@@ -284,6 +291,12 @@ src_install() {
 	use wininst || rm -f "${ED}$(python_get_libdir)/distutils/command/"wininst-*.exe
 
 	dodoc Misc/{ACKS,HISTORY,NEWS} || die "dodoc failed"
+
+	if use doc; then
+		dohtml -A xml -r Doc/build/html/
+		echo "PYTHONDOCS_${SLOT//./_}=\"${EPREFIX}/usr/share/doc/${PF}/html/library\"" > "60python-docs-${SLOT}"
+		doenvd "60python-docs-${SLOT}"
+	fi
 
 	if use examples; then
 		insinto /usr/share/doc/${PF}/examples
