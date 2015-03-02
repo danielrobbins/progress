@@ -13,7 +13,7 @@ MY_PN="Sphinx"
 MY_P="${MY_PN}-${PV/_beta/b}"
 
 DESCRIPTION="Python documentation generator"
-HOMEPAGE="http://sphinx-doc.org/ https://bitbucket.org/birkenfeld/sphinx https://pypi.python.org/pypi/Sphinx"
+HOMEPAGE="http://sphinx-doc.org/ https://github.com/sphinx-doc/sphinx https://pypi.python.org/pypi/Sphinx"
 SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 # Main license: BSD-2
@@ -23,12 +23,14 @@ KEYWORDS="*"
 IUSE="doc latex test"
 
 RDEPEND="$(python_abi_depend dev-python/Babel)
+	$(python_abi_depend dev-python/alabaster)
 	$(python_abi_depend dev-python/docutils)
 	$(python_abi_depend dev-python/jinja)
 	$(python_abi_depend dev-python/pygments)
 	$(python_abi_depend dev-python/setuptools)
 	$(python_abi_depend dev-python/six)
 	$(python_abi_depend dev-python/snowballstemmer)
+	$(python_abi_depend dev-python/sphinx_rtd_theme)
 	latex? (
 		app-text/dvipng
 		dev-texlive/texlive-latexextra
@@ -43,9 +45,17 @@ DOCS="CHANGES"
 src_prepare() {
 	distutils_src_prepare
 
+	# https://github.com/sphinx-doc/sphinx/issues/1748
+	# https://github.com/sphinx-doc/sphinx/commit/d23f3e75dddaa7b7d0d1aeca2363cf356ca70a14
+	sed -e "s/ns = {k: app.config\[k\] for k in app.config.values}/ns = dict((k, app.config[k]) for k in app.config.values)/" -i sphinx/ext/ifconfig.py
+
 	# Support Python 3.1 and 3.2.
 	sed -e "s/^if sys.version_info < (2, 6) or (3, 0) <= sys.version_info < (3, 3):$/if sys.version_info < (2, 6):/" -i setup.py
 	sed -e "s/(3, 0, 0) <= sys.version_info\[:3\] < (3, 3, 0)/False/" -i sphinx/__init__.py
+	sed \
+		-e "s/^\([[:space:]]*\)\(from textwrap import indent\)/\1if sys.version_info[:2] >= (3, 3):\n\1    \2/" \
+		-e "/# backport from python3/i\\if sys.version_info[:2] < (3, 3):" \
+		-i sphinx/util/pycompat.py
 
 	sed -e "/import sys/a\\sys.path.insert(0, '${S}/build-$(PYTHON -f --ABI)/lib')" -i sphinx-build.py
 	sed -e "/sys.path.insert(0, os.path.abspath(os.path.join(testroot, os.path.pardir)))/d" -i tests/run.py
