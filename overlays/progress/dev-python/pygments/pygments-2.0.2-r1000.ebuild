@@ -46,6 +46,20 @@ src_compile() {
 		cp -r tests tests-${PYTHON_ABI} || return
 
 		if has "$(python_get_version -l)" 3.1; then
+			sed \
+				-e "49s/'missing 1 required positional argument' in err.args\[0\]/'takes at least 2 positional arguments (1 given)' in err.args[0]/" \
+				-e "73s/'missing 1 required positional argument' in err.args\[0\]/'takes exactly 3 positional arguments (2 given)' in err.args[0]/" \
+				-i build-${PYTHON_ABI}/lib/pygments/__init__.py
+		fi
+
+		if has "$(python_get_version -l)" 3.2; then
+			sed \
+				-e "49s/'missing 1 required positional argument' in err.args\[0\]/'takes at least 2 arguments (1 given)' in err.args[0]/" \
+				-e "73s/'missing 1 required positional argument' in err.args\[0\]/'takes exactly 3 arguments (2 given)' in err.args[0]/" \
+				-i build-${PYTHON_ABI}/lib/pygments/__init__.py
+		fi
+
+		if has "$(python_get_version -l)" 3.1; then
 			2to3-${PYTHON_ABI} -f callable -nw --no-diffs build-${PYTHON_ABI}/lib tests-${PYTHON_ABI} || return
 		fi
 
