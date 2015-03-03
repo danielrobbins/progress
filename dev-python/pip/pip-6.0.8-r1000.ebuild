@@ -18,10 +18,10 @@ KEYWORDS="*"
 IUSE=""
 
 DEPEND="$(python_abi_depend dev-python/certifi)
-	$(python_abi_depend dev-python/lockfile)
 	$(python_abi_depend dev-python/setuptools)
 	$(python_abi_depend dev-python/six)"
 RDEPEND="${DEPEND}"
+PDEPEND="$(python_abi_depend dev-python/lockfile)"
 
 DOCS="AUTHORS.txt CHANGES.txt docs/*.rst"
 
@@ -39,10 +39,12 @@ src_prepare() {
 
 	# Use system versions.
 	rm -r pip/_vendor/certifi
-	rm -r pip/_vendor/lockfile
 	rm -r pip/_vendor/_markerlib
 	rm -r pip/_vendor/pkg_resources
 	rm pip/_vendor/six.py
+	if has_version "dev-python/lockfile[python_abis_$(PYTHON -f --ABI)]"; then
+		rm -r pip/_vendor/lockfile
+	fi
 }
 
 src_install() {
@@ -56,4 +58,9 @@ src_install() {
 	PYTHONPATH="build-$(PYTHON -f --ABI)/lib" "$(PYTHON -f)" pip/__init__.py completion --zsh > pip.zsh_completion || die "Generation of zsh completion file failed"
 	insinto /usr/share/zsh/site-functions
 	newins pip.zsh_completion _pip
+
+	delete_internal_copies_of_other_packages() {
+		rm -fr "${ED}$(python_get_sitedir)/pip/_vendor/lockfile"
+	}
+	python_execute_function -q delete_internal_copies_of_other_packages
 }
