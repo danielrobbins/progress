@@ -30,8 +30,6 @@ PYTHON_MODULES="gdbus_codegen"
 
 src_prepare() {
 	epatch "${FILESDIR}/${PN}-2.40.0-sitedir.patch"
-	sed -e "s:\"/usr/local\":\"${EPREFIX}/usr\":" \
-		-i config.py || die "sed config.py failed"
 
 	sed -e "s:^#!@PYTHON@:#!${EPREFIX}/usr/bin/python:" gdbus-codegen.in > gdbus-codegen || die "sed gdbus-codegen failed"
 	cp "${FILESDIR}/setup.py-2.32.4" setup.py || die "cp failed"
