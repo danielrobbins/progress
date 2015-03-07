@@ -52,10 +52,12 @@ src_install() {
 
 	python_generate_wrapper_scripts -E -f -q "${ED}usr/bin/pip"
 
-	PYTHONPATH="build-$(PYTHON -f --ABI)/lib" "$(PYTHON -f)" pip/__init__.py completion --bash > pip.bash_completion || die "Generation of bash completion file failed"
+	mkdir "${T}/pip_home"
+
+	HOME="${T}/pip_home" PYTHONPATH="build-$(PYTHON -f --ABI)/lib" "$(PYTHON -f)" pip/__init__.py completion --bash > pip.bash_completion || die "Generation of bash completion file failed"
 	newbashcomp pip.bash_completion pip
 
-	PYTHONPATH="build-$(PYTHON -f --ABI)/lib" "$(PYTHON -f)" pip/__init__.py completion --zsh > pip.zsh_completion || die "Generation of zsh completion file failed"
+	HOME="${T}/pip_home" PYTHONPATH="build-$(PYTHON -f --ABI)/lib" "$(PYTHON -f)" pip/__init__.py completion --zsh > pip.zsh_completion || die "Generation of zsh completion file failed"
 	insinto /usr/share/zsh/site-functions
 	newins pip.zsh_completion _pip
 
