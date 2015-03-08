@@ -3,8 +3,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
+PYTHON_ABI_TYPE="multiple"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
@@ -16,20 +15,20 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 LICENSE="Apache-2.0"
 SLOT="0"
 KEYWORDS="*"
-IUSE="doc gevent"
+IUSE="doc gevent test"
 
-RDEPEND="dev-db/mongodb
-	gevent? ( $(python_abi_depend -i "2.*-cpython" dev-python/gevent) )"
+RDEPEND="gevent? ( $(python_abi_depend -i "2.*-cpython" dev-python/gevent) )"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
-	doc? ( $(python_abi_depend dev-python/sphinx) )"
+	doc? ( $(python_abi_depend dev-python/sphinx) )
+	test? ( dev-db/mongodb )"
 
 PYTHON_MODULES="bson gridfs pymongo"
 
 src_prepare() {
 	distutils_src_prepare
 	sed -e "/^sys.path\[0:0\] =/d" -i doc/conf.py
-	rm -f setup.cfg
+	rm setup.cfg
 
 	preparation() {
 		mkdir build-${PYTHON_ABI} || return
@@ -39,6 +38,9 @@ src_prepare() {
 		fi
 	}
 	python_execute_function preparation
+
+	# Fix compatibility with Python 3.1.
+	sed -e "78s/if PY3:/if __import__('sys').version_info[:2] >= (3, 2):/" -i pymongo/auth.py
 
 	# Fix compatibility with newer Jython (revision >= 107fe4a4c96b).
 	sed -e "s/^if sys.platform.startswith('java'):$/if False:/" -i pymongo/pool.py
