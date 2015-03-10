@@ -4,9 +4,6 @@
 
 EAPI="5-progress"
 PYTHON_ABI_TYPE="multiple"
-# http://bugs.jython.org/issue2232
-# http://bugs.jython.org/issue2233
-PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
 DISTUTILS_SRC_TEST="py.test"
 
 inherit distutils
