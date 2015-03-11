@@ -49,10 +49,6 @@ src_prepare() {
 	rm tests/test-clone-cgi.t
 	rm tests/test-hgweb-commands.t
 	rm tests/test-push-cgi.t
-	# https://bz.selenic.com/show_bug.cgi?id=4087
-	rm tests/test-check-pyflakes.t
-	# https://bz.selenic.com/show_bug.cgi?id=4356
-	rm tests/test-https.t
 	# Disable test failing due to DeprecationWarning in internal code in dev-vcs/bzr 2.6.0.
 	rm tests/test-convert-bzr-directories.t
 
