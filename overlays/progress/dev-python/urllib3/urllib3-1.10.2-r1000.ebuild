@@ -33,7 +33,8 @@ src_prepare() {
 	distutils_src_prepare
 
 	# Fix compatibility with Python 3.1.
-	sed -e "s/if sys.version_info < (2, 7):/if sys.version_info < (2, 7) or sys.version_info[:2] == (3, 1):/" -i urllib3/connection.py
+	sed -e "s/if sys.version_info < (2, 7):/if sys.version_info[:2] < (2, 7) or sys.version_info[:2] >= (3, 0) and sys.version_info[:2] < (3, 2):/" -i urllib3/connection.py
+	sed -e "/supports_set_ciphers =/s/sys.version_info >= (2, 7)/sys.version_info[:2] >= (2, 7) and sys.version_info[:2] < (3, 0) or sys.version_info[:2] >= (3, 2)/" -i urllib3/util/ssl_.py
 
 	# Delete internal copy of dev-python/backports.ssl_match_hostname.
 	rm urllib3/packages/ssl_match_hostname/_implementation.py
