@@ -17,11 +17,19 @@ SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
-DEPEND="$(python_abi_depend dev-python/certifi)
+DEPEND="$(python_abi_depend dev-python/cachecontrol)
+	$(python_abi_depend -e "*-jython" dev-python/html5lib)
+	$(python_abi_depend dev-python/lockfile)
+	$(python_abi_depend dev-python/requests)
 	$(python_abi_depend dev-python/setuptools)
 	$(python_abi_depend dev-python/six)"
+#	$(python_abi_depend dev-python/colorama)
+#	$(python_abi_depend dev-python/distlib)
+#	$(python_abi_depend -i "2.* 3.1 3.2" dev-python/ipaddress)
+#	$(python_abi_depend dev-python/packaging)
+#	$(python_abi_depend dev-python/progress)
+#	$(python_abi_depend dev-python/retrying)
 RDEPEND="${DEPEND}"
-PDEPEND="$(python_abi_depend dev-python/lockfile)"
 
 DOCS="AUTHORS.txt CHANGES.txt docs/*.rst"
 
@@ -38,13 +46,23 @@ src_prepare() {
 	sed -e "407s/default=False/default=True/" -i pip/cmdoptions.py
 
 	# Use system versions.
-	rm -r pip/_vendor/certifi
 	rm -r pip/_vendor/_markerlib
+	rm -r pip/_vendor/cachecontrol
+	rm -r pip/_vendor/certifi
+#	rm -r pip/_vendor/colorama
+#	rm -r pip/_vendor/distlib
+	rm -r pip/_vendor/html5lib
+#	rm pip/_vendor/ipaddress.py
+	rm -r pip/_vendor/lockfile
+#	rm -r pip/_vendor/packaging
 	rm -r pip/_vendor/pkg_resources
+#	rm -r pip/_vendor/progress
+	rm -r pip/_vendor/requests
+#	rm pip/_vendor/retrying.py
 	rm pip/_vendor/six.py
-	if has_version "dev-python/lockfile[python_abis_$(PYTHON -f --ABI)]"; then
-		rm -r pip/_vendor/lockfile
-	fi
+
+	# Install not unused file.
+	rm pip/_vendor/re-vendor.py
 }
 
 src_install() {
@@ -60,9 +78,4 @@ src_install() {
 	HOME="${T}/pip_home" PYTHONPATH="build-$(PYTHON -f --ABI)/lib" "$(PYTHON -f)" pip/__init__.py completion --zsh > pip.zsh_completion || die "Generation of zsh completion file failed"
 	insinto /usr/share/zsh/site-functions
 	newins pip.zsh_completion _pip
-
-	delete_internal_copies_of_other_packages() {
-		rm -fr "${ED}$(python_get_sitedir)/pip/_vendor/lockfile"
-	}
-	python_execute_function -q delete_internal_copies_of_other_packages
 }
