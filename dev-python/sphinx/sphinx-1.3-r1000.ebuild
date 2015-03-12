@@ -3,7 +3,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
+PYTHON_ABI_TYPE="multiple"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 DISTUTILS_SRC_TEST="nosetests"
 
@@ -13,12 +13,8 @@ MY_PN="Sphinx"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Python documentation generator"
-HOMEPAGE="http://sphinx-doc.org/ https://bitbucket.org/birkenfeld/sphinx https://pypi.python.org/pypi/Sphinx"
-if [[ "${PV}" == *_pre* ]]; then
-	SRC_URI="http://people.apache.org/~Arfrever/gentoo/${MY_P}.tar.xz"
-else
-	SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
-fi
+HOMEPAGE="http://sphinx-doc.org/ https://github.com/sphinx-doc/sphinx https://pypi.python.org/pypi/Sphinx"
+SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 # Main license: BSD-2
 LICENSE="BSD BSD-2 MIT PSF-2 test? ( ElementTree )"
@@ -26,15 +22,21 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="doc latex test"
 
-DEPEND="$(python_abi_depend dev-python/docutils)
+RDEPEND="$(python_abi_depend dev-python/Babel)
+	$(python_abi_depend "=dev-python/alabaster-0.7*")
+	$(python_abi_depend dev-python/docutils)
 	$(python_abi_depend dev-python/jinja)
 	$(python_abi_depend dev-python/pygments)
 	$(python_abi_depend dev-python/setuptools)
+	$(python_abi_depend dev-python/six)
+	$(python_abi_depend dev-python/snowballstemmer)
+	$(python_abi_depend "=dev-python/sphinx_rtd_theme-0.1*")
 	latex? (
 		app-text/dvipng
 		dev-texlive/texlive-latexextra
 	)"
-RDEPEND="${DEPEND}"
+DEPEND="${RDEPEND}
+	test? ( $(python_abi_depend virtual/python-mock) )"
 
 S="${WORKDIR}/${MY_P}"
 
@@ -43,25 +45,37 @@ DOCS="CHANGES"
 src_prepare() {
 	distutils_src_prepare
 
-	# Accept new versions of Jinja with Python 3.1 and 3.2.
-	sed -e "s/requires.append('Jinja2>=2.3,<2.7')/requires.append('Jinja2>=2.3')/" -i setup.py
+	# Support Python 3.1 and 3.2.
+	sed -e "s/^if sys.version_info < (2, 6) or (3, 0) <= sys.version_info < (3, 3):$/if sys.version_info < (2, 6):/" -i setup.py
+	sed -e "s/(3, 0, 0) <= sys.version_info\[:3\] < (3, 3, 0)/False/" -i sphinx/__init__.py
+	sed \
+		-e "s/^\([[:space:]]*\)\(from textwrap import indent\)/\1if sys.version_info[:2] >= (3, 3):\n\1    \2/" \
+		-e "/# backport from python3/i\\if sys.version_info[:2] < (3, 3):" \
+		-i sphinx/util/pycompat.py
 
-	prepare_tests() {
-		cp -r tests tests-${PYTHON_ABI}
-
-		if [[ "$(python_get_version -l --major)" == "3" ]]; then
-			2to3-${PYTHON_ABI} -nw --no-diffs tests-${PYTHON_ABI}
-		fi
-	}
-	python_execute_function prepare_tests
+	sed -e "/import sys/a\\sys.path.insert(0, '${S}/build-$(PYTHON -f --ABI)/lib')" -i sphinx-build.py
+	sed -e "/sys.path.insert(0, os.path.abspath(os.path.join(testroot, os.path.pardir)))/d" -i tests/run.py
 }
 
 src_compile() {
 	distutils_src_compile
 
+	preparation() {
+		cp -r tests tests-${PYTHON_ABI} || return
+
+		if has "$(python_get_version -l)" 3.1; then
+			2to3-${PYTHON_ABI} -f callable -nw --no-diffs build-${PYTHON_ABI}/lib tests-${PYTHON_ABI} || return
+			sed -e "s/from html import escape as htmlescape[[:space:]]*.*/from cgi import escape as htmlescape/" -i build-${PYTHON_ABI}/lib/sphinx/util/pycompat.py || return
+		fi
+
+		if has "$(python_get_version -l)" 3.1 3.2; then
+			2to3-${PYTHON_ABI} -f unicode -nw --no-diffs build-${PYTHON_ABI}/lib tests-${PYTHON_ABI} || return
+		fi
+	}
+	python_execute_function -q preparation
+
 	if use doc; then
 		einfo "Generation of documentation"
-		sed -e "/import sys/a\\sys.path.insert(0, '${S}/build-$(PYTHON -f --ABI)/lib')" -i sphinx-build.py || die "sed failed"
 		pushd doc > /dev/null
 		emake SPHINXBUILD="$(PYTHON -f) ../sphinx-build.py" html
 		popd > /dev/null
@@ -69,7 +83,10 @@ src_compile() {
 }
 
 src_test() {
-	python_execute_nosetests -e -P 'build-${PYTHON_ABI}/lib' -- -w 'tests-${PYTHON_ABI}'
+	testing() {
+		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" tests-${PYTHON_ABI}/run.py -w tests-${PYTHON_ABI}
+	}
+	python_execute_function testing
 }
 
 src_install() {
