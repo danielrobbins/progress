@@ -4,7 +4,6 @@
 
 EAPI="5-progress"
 PYTHON_ABI_TYPE="multiple"
-PYTHON_RESTRICTED_ABIS="3.1"
 
 inherit distutils
 
@@ -17,9 +16,16 @@ SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
-DEPEND="$(python_abi_depend dev-python/pip)
-	$(python_abi_depend dev-python/setuptools)"
+DEPEND="$(python_abi_depend dev-python/setuptools)"
 RDEPEND="${DEPEND}"
+PDEPEND="$(python_abi_depend -e "3.1" dev-python/pip)"
+
+src_prepare() {
+	distutils_src_prepare
+
+	# Allow installation without dev-python/pip installed.
+	sed -e "/^pip$/d" -i requirements.txt pbr.egg-info/requires.txt
+}
 
 src_install() {
 	distutils_src_install
