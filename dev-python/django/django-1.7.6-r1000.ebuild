@@ -47,6 +47,12 @@ src_prepare() {
 	# https://code.djangoproject.com/ticket/23489
 	# https://github.com/django/django/commit/12809e160995eb617fe394c75e5b9f3211c056ff
 	sed -e "s/except (TypeError, AttributeError, KeyError, ValueError):$/except (TypeError, AttributeError, KeyError, ValueError, IndexError):/" -i django/template/base.py
+
+	# Fix bash completion file.
+	sed \
+		-e "/^complete -F _django_completion /s/ manage.py / /" \
+		-e "/^_python_django_completion()$/,/^complete -F _python_django_completion /d" \
+		-i extras/django_bash_completion
 }
 
 src_compile() {
@@ -71,7 +77,8 @@ src_test() {
 src_install() {
 	distutils_src_install
 
-	newbashcomp extras/django_bash_completion ${PN}
+	newbashcomp extras/django_bash_completion django-admin
+	bashcomp_alias django-admin django-admin.py
 
 	if use doc; then
 		dohtml -r docs/_build/html/
