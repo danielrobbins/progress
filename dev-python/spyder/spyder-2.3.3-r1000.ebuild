@@ -3,13 +3,13 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.1 *-jython *-pypy-*"
+PYTHON_ABI_TYPE="multiple"
+PYTHON_RESTRICTED_ABIS="3.1 *-jython *-pypy"
 
 inherit distutils eutils fdo-mime
 
 DESCRIPTION="Scientific PYthon Development EnviRonment"
-HOMEPAGE="http://code.google.com/p/spyderlib/ https://bitbucket.org/spyder-ide/spyderlib https://pypi.python.org/pypi/spyder"
+HOMEPAGE="https://github.com/spyder-ide/spyder https://pypi.python.org/pypi/spyder"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.zip"
 
 LICENSE="MIT"
@@ -24,7 +24,7 @@ RDEPEND="$(python_abi_depend virtual/python-qt:4[X,svg,webkit])
 	pep8? ( $(python_abi_depend dev-python/pep8) )
 	psutil? ( $(python_abi_depend dev-python/psutil) )
 	pyflakes? ( $(python_abi_depend dev-python/pyflakes) )
-	pylint? ( $(python_abi_depend dev-python/pylint) )
+	pylint? ( $(python_abi_depend -e "2.6 3.2" dev-python/pylint) )
 	rope? ( $(python_abi_depend -e "3.*" dev-python/rope) )
 	scipy? ( $(python_abi_depend sci-libs/scipy) )
 	sphinx? ( $(python_abi_depend dev-python/sphinx) )"
@@ -37,6 +37,10 @@ PYTHON_MODULES="spyderlib spyderplugins"
 src_prepare() {
 	distutils_src_prepare
 	epatch "${FILESDIR}/${PN}-2.3.1-build.patch"
+
+	# Fix compatibility with Python 3.2.
+	# https://github.com/spyder-ide/spyder/issues/2239
+	sed -e "s/u'\\\n'/__import__('spyderlib.py3compat').py3compat.u('\\\n')/" -i spyderlib/pygments_patch.py
 }
 
 src_compile() {
