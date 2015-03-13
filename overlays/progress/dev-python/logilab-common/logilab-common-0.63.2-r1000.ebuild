@@ -3,9 +3,9 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
-# 3.[4-9]: https://www.logilab.org/ticket/241813
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.[3-9] *-jython"
+PYTHON_ABI_TYPE="multiple"
+PYTHON_RESTRICTED_ABIS="3.1 3.2"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 PYTHON_NAMESPACES="logilab"
 
 inherit distutils python-namespaces
@@ -21,13 +21,14 @@ KEYWORDS="*"
 IUSE="doc test"
 
 RDEPEND="$(python_abi_depend dev-python/setuptools)
-	$(python_abi_depend -i "2.6 3.1" dev-python/unittest2)"
-# Tests using dev-python/psycopg:2 are skipped when dev-python/psycopg:2 is not installed.
+	$(python_abi_depend dev-python/six)
+	$(python_abi_depend -i "2.6" dev-python/unittest2)"
 DEPEND="${RDEPEND}
 	doc? ( dev-python/epydoc )
 	test? (
-		$(python_abi_depend -e "3.* *-jython *-pypy-*" dev-python/egenix-mx-base)
-		!dev-python/psycopg:2[-mxdatetime]
+		$(python_abi_depend "=${CATEGORY}/${PF}")
+		$(python_abi_depend -e "3.* *-jython *-pypy" dev-python/egenix-mx-base)
+		$(python_abi_depend dev-python/pytz)
 	)"
 
 S="${WORKDIR}/${P}"
@@ -36,10 +37,7 @@ PYTHON_MODULES="logilab"
 
 src_prepare() {
 	distutils_src_prepare
-
-	# Disable tests breaking test suite with Python >=3.4.
-	# https://www.logilab.org/ticket/241807
-	rm test/unittest_compat.py
+	sed -e "s/test_require/tests_require/g" -i __pkginfo__.py setup.py
 }
 
 src_compile() {
