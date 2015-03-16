@@ -4,7 +4,7 @@
 
 # @ECLASS: twisted.eclass
 # @MAINTAINER:
-# Gentoo Python Project <python@gentoo.org>
+# Arfrever Frehtes Taifersar Arahesis <Arfrever@Apache.Org>
 # @BLURB: Eclass for Twisted packages
 # @DESCRIPTION:
 # The twisted eclass defines phase functions for Twisted packages.
@@ -100,7 +100,7 @@ except ImportError:
 	if '${EBUILD_PHASE}' == 'postinst':
 		raise
 	else:
-	    # Twisted, zope.interface or given plugins might have been uninstalled.
+		# Twisted, zope.interface or given plugins might have been uninstalled.
 		sys.exit(0)
 
 list(twisted.plugin.getPlugins(twisted.plugin.IPlugin, ${module}))" || exit_status="1"
