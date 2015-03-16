@@ -20,7 +20,7 @@ KEYWORDS="*"
 IUSE="examples tk"
 
 # Versions specified in pylint/__pkginfo__.py.
-DEPEND="$(python_abi_depend ">=dev-python/astroid-1.3.5")
+DEPEND="$(python_abi_depend ">=dev-python/astroid-1.3.6")
 	$(python_abi_depend ">=dev-python/logilab-common-0.53.0")
 	$(python_abi_depend dev-python/setuptools)
 	$(python_abi_depend dev-python/six)"
