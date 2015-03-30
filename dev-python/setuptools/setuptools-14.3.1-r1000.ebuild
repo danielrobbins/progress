@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_ABI_TYPE="multiple"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.1 *-jython"
 DISTUTILS_SRC_TEST="py.test"
 
 inherit distutils
