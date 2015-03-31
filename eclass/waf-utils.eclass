@@ -3,7 +3,7 @@
 
 # @ECLASS: waf-utils.eclass
 # @MAINTAINER:
-# gnome@gentoo.org
+# maintainer-needed@gentoo.org
 # @AUTHOR:
 # Original Author: Gilles Dartiguelongue <eva@gentoo.org>
 # Various improvements based on cmake-utils.eclass: Tomáš Chvátal <scarabeus@gentoo.org>

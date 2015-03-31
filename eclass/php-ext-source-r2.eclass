@@ -15,7 +15,7 @@
 # This eclass provides a unified interface for compiling and installing standalone
 # PHP extensions (modules).
 
-inherit flag-o-matic autotools multilib
+inherit flag-o-matic autotools multilib eutils
 
 EXPORT_FUNCTIONS src_unpack src_prepare src_configure src_compile src_install
 
@@ -52,7 +52,8 @@ esac
 # @ECLASS-VARIABLE: USE_PHP
 # @DESCRIPTION:
 # Lists the PHP slots compatibile the extension is compatibile with
-[[ -z "${USE_PHP}" ]] && USE_PHP="php5-3"
+[[ -z "${USE_PHP}" ]] && USE_PHP="php5-3" \
+	&& eqawarn "An empty USE_PHP is deprecated and support will be removed on 2015-05-01"
 
 # @ECLASS-VARIABLE: PHP_EXT_OPTIONAL_USE
 # @DESCRIPTION:
