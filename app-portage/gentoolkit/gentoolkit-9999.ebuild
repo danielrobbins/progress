@@ -3,8 +3,8 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_DEPEND="<<[xml]>>"
 PYTHON_ABI_TYPE="multiple"
+PYTHON_DEPEND="<<[xml]>>"
 PYTHON_RESTRICTED_ABIS="*-jython"
 PYTHON_NONVERSIONED_EXECUTABLES=(".*")
 
@@ -29,7 +29,7 @@ RDEPEND="${DEPEND}
 	!<=app-portage/gentoolkit-dev-0.2.7
 	|| ( >=sys-apps/coreutils-8.15 sys-freebsd/freebsd-bin )
 	sys-apps/gawk
-	!prefix? ( sys-apps/gentoo-functions )
+	sys-apps/gentoo-functions
 	sys-apps/grep
 	$(python_abi_depend virtual/python-argparse)"
 
