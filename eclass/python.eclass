@@ -713,7 +713,7 @@ _python_parse_dependencies_in_new_EAPIs() {
 }
 
 if _python_implementation; then
-	DEPEND=">=app-admin/eselect-python-20091230 >=app-shells/bash-4"
+	DEPEND=">=app-eselect/eselect-python-20091230 >=app-shells/bash-4"
 	RDEPEND="${DEPEND}"
 fi
 
