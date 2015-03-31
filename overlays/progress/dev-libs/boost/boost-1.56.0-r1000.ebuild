@@ -24,7 +24,7 @@ RESTRICT="test"
 
 RDEPEND="icu? ( >=dev-libs/icu-3.6:0=::${REPOSITORY}[c++11(-)=,${MULTILIB_USEDEP}] )
 	!icu? ( virtual/libiconv[${MULTILIB_USEDEP}] )
-	mpi? ( || ( sys-cluster/openmpi[cxx] sys-cluster/mpich2[cxx,threads] ) )
+	mpi? ( virtual/mpi[cxx,threads] )
 	app-arch/bzip2:0=[${MULTILIB_USEDEP}]
 	sys-libs/zlib:0=[${MULTILIB_USEDEP}]
 	!app-admin/eselect-boost
