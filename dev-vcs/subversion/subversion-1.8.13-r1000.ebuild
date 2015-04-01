@@ -4,14 +4,14 @@
 
 EAPI="5-progress"
 GENTOO_DEPEND_ON_PERL="no"
-PYTHON_DEPEND="ctypes-python? ( <<>> ) python? ( <<>> )"
+PYTHON_ABI_TYPE="multiple"
 if [[ "${PV}" == *_pre* ]]; then
 	# autogen.sh calls gen-make.py.
 	PYTHON_BDEPEND="<<>>"
 else
 	PYTHON_BDEPEND="test? ( <<>> )"
 fi
-PYTHON_ABI_TYPE="multiple"
+PYTHON_DEPEND="ctypes-python? ( <<>> ) python? ( <<>> )"
 PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy"
 if [[ "${PV}" != *_pre* ]]; then
 	WANT_AUTOMAKE="none"
@@ -665,9 +665,11 @@ src_install() {
 		print "Installation of Subversion JavaHL library"
 		print
 		emake -j1 DESTDIR="${D}" install-javahl || die "Installation of Subversion JavaHL library failed"
-		java-pkg_regso "${ED}"usr/$(get_libdir)/libsvnjavahl*$(get_libname)
-		java-pkg_dojar "${ED}"usr/$(get_libdir)/svn-javahl/svn-javahl.jar
-		rm -fr "${ED}"usr/$(get_libdir)/svn-javahl/*.jar
+		java-pkg_regso "${ED}usr/$(get_libdir)/libsvnjavahl-1$(get_libname 0)"
+		java-pkg_dojar "${ED}usr/$(get_libdir)/svn-javahl/svn-javahl.jar"
+		rm "${ED}usr/$(get_libdir)/svn-javahl/svn-javahl.jar" || die
+		rmdir "${ED}usr/$(get_libdir)/svn-javahl/include" || die
+		rmdir "${ED}usr/$(get_libdir)/svn-javahl" || die
 	fi
 
 	# Install Apache module configuration.
