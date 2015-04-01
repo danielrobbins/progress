@@ -3,8 +3,8 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.1 3.2"
+PYTHON_ABI_TYPE="multiple"
+PYTHON_RESTRICTED_ABIS="3.1 3.2-cpython"
 
 inherit distutils
 
@@ -17,10 +17,10 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="mysql postgres reportlab"
 
-DEPEND="$(python_abi_depend -e "*-jython *-pypy-*" dev-python/numpy)
+DEPEND="$(python_abi_depend -e "*-jython *-pypy" dev-python/numpy)
 	mysql? ( $(python_abi_depend -e "3.* *-jython" dev-python/mysql-python) )
-	postgres? ( $(python_abi_depend -e "*-jython *-pypy-*" dev-python/psycopg:2) )
-	reportlab? ( $(python_abi_depend -e "3.* *-jython" dev-python/reportlab) )"
+	postgres? ( $(python_abi_depend -e "*-jython *-pypy" dev-python/psycopg:2) )
+	reportlab? ( $(python_abi_depend -e "2.6 3.2 *-jython" dev-python/reportlab) )"
 RDEPEND="${DEPEND}"
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
