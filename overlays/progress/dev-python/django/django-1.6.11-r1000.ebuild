@@ -53,9 +53,6 @@ src_prepare() {
 	# https://github.com/django/django/commit/12809e160995eb617fe394c75e5b9f3211c056ff
 	sed -e "s/except (TypeError, AttributeError, KeyError, ValueError):$/except (TypeError, AttributeError, KeyError, ValueError, IndexError):/" -i django/template/base.py
 
-	# Fix encoding declaration.
-	sed -e "1{h;d};2G" -i tests/utils_tests/test_jslex.py
-
 	# Disable failing test.
 	# https://code.djangoproject.com/ticket/21416
 	sed -e "s/test_app_with_import/_&/" -i tests/admin_scripts/tests.py
