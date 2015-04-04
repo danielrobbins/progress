@@ -3,7 +3,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
+PYTHON_ABI_TYPE="multiple"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.1 *-jython"
 
 inherit distutils
@@ -19,6 +19,7 @@ IUSE=""
 
 DEPEND="$(python_abi_depend dev-python/setuptools)
 	$(python_abi_depend dev-python/six)
+	$(python_abi_depend dev-python/traceback2)
 	$(python_abi_depend virtual/python-argparse)"
 RDEPEND="${DEPEND}"
 
@@ -28,7 +29,7 @@ src_prepare() {
 	distutils_src_prepare
 
 	# https://code.google.com/p/unittest-ext/issues/detail?id=88
-	sed -e "s/REQUIRES = \['argparse', 'six'\],/REQUIRES = ['six']\nif sys.version_info[:2] < (2, 7) or (3, 0) <= sys.version_info[:2] < (3, 2):\n    REQUIRES.append('argparse')/" -i setup.py
+	sed -e "s/REQUIRES = \['argparse', 'six>=1.4', 'traceback2'\],/REQUIRES = ['six>=1.4', 'traceback2']\nif sys.version_info[:2] < (2, 7) or (3, 0) <= sys.version_info[:2] < (3, 2):\n    REQUIRES.append('argparse')/" -i setup.py
 }
 
 src_compile() {
@@ -49,4 +50,13 @@ src_test() {
 		popd > /dev/null
 	}
 	python_execute_function testing
+}
+
+src_install() {
+	distutils_src_install
+
+	delete_tests() {
+		rm -r "${ED}$(python_get_sitedir)/unittest2/test"
+	}
+	python_execute_function -q delete_tests
 }
