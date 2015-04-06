@@ -3,8 +3,8 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
+PYTHON_ABI_TYPE="multiple"
+PYTHON_RESTRICTED_ABIS="*-jython *-pypy"
 PYTHON_EXPORT_PHASE_FUNCTIONS="1"
 
 inherit eutils python versionator
@@ -77,9 +77,9 @@ src_install() {
 }
 
 pkg_postinst() {
-	python_mod_optimize vis visual
+	python_byte-compile_modules vis visual
 }
 
 pkg_postrm() {
-	python_mod_cleanup vis visual
+	python_clean_byte-compiled_modules vis visual
 }
