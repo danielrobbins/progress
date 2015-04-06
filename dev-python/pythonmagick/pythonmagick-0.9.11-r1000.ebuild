@@ -3,8 +3,8 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
+PYTHON_ABI_TYPE="multiple"
+PYTHON_RESTRICTED_ABIS="*-jython *-pypy"
 PYTHON_EXPORT_PHASE_FUNCTIONS="1"
 
 inherit python
@@ -21,7 +21,7 @@ SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
-RDEPEND="$(python_abi_depend dev-libs/boost:0=[python])
+RDEPEND="$(python_abi_depend "dev-libs/boost:0=[python]")
 	>=media-gfx/imagemagick-6.8.6:0="
 DEPEND="${RDEPEND}
 	virtual/pkgconfig"
@@ -51,9 +51,9 @@ src_install() {
 }
 
 pkg_postinst() {
-	python_mod_optimize PythonMagick
+	python_byte-compile_modules PythonMagick
 }
 
 pkg_postrm() {
-	python_mod_cleanup PythonMagick
+	python_clean_byte-compiled_modules PythonMagick
 }
