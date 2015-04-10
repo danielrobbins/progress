@@ -51,18 +51,6 @@ src_unpack() {
 }
 
 src_prepare() {
-	# https://ssl.icu-project.org/trac/ticket/10826
-	# https://ssl.icu-project.org/trac/changeset/35953
-	sed -e "/FFLAGS = @FFLAGS@/d" -i config/Makefile.inc.in
-
-	# https://ssl.icu-project.org/trac/ticket/10937
-	# https://ssl.icu-project.org/trac/changeset/35803
-	# https://ssl.icu-project.org/trac/changeset/35938
-	sed \
-		-e 's:parse2DigitYear(fmt, "5/6/17", date(117, UCAL_JUNE, 5)):parse2DigitYear(fmt, "5/6/30", date(130, UCAL_JUNE, 5)):' \
-		-e 's:parse2DigitYear(fmt, "4/6/34", date(34, UCAL_JUNE, 4)):parse2DigitYear(fmt, "4/6/50", date(50, UCAL_JUNE, 4)):' \
-		-i test/intltest/dtfmttst.cpp
-
 	if use c++11; then
 		if [[ "$(tc-getCXX)" == *g++* ]]; then
 			if test-flag-CXX -std=gnu++11; then
@@ -120,8 +108,6 @@ multilib_src_test() {
 	if [[ "${ABI}" == "x86" ]]; then
 		# https://ssl.icu-project.org/trac/ticket/10614
 		sed -e "/TESTCASE_AUTO(testGetSamples)/d" -i test/intltest/plurults.cpp
-		# https://ssl.icu-project.org/trac/ticket/10824
-		sed -e "/TESTCASE(0, testBasic)/d" -i test/intltest/tufmtts.cpp
 	fi
 
 	# INTLTEST_OPTS: intltest options
