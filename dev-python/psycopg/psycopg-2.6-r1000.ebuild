@@ -19,41 +19,57 @@ LICENSE="LGPL-3+"
 SLOT="2"
 KEYWORDS="*"
 IUSE="debug doc examples mxdatetime"
-
-DEPEND=">=dev-db/postgresql-8.1
-	mxdatetime? ( $(python_abi_depend -e "3.* *-pypy" dev-python/egenix-mx-base) )"
-RDEPEND="${DEPEND}"
 RESTRICT="test"
+
+RDEPEND=">=dev-db/postgresql-8.1
+	mxdatetime? ( $(python_abi_depend -e "3.* *-pypy" dev-python/egenix-mx-base) )"
+DEPEND="${RDEPEND}
+	doc? ( $(python_abi_depend dev-python/sphinx) )"
 
 S="${WORKDIR}/${MY_P}"
 
 PYTHON_CFLAGS=("2.* + -fno-strict-aliasing")
 
-DOCS="AUTHORS NEWS README doc/HACKING doc/psycopg2.txt"
+DOCS="AUTHORS NEWS README.rst"
 PYTHON_MODULES="${PN}2"
 
 src_prepare() {
 	epatch "${FILESDIR}/${PN}-2.4.2-setup.py.patch"
 
 	if use debug; then
-		sed -i "s/^\(define=\)/\1PSYCOPG_DEBUG,/" setup.cfg || die "sed failed"
+		sed -e "/^define=/{s/$/,PSYCOPG_DEBUG/;s/=,/=/}" -i setup.cfg || die "sed failed"
 	fi
 
 	if use mxdatetime; then
-		sed -i "s/\(use_pydatetime=\)1/\10/" setup.cfg || die "sed failed"
+		sed -e "/^use_pydatetime=/s/1/0/" -i setup.cfg || die "sed failed"
+	fi
+}
+
+src_compile() {
+	distutils_src_compile
+
+	if use doc; then
+		einfo "Generation of documentation"
+		pushd doc/src > /dev/null
+		PYTHONPATH="$(ls -d ../../build-$(PYTHON -f --ABI)/lib*)" emake html
+		popd > /dev/null
 	fi
 }
 
 src_install() {
 	distutils_src_install
 
+	delete_tests() {
+		rm -r "${ED}$(python_get_sitedir)/psycopg2/tests"
+	}
+	python_execute_function -q delete_tests
+
 	if use doc; then
-		dodoc doc/psycopg2.txt
-		dohtml -r doc/html/
+		dohtml -r doc/src/_build/html/
 	fi
 
 	if use examples; then
 		insinto /usr/share/doc/${PF}/examples
-		doins -r examples/*
+		doins examples/*
 	fi
 }
