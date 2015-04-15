@@ -40,5 +40,5 @@ src_install() {
 	delete_tests() {
 		rm "${ED}$(python_get_sitedir)/ecdsa/test_pyecdsa.py"
 	}
-	python_execute_function delete_tests
+	python_execute_function -q delete_tests
 }
