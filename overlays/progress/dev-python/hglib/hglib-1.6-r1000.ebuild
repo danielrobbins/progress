@@ -4,7 +4,6 @@
 
 EAPI="5-progress"
 PYTHON_ABI_TYPE="multiple"
-PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
@@ -21,7 +20,7 @@ SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
-DEPEND="$(python_abi_depend ">=dev-vcs/mercurial-1.9")"
+DEPEND="dev-vcs/mercurial"
 RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/${MY_P}"
