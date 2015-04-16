@@ -3,9 +3,9 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
+PYTHON_ABI_TYPE="multiple"
 PYTHON_DEPEND="python? ( <<>> )"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="*-jython *-pypy"
 DISTUTILS_SRC_TEST="nosetests"
 DISTUTILS_DISABLE_TEST_DEPENDENCY="1"
 
