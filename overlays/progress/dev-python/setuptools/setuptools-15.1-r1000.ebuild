@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_ABI_TYPE="multiple"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.1 *-jython"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 DISTUTILS_SRC_TEST="py.test"
 
 inherit distutils
@@ -18,14 +18,18 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="test"
 
-DEPEND="test? ( $(python_abi_depend virtual/python-mock) )"
-RDEPEND=""
+RDEPEND="$(python_abi_depend dev-python/packaging)"
+DEPEND="${RDEPEND}
+	test? ( $(python_abi_depend virtual/python-mock) )"
 
 DOCS="README.txt docs/easy_install.txt docs/pkg_resources.txt docs/setuptools.txt"
 PYTHON_MODULES="_markerlib easy_install.py pkg_resources setuptools"
 
 src_prepare() {
 	distutils_src_prepare
+
+	# Use system version of dev-python/packaging.
+	rm -r pkg_resources/_vendor/packaging
 
 	# Disable tests requiring network connection.
 	rm setuptools/tests/test_packageindex.py
