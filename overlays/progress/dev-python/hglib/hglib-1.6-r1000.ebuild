@@ -25,6 +25,13 @@ RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/${MY_P}"
 
+src_prepare() {
+	distutils_src_prepare
+
+	# Fix version.
+	sed -e "s/^version = 'unknown'$/version = '${PV}'/" -i setup.py
+}
+
 src_test() {
 	testing() {
 		python_execute PYTHONPATH="build-${PYTHON_ABI}/lib" "$(PYTHON)" test.py
