@@ -3,8 +3,8 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
+PYTHON_ABI_TYPE="multiple"
+PYTHON_RESTRICTED_ABIS="*-jython *-pypy"
 
 inherit distutils
 
@@ -23,3 +23,10 @@ DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
 
 PYTHON_CXXFLAGS=("2.* + -fno-strict-aliasing")
+
+src_prepare() {
+	distutils_src_prepare
+
+	# Fix version.
+	sed -e "s/name, numbers = _get_version_pkginfo()/name, numbers = '${PV}', '${PV}'.split('.')/" -i setup.py
+}
