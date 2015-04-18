@@ -20,13 +20,13 @@ IUSE=""
 DEPEND="$(python_abi_depend dev-python/cachecontrol)
 	$(python_abi_depend -e "*-jython" dev-python/html5lib)
 	$(python_abi_depend dev-python/lockfile)
+	$(python_abi_depend dev-python/packaging)
 	$(python_abi_depend dev-python/requests)
 	$(python_abi_depend dev-python/setuptools)
 	$(python_abi_depend dev-python/six)"
 #	$(python_abi_depend dev-python/colorama)
 #	$(python_abi_depend dev-python/distlib)
 #	$(python_abi_depend -i "2.* 3.1 3.2" dev-python/ipaddress)
-#	$(python_abi_depend dev-python/packaging)
 #	$(python_abi_depend dev-python/progress)
 #	$(python_abi_depend dev-python/retrying)
 RDEPEND="${DEPEND}"
@@ -48,13 +48,12 @@ src_prepare() {
 	# Use system versions.
 	rm -r pip/_vendor/_markerlib
 	rm -r pip/_vendor/cachecontrol
-	rm -r pip/_vendor/certifi
 #	rm -r pip/_vendor/colorama
 #	rm -r pip/_vendor/distlib
 	rm -r pip/_vendor/html5lib
 #	rm pip/_vendor/ipaddress.py
 	rm -r pip/_vendor/lockfile
-#	rm -r pip/_vendor/packaging
+	rm -r pip/_vendor/packaging
 	rm -r pip/_vendor/pkg_resources
 #	rm -r pip/_vendor/progress
 	rm -r pip/_vendor/requests
@@ -63,6 +62,10 @@ src_prepare() {
 
 	# Install not unused file.
 	rm pip/_vendor/re-vendor.py
+
+	# Avoid mixing of pip._vendor.packaging.version with packaging.version.
+	# https://github.com/pypa/pip/issues/2694
+	sed -e "s/from pip._vendor.packaging.version import/from packaging.version import/" -i pip/index.py pip/req/req_install.py pip/req/req_requirement.py
 }
 
 src_install() {
