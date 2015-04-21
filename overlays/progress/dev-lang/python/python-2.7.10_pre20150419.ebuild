@@ -11,7 +11,7 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="https://hg.python.org/cpython"
-	EHG_REVISION="d0b497c86c60"
+	EHG_REVISION="df28044b7e14"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
@@ -147,8 +147,8 @@ src_prepare() {
 		Lib/sysconfig.py \
 		Lib/test/test_site.py \
 		Makefile.pre.in \
-		Modules/Setup.dist \
 		Modules/getpath.c \
+		Modules/Setup.dist \
 		setup.py || die "sed failed to replace @@GENTOO_LIBDIR@@"
 
 	eaclocal
