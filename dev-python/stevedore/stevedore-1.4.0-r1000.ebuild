@@ -37,7 +37,7 @@ src_prepare() {
 	sed \
 		-e "/^pbr>=0.6,!=0.7,<1.0$/d" \
 		-e "/^argparse$/d" \
-		-e "/^six>=1.7.0$/d" \
+		-e "/^six>=1.9.0$/d" \
 		-i requirements.txt
 }
 
@@ -46,7 +46,7 @@ src_compile() {
 
 #	if use doc; then
 #		einfo "Generation of documentation"
-#		python_execute PYTHONPATH="build-$(PYTHON -f --ABI)/lib" sphinx-build docs/source html || die "Generation of documentation failed"
+#		python_execute PYTHONPATH="build-$(PYTHON -f --ABI)/lib" sphinx-build doc/source html || die "Generation of documentation failed"
 #	fi
 }
 
