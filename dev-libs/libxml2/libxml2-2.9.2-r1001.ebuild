@@ -3,9 +3,9 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
+PYTHON_ABI_TYPE="multiple"
 PYTHON_DEPEND="python? ( <<[xml]>> )"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="*-jython *-pypy"
 
 inherit autotools eutils flag-o-matic libtool multilib-minimal prefix python
 
@@ -80,7 +80,11 @@ src_prepare() {
 
 	# Important patches from master
 	epatch \
-		"${FILESDIR}/${PN}-2.9.2-revert-missing-initialization.patch"
+		"${FILESDIR}/${PN}-2.9.2-revert-missing-initialization.patch" \
+		"${FILESDIR}/${PN}-2.9.2-missing-entities.patch" \
+		"${FILESDIR}/${PN}-2.9.2-threads-declarations.patch" \
+		"${FILESDIR}/${PN}-2.9.2-timsort.patch" \
+		"${FILESDIR}/${PN}-2.9.2-constant-memory.patch"
 
 	# Python bindings are built/tested/installed manually.
 	sed -e 's/$(PYTHON_SUBDIR)//' -i Makefile.am || die "sed failed"
@@ -189,7 +193,7 @@ multilib_src_install_all() {
 
 pkg_postinst() {
 	if use python; then
-		python_mod_optimize drv_libxml2.py libxml2.py
+		python_byte-compile_modules drv_libxml2.py libxml2.py
 	fi
 
 	# We don't want to do the xmlcatalog during stage1, as xmlcatalog will not
@@ -213,6 +217,6 @@ pkg_postinst() {
 
 pkg_postrm() {
 	if use python; then
-		python_mod_cleanup drv_libxml2.py libxml2.py
+		python_clean_byte-compiled_modules drv_libxml2.py libxml2.py
 	fi
 }
