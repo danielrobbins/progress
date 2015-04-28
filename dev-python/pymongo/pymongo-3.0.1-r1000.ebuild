@@ -4,7 +4,8 @@
 
 EAPI="5-progress"
 PYTHON_ABI_TYPE="multiple"
-DISTUTILS_SRC_TEST="nosetests"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.1 *-jython"
+DISTUTILS_SRC_TEST="setup.py"
 
 inherit distutils
 
@@ -15,35 +16,36 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 LICENSE="Apache-2.0"
 SLOT="0"
 KEYWORDS="*"
-IUSE="doc gevent test"
+IUSE="doc test"
 
-RDEPEND="gevent? ( $(python_abi_depend -i "2.*-cpython" dev-python/gevent) )"
+RDEPEND=""
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	doc? ( $(python_abi_depend dev-python/sphinx) )
-	test? ( dev-db/mongodb )"
+	test? (
+		dev-db/mongodb
+		$(python_abi_depend -i "2.6 3.1" dev-python/unittest2)
+	)"
 
 PYTHON_MODULES="bson gridfs pymongo"
 
 src_prepare() {
 	distutils_src_prepare
 	sed -e "/^sys.path\[0:0\] =/d" -i doc/conf.py
-	rm setup.cfg
 
-	preparation() {
-		mkdir build-${PYTHON_ABI} || return
-		cp -r test build-${PYTHON_ABI} || return
-		if [[ "$(python_get_version -l --major)" == "3" ]]; then
-			2to3-${PYTHON_ABI} -nw --no-diffs build-${PYTHON_ABI}/test || return
-		fi
-	}
-	python_execute_function preparation
+	# Fix Sphinx theme.
+	sed \
+		-e "s/^html_theme = \"pydoctheme\"/html_theme = \"alabaster\"/" \
+		-e "/^html_theme_options =/d" \
+		-i doc/conf.py
 
 	# Fix compatibility with Python 3.1.
-	sed -e "78s/if PY3:/if __import__('sys').version_info[:2] >= (3, 2):/" -i pymongo/auth.py
+	# int.from_bytes() and int.to_bytes() were introduced in Python 3.2.
+	sed -e "69s/if PY3:/if __import__('sys').version_info[:2] >= (3, 2):/" -i pymongo/auth.py
+	sed -e "s/if sys.version_info\[:2\] == (2, 6):/if sys.version_info[:2] == (2, 6) or sys.version_info[:2] == (3, 1):/" -i test/__init__.py
 
-	# Fix compatibility with newer Jython (revision >= 107fe4a4c96b).
-	sed -e "s/^if sys.platform.startswith('java'):$/if False:/" -i pymongo/pool.py
+	# Avoid rebuilding of extension modules in src_test().
+	sed -e "s/^from distutils.command.build_ext import build_ext$/from setuptools.command.build_ext import build_ext/" -i setup.py
 }
 
 src_compile() {
@@ -55,18 +57,14 @@ src_compile() {
 	fi
 }
 
-python_execute_nosetests_pre_hook() {
+distutils_src_test_pre_hook() {
 	mkdir -p "${T}/tests-${PYTHON_ABI}/mongo.db"
-	python_execute mongod --dbpath "${T}/tests-${PYTHON_ABI}/mongo.db" --fork --logpath "${T}/tests-${PYTHON_ABI}/mongo.log"
+	python_execute mongod --dbpath "${T}/tests-${PYTHON_ABI}/mongo.db" --fork --logpath "${T}/tests-${PYTHON_ABI}/mongo.log" --smallfiles --unixSocketPrefix "${T}/tests-${PYTHON_ABI}"
 }
 
-python_execute_nosetests_post_hook() {
+distutils_src_test_post_hook() {
 	killall -u "$(id -nu)" mongod
 	rm -fr "${T}/tests-${PYTHON_ABI}/mongo.db"
-}
-
-src_test() {
-	python_execute_nosetests -e -P '$(ls -d build-${PYTHON_ABI}/lib*)' -- -P -w 'build-${PYTHON_ABI}/test'
 }
 
 src_install() {
