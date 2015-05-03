@@ -11,10 +11,10 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="https://hg.python.org/jython"
-	EHG_REVISION="f51940218cf2"
+	EHG_REVISION="412a8f9445f7"
 fi
 
-PATCHSET_REVISION="20121230"
+PATCHSET_REVISION="20150412"
 
 DESCRIPTION="Implementation of Python written in Java"
 HOMEPAGE="http://www.jython.org"
@@ -28,17 +28,17 @@ IUSE="+readline +ssl test +threads +xml"
 
 CDEPEND="dev-java/ant-core:0
 	dev-java/antlr:3
-	dev-java/asm:4
+	>=dev-java/asm-5:4
 	dev-java/bcpkix:0
 	dev-java/bcprov:0
 	dev-java/commons-compress:0
-	dev-java/guava:17
-	dev-java/icu4j:52
+	dev-java/guava:18
+	>=dev-java/icu4j-54:52
 	dev-java/jffi:1.2
-	dev-java/jline:0
+	dev-java/jline:2
 	dev-java/jnr-constants:0
-	>=dev-java/jnr-netdb-1.1.2-r1:1.0
-	>=dev-java/jnr-posix-3.0.1-r1:3.0
+	>=dev-java/jnr-netdb-1.1.3:1.0
+	>=dev-java/jnr-posix-3.0.8:3.0
 	>=dev-java/libreadline-java-0.8.0
 	dev-java/netty-buffer:0
 	dev-java/netty-codec:0
@@ -70,26 +70,26 @@ java_prepare() {
 
 	java-pkg_jar-from --into extlibs ant-core ant.jar
 	java-pkg_jar-from --into extlibs antlr-3 antlr3.jar antlr-3.1.3.jar
-	java-pkg_jar-from --into extlibs asm-4 asm.jar asm-4.0.jar
-	java-pkg_jar-from --into extlibs asm-4 asm-commons.jar asm-commons-4.0.jar
-	java-pkg_jar-from --into extlibs asm-4 asm-util.jar asm-util-4.0.jar
+	java-pkg_jar-from --into extlibs asm-4 asm.jar asm-5.0.3.jar
+	java-pkg_jar-from --into extlibs asm-4 asm-commons.jar asm-commons-5.0.3.jar
+	java-pkg_jar-from --into extlibs asm-4 asm-util.jar asm-util-5.0.3.jar
 	java-pkg_jar-from --into extlibs bcpkix bcpkix.jar bcpkix-jdk15on-150.jar
 	java-pkg_jar-from --into extlibs bcprov bcprov.jar bcprov-jdk15on-150.jar
-	java-pkg_jar-from --into extlibs commons-compress commons-compress.jar commons-compress-1.8.1.jar
-	java-pkg_jar-from --into extlibs guava-17 guava.jar guava-17.0.jar
-	java-pkg_jar-from --into extlibs icu4j-52 icu4j.jar icu4j-52_1.jar
-	java-pkg_jar-from --into extlibs jffi-1.2 jffi.jar jffi-1.2.6.jar
-	java-pkg_jar-from --into extlibs jline jline.jar jline-1.0.jar
-	java-pkg_jar-from --into extlibs jnr-constants jnr-constants.jar jnr-constants-0.8.4.jar
-	java-pkg_jar-from --into extlibs jnr-netdb-1.0 jnr-netdb.jar jnr-netdb-1.1.1.jar
-	java-pkg_jar-from --into extlibs jnr-posix-3.0 jnr-posix.jar jnr-posix-2.4.0.jar
+	java-pkg_jar-from --into extlibs commons-compress commons-compress.jar commons-compress-1.9.jar
+	java-pkg_jar-from --into extlibs guava-18 guava.jar guava-18.0.jar
+	java-pkg_jar-from --into extlibs icu4j-52 icu4j.jar icu4j-54_1_1.jar
+	java-pkg_jar-from --into extlibs jffi-1.2 jffi.jar jffi-1.2.7.jar
+	java-pkg_jar-from --into extlibs jline-2 jline.jar jline-2.12.1.jar
+	java-pkg_jar-from --into extlibs jnr-constants jnr-constants.jar jnr-constants-0.8.6.jar
+	java-pkg_jar-from --into extlibs jnr-netdb-1.0 jnr-netdb.jar jnr-netdb-1.1.4.jar
+	java-pkg_jar-from --into extlibs jnr-posix-3.0 jnr-posix.jar jnr-posix-3.0.9.jar
 	java-pkg_jar-from --build-only --into extlibs junit-4 junit.jar junit-4.10.jar
 	java-pkg_jar-from --into extlibs libreadline-java libreadline-java.jar libreadline-java-0.8.jar
-	java-pkg_jar-from --into extlibs netty-buffer netty-buffer.jar netty-buffer-4.0.20.Final.jar
-	java-pkg_jar-from --into extlibs netty-codec netty-codec.jar netty-codec-4.0.20.Final.jar
-	java-pkg_jar-from --into extlibs netty-common netty-common.jar netty-common-4.0.20.Final.jar
-	java-pkg_jar-from --into extlibs netty-handler netty-handler.jar netty-handler-4.0.20.Final.jar
-	java-pkg_jar-from --into extlibs netty-transport netty-transport.jar netty-transport-4.0.20.Final.jar
+	java-pkg_jar-from --into extlibs netty-buffer netty-buffer.jar netty-buffer-4.0.25.Final.jar
+	java-pkg_jar-from --into extlibs netty-codec netty-codec.jar netty-codec-4.0.25.Final.jar
+	java-pkg_jar-from --into extlibs netty-common netty-common.jar netty-common-4.0.25.Final.jar
+	java-pkg_jar-from --into extlibs netty-handler netty-handler.jar netty-handler-4.0.25.Final.jar
+	java-pkg_jar-from --into extlibs netty-transport netty-transport.jar netty-transport-4.0.25.Final.jar
 	java-pkg_jar-from --into extlibs servlet-api-2.5 servlet-api.jar servlet-api-2.5.jar
 	java-pkg_jar-from --into extlibs xerces-2 xercesImpl.jar xercesImpl-2.11.0.jar
 
@@ -97,8 +97,8 @@ java_prepare() {
 	java-pkg_jar-from --build-only --into extlibs antlr antlr.jar antlr-2.7.7.jar
 	java-pkg_jar-from --build-only --into extlibs stringtemplate stringtemplate.jar stringtemplate-3.2.1.jar
 
-	# Dependency of >=dev-java/jnr-netdb-1.1.2-r1:1.0 and >=dev-java/jnr-posix-3.0.1-r1:3.0.
-	java-pkg_jar-from --build-only --into extlibs jnr-ffi-1 jnr-ffi.jar jnr-ffi-0.7.10.jar
+	# Dependency of >=dev-java/jnr-netdb-1.1.3:1.0 and >=dev-java/jnr-posix-3.0.8:3.0.
+	java-pkg_jar-from --build-only --into extlibs jnr-ffi-2 jnr-ffi.jar jnr-ffi-2.0.1.jar
 
 	# Dependency of >=dev-java/junit-4.11:4.
 	java-pkg_jar-from --build-only --into extlibs hamcrest-core-1.3 hamcrest-core.jar
