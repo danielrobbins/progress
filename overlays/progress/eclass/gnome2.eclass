@@ -12,16 +12,6 @@
 inherit eutils fdo-mime libtool gnome.org gnome2-utils
 
 case "${EAPI:-0}" in
-	2|3)
-		eqawarn
-		eqawarn "${CATEGORY}/${PF}: EAPI 2/3 support is now deprecated."
-		eqawarn "If you are the package maintainer, please"
-		eqawarn "update this package to a newer EAPI."
-		eqawarn "Support for EAPIs 2 and 3 for gnome2.eclass will be dropped"
-		eqawarn "in a month (around 23rd March)."
-		eqawarn
-		EXPORT_FUNCTIONS src_unpack src_prepare src_configure src_compile src_install pkg_preinst pkg_postinst pkg_postrm
-		;;
 	4|4-python|5|5-progress)
 		EXPORT_FUNCTIONS src_unpack src_prepare src_configure src_compile src_install pkg_preinst pkg_postinst pkg_postrm
 		;;
@@ -38,7 +28,7 @@ G2CONF=${G2CONF:-""}
 # @DESCRIPTION:
 # Should we delete ALL the .la files?
 # NOT to be used without due consideration.
-if has ${EAPI:-0} 2 3 4 4-python; then
+if has ${EAPI:-0} 4 4-python; then
 	GNOME2_LA_PUNT=${GNOME2_LA_PUNT:-"no"}
 else
 	GNOME2_LA_PUNT=${GNOME2_LA_PUNT:-""}
@@ -93,13 +83,8 @@ gnome2_src_prepare() {
 	gnome2_disable_deprecation_warning
 
 	# Run libtoolize
-	if has ${EAPI:-0} 2 3; then
-		elibtoolize ${ELTCONF}
-	else
-		# Everything is fatal EAPI 4 onwards
-		nonfatal elibtoolize ${ELTCONF}
-	fi
-
+	# Everything is fatal EAPI 4 onwards
+	nonfatal elibtoolize ${ELTCONF}
 }
 
 # @FUNCTION: gnome2_src_configure
@@ -121,7 +106,7 @@ gnome2_src_configure() {
 	# rebuild docs.
 	# Preserve old behavior for older EAPI.
 	if grep -q "enable-gtk-doc" "${ECONF_SOURCE:-.}"/configure ; then
-		if has ${EAPI:-0} 2 3 4 4-python && in_iuse doc ; then
+		if has ${EAPI:-0} 4 4-python && in_iuse doc ; then
 			G2CONF="$(use_enable doc gtk-doc) ${G2CONF}"
 		else
 			G2CONF="--disable-gtk-doc ${G2CONF}"
@@ -140,7 +125,7 @@ gnome2_src_configure() {
 	fi
 
 	# Pass --disable-silent-rules when possible (not needed for eapi5), bug #429308
-	if has ${EAPI:-0} 2 3 4 4-python; then
+	if has ${EAPI:-0} 4 4-python; then
 		if grep -q "disable-silent-rules" "${ECONF_SOURCE:-.}"/configure; then
 			G2CONF="--disable-silent-rules ${G2CONF}"
 		fi
@@ -176,7 +161,7 @@ gnome2_src_configure() {
 # @DESCRIPTION:
 # Only default src_compile for now
 gnome2_src_compile() {
-	emake || die "compile failure"
+	emake
 }
 
 # @FUNCTION: gnome2_src_install
@@ -184,8 +169,6 @@ gnome2_src_compile() {
 # Gnome specific install. Handles typical GConf and scrollkeeper setup
 # in packages and removal of .la files if requested
 gnome2_src_install() {
-	has ${EAPI:-0} 2 && ! use prefix && ED="${D}"
-
 	local installation_prefix
 	if [[ -n "${GNOME2_DESTDIR}" ]]; then
 		installation_prefix="${GNOME2_DESTDIR%/}${EPREFIX}/"
@@ -207,7 +190,7 @@ gnome2_src_install() {
 	unset GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL
 
 	# Handle documentation as 'default' for eapi5 and newer, bug #373131
-	if has ${EAPI:-0} 2 3 4 4-python; then
+	if has ${EAPI:-0} 4 4-python; then
 		# Manual document installation
 		if [[ -n "${DOCS}" ]]; then
 			dodoc ${DOCS} || die "dodoc failed"
@@ -228,7 +211,7 @@ gnome2_src_install() {
 	rm -fr "${installation_prefix}usr/share/applications/mimeinfo.cache"
 
 	# Delete all .la files
-	if has ${EAPI:-0} 2 3 4 4-python; then
+	if has ${EAPI:-0} 4 4-python; then
 		if [[ "${GNOME2_LA_PUNT}" != "no" ]]; then
 			ebegin "Removing .la files"
 			if ! use_if_iuse static-libs ; then
