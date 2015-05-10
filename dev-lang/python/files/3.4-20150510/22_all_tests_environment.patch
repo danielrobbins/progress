@@ -133,7 +133,7 @@ https://bugs.python.org/issue1674555
              except KeyboardInterrupt:
                  # print a newline separate from the ^C
                  print()
-@@ -1239,8 +1288,9 @@
+@@ -1235,8 +1284,9 @@
          for name, get, restore in self.resource_info():
              current = get()
              original = saved_values.pop(name)

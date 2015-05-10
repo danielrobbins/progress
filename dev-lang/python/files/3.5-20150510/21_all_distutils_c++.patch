@@ -229,7 +229,7 @@ https://bugs.python.org/issue1222585
  _INITPRE = '_OSX_SUPPORT_INITIAL_'
 --- Makefile.pre.in
 +++ Makefile.pre.in
-@@ -577,7 +577,7 @@
+@@ -579,7 +579,7 @@
  	    *\ -s*|s*) quiet="-q";; \
  	    *) quiet="";; \
  	esac; \

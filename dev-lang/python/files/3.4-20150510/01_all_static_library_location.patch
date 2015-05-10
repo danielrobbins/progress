@@ -4,7 +4,7 @@ https://bugs.python.org/issue6103
 
 --- Makefile.pre.in
 +++ Makefile.pre.in
-@@ -1016,6 +1016,19 @@
+@@ -1005,6 +1005,19 @@
  		$(RUNSHARED) $(PYTHON_FOR_BUILD) -m ensurepip \
  			$$ensurepip --root=$(DESTDIR)/ ; \
  	fi
@@ -24,7 +24,7 @@ https://bugs.python.org/issue6103
  
  commoninstall:  @FRAMEWORKALTINSTALLFIRST@ \
  		altbininstall libinstall inclinstall libainstall \
-@@ -1340,18 +1353,6 @@
+@@ -1324,18 +1337,6 @@
  		else	true; \
  		fi; \
  	done
@@ -41,7 +41,7 @@ https://bugs.python.org/issue6103
 -		fi; \
 -	fi
  	$(INSTALL_DATA) Modules/config.c $(DESTDIR)$(LIBPL)/config.c
- 	$(INSTALL_DATA) Programs/python.o $(DESTDIR)$(LIBPL)/python.o
+ 	$(INSTALL_DATA) Modules/python.o $(DESTDIR)$(LIBPL)/python.o
  	$(INSTALL_DATA) $(srcdir)/Modules/config.c.in $(DESTDIR)$(LIBPL)/config.c.in
 --- Misc/python-config.in
 +++ Misc/python-config.in
