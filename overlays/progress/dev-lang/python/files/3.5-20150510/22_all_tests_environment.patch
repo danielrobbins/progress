@@ -133,7 +133,7 @@ https://bugs.python.org/issue1674555
              except KeyboardInterrupt:
                  # print a newline separate from the ^C
                  print()
-@@ -1239,8 +1288,9 @@
+@@ -1235,8 +1284,9 @@
          for name, get, restore in self.resource_info():
              current = get()
              original = saved_values.pop(name)
@@ -166,7 +166,7 @@ https://bugs.python.org/issue1674555
  if site.ENABLE_USER_SITE and not os.path.isdir(site.USER_SITE):
      # need to add user site directory for tests
      os.makedirs(site.USER_SITE)
-@@ -434,8 +439,11 @@
+@@ -438,8 +443,11 @@
      def test_startup_imports(self):
          # This tests checks which modules are loaded by Python when it
          # initially starts upon startup.
@@ -180,7 +180,7 @@ https://bugs.python.org/issue1674555
          stdout, stderr = popen.communicate()
 --- Makefile.pre.in
 +++ Makefile.pre.in
-@@ -971,7 +971,7 @@
+@@ -978,7 +978,7 @@
  ######################################################################
  
  TESTOPTS=	$(EXTRATESTOPTS)

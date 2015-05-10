@@ -38,7 +38,7 @@ python_generate_wrapper_scripts() to check if Python supports GENTOO_PYTHON_TARG
      stdin_is_interactive = Py_FdIsInteractive(stdin, (char *)0);
 --- Modules/posixmodule.c
 +++ Modules/posixmodule.c
-@@ -1262,6 +1262,10 @@
+@@ -1267,6 +1267,10 @@
          char *p = strchr(*e, '=');
          if (p == NULL)
              continue;
