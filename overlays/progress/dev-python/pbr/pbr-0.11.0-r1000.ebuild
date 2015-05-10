@@ -8,7 +8,7 @@ PYTHON_ABI_TYPE="multiple"
 inherit distutils
 
 DESCRIPTION="Python Build Reasonableness"
-HOMEPAGE="https://github.com/openstack-dev/pbr https://pypi.python.org/pypi/pbr"
+HOMEPAGE="https://launchpad.net/pbr https://github.com/openstack-dev/pbr https://pypi.python.org/pypi/pbr"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="Apache-2.0"
