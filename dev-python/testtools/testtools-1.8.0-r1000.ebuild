@@ -21,6 +21,7 @@ IUSE=""
 RDEPEND="$(python_abi_depend dev-python/extras)
 	$(python_abi_depend dev-python/linecache2)
 	$(python_abi_depend dev-python/mimeparse)
+	$(python_abi_depend ">=dev-python/pbr-0.11")
 	$(python_abi_depend dev-python/traceback2)
 	$(python_abi_depend ">=dev-python/unittest2-1.0.0")"
 DEPEND="${RDEPEND}
@@ -30,7 +31,7 @@ src_prepare() {
 	distutils_src_prepare
 
 	# Ignore ImportError caused by deletion of incompatible module by delete_version-specific_modules().
-	sed -e "s/except SyntaxError:/except (ImportError, SyntaxError):/" -i testtools/compat.py
+	sed -e "s/^except SyntaxError:$/except (ImportError, SyntaxError):/" -i testtools/compat.py
 }
 
 src_test() {
