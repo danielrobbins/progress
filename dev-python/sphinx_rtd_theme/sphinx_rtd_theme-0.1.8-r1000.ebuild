@@ -11,7 +11,9 @@ DESCRIPTION="ReadTheDocs.org theme for Sphinx"
 HOMEPAGE="https://github.com/snide/sphinx_rtd_theme https://pypi.python.org/pypi/sphinx_rtd_theme"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
-LICENSE="MIT"
+# Main license: MIT
+# Fonts: Apache-2.0, OFL-1.1
+LICENSE="Apache-2.0 MIT OFL-1.1"
 SLOT="0"
 KEYWORDS="*"
 IUSE=""
@@ -23,5 +25,5 @@ src_prepare() {
 	distutils_src_prepare
 
 	# Avoid circular dependency with dev-python/sphinx.
-	sed -e "/sphinx>=1.1/d" -i requirements.txt
+	sed -e "/^sphinx>=1.3$/d" -i requirements.txt
 }
