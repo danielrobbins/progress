@@ -5,7 +5,7 @@
 EAPI="5-progress"
 PYTHON_ABI_TYPE="multiple"
 PYTHON_DEPEND="<<[threads]>>"
-PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy"
+PYTHON_RESTRICTED_ABIS="3.* *-jython"
 # Random time-outs in some tests.
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 
