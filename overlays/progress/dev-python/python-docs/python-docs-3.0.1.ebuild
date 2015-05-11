@@ -1,7 +1,8 @@
 # Copyright owners: Gentoo Foundation
+#                   Arfrever Frehtes Taifersar Arahesis
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="3"
+EAPI="5-progress"
 
 DESCRIPTION="HTML documentation for Python"
 HOMEPAGE="http://www.python.org/doc/"
@@ -9,7 +10,7 @@ SRC_URI="http://www.python.org/ftp/python/doc/${PV}/python-${PV}-docs-html.tar.b
 
 LICENSE="PSF-2"
 SLOT="3.0"
-KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~sparc-fbsd ~x86-fbsd ~amd64-linux ~x86-linux ~ppc-macos ~x86-macos"
+KEYWORDS="*"
 IUSE=""
 
 DEPEND=""
@@ -18,9 +19,7 @@ RDEPEND=""
 S="${WORKDIR}/python-${PV}-docs-html"
 
 src_install() {
-	docinto html
-	cp -R [a-z]* _static "${ED}usr/share/doc/${PF}/html"
-
+	dohtml -A xml -r ./
 	echo "PYTHONDOCS_${SLOT//./_}=\"${EPREFIX}/usr/share/doc/${PF}/html/library\"" > "60python-docs-${SLOT}"
 	doenvd "60python-docs-${SLOT}"
 }
