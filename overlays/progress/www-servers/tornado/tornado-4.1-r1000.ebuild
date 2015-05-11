@@ -3,7 +3,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
+PYTHON_ABI_TYPE="multiple"
 PYTHON_RESTRICTED_ABIS="3.1 *-jython"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.6"
 
@@ -18,8 +18,9 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="curl test"
 
-RDEPEND="$(python_abi_depend -i "2.* 3.1" dev-python/backports.ssl_match_hostname)
-	curl? ( $(python_abi_depend -e "*-pypy-*" dev-python/pycurl) )"
+RDEPEND="$(python_abi_depend -i "2.*" dev-python/backports.ssl_match_hostname)
+	$(python_abi_depend dev-python/certifi)
+	curl? ( $(python_abi_depend -e "*-pypy" dev-python/pycurl) )"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	test? ( $(python_abi_depend -i "2.6" dev-python/unittest2) )"
@@ -27,10 +28,10 @@ DEPEND="${RDEPEND}
 src_prepare() {
 	distutils_src_prepare
 
-	# Avoid test failures with unittest2 and Python >=2.7.
+	# Use unittest2 only with Python <2.7.
 	sed \
-		-e "51s/try:/if __import__(\"sys\").version_info < (2, 7):/" \
-		-e "53s/except ImportError:/else:/" \
+		-e "60s/^\([[:space:]]*\)try:$/\1if __import__(\"sys\").version_info[:2] < (2, 7):/" \
+		-e "62s/^\([[:space:]]*\)except ImportError:$/\1else:/" \
 		-i tornado/testing.py
 }
 
