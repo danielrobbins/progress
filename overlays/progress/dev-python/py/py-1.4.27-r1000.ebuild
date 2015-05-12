@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_ABI_TYPE="multiple"
-# https://bitbucket.org/pytest-dev/py/issue/10
+# *-jython: https://bitbucket.org/pytest-dev/py/issue/10
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 DISTUTILS_SRC_TEST="py.test"
 
@@ -29,6 +29,7 @@ DOCS="AUTHORS CHANGELOG README.txt"
 src_prepare() {
 	distutils_src_prepare
 
+	# Fix compatibility with Python 3.1.
 	# https://bitbucket.org/pytest-dev/py/issue/29
 	sed -e "s/if sys.version_info < (2,7):/if sys.version_info < (2, 7) or sys.version_info >= (3, 0) and sys.version_info < (3, 2):/" -i py/_code/source.py
 }
