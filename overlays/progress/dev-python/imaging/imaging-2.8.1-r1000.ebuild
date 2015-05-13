@@ -14,7 +14,7 @@ MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Python Imaging Library - Pillow (fork of PIL)"
 HOMEPAGE="https://github.com/python-pillow/Pillow https://pypi.python.org/pypi/Pillow"
-SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.zip"
+SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="HPND"
 SLOT="0"
