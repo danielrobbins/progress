@@ -3,9 +3,9 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
+PYTHON_ABI_TYPE="multiple"
 PYTHON_DEPEND="python? ( <<>> )"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="*-jython *-pypy"
 
 inherit autotools flag-o-matic python
 
@@ -32,19 +32,23 @@ src_prepare() {
 	sed -e "s/AM_CONFIG_HEADER/AC_CONFIG_HEADERS/" -i configure.ac || die "sed failed"
 
 	# Python bindings are built/tested/installed manually.
-	sed -e "/^SUBDIRS/s/ python//" -i bindings/Makefile.am || die "sed failed"
+	sed -e "/^SUBDIRS/s/ python3\?//" -i bindings/Makefile.am || die "sed failed"
 
 	eautoreconf
 
 	use python && python_clean_py-compile_files
 
 	use sparc && replace-flags -O? -O0
+
+	# Fix compatibility with Python 3.
+	sed -e "s/print \(.*\)/print(\1)/" -i bindings/python/test/capng-test.py
 }
 
 src_configure() {
 	econf \
 		$(use_enable static-libs static) \
-		$(use_with python)
+		$(use_with python) \
+		--without-python3
 }
 
 src_compile() {
@@ -55,7 +59,7 @@ src_compile() {
 
 		building() {
 			emake \
-				CFLAGS="${CFLAGS}" \
+				AM_CPPFLAGS="-I. -I\$(top_builddir) -I$(python_get_includedir)" \
 				PYTHON_VERSION="$(python_get_version)" \
 				pyexecdir="$(python_get_sitedir)" \
 				pythondir="$(python_get_sitedir)"
@@ -106,9 +110,9 @@ src_install() {
 }
 
 pkg_postinst() {
-	use python && python_mod_optimize capng.py
+	use python && python_byte-compile_modules capng.py
 }
 
 pkg_postrm() {
-	use python && python_mod_cleanup capng.py
+	use python && python_clean_byte-compiled_modules capng.py
 }
