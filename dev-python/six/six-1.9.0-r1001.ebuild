@@ -33,6 +33,9 @@ src_prepare() {
 		-e '615s/"assertRegex"/"assertRegexpMatches" if sys.version_info[1] <= 1 else &/' \
 		-i six.py
 	sed -e "802s/sys.version_info\[:2\] < (2, 7)/& or sys.version_info[:2] in ((3, 0), (3, 1))/" -i test_six.py
+
+	# https://bitbucket.org/gutworth/six/commits/24dc6a6f7384712152dd1e881c115fb4805be9ea
+	sed -e '/MovedModule("winreg", "_winreg")/d' -i six.py
 }
 
 src_compile() {
