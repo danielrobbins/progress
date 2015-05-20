@@ -3,7 +3,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
+PYTHON_ABI_TYPE="multiple"
 PYTHON_RESTRICTED_ABIS="3.1"
 DISTUTILS_SRC_TEST="nosetests"
 
@@ -21,11 +21,27 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="doc test"
 
-DEPEND="$(python_abi_depend dev-python/setuptools)
+RDEPEND="$(python_abi_depend dev-python/setuptools)
+	$(python_abi_depend dev-python/six)"
+DEPEND="${RDEPEND}
 	test? ( $(python_abi_depend dev-python/mock) )"
-RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/${MY_P}"
+
+src_prepare() {
+	distutils_src_prepare
+	rm paver/tests/*.pyc
+
+	# Use system version of dev-python/six.
+	sed \
+		-e "s/import paver.deps.six as six/import six/" \
+		-e "s/from paver.deps.six import/from six import/" \
+		-i paver/**/*.py
+	rm paver/deps/six.py
+
+	# https://github.com/paver/paver/issues/147
+	sed -e "s/\([[:space:]]*\)\(item = getattr(module, name, None)\)/\1try:\n\1    \2\n\1except ImportError:\n\1    item = None/" -i paver/tasks.py
+}
 
 src_install() {
 	distutils_src_install
