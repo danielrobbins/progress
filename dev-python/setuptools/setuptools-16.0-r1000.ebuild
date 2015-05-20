@@ -41,9 +41,4 @@ src_test() {
 
 src_install() {
 	SETUPTOOLS_DISABLE_VERSIONED_EASY_INSTALL_SCRIPT="1" distutils_src_install
-
-	delete_tests() {
-		rm -r "${ED}$(python_get_sitedir)/"{pkg_resources/tests,setuptools/tests}
-	}
-	python_execute_function -q delete_tests
 }
