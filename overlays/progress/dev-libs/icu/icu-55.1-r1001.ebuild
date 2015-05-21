@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 
-inherit flag-o-matic multilib-minimal toolchain-funcs versionator
+inherit eutils flag-o-matic multilib-minimal toolchain-funcs versionator
 
 MAJOR_VERSION="$(get_version_component_range 1)"
 if [[ "${PV}" =~ ^[[:digit:]]+_rc[[:digit:]]*$ ]]; then
@@ -51,6 +51,8 @@ src_unpack() {
 }
 
 src_prepare() {
+	epatch "${FILESDIR}/${P}-BreakTransliterator_thread_safety.patch"
+
 	if use c++11; then
 		if [[ "$(tc-getCXX)" == *g++* ]]; then
 			if test-flag-CXX -std=gnu++11; then
