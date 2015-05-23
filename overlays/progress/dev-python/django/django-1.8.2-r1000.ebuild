@@ -10,7 +10,7 @@ PYTHON_RESTRICTED_ABIS="2.6 3.1"
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
 WEBAPP_NO_AUTO_INSTALL="yes"
 
-inherit bash-completion-r1 distutils eutils versionator webapp
+inherit bash-completion-r1 distutils versionator webapp
 
 MY_PN="Django"
 MY_P="${MY_PN}-${PV}"
