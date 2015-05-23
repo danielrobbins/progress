@@ -4132,7 +4132,7 @@ python_byte-compile_modules() {
 				fi
 				eend "${exit_status}"
 				if [[ -n "${stderr}" ]]; then
-					while read stderr_line; do
+					while IFS="" read -r stderr_line; do
 						# Ignore debugging output of Jython.
 						if [[ ! ("$(_python_get_implementation "${PYTHON_ABI}")" == "Jython" && "${stderr_line}" =~ ^"*sys-package-mgr*: processing "(new|modified)" jar") ]]; then
 							stderr_lines+=("${stderr_line}")
@@ -4179,7 +4179,7 @@ python_byte-compile_modules() {
 			fi
 			eend "${exit_status}"
 			if [[ -n "${stderr}" ]]; then
-				while read stderr_line; do
+				while IFS="" read -r stderr_line; do
 					# Ignore debugging output of Jython.
 					if [[ ! ("$(_python_get_implementation "${PYTHON_ABI}")" == "Jython" && "${stderr_line}" =~ ^"*sys-package-mgr*: processing "(new|modified)" jar") ]]; then
 						stderr_lines+=("${stderr_line}")
