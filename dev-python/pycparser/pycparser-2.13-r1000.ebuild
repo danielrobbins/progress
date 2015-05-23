@@ -18,8 +18,9 @@ SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
-DEPEND="$(python_abi_depend dev-python/ply:=)"
-RDEPEND="${DEPEND}"
+RDEPEND="$(python_abi_depend dev-python/ply:=)"
+DEPEND="${RDEPEND}
+	$(python_abi_depend dev-python/setuptools)"
 
 src_prepare() {
 	distutils_src_prepare
