@@ -176,20 +176,6 @@ perl-module_src_configure() {
 	fi
 }
 
-# @FUNCTION: perl-module_src_prep
-# @USAGE: perl-module_src_prep
-# @DESCRIPTION:
-# Configure the ebuild sources (bis).
-#
-# This function is still around for historical reasons 
-# and will be soon deprecated.
-#
-# Please use the function above instead, perl-module_src_configure().
-perl-module_src_prep() {
-	debug-print-function $FUNCNAME "$@"
-	die "perl-modules.eclass: perl-module_src_prep has been removed. Please use perl-module_src_configure instead."
-}
-
 # @FUNCTION: perl-module_src_compile
 # @USAGE: perl-module_src_compile
 # @DESCRIPTION:
@@ -301,26 +287,6 @@ perl-module_src_install() {
 	perl_link_duallife_scripts
 }
 
-# @FUNCTION: perl-module_pkg_setup
-# @USAGE: perl-module_pkg_setup
-# @DESCRIPTION:
-# This function was to be called during the pkg_setup() phase.
-# Deprecated, to be removed. Where it is called, place a call to perl_set_version instead.
-perl-module_pkg_setup() {
-	debug-print-function $FUNCNAME "$@"
-	die "perl-modules.eclass: perl-module_pkg_setup has been removed. Please use perl_set_version instead."
-}
-
-# @FUNCTION: perl-module_pkg_preinst
-# @USAGE: perl-module_pkg_preinst
-# @DESCRIPTION:
-# This function was to be called during the pkg_preinst() phase.
-# Deprecated, to be removed. Where it is called, place a call to perl_set_version instead.
-perl-module_pkg_preinst() {
-	debug-print-function $FUNCNAME "$@"
-	die "perl-modules.eclass: perl-module_pkg_preinst has been removed. Please use perl_set_version instead."
-}
-
 # @FUNCTION: perl-module_pkg_postinst
 # @USAGE: perl-module_pkg_postinst
 # @DESCRIPTION:
@@ -336,16 +302,6 @@ perl-module_pkg_postinst() {
 		return 0
 	fi
 	perl_link_duallife_scripts
-}
-
-# @FUNCTION: perl-module_pkg_prerm
-# @USAGE: perl-module_pkg_prerm
-# @DESCRIPTION:
-# This function was to be called during the pkg_prerm() phase.
-# It does not do anything. Deprecated, to be removed.
-perl-module_pkg_prerm() {
-	debug-print-function $FUNCNAME "$@"
-	die "perl-module.eclass: perl-module_pkg_prerm has been removed. Please remove the call."
 }
 
 # @FUNCTION: perl-module_pkg_postrm
@@ -391,17 +347,6 @@ perl_set_version() {
 	VENDOR_ARCH=${installvendorarch}
 }
 
-# @FUNCTION: perlinfo
-# @USAGE: perlinfo
-# @DESCRIPTION:
-# This function is deprecated.
-# 
-# Please use the function above instead, perl_set_version().
-perlinfo() {
-	debug-print-function $FUNCNAME "$@"
-	die "perl-modules.eclass: perlinfo has been removed. Please use perl_set_version instead."
-}
-
 # @FUNCTION: perl_delete_localpod
 # @USAGE: perl_delete_localpod
 # @DESCRIPTION:
@@ -413,17 +358,6 @@ perl_delete_localpod() {
 
 	find "${D}" -type f -name perllocal.pod -delete
 	find "${D}" -depth -mindepth 1 -type d -empty -delete
-}
-
-# @FUNCTION: fixlocalpod
-# @USAGE: fixlocalpod
-# @DESCRIPTION:
-# This function is deprecated. 
-#
-# Please use the function above instead, perl_delete_localpod().
-fixlocalpod() {
-	debug-print-function $FUNCNAME "$@"
-	die "perl-modules.eclass: fixlocalpod has been removed. Please use perl_delete_localpod instead."
 }
 
 # @FUNCTION: perl_fix_osx_extra
