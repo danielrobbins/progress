@@ -1,0 +1,16 @@
+--- libs/python/src/exec.cpp
++++ libs/python/src/exec.cpp
+@@ -88,10 +88,12 @@
+   // Let python open the file to avoid potential binary incompatibilities.
+ #if PY_VERSION_HEX >= 0x03040000
+   FILE *fs = _Py_fopen(f, "r");
+-#elif PY_VERSION_HEX >= 0x03000000
++#elif PY_VERSION_HEX >= 0x03020000
+   PyObject *fo = Py_BuildValue("s", f);
+   FILE *fs = _Py_fopen(fo, "r");
+   Py_DECREF(fo);
++#elif PY_VERSION_HEX >= 0x03000000
++  FILE *fs = fopen(f, "r");
+ #else
+   PyObject *pyfile = PyFile_FromString(f, const_cast<char*>("r"));
+   if (!pyfile) throw std::invalid_argument(std::string(f) + " : no such file");
