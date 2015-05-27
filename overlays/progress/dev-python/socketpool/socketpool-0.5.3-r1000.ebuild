@@ -16,7 +16,7 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="eventlet examples gevent"
 
-RDEPEND="eventlet? ( $(python_abi_depend -e "*-jython *-pypy" dev-python/eventlet) )
+RDEPEND="eventlet? ( $(python_abi_depend -e "3.1 3.2 *-jython *-pypy" dev-python/eventlet) )
 	gevent? ( $(python_abi_depend -e "3.* *-jython *-pypy" dev-python/gevent) )"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)"
