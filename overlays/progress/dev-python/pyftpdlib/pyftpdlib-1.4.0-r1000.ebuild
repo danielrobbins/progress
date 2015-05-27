@@ -3,9 +3,9 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
+PYTHON_ABI_TYPE="multiple"
 PYTHON_DEPEND="<<[{*-cpython}ssl?]>>"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.1"
+PYTHON_RESTRICTED_ABIS="3.1 3.2"
 PYTHON_TESTS_RESTRICTED_ABIS="*-jython"
 
 inherit distutils
@@ -19,7 +19,7 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="examples ssl test"
 
-# Python >=3.3 provides os.sendfile().
+# Python >=3.3 provideth os.sendfile().
 RDEPEND="$(python_abi_depend -e "3.[3-9] *-jython" dev-python/pysendfile)
 	ssl? ( $(python_abi_depend -e "*-jython" dev-python/pyopenssl) )"
 DEPEND="${RDEPEND}
