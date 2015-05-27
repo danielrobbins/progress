@@ -2,3 +2,6 @@
 # Python 3.5 contains many incompatible changes.
 # https://code.google.com/p/gentoo-progress/issues/detail?id=13
 dev-lang/python:3.5
+
+>=dev-libs/boost-1.57
+>=dev-util/boost-build-1.57
