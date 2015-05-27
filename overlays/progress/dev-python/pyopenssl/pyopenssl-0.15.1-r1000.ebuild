@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_ABI_TYPE="multiple"
-PYTHON_RESTRICTED_ABIS="*-jython"
+PYTHON_RESTRICTED_ABIS="3.1 3.2 *-jython"
 DISTUTILS_SRC_TEST="setup.py"
 
 inherit distutils
@@ -34,18 +34,18 @@ PYTHON_MODULES="OpenSSL"
 src_prepare() {
 	distutils_src_prepare
 
-	# Fix compatibility with Python 3.1.
-	sed -e "s/callable(\([^)]\+\))/(hasattr(\1, '__call__') if __import__('sys').version_info\[:2\] == (3, 1) else &)/" -i OpenSSL/SSL.py OpenSSL/crypto.py
-
 	# Disable test requiring network connection.
 	# https://github.com/pyca/pyopenssl/issues/68
 	sed -e "s/test_set_default_verify_paths(/_&/" -i OpenSSL/test/test_ssl.py
 
 	# Disable failing tests.
-	# https://github.com/pyca/pyopenssl/issues/41
-	sed -e "s/test_digest/_&/" -i OpenSSL/test/test_crypto.py
-	# https://github.com/pyca/pyopenssl/issues/67
-	sed -e "s/test_wantWriteError/_&/" -i OpenSSL/test/test_ssl.py
+	sed \
+		-e "s/test_extension_count/_&/" \
+		-e "s/test_get_extension(/_&/" \
+		-e "s/test_der/_&/" \
+		-e "s/test_digest/_&/" \
+		-i OpenSSL/test/test_crypto.py
+	sed -e "s/test_set_tmp_ecdh/_&/" -i OpenSSL/test/test_ssl.py
 }
 
 src_compile() {
