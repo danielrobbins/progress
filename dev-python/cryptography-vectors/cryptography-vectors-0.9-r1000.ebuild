@@ -3,7 +3,7 @@
 
 EAPI="5-progress"
 PYTHON_ABI_TYPE="multiple"
-PYTHON_RESTRICTED_ABIS="*-jython"
+PYTHON_RESTRICTED_ABIS="3.1 3.2 *-jython"
 
 inherit distutils
 
