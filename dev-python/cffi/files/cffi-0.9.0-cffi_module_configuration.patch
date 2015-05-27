@@ -1,9 +1,9 @@
 --- cffi/verifier.py
 +++ cffi/verifier.py
-@@ -7,10 +7,24 @@
- 
+@@ -28,10 +28,24 @@
      def __init__(self, ffi, preamble, tmpdir=None, modulename=None,
-                  ext_package=None, tag='', force_generic_engine=False, **kwds):
+                  ext_package=None, tag='', force_generic_engine=False,
+                  source_extension='.c', flags=None, relative_to=None, **kwds):
 +        if os.environ.get("PYTHON_CFFI_DEBUGGING", None) == "1":
 +            print("=" * 80)
 +            print("Python CFFI module configuration:")
