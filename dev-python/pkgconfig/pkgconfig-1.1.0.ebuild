@@ -15,8 +15,9 @@ SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
-DEPEND="$(python_abi_depend dev-python/setuptools)"
-RDEPEND=""
+RDEPEND="virtual/pkgconfig"
+DEPEND="${RDEPEND}
+	$(python_abi_depend dev-python/setuptools)"
 
 src_prepare() {
 	distutils_src_prepare
