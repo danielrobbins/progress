@@ -4,7 +4,7 @@
 
 EAPI="5-progress"
 PYTHON_ABI_TYPE="multiple"
-PYTHON_RESTRICTED_ABIS="*-jython"
+PYTHON_RESTRICTED_ABIS="3.1 3.2 *-jython"
 DISTUTILS_SRC_TEST="py.test"
 
 inherit distutils
@@ -20,6 +20,8 @@ IUSE="doc test"
 
 RDEPEND="dev-libs/openssl:0=
 	$(python_abi_depend -e "*-pypy" dev-python/cffi:=)
+	$(python_abi_depend dev-python/idna)
+	$(python_abi_depend -i "2.*" dev-python/ipaddress)
 	$(python_abi_depend dev-python/pyasn1)
 	$(python_abi_depend dev-python/setuptools)
 	$(python_abi_depend dev-python/six)
@@ -42,13 +44,6 @@ DOCS="AUTHORS.rst CHANGELOG.rst CONTRIBUTING.rst README.rst"
 
 src_prepare() {
 	distutils_src_prepare
-
-	# Fix compatibility with Python 3.1.
-	# int.from_bytes() and int.to_bytes() were introduced in Python 3.2.
-	sed \
-		-e "326s/if six.PY3:/if __import__(\"sys\").version_info[:2] >= (3, 2):/" \
-		-e "356s/if six.PY3:/if __import__(\"sys\").version_info[:2] >= (3, 2):/" \
-		-i src/cryptography/hazmat/backends/openssl/backend.py
 
 	# Allow usage of python_generate_cffi_modules().
 	sed -e "/^[[:space:]]*ffi\.verifier\._\?compile_module = _compile_module/d" -i src/cryptography/hazmat/bindings/utils.py
