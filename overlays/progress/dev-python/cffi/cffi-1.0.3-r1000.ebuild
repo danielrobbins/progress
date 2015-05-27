@@ -3,8 +3,8 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="*-jython *-pypy-*"
+PYTHON_ABI_TYPE="multiple"
+PYTHON_RESTRICTED_ABIS="*-jython *-pypy"
 DISTUTILS_SRC_TEST="py.test"
 
 inherit distutils eutils
@@ -26,11 +26,11 @@ DEPEND="${REDEPEND}
 
 src_prepare() {
 	distutils_src_prepare
-	epatch "${FILESDIR}/${PN}-0.8.2-cffi_module_configuration.patch"
+	epatch "${FILESDIR}/${PN}-0.9.0-cffi_module_configuration.patch"
 	epatch "${FILESDIR}/${PN}-0.8.2-python-3.1.patch"
 
-	# Disable failing tests.
-	rm testing/test_zintegration.py
+	# https://bitbucket.org/cffi/cffi/issue/197
+	sed -e "/from _re_include_1 import ffi/i\\    if sys.version_info[:2] >= (3, 3): import importlib; importlib.invalidate_caches()" -i testing/cffi1/test_re_python.py
 }
 
 src_compile() {
