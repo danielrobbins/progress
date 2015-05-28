@@ -2,9 +2,9 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
+PYTHON_ABI_TYPE="multiple"
 PYTHON_DEPEND="<<[ssl]>>"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 
 inherit distutils
@@ -20,7 +20,7 @@ IUSE="doc examples"
 
 RDEPEND="dev-libs/libev
 	net-dns/c-ares
-	$(python_abi_depend dev-python/greenlet)"
+	$(python_abi_depend ">=dev-python/greenlet-0.4.7")"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
@@ -32,6 +32,7 @@ DOCS="AUTHORS changelog.rst"
 src_prepare() {
 	distutils_src_prepare
 	rm -r c-ares libev
+	rm **/*.pyc
 }
 
 src_compile() {
