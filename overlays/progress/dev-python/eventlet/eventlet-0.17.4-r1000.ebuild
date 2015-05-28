@@ -4,8 +4,8 @@
 
 EAPI="5-progress"
 PYTHON_ABI_TYPE="multiple"
-PYTHON_RESTRICTED_ABIS="*-jython *-pypy"
-PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.*"
+PYTHON_RESTRICTED_ABIS="3.1 3.2 *-jython"
+PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
@@ -19,30 +19,11 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="doc examples"
 
-RDEPEND="$(python_abi_depend dev-python/greenlet)
-	$(python_abi_depend dev-python/pyopenssl)"
+RDEPEND="$(python_abi_depend dev-python/pyopenssl)
+	$(python_abi_depend virtual/python-greenlet)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
 	doc? ( $(python_abi_depend dev-python/sphinx) )"
-
-src_prepare() {
-	distutils_src_prepare
-
-	# Disable failing tests.
-	# https://bitbucket.org/eventlet/eventlet/issue/159
-	# https://github.com/eventlet/eventlet/issues/191
-	sed -e "s/test_incomplete_headers_13/_&/" -i tests/websocket_new_test.py
-	sed \
-		-e "s/test_incomplete_headers_75/_&/" \
-		-e "s/test_incomplete_headers_76/_&/" \
-		-e "s/test_incorrect_headers/_&/" \
-		-i tests/websocket_test.py
-	sed -e "s/test_server_connection_timeout_exception/_&/" -i tests/wsgi_test.py
-
-	# Disable installation of tests.
-	# https://github.com/eventlet/eventlet/issues/190
-	sed -e "/find_packages/s/'tests'/&, 'tests.*'/" -i setup.py
-}
 
 src_compile() {
 	distutils_src_compile
@@ -53,6 +34,10 @@ src_compile() {
 		emake html
 		popd > /dev/null
 	fi
+}
+
+src_test() {
+	distutils_src_test tests
 }
 
 src_install() {
