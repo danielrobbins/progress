@@ -31,7 +31,7 @@ https://bugs.python.org/issue6731
              failed = self.failed_on_import[:]
              print()
              print("Following modules built successfully"
-@@ -2251,6 +2257,7 @@
+@@ -2253,6 +2259,7 @@
            scripts = ["Tools/scripts/pydoc3", "Tools/scripts/idle3",
                       "Tools/scripts/2to3", "Tools/scripts/pyvenv"]
          )

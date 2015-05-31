@@ -2,7 +2,7 @@ https://bugs.python.org/issue1674555
 
 --- Lib/site.py
 +++ Lib/site.py
-@@ -545,8 +545,12 @@
+@@ -538,8 +538,12 @@
      known_paths = venv(known_paths)
      if ENABLE_USER_SITE is None:
          ENABLE_USER_SITE = check_enableusersite()
@@ -122,7 +122,7 @@ https://bugs.python.org/issue1674555
                      accumulate_result(test, result)
                  except KeyboardInterrupt:
                      interrupted = True
-@@ -817,8 +866,8 @@
+@@ -815,8 +864,8 @@
              sys.stdout.flush()
              try:
                  ns.verbose = True
@@ -133,7 +133,7 @@ https://bugs.python.org/issue1674555
              except KeyboardInterrupt:
                  # print a newline separate from the ^C
                  print()
-@@ -1235,8 +1284,9 @@
+@@ -1231,8 +1280,9 @@
          for name, get, restore in self.resource_info():
              current = get()
              original = saved_values.pop(name)
@@ -166,7 +166,7 @@ https://bugs.python.org/issue1674555
  if site.ENABLE_USER_SITE and not os.path.isdir(site.USER_SITE):
      # need to add user site directory for tests
      os.makedirs(site.USER_SITE)
-@@ -436,8 +441,11 @@
+@@ -438,8 +443,11 @@
      def test_startup_imports(self):
          # This tests checks which modules are loaded by Python when it
          # initially starts upon startup.
@@ -180,7 +180,7 @@ https://bugs.python.org/issue1674555
          stdout, stderr = popen.communicate()
 --- Makefile.pre.in
 +++ Makefile.pre.in
-@@ -960,7 +960,7 @@
+@@ -979,7 +979,7 @@
  ######################################################################
  
  TESTOPTS=	$(EXTRATESTOPTS)
