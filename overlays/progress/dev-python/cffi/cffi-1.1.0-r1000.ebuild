@@ -29,8 +29,8 @@ src_prepare() {
 	epatch "${FILESDIR}/${PN}-0.9.0-cffi_module_configuration.patch"
 	epatch "${FILESDIR}/${PN}-0.8.2-python-3.1.patch"
 
-	# https://bitbucket.org/cffi/cffi/issue/197
-	sed -e "/from _re_include_1 import ffi/i\\    if sys.version_info[:2] >= (3, 3): import importlib; importlib.invalidate_caches()" -i testing/cffi1/test_re_python.py
+	# https://bitbucket.org/cffi/cffi/issue/205
+	rm testing/cffi1/test_zdist.py
 }
 
 src_compile() {
