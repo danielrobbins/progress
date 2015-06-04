@@ -3,7 +3,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
+PYTHON_ABI_TYPE="multiple"
 # 2.6: https://github.com/nose-devs/nose/issues/781
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="2.6 *-jython"
 
@@ -25,7 +25,7 @@ DEPEND="${RDEPEND}
 	doc? ( $(python_abi_depend dev-python/sphinx) )
 	test? ( $(python_abi_depend -e "3.* *-jython" dev-python/twisted-core) )"
 
-DOCS="AUTHORS"
+DOCS="AUTHORS CHANGELOG NEWS README.txt"
 
 src_prepare() {
 	distutils_src_prepare
