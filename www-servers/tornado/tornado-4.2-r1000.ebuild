@@ -16,13 +16,14 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 LICENSE="Apache-2.0"
 SLOT="0"
 KEYWORDS="*"
-IUSE="curl test"
+IUSE="curl doc test"
 
 RDEPEND="$(python_abi_depend -i "2.*" dev-python/backports.ssl_match_hostname)
 	$(python_abi_depend dev-python/certifi)
 	curl? ( $(python_abi_depend -e "*-pypy" dev-python/pycurl) )"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
+	doc? ( $(python_abi_depend dev-python/sphinx) )
 	test? ( $(python_abi_depend -i "2.6" dev-python/unittest2) )"
 
 src_prepare() {
@@ -33,6 +34,17 @@ src_prepare() {
 		-e "60s/^\([[:space:]]*\)try:$/\1if __import__(\"sys\").version_info[:2] < (2, 7):/" \
 		-e "62s/^\([[:space:]]*\)except ImportError:$/\1else:/" \
 		-i tornado/testing.py
+}
+
+src_compile() {
+	distutils_src_compile
+
+	if use doc; then
+		einfo "Generation of documentation"
+		pushd docs > /dev/null
+		PYTHONPATH="$(ls -d ../build-$(PYTHON -f --ABI)/lib*)" emake sphinx
+		popd > /dev/null
+	fi
 }
 
 src_test() {
@@ -49,4 +61,8 @@ src_install() {
 		rm -r "${ED}$(python_get_sitedir)/tornado/test"
 	}
 	python_execute_function -q delete_tests
+
+	if use doc; then
+		dohtml -r docs/build/html/
+	fi
 }
