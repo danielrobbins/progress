@@ -28,9 +28,6 @@ src_prepare() {
 	distutils_src_prepare
 	epatch "${FILESDIR}/${PN}-0.9.0-cffi_module_configuration.patch"
 	epatch "${FILESDIR}/${PN}-0.8.2-python-3.1.patch"
-
-	# https://bitbucket.org/cffi/cffi/issue/205
-	rm testing/cffi1/test_zdist.py
 }
 
 src_compile() {
@@ -46,7 +43,7 @@ src_compile() {
 
 src_test() {
 	python_copy_sources
-	python_execute_py.test -P '$(ls -d build-${PYTHON_ABI}/lib*)' -s
+	python_execute_py.test -P '$(ls -d "$(pwd)/build-${PYTHON_ABI}/lib"*)' -s
 }
 
 src_install() {
