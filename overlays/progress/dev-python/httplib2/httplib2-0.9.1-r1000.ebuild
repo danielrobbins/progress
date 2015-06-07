@@ -3,8 +3,8 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
+PYTHON_ABI_TYPE="multiple"
 PYTHON_DEPEND="<<[{*-cpython}ssl]>>"
-PYTHON_MULTIPLE_ABIS="1"
 PYTHON_RESTRICTED_ABIS="3.1"
 # https://github.com/jcgregorio/httplib2/issues/270
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
