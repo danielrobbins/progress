@@ -3,7 +3,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
+PYTHON_ABI_TYPE="multiple"
 PYTHON_RESTRICTED_ABIS="3.1 3.2"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 
@@ -31,7 +31,7 @@ src_prepare() {
 	# https://github.com/simplejson/simplejson/issues/70
 	sed \
 		-e "/'simplejson.tests.test_scanstring',/d" \
-		-e "65s/\])/] + ([] if sys.platform.startswith('java') else ['simplejson.tests.test_scanstring']))/" \
+		-e "66s/\])/] + ([] if sys.platform.startswith('java') else ['simplejson.tests.test_scanstring']))/" \
 		-i simplejson/tests/__init__.py
 }
 
