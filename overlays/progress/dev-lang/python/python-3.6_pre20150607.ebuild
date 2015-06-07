@@ -11,13 +11,13 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="https://hg.python.org/cpython"
-	EHG_REVISION="f7cc54086cd2"
+	EHG_REVISION="0fadf332f0d4"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
 fi
 
-PATCHSET_REVISION="20150510"
+PATCHSET_REVISION="20150531"
 
 DESCRIPTION="Python is an interpreted, interactive, object-oriented programming language."
 HOMEPAGE="https://www.python.org/"
@@ -31,7 +31,7 @@ else
 fi
 
 LICENSE="PSF-2"
-SLOT="3.5"
+SLOT="3.6"
 PYTHON_ABI="${SLOT}"
 KEYWORDS="~*"
 IUSE="build doc elibc_uclibc examples gdbm ipv6 +ncurses +readline sqlite +ssl +threads tk wininst +xml"
