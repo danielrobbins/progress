@@ -11,7 +11,7 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="https://hg.python.org/cpython"
-	EHG_REVISION="9dfda4e7169a"
+	EHG_REVISION="cb964e58d7ec"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
@@ -31,9 +31,9 @@ else
 fi
 
 LICENSE="PSF-2"
-SLOT="3.4"
+SLOT="3.5"
 PYTHON_ABI="${SLOT}"
-KEYWORDS="*"
+KEYWORDS="~*"
 IUSE="build doc elibc_uclibc examples gdbm ipv6 +ncurses +readline sqlite +ssl +threads tk wininst +xml"
 
 RDEPEND="app-arch/bzip2
@@ -82,11 +82,11 @@ src_prepare() {
 	rm -fr Modules/_ctypes/libffi*
 	rm -fr Modules/zlib
 
-	if [[ "${PV}" =~ ^[[:digit:]]+\.[[:digit:]]+_pre ]]; then
-		if [[ "$(hg branch)" != "default" ]]; then
-			die "Invalid EHG_REVISION"
-		fi
-	fi
+#	if [[ "${PV}" =~ ^[[:digit:]]+\.[[:digit:]]+_pre ]]; then
+#		if [[ "$(hg branch)" != "default" ]]; then
+#			die "Invalid EHG_REVISION"
+#		fi
+#	fi
 
 	if [[ "${PV}" =~ ^[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+_pre ]]; then
 		if [[ "$(hg branch)" != "${SLOT}" ]]; then
@@ -216,6 +216,13 @@ src_compile() {
 	else
 		pax-mark m python
 	fi
+
+	if use doc; then
+		einfo "Generation of documentation"
+		cd Doc
+		mkdir -p build/{doctrees,html}
+		sphinx-build -b html -d build/doctrees . build/html || die "Generation of documentation failed"
+	fi
 }
 
 src_test() {
@@ -285,6 +292,12 @@ src_install() {
 	use wininst || rm -f "${ED}$(python_get_libdir)/distutils/command/"wininst-*.exe
 
 	dodoc Misc/{ACKS,HISTORY,NEWS} || die "dodoc failed"
+
+	if use doc; then
+		dohtml -A xml -r Doc/build/html/
+		echo "PYTHONDOCS_${SLOT//./_}=\"${EPREFIX}/usr/share/doc/${PF}/html/library\"" > "60python-docs-${SLOT}"
+		doenvd "60python-docs-${SLOT}"
+	fi
 
 	if use examples; then
 		insinto /usr/share/doc/${PF}/examples
