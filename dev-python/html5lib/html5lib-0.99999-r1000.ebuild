@@ -3,9 +3,8 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
+PYTHON_ABI_TYPE="multiple"
 PYTHON_DEPEND="<<[{*-cpython}xml]>>"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="*-jython"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="3.1"
 DISTUTILS_SRC_TEST="nosetests"
 
@@ -23,6 +22,8 @@ IUSE="chardet genshi lxml"
 DEPEND="$(python_abi_depend -i "2.6" dev-python/ordereddict)
 	$(python_abi_depend dev-python/six)
 	chardet? ( $(python_abi_depend dev-python/chardet) )
-	genshi? ( $(python_abi_depend dev-python/genshi) )
-	lxml? ( $(python_abi_depend -e "3.1 *-pypy-*" dev-python/lxml ) )"
+	genshi? ( $(python_abi_depend -e "*-jython" dev-python/genshi) )
+	lxml? ( $(python_abi_depend -e "3.1 *-jython *-pypy" dev-python/lxml) )"
 RDEPEND="${DEPEND}"
+
+DOCS="CHANGES.rst README.rst"
