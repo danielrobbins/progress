@@ -24,6 +24,7 @@ DEPEND="${RDEPEND}
 
 src_prepare() {
 	distutils_src_prepare
+	rm **/*.pyc
 
 	# Use system version of dev-python/ply.
 	sed -e "s/\(from \)\.\(ply\(\.[^ ]\+\)\? import \)/\1\2/" -i pycparser/*.py
