@@ -50,9 +50,6 @@ src_prepare() {
 		fi
 	fi
 
-	# http://www.riverbankcomputing.com/hg/sip/rev/765b6874363f
-	sed -e "s/if (od->methodcode == NULL)/if ((len->methodcode = od->methodcode) == NULL)/" -i sipgen/metasrc/parser.y sipgen/parser.c
-
 	epatch "${FILESDIR}/${PN}-4.15.5-darwin.patch"
 	python_src_prepare
 }
