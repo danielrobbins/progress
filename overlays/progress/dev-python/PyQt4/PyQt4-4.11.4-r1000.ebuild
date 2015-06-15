@@ -22,7 +22,7 @@ else
 	SRC_URI="mirror://sourceforge/pyqt/${MY_P}.tar.gz"
 fi
 
-LICENSE="|| ( GPL-2 GPL-3 )"
+LICENSE="GPL-3"
 # Subslot is "_"-separated, alphabetically sorted list of "${module_name}-${module_version}" strings
 # for PyQt4 modules with non-negative versions set by "version" argument of %Module directive:
 # $ grep -E "^[[:space:]]*%Module\(" sip/*/*.sip | sort
@@ -185,7 +185,7 @@ src_install() {
 	python_execute_function -s installation
 	python_merge_intermediate_installation_images "${T}/images"
 
-	dodoc NEWS THANKS
+	dodoc ChangeLog NEWS THANKS
 
 	if use doc; then
 		dohtml -r doc/html/*
@@ -198,9 +198,9 @@ src_install() {
 }
 
 pkg_postinst() {
-	python_mod_optimize PyQt4
+	python_byte-compile_modules PyQt4
 }
 
 pkg_postrm() {
-	python_mod_cleanup PyQt4
+	python_clean_byte-compiled_modules PyQt4
 }
