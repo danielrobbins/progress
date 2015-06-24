@@ -3,11 +3,9 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
+PYTHON_ABI_TYPE="multiple"
 PYTHON_DEPEND="python? ( <<[threads]>> )"
-PYTHON_MULTIPLE_ABIS="1"
-# Support for Python 3 is incomplete. 'import xapian' faileth with TypeError.
-# http://trac.xapian.org/ticket/346
-PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy"
 
 USE_PHP="php5-4 php5-5 php5-6"
 
@@ -19,7 +17,7 @@ inherit java-pkg-opt-2 mono-env php-ext-source-r2 python
 
 DESCRIPTION="SWIG and JNI bindings for Xapian"
 HOMEPAGE="http://www.xapian.org/"
-SRC_URI="http://oligarchy.co.uk/xapian/${PV}/${P}.tar.gz"
+SRC_URI="http://oligarchy.co.uk/xapian/${PV}/${P}.tar.xz"
 
 LICENSE="GPL-2"
 SLOT="0"
@@ -27,11 +25,11 @@ KEYWORDS="~*"
 IUSE="java lua mono perl php python ruby tcl"
 REQUIRED_USE="|| ( java lua mono perl php python ruby tcl )"
 
-RDEPEND="=dev-libs/xapian-${PV}*
-	lua? ( >=dev-lang/lua-5.1 )
+RDEPEND="~dev-libs/xapian-${PV}
+	lua? ( >=dev-lang/lua-5.1:= )
 	mono? ( dev-lang/mono )
 	perl? ( dev-lang/perl:= )
-	ruby? ( dev-lang/ruby )
+	ruby? ( dev-lang/ruby:= )
 	tcl? ( >=dev-lang/tcl-8.1:0= )"
 DEPEND="${RDEPEND}
 	java? ( >=virtual/jdk-1.3 )"
@@ -57,12 +55,13 @@ src_unpack() {
 src_prepare() {
 	java-pkg-opt-2_src_prepare
 
-	if use python; then
-		sed \
-			-e 's:\(^pkgpylib_DATA = xapian/__init__.py\).*:\1:' \
-			-e 's|\(^xapian/__init__.py: modern/xapian.py\)|\1 xapian/_xapian$(PYTHON_SO)|' \
-			-i python/Makefile.in || die "sed failed"
-	fi
+	sed \
+		-e 's/$(JAVAC)/$(JAVAC) $(JAVACFLAGS)/' \
+		-i java{/,/org/xapian/errors/,/org/xapian/}Makefile.in || die "sed failed"
+	sed \
+		-e 's|\(^pkgpylib_DATA = xapian/__init__.py\).*|\1|' \
+		-e 's|\(^xapian/__init__.py: modern/xapian.py\)|\1 xapian/_xapian$(PYTHON_SO)|' \
+		-i python/Makefile.in || die "sed failed"
 }
 
 src_configure() {
