@@ -10,7 +10,7 @@ PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*-jython"
 inherit distutils
 
 DESCRIPTION="pytest: simple powerful testing with Python"
-HOMEPAGE="http://pytest.org/ https://bitbucket.org/pytest-dev/pytest https://pypi.python.org/pypi/pytest"
+HOMEPAGE="http://pytest.org/ https://github.com/pytest-dev/pytest https://pypi.python.org/pypi/pytest"
 SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
@@ -18,7 +18,7 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="doc"
 
-RDEPEND="$(python_abi_depend ">=dev-python/py-1.4.25")
+RDEPEND="$(python_abi_depend ">=dev-python/py-1.4.29")
 	$(python_abi_depend virtual/python-argparse)"
 DEPEND="${RDEPEND}
 	$(python_abi_depend dev-python/setuptools)
