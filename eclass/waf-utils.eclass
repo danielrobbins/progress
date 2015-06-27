@@ -14,10 +14,10 @@
 # waf-based packages much easier.
 # Its main features are support of common portage default settings.
 
-inherit base eutils multilib toolchain-funcs multiprocessing
+inherit eutils multilib toolchain-funcs multiprocessing
 
 case ${EAPI:-0} in
-	3|4|4-python|5|5-progress) EXPORT_FUNCTIONS src_configure src_compile src_install ;;
+	4|4-python|5|5-progress) EXPORT_FUNCTIONS src_configure src_compile src_install ;;
 	*) die "EAPI=${EAPI} is not supported" ;;
 esac
 
@@ -96,5 +96,5 @@ waf-utils_src_install() {
 	"${WAF_BINARY}" --destdir="${D}" install  || die "Make install failed"
 
 	# Manual document installation
-	base_src_install_docs
+	einstalldocs
 }

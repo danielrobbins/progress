@@ -512,14 +512,6 @@ _EOF_
 					sed -e "/${MULTILIB_ABI_FLAG} /s&error.*&include <${CHOST}${f}>&" \
 						-i "${wrapper}" || die
 
-					# Hack for emul-linux-x86 compatibility.
-					# It assumes amd64 will come after x86, and will use amd64
-					# headers if no specific x86 headers were installed.
-					if [[ ${ABI} == amd64 ]]; then
-						sed -e "/abi_x86_32 /s&error.*&include <${CHOST}${f}>&" \
-							-i "${wrapper}" || die
-					fi
-
 					# Needed for swig.
 					if multilib_is_native_abi; then
 						sed -e "/Native ABI/s&error.*&include <${CHOST}${f}>&" \
