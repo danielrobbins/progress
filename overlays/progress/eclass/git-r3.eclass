@@ -6,7 +6,7 @@
 # Michał Górny <mgorny@gentoo.org>
 # @BLURB: Eclass for fetching and unpacking git repositories.
 # @DESCRIPTION:
-# Third generation eclass for easing maitenance of live ebuilds using
+# Third generation eclass for easing maintenance of live ebuilds using
 # git as remote repository.
 
 case "${EAPI:-0}" in
