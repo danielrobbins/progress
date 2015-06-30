@@ -301,7 +301,7 @@ _ruby_invoke_environment() {
 	old_S=${S}
 	case ${EAPI} in
 		4|4-python|5|5-progress)
-			if [ -z ${RUBY_S} ]; then
+			if [ -z "${RUBY_S}" ]; then
 				sub_S=${P}
 			else
 				sub_S=${RUBY_S}
@@ -315,7 +315,7 @@ _ruby_invoke_environment() {
 	# Special case, for the always-lovely GitHub fetches. With this,
 	# we allow the star glob to just expand to whatever directory it's
 	# called.
-	if [[ ${sub_S} = *"*"* ]]; then
+	if [[ "${sub_S}" = *"*"* ]]; then
 		case ${EAPI} in
 			2|3)
 				#The old method of setting S depends on undefined package
@@ -324,7 +324,7 @@ _ruby_invoke_environment() {
 				;;
 		esac
 		pushd "${WORKDIR}"/all &>/dev/null
-		sub_S=$(eval ls -d ${sub_S} 2>/dev/null)
+		sub_S=$(eval ls -d "${sub_S}" 2>/dev/null)
 		popd &>/dev/null
 	fi
 
