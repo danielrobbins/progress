@@ -3,23 +3,22 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-GCONF_DEBUG="yes"
+GCONF_DEBUG="no"
 GNOME2_LA_PUNT="yes"
+PYTHON_ABI_TYPE="multiple"
 PYTHON_DEPEND="python? ( <<>> )"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5 3.* *-jython *-pypy-*"
+PYTHON_RESTRICTED_ABIS="3.* *-jython *-pypy"
 
 inherit autotools eutils gnome2 python
 
 DESCRIPTION="GNOME terminal widget"
-HOMEPAGE="https://live.gnome.org/VTE"
+HOMEPAGE="https://wiki.gnome.org/Apps/Terminal/VTE"
 
 LICENSE="LGPL-2+"
 SLOT="0"
 KEYWORDS="*"
-IUSE="debug glade +introspection python"
+IUSE="debug +introspection python"
 
-PDEPEND="x11-libs/gnome-pty-helper"
 RDEPEND=">=dev-libs/glib-2.26:2
 	>=x11-libs/gtk+-2.20:2[introspection?]
 	>=x11-libs/pango-1.22.0
@@ -28,28 +27,18 @@ RDEPEND=">=dev-libs/glib-2.26:2
 	x11-libs/libX11
 	x11-libs/libXft
 
-	glade? ( dev-util/glade:3 )
-	introspection? ( >=dev-libs/gobject-introspection-0.9.0 )
+	introspection? ( >=dev-libs/gobject-introspection-0.9.0:= )
 	python? ( $(python_abi_depend dev-python/pygtk:2) )"
 DEPEND="${RDEPEND}
 	dev-util/gtk-doc-am
 	>=dev-util/intltool-0.35
 	sys-devel/gettext
 	virtual/pkgconfig"
+PDEPEND="x11-libs/gnome-pty-helper"
+
+DOCS="AUTHORS ChangeLog HACKING NEWS README"
 
 pkg_setup() {
-	# Do not disable gnome-pty-helper, bug #401389
-	G2CONF="${G2CONF}
-		--disable-deprecation
-		--disable-static
-		$(use_enable debug)
-		$(use_enable glade glade-catalogue)
-		$(use_enable introspection)
-		$(use_enable python)
-		--with-gtk=2.0"
-
-	DOCS="AUTHORS ChangeLog HACKING NEWS README"
-
 	if use python; then
 		python_pkg_setup
 	fi
@@ -67,6 +56,17 @@ src_prepare() {
 	sed -e "/^SUBDIRS =/s/ \$(am__append_1)//" -i Makefile.in
 
 	gnome2_src_prepare
+}
+
+src_configure() {
+	# Do not disable gnome-pty-helper, bug #401389
+	gnome2_src_configure \
+		--disable-deprecation \
+		--disable-glade-catalogue \
+		--disable-static \
+		$(use_enable debug) \
+		$(use_enable introspection) \
+		--with-gtk=2.0
 }
 
 src_compile() {
