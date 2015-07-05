@@ -11,13 +11,13 @@ if [[ "${PV}" == *_pre* ]]; then
 	inherit mercurial
 
 	EHG_REPO_URI="https://hg.python.org/cpython"
-	EHG_REVISION="cb964e58d7ec"
+	EHG_REVISION="7900983373f0"
 else
 	MY_PV="${PV%_p*}"
 	MY_P="Python-${MY_PV}"
 fi
 
-PATCHSET_REVISION="20150510"
+PATCHSET_REVISION="20150531"
 
 DESCRIPTION="Python is an interpreted, interactive, object-oriented programming language."
 HOMEPAGE="https://www.python.org/"
@@ -31,7 +31,7 @@ else
 fi
 
 LICENSE="PSF-2"
-SLOT="3.5"
+SLOT="3.6"
 PYTHON_ABI="${SLOT}"
 KEYWORDS="~*"
 IUSE="build doc elibc_uclibc examples gdbm ipv6 +ncurses +readline sqlite +ssl +threads tk wininst +xml"
@@ -82,11 +82,11 @@ src_prepare() {
 	rm -fr Modules/_ctypes/libffi*
 	rm -fr Modules/zlib
 
-#	if [[ "${PV}" =~ ^[[:digit:]]+\.[[:digit:]]+_pre ]]; then
-#		if [[ "$(hg branch)" != "default" ]]; then
-#			die "Invalid EHG_REVISION"
-#		fi
-#	fi
+	if [[ "${PV}" =~ ^[[:digit:]]+\.[[:digit:]]+_pre ]]; then
+		if [[ "$(hg branch)" != "default" ]]; then
+			die "Invalid EHG_REVISION"
+		fi
+	fi
 
 	if [[ "${PV}" =~ ^[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+_pre ]]; then
 		if [[ "$(hg branch)" != "${SLOT}" ]]; then
