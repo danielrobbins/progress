@@ -3,11 +3,9 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="3.1 *-jython *-pypy-*"
+PYTHON_ABI_TYPE="multiple"
+PYTHON_RESTRICTED_ABIS="3.1 *-jython *-pypy"
 PYTHON_TESTS_FAILURES_TOLERANT_ABIS="*"
-
-VIRTUALX_COMMAND="cmake-utils_src_test"
 
 inherit cmake-utils multilib python virtualx
 
@@ -37,7 +35,7 @@ REQUIRED_USE="
 "
 
 # Minimal supported version of Qt.
-QT_PV="4.7.0:4"
+QT_PV="4.8.5:4"
 
 RDEPEND="
 	$(python_abi_depend ">=dev-python/shiboken-${PV}")
@@ -47,7 +45,7 @@ RDEPEND="
 		>=dev-qt/qttest-${QT_PV}
 	)
 	declarative? ( >=dev-qt/qtdeclarative-${QT_PV} )
-	designer? ( || ( dev-qt/designer:4 <dev-qt/qtgui-4.8.5:4 ) )
+	designer? ( >=dev-qt/designer-${QT_PV} )
 	help? ( >=dev-qt/qthelp-${QT_PV} )
 	multimedia? ( >=dev-qt/qtmultimedia-${QT_PV} )
 	opengl? ( >=dev-qt/qtopengl-${QT_PV} )
@@ -79,6 +77,10 @@ src_prepare() {
 		cp "${FILESDIR}"/rpath.cmake . || die
 		sed -i -e '1iinclude(rpath.cmake)' CMakeLists.txt || die
 	fi
+
+	epatch "${FILESDIR}/qgtkstyle-${PV}.patch"
+
+	cmake-utils_src_prepare
 }
 
 src_configure() {
@@ -117,18 +119,18 @@ src_configure() {
 
 src_compile() {
 	compilation() {
-		BUILD_DIR="${S}_${PYTHON_ABI}" cmake-utils_src_make
+		BUILD_DIR="${S}_${PYTHON_ABI}" cmake-utils_src_compile
 	}
 	python_execute_function compilation
 }
 
 src_test() {
 	testing() {
-		BUILD_DIR="${S}_${PYTHON_ABI}" virtualmake
+		BUILD_DIR="${S}_${PYTHON_ABI}" VIRTUALX_COMMAND="cmake-utils_src_test" virtualmake
 	}
-	python_enable_pyc
+	python_enable_byte-compilation
 	python_execute_function testing
-	python_disable_pyc
+	python_disable_byte-compilation
 }
 
 src_install() {
@@ -137,4 +139,12 @@ src_install() {
 		mv "${ED}"usr/$(get_libdir)/pkgconfig/${PN}{,-python${PYTHON_ABI}}.pc
 	}
 	python_execute_function installation
+}
+
+pkg_postinst() {
+	python_byte-compile_modules PySide
+}
+
+pkg_postrm() {
+	python_clean_byte-compiled_modules PySide
 }
