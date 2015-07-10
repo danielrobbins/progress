@@ -83,8 +83,7 @@ gnome2_src_prepare() {
 	gnome2_disable_deprecation_warning
 
 	# Run libtoolize
-	# Everything is fatal EAPI 4 onwards
-	nonfatal elibtoolize ${ELTCONF}
+	elibtoolize ${ELTCONF}
 }
 
 # @FUNCTION: gnome2_src_configure
