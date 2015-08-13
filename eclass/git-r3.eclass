@@ -184,19 +184,19 @@ _git-r3_env_setup() {
 			;;
 		single)
 			if [[ ${EGIT_CLONE_TYPE} == shallow ]]; then
-				einfo "git-r3: ebuild needs to be cloned in 'single' mode, adjusting"
+				einfo "git-r3: ebuild needs to be cloned in '\e[1msingle\e[22m' mode, adjusting"
 				EGIT_CLONE_TYPE=single
 			fi
 			;;
 		single+tags)
 			if [[ ${EGIT_CLONE_TYPE} == shallow || ${EGIT_CLONE_TYPE} == single ]]; then
-				einfo "git-r3: ebuild needs to be cloned in 'single+tags' mode, adjusting"
+				einfo "git-r3: ebuild needs to be cloned in '\e[1msingle+tags\e[22m' mode, adjusting"
 				EGIT_CLONE_TYPE=single+tags
 			fi
 			;;
 		mirror)
 			if [[ ${EGIT_CLONE_TYPE} != mirror ]]; then
-				einfo "git-r3: ebuild needs to be cloned in 'mirror' mode, adjusting"
+				einfo "git-r3: ebuild needs to be cloned in '\e[1mmirror\e[22m' mode, adjusting"
 				EGIT_CLONE_TYPE=mirror
 			fi
 			;;
@@ -531,7 +531,7 @@ git-r3_fetch() {
 		umask "${EVCS_UMASK}" || die "Bad options to umask: ${EVCS_UMASK}"
 	fi
 	for r in "${repos[@]}"; do
-		einfo "Fetching ${r} ..."
+		einfo "Fetching \e[1m${r}\e[22m ..."
 
 		local fetch_command=( git fetch "${r}" )
 		local clone_type=${EGIT_CLONE_TYPE}
@@ -552,11 +552,11 @@ git-r3_fetch() {
 			# so automatically switch to single+tags mode.
 			if [[ ${clone_type} == shallow ]]; then
 				einfo "  Google Code does not support shallow clones"
-				einfo "  using EGIT_CLONE_TYPE=single+tags"
+				einfo "  using \e[1mEGIT_CLONE_TYPE=single+tags\e[22m"
 				clone_type=single+tags
 			elif [[ ${clone_type} == single ]]; then
 				einfo "  git-r3: Google Code does not send tags properly in 'single' mode"
-				einfo "  using EGIT_CLONE_TYPE=single+tags"
+				einfo "  using \e[1mEGIT_CLONE_TYPE=single+tags\e[22m"
 				clone_type=single+tags
 			fi
 		fi
@@ -770,7 +770,7 @@ git-r3_checkout() {
 	local -x GIT_DIR
 	_git-r3_set_gitdir "${repos[0]}"
 
-	einfo "Checking out ${repos[0]} to ${out_dir} ..."
+	einfo "Checking out \e[1m${repos[0]}\e[22m to \e[1m${out_dir}\e[22m ..."
 
 	if ! git cat-file -e refs/git-r3/"${local_id}"/__main__; then
 		if [[ ${EVCS_OFFLINE} ]]; then
@@ -915,7 +915,7 @@ git-r3_peek_remote_ref() {
 
 	local r success
 	for r in "${repos[@]}"; do
-		einfo "Peeking ${remote_ref} on ${r} ..." >&2
+		einfo "Peeking \e[1m${remote_ref}\e[22m on \e[1m${r}\e[22m ..." >&2
 
 		local is_branch lookup_ref
 		if [[ ${remote_ref} == refs/heads/* || ${remote_ref} == HEAD ]]
@@ -965,16 +965,23 @@ git-r3_src_unpack() {
 }
 
 # https://bugs.gentoo.org/show_bug.cgi?id=482666
-git-r3_pkg_outofdate() {
+git-r3_pkg_needrebuild() {
 	debug-print-function ${FUNCNAME} "$@"
 
 	local new_commit_id=$(git-r3_peek_remote_ref)
-	ewarn "old: ${EGIT_VERSION}"
-	ewarn "new: ${new_commit_id}"
-	[[ ${new_commit_id} && ${old_commit_id} ]] || return 2
+	[[ ${new_commit_id} && ${EGIT_VERSION} ]] || die "Lookup failed"
+
+	if [[ ${EGIT_VERSION} != ${new_commit_id} ]]; then
+		einfo "Update from \e[1m${EGIT_VERSION}\e[22m to \e[1m${new_commit_id}\e[22m"
+	else
+		einfo "Local and remote at \e[1m${EGIT_VERSION}\e[22m"
+	fi
 
 	[[ ${EGIT_VERSION} != ${new_commit_id} ]]
 }
+
+# 'export' locally until this gets into EAPI
+pkg_needrebuild() { git-r3_pkg_needrebuild; }
 
 _GIT_R3=1
 fi
