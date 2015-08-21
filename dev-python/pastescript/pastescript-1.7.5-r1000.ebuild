@@ -3,8 +3,8 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_MULTIPLE_ABIS="1"
-PYTHON_RESTRICTED_ABIS="2.5 3.*"
+PYTHON_ABI_TYPE="multiple"
+PYTHON_RESTRICTED_ABIS="2.6 3.*"
 # DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
@@ -52,7 +52,7 @@ src_install() {
 	distutils_src_install
 
 	delete_tests() {
-		rm -fr "${ED}$(python_get_sitedir)/tests"
+		rm -r "${ED}$(python_get_sitedir)/tests"
 	}
 	python_execute_function -q delete_tests
 
