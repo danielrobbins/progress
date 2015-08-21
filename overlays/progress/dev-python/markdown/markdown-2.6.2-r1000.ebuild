@@ -3,8 +3,9 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5-progress"
-PYTHON_DEPEND="<<[{*-cpython}xml]>>"
 PYTHON_ABI_TYPE="multiple"
+PYTHON_DEPEND="<<[{*-cpython}xml]>>"
+PYTHON_RESTRICTED_ABIS="2.6 3.1"
 DISTUTILS_SRC_TEST="nosetests"
 
 inherit distutils
@@ -21,19 +22,11 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="doc pygments"
 
-DEPEND="$(python_abi_depend -i "2.6" dev-python/importlib)
-	$(python_abi_depend dev-python/pyyaml)
+DEPEND="$(python_abi_depend dev-python/pyyaml)
 	pygments? ( $(python_abi_depend dev-python/pygments) )"
 RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/${MY_P}"
-
-src_prepare() {
-	distutils_src_prepare
-
-	# Fix compatibility with Python 2.6.
-	sed -e "s/logging.captureWarnings/if __import__('sys').version_info[:2] >= (2, 7): &/" -i markdown/__init__.py
-}
 
 src_install() {
 	distutils_src_install
